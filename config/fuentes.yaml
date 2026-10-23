@@ -1,0 +1,84 @@
+# ─────────────────────────────────────────────────────────────
+# Fuentes de datos verificadas para el Reto SBD+BDA
+# Todas las URLs e IDs fueron comprobados en octubre de 2026.
+# ─────────────────────────────────────────────────────────────
+
+eustat:
+  base_url: https://www.eustat.eus/bankupx/api/v1/es/DB
+  tablas:
+    poblacion_edad:
+      id: PX_010154_cepv1_ep06b.px
+      descripcion: Población por municipio y grupo de edad
+    renta_municipal:
+      id: PX_173402_crpf_rpf_rp11s.px
+      descripcion: Renta personal media por municipio (euros)
+    renta_edad:
+      id: PX_173402_crpf_rpf_rp03.px
+      descripcion: Renta personal media por edad y tipo de renta (euros)
+    pib_municipal:
+      id: PX_170120_cpibmun_pibmun03b.px
+      descripcion: PIB por municipio
+    tenencia:
+      id: PX_122404_cemv_viv09a.px
+      descripcion: Viviendas por régimen de tenencia (alquiler/propiedad)
+
+  # Alquiler municipal: NO está en la API JSON, solo por ExtractorBlob.
+  # Es la fuente clave del precio del alquiler por municipio.
+  extractor_blob:
+    base: https://es.eustat.eus/comun/ExtractorBlob.ashx
+    tablas:
+      territorial: alquiler_vivienda~1/tbl_0024627_c.csv
+      municipio: alquiler_vivienda~2/tbl_0024628_c.csv
+      distrito_seccion: alquiler_vivienda~3/tbl_0024629_c.csv
+      seccion_a: alquiler_vivienda~3/tbl_0024630_c.csv
+      seccion_b: alquiler_vivienda~3/tbl_0024631_c.csv
+    nota: >
+      Cubre Álava, Bizkaia y Gipuzkoa. Año 2024. Sufijo _c = castellano,
+      _e = euskera. Columnas: renta media €/m²/mes (media, mediana, P25,
+      P75), cuantía media €/mes y superficie construida media m².
+
+euskadi_emancipacion:
+  url: https://www.euskadi.eus/contenidos/estadistica/gazte_adierazle_emanc_vivienda/opendata/iovj-emancipacion.csv
+  descripcion: Indicadores de emancipación juvenil y coste de acceso a la vivienda
+  anno_max: 2024
+  filas: 867
+
+b5m_gipuzkoa:
+  datasets_api: https://b5m.gipuzkoa.eus/api/2.0/datasets
+  municipios_geojson: https://b5m.gipuzkoa.eus/datasets/GFA_DSET_MB.geojson
+  distancias_csv: https://b5m.gipuzkoa.eus/datasets/GFA_DSET_DISTM_CSV.zip
+  nota: Solo Gipuzkoa. Para Álava/Bizkaia usar la lista de Eustat (CODMUNIINE).
+
+ine:
+  base_url: https://servicios.ine.es/wstempus/js/ES/DATOS_TABLA
+  tablas:
+    "69301": Población residente por municipio
+    "69302": Hogares y viviendas
+    "69303": Tasa de actividad y desempleo
+    "69323": Indicadores Urbanos - vivienda
+    "69330": Indicadores Urbanos completo
+  nota: >
+    Abierta y sin registro. El alquiler por municipio viene a null en
+    Euskadi (INE no lo publica en régimen foral). SÍ da población,
+    hogares y precios de compraventa.
+
+fotocasa:
+  base: https://www.fotocasa.es/es/alquiler/viviendas
+  provincias:
+    gipuzkoa: gipuzkoa-provincia/todas-las-zonas/l
+    bizkaia: bizkaia-provincia/todas-las-zonas/l
+    araba_alava: araba-alava-provincia/todas-las-zonas/l
+  paginacion: /l/{n}
+  anuncios_por_pagina: 30
+  cobertura_verificada:
+    gipuzkoa: 116
+    bizkaia: 351
+    araba_alava: 15
+  nota: >
+    Los anuncios están en un <script type="application/json">:
+    initialSearch.result.realEstates[]. Sin API key. robots.txt no
+    prohíbe /es/alquiler/viviendas/.
+
+idealista:
+  api_oficial: https://developers.idealista.com/access-request
+  nota: Aprobación manual. Opcional; solo si se concede la API key.
