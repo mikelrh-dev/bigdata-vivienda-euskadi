@@ -11,3 +11,6 @@ data/resultados/*
 !data/procesado/.gitkeep
 !data/resultados/.gitkeep
 *.log
+
+# Credenciales
+api.txt
