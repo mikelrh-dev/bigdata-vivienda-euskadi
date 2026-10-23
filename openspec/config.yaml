@@ -1,0 +1,62 @@
+# openspec/config.yaml
+# Reto intermodal SBD + BDA — configuración SDD
+# Contrato de requisitos: ata la implementación a la rúbrica del reto.
+
+schema: spec-driven
+
+context: |
+  Proyecto: ¿Dónde pueden vivir los jóvenes en Euskadi? Sistema de recogida,
+            almacenamiento y análisis de datos (todo en Python).
+  Stack:    Python 3.12 (.venv), pandas, PyMongo, kafka-python-ng, requests,
+            beautifulsoup4. Infraestructura: HDFS y MongoDB en Docker (Windows);
+            Apache Kafka en una VM Ubuntu Server.
+  Datos:    Eustat (API + ExtractorBlob), INE (API wstempus), euskadi.eus (CSV),
+            b5m Gipuzkoa (API), Fotocasa (scraping). Sin registro.
+  Ámbito:   Álava, Bizkaia y Gipuzkoa. Alquiler como eje; compraventa opcional.
+  Contrato: openspec/specs/contrato-reto/spec.md es la verdad. Toda
+            implementación se mide contra la rúbrica transcribida allí.
+  Idioma:   Especificaciones en español (la rúbrica y el proyecto lo están).
+
+# El contrato es vinculante: se lee ANTES de escribir código.
+rules:
+  contract_first: true
+
+  specs:
+    - Requisitos con RFC 2119 (MUST / SHALL / SHOULD / MAY).
+    - Cada requisito con al menos un escenario Given/When/Then comprobable.
+    - Sin detalles de implementación: los specs describen QUÉ, no CÓMO.
+    - Presupuesto: cada artefacto spec por debajo de 650 palabras.
+    - Los criterios de la rúbrica se citan por su texto literal.
+    - Un requisito satisface un criterio SOLO si se puede verificar.
+
+  apply:
+    - Antes de tocar código, leer openspec/specs/contrato-reto/spec.md.
+    - Marcar cada requisito cubierto y registrar cómo se verifica.
+    - Si un requisito no se puede cumplir, documentar el motivo y el riesgo.
+    - No añadir funcionalidad fuera del contrato sin cambiarlo antes.
+
+  verify:
+    test_command: ".venv/Scripts/python.exe -m pytest tests -q"
+
+strict_tdd: false
+
+testing:
+  runner: pytest
+  layers:
+    unit: true
+    integration: true
+    e2e: false
+
+  rationale: >
+    tests/test_contrato.py comprueba los escenarios del contrato que son
+    verificables con datos reales (recuentos, columnas, valores nulos,
+    formatos). No reemplaza la verificación manual de los criterios de
+    proceso (HDFS, Kafka, PyMongo), que requiere la infraestructura en
+    marcha.
+
+specs:
+  - contrato-reto
+  - extraccion-datos
+  - almacenamiento-y-streaming
+  - mongodb-y-analisis
+  - presentacion-de-resultados
