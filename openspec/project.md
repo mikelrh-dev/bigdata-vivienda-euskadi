@@ -17,6 +17,9 @@ posibilidades de emancipación para una persona joven, y explicar por qué.
 Fuente de verdad de la evaluación: el PDF `RETO 1Evaluacion SBD-BDA.pdf`
 (rúbrica y requisitos transcritos en `specs/contrato-reto/spec.md`).
 
+Plan de implementación por fases: `openspec/plan/fases.md` (planificado, no
+iniciado salvo la Fase 0).
+
 ## Stack
 
 | Pieza | Tecnología | Estado |
