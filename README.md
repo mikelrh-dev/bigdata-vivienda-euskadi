@@ -18,11 +18,32 @@ Fuentes (API + scraping)
 Ver `plan/PLAN.md` para el plan completo y `plan/arquitectura.md` para el
 esquema detallado.
 
+## Contrato de requisitos (OpenSpec)
+
+La implementación está atada a la rúbrica del reto. El contrato vive en
+`openspec/` y **manda sobre el código**:
+
+| Fichero | Contenido |
+|---|---|
+| `openspec/specs/contrato-reto/spec.md` | **La verdad.** Rúbrica transcrita literal + 18 requisitos + prohibiciones |
+| `openspec/specs/extraccion-datos/spec.md` | Extracción API y scraping, formato, salarios |
+| `openspec/specs/almacenamiento-y-streaming/spec.md` | HDFS, Kafka, integración |
+| `openspec/specs/mongodb-y-analisis/spec.md` | Modelado, PyMongo, consultas, agregación, limpieza |
+| `openspec/specs/presentacion-de-resultados/spec.md` | Gráficos, datos, presentación, interpretación |
+| `openspec/config.yaml` | Contexto, reglas y la regla `contract_first` |
+| `openspec/project.md` | Objetivo, stack, layout y fuentes |
+
+**Regla de oro:** antes de escribir código, se lee
+`openspec/specs/contrato-reto/spec.md`. Un criterio solo se marca como
+cubierto cuando se puede verificar.
+
 ## Estructura
 
 ```
 BigDataReto/
-├── config/fuentes.yaml      URLs, IDs de tablas y cobertura verificada
+├── openspec/specs/{capability}/spec.md   contrato por dominio
+├── tests/test_contrato.py        verificación del contrato
+├── config/fuentes.yaml                   URLs, IDs de tablas y cobertura verificada
 ├── extract/                 Scripts de extracción (API + scraping)
 ├── storage/                 HDFS, Kafka, MongoDB (PyMongo)
 ├── transform/               Limpieza y enriquecimiento
@@ -55,6 +76,15 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 ```
 
 Salida en `data/raw/`.
+
+### 2b. Verificar contra el contrato
+
+```bash
+.venv/Scripts/python.exe -m pytest tests -q
+```
+
+11 tests comprueban los escenarios del contrato que son verificables con
+datos reales. Un `xfail` significa que un criterio sigue abierto.
 
 ### 3. Infraestructura (pendiente de completar)
 
@@ -109,10 +139,11 @@ Todas verificadas en octubre de 2026.
 
 | Fase | Estado |
 |---|---|
-| 0. Entorno y VM | ⚠️ venv creado; Docker y VM pendientes |
-| 1. Extracción | ✅ Hecha (scripts 01–06 funcionan) |
-| 2. Kafka | ⬜ Pendiente (VM) |
-| 3. MongoDB modelado | ⬜ Pendiente |
-| 4. Limpieza | ⬜ Pendiente |
-| 5. Aggregation Pipeline | ⬜ Pendiente |
-| 6. Visualización e informe | ⬜ Pendiente |
+| 0. Entorno y VM | ⚠️ venv, Docker Desktop y contrato OK; VM pendiente |
+| 1. Extracción | ✅ Hecha (scripts 01–06, 127 MB en `data/raw/`) |
+| 1b. Salarios (INE EPA) | ⬜ Abierto — el contrato lo marca como pendiente |
+| 2. Kafka | ⬜ |
+| 3. MongoDB modelado | ⬜ |
+| 4. Limpieza | ⬜ |
+| 5. Aggregation Pipeline | ⬜ |
+| 6. Visualización e informe | ⬜ |
