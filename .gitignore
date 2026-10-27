@@ -4,6 +4,13 @@ venv/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.pytest_cache/
+.atl/
+b1.html
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
 data/raw/*
 data/procesado/*
 data/resultados/*
@@ -11,6 +18,4 @@ data/resultados/*
 !data/procesado/.gitkeep
 !data/resultados/.gitkeep
 *.log
-
-# Credenciales
 api.txt
