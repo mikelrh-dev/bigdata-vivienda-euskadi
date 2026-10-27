@@ -105,7 +105,17 @@ def _normalizar(anuncio: dict) -> dict:
     direccion = anuncio.get("address") or {}
     coordenadas = anuncio.get("coordinates") or {}
 
+    # F4: entity resolution en origen (local, sin proxy)
+    try:
+        from entity_resolution import resolver_municipio as _resolver
+    except ModuleNotFoundError:  # ejecución como script con extract/ en path
+        from entity_resolution import resolver_municipio as _resolver  # noqa: F401
+    _cod, _can = _resolver((direccion.get("municipality") or "").strip())
+
     return {
+        "codigo_ine": _cod,
+        "nombre_canonico": _can,
+        "anio_fuente": 2026,
         "id_anuncio": anuncio.get("id") or anuncio.get("realEstateAdId"),
         "uuid_anuncio": anuncio.get("realEstateAdId"),
         "precio_eur": anuncio.get("rawPrice"),
@@ -181,7 +191,7 @@ def scrapear_provincia(
             total = resultado.get("count")
             paginas = _paginas_totales(resultado)
             log.info(
-                "%s página %d/%d → %d anuncios (total portal: %s)",
+                "%s página %d/%d -> %d anuncios (total portal: %s)",
                 nombre, pagina, paginas, len(lote), total,
             )
             if pagina >= paginas or not lote:
@@ -255,6 +265,7 @@ def main() -> int:
 
         # CSV con los campos principales
         columnas = [
+            "codigo_ine", "nombre_canonico", "anio_fuente",
             "id_anuncio", "precio_eur", "precio_reducido_eur",
             "municipio", "provincia", "codigo_postal", "barrio", "comarca",
             "latitud", "longitud", "superficie_m2", "habitaciones", "banos",
@@ -269,7 +280,7 @@ def main() -> int:
             )
             escritor.writeheader()
             escritor.writerows(unicos)
-        log.info("CSV → %s", destino_csv.name)
+        log.info("CSV -> %s", destino_csv.name)
 
     return 0 if unicos else 1
 
