@@ -35,7 +35,11 @@ def _descargar(indicator_id: str) -> dict:
 
 
 def _extraer_municipios(data: dict, dim_codigos: set[str]) -> dict[str, float]:
-    """Devuelve {codigo_ine: valor_2024} para municipios presentes en dim."""
+    """Devuelve {codigo_ine: valor_ultimo_año} para municipios presentes en dim.
+
+    Toma el ÚLTIMO año disponible (no el primero) y devuelve el valor.
+    Si no hay datos para un municipio, no se incluye.
+    """
     resultado = {}
     for ent in data.get("municipalities", data.get("entities", [])):
         codigo = str(ent.get("id", "")).strip().zfill(5)
@@ -45,13 +49,13 @@ def _extraer_municipios(data: dict, dim_codigos: set[str]) -> dict[str, float]:
         if not years:
             continue
         y = years[0]
-        # último año disponible
-        ultimo = None
+        # último año disponible con valor no nulo
+        ultimo_valor = None
         for k in sorted(y.keys()):
             if y[k] is not None:
-                ultimo = y[k]
-        if ultimo is not None:
-            resultado[codigo] = ultimo
+                ultimo_valor = y[k]
+        if ultimo_valor is not None:
+            resultado[codigo] = ultimo_valor
     return resultado
 
 
@@ -84,15 +88,15 @@ def main() -> int:
         for codigo, valor in valores.items():
             datos[codigo][nombre] = valor
 
-    # Calcular tasa de paro aproximada
+    # NOTA: Udalmap no ofrece tasa de paro directa. Los indicadores 8 (actividad)
+    # y 10 (ocupación) son tasas sobre bases distintas, por lo que (1 - ocu/act)*100
+    # produce valores negativos. Se documenta como no disponible y se usa la tasa
+    # de ocupación como proxy inverso de empleo.
     registros_out = []
     for codigo in sorted(dim_codigos):
         info = next((r for r in registros if r["codigo_ine"] == codigo), {})
         act = datos[codigo].get("actividad")
         ocu = datos[codigo].get("ocupacion")
-        paro = None
-        if act and ocu and act > 0:
-            paro = round((1 - ocu / act) * 100, 2)
         registros_out.append(
             {
                 "codigo_ine": codigo,
@@ -100,7 +104,8 @@ def main() -> int:
                 "territorio": info.get("territorio"),
                 "tasa_actividad_pct": act,
                 "tasa_ocupacion_pct": ocu,
-                "tasa_paro_aprox_pct": paro,
+                "tasa_paro_aprox_pct": None,
+                "nota_paro": "No disponible en Udalmap; usar EPA provincial (INE)",
             }
         )
 
@@ -115,7 +120,7 @@ def main() -> int:
         },
     )
 
-    columnas = ["codigo_ine", "nombre_canonico", "territorio", "tasa_actividad_pct", "tasa_ocupacion_pct", "tasa_paro_aprox_pct"]
+    columnas = ["codigo_ine", "nombre_canonico", "territorio", "tasa_actividad_pct", "tasa_ocupacion_pct", "tasa_paro_aprox_pct", "nota_paro"]
     destino_csv = RAW_DIR / "udalmap_empleo.csv"
     with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=columnas, extrasaction="ignore")
