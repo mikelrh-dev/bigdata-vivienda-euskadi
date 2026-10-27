@@ -77,6 +77,12 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
         else:
             copia["precio_m2_calculado"] = copia.get("precio_m2")
 
+        # Separar temporal vs larga estancia (Fotocasa)
+        if "alquiler_temporal" in copia:
+            copia["tipo_alquiler"] = "temporal" if copia.get("alquiler_temporal") else "larga_estancia"
+        else:
+            copia["tipo_alquiler"] = "desconocido"
+
         outlier = False
         motivos = []
 
