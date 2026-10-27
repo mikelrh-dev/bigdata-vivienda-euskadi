@@ -1,4 +1,4 @@
-# BigDataReto — ¿Dónde pueden vivir los jóvenes en Euskadi?
+# bigdata-vivienda-euskadi — ¿Dónde pueden vivir los jóvenes en Euskadi?
 
 Reto intermodal de **SBD + BDA**. Pipeline de datos en Python que analiza
 la accesibilidad de la vivienda para la población joven en Euskadi.

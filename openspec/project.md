@@ -1,4 +1,4 @@
-# Proyecto: ¿Dónde pueden vivir los jóvenes en Euskadi?
+# Proyecto: bigdata-vivienda-euskadi — ¿Dónde pueden vivir los jóvenes en Euskadi?
 
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
