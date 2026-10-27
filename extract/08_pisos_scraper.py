@@ -106,7 +106,7 @@ def _parsear_anuncios(html: str) -> list[dict]:
 
 
 def _total_resultados(html: str) -> int | None:
-    """Lee '30 de 43 resultados' → 43."""
+    """Lee '30 de 43 resultados' -> 43."""
     match = re.search(r"(\d+)\s+de\s+(\d+)\s+resultados", html)
     if match:
         return int(match.group(2))
@@ -138,7 +138,7 @@ def scrapear_municipio(
             if total is not None:
                 paginas_reales = (total + MAX_POR_PAGINA - 1) // MAX_POR_PAGINA
                 log.info(
-                    "%s → %d resultados (%d páginas)",
+                    "%s -> %d resultados (%d páginas)",
                     nombre, total, paginas_reales,
                 )
                 if paginas_reales < max_paginas:
@@ -148,14 +148,24 @@ def scrapear_municipio(
         if not lote:
             break
         anuncios.extend(lote)
-        log.info("%s página %d → %d anuncios", nombre, pagina, len(lote))
+        log.info("%s página %d -> %d anuncios", nombre, pagina, len(lote))
 
         if len(lote) < MAX_POR_PAGINA:
             break
         pagina += 1
 
+    # F4: entity resolution en origen (local, sin proxy)
+    try:
+        from entity_resolution import resolver_municipio as _resolver
+        _cod, _can = _resolver(nombre)
+    except Exception:  # noqa: BLE001
+        _cod, _can = None, None
     for anuncio in anuncios:
         anuncio["municipio_busqueda"] = nombre
+        anuncio.setdefault("codigo_ine", _cod)
+        anuncio.setdefault("nombre_canonico", _can)
+        anuncio.setdefault("anio_fuente", 2026)
+        anuncio.setdefault("es_busqueda_no_ubicacion", True)
         anuncio["total_resultados"] = total
     return anuncios
 
@@ -230,9 +240,10 @@ def main() -> int:
         )
 
         columnas = [
+            "codigo_ine", "nombre_canonico", "anio_fuente",
             "id_anuncio", "precio_eur", "municipio_busqueda", "titulo", "subtitulo",
             "tipo_inmueble", "superficie_m2", "habitaciones", "banos",
-            "url_detalle", "total_resultados",
+            "url_detalle", "total_resultados", "es_busqueda_no_ubicacion",
         ]
         destino_csv = RAW_DIR / "anuncios_pisos.csv"
         with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -241,7 +252,7 @@ def main() -> int:
             )
             escritor.writeheader()
             escritor.writerows(unicos)
-        log.info("CSV → %s", destino_csv.name)
+        log.info("CSV -> %s", destino_csv.name)
 
     return 0 if unicos else 1
 
