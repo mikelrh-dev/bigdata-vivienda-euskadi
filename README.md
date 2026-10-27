@@ -143,7 +143,9 @@ Todas verificadas en octubre de 2026.
 | INE wstempus API | API JSON | No | Población, hogares, precios de compraventa |
 | euskadi.eus | CSV | No | Emancipación juvenil (16 indicadores) |
 | b5m Gipuzkoa | API JSON | No | Límites municipales, distancias |
-| Catastro INSPIRE | WFS/WMS | No | Parcelas, antigüedad (opcional) |
+| Open Data Euskadi (geo.euskadi.eus) | SHP | No | Límites municipales Euskadi completo (251 municipios) |
+| Catastro INSPIRE | WFS/WMS | No | Parcelas, antigüedad (opcional; PV excepto Gipuzkoa/Bizkaia) |
+| LANBIDE | Web | No | Paro registrado por municipio (mensual) |
 | Fotocasa | Scraping | No | ~480 anuncios reales de alquiler |
 | Pisos.com | Scraping | No | Segunda fuente de anuncios (script 08) |
 | Idealista (RealtyAPI) | API | Sí (key) | Opcional, 139 anuncios generados |
