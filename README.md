@@ -1,70 +1,88 @@
 # bigdata-vivienda-euskadi — ¿Dónde pueden vivir los jóvenes en Euskadi?
 
-Reto intermodal de **SBD + BDA**. Pipeline de datos en Python que analiza
-la accesibilidad de la vivienda para la población joven en Euskadi.
+Reto intermodal **SBD + BDA**: pipeline en Python que analiza la accesibilidad
+de la vivienda para la población joven en Euskadi con datos reales, midiendo cada
+criterio contra el contrato OpenSpec de `openspec/specs/contrato-reto/spec.md`.
 
-## Arquitectura
+## 🎯 Objetivo
 
-```
-Fuentes (API + scraping)
-   → HDFS (originales)
-   → Kafka (VM Ubuntu Server)
-   → MongoDB (Docker)
-   → PyMongo (limpieza)
-   → Aggregation Pipeline (indicadores)
-   → Gráficos + informe
-```
+Responder con datos: ¿puede una persona joven independizarse en Euskadi con su
+salario? ¿Qué municipios ofrecen mejores posibilidades de emancipación y por qué?
+Todo el recorrido (extracción, almacenamiento, análisis, visualización) está en
+Python y se verifica contra la rúbrica del reto.
 
-Ver `plan/PLAN.md` para el plan completo y `plan/arquitectura.md` para el
-esquema detallado.
+## 🏗️ Arquitectura del pipeline
 
-## Contrato de requisitos (OpenSpec)
+```mermaid
+flowchart LR
+    accTitle: Pipeline de datos vivienda Euskadi
+    accDescr: Flujo de fuentes a resultados: extraccion, HDFS, Kafka, MongoDB, limpieza, agregacion, visualizacion.
 
-La implementación está atada a la rúbrica del reto. El contrato vive en
-`openspec/` y **manda sobre el código**:
+    src["Fuentes<br/>API + scraping"]
+    hdfs["HDFS<br/>originales y procesados"]
+    kafka["Kafka<br/>VM Ubuntu, KRaft"]
+    mongo["MongoDB<br/>Docker"]
+    clean["PyMongo<br/>limpieza"]
+    agg["Aggregation Pipeline<br/>indicadores"]
+    viz["Graficos + informe"]
 
-| Fichero | Contenido |
-|---|---|
-| `openspec/specs/contrato-reto/spec.md` | **La verdad.** Rúbrica transcrita literal + 18 requisitos + prohibiciones |
-| `openspec/specs/extraccion-datos/spec.md` | Extracción API y scraping, formato, salarios |
-| `openspec/specs/almacenamiento-y-streaming/spec.md` | HDFS, Kafka, integración |
-| `openspec/specs/mongodb-y-analisis/spec.md` | Modelado, PyMongo, consultas, agregación, limpieza |
-| `openspec/specs/presentacion-de-resultados/spec.md` | Gráficos, datos, presentación, interpretación |
-| `openspec/config.yaml` | Contexto, reglas y la regla `contract_first` |
-| `openspec/project.md` | Objetivo, stack, layout y fuentes |
+    src --> hdfs --> kafka --> mongo --> clean --> agg --> viz
 
-**Regla de oro:** antes de escribir código, se lee
-`openspec/specs/contrato-reto/spec.md`. Un criterio solo se marca como
-cubierto cuando se puede verificar.
-
-## Estructura
-
-```
-BigDataReto/
-├── openspec/specs/{capability}/spec.md   contrato por dominio
-├── tests/test_contrato.py        verificación del contrato
-├── config/fuentes.yaml                   URLs, IDs de tablas y cobertura verificada
-├── extract/                 Scripts de extracción (API + scraping)
-├── storage/                 HDFS, Kafka, MongoDB (PyMongo)
-├── transform/               Limpieza y enriquecimiento
-├── analysis/                Aggregation Pipeline e indicadores
-├── visualization/           Gráficos
-├── notebooks/               Informe de resultados
-├── data/raw/                Datos originales (generados)
-├── plan/                    Planificación
-└── docs/                    Documentación
+    classDef done fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef todo fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
+    class src done
+    class hdfs,kafka,mongo,clean,agg,viz todo
 ```
 
-## Puesta en marcha
+> 🟢 Extracción completada. 🟡 Infraestructura y análisis pendientes.
 
-### 1. Entorno Python (venv dedicado)
+## 📊 Estado del proyecto
+
+| Fase | Entrega | Estado |
+|---|---|---|
+| 0 | Entorno + contrato + tests | ✅ Hecha |
+| 1 | Extracción (scripts 01–06) | ✅ Hecha |
+| 1b | Salarios INE EPA (script 07) | ✅ Cubierto (datos reales) |
+| 1c | Pisos.com (script 08) | ⚠️ Script listo, datos no generados |
+| 1d | Idealista/RealtyAPI (script 09) | ✅ Opcional, 139 anuncios |
+| 2 | Docker Compose HDFS + MongoDB | ⬜ Pendiente |
+| 3 | Subida HDFS + recuperación | ⬜ Pendiente |
+| 4 | Modelado + operaciones PyMongo | ⬜ Pendiente |
+| 5 | Limpieza y transformación | ⬜ Pendiente |
+| 6 | Aggregation Pipeline | ⬜ Pendiente |
+| 7 | Kafka productor/consumidor | ⬜ Pendiente |
+| 8 | Gráficos desde PyMongo | ⬜ Pendiente |
+| 9 | Informe, arquitectura y demo | ⬜ Pendiente |
+
+Tests del contrato: `11 passed, 1 xfail` (salarios, ya cubierto por datos reales).
+
+## 📁 Estructura
+
+```
+bigdata-vivienda-euskadi/
+├── openspec/          Contrato y specs (la verdad)
+├── tests/             Verificación del contrato
+├── config/            fuentes.yaml (URLs, IDs, cobertura)
+├── extract/           Extracción API + scraping (01–09)
+├── storage/           HDFS, Kafka, MongoDB (pendiente)
+├── transform/         Limpieza y enriquecimiento (pendiente)
+├── analysis/          Aggregation Pipeline (pendiente)
+├── visualization/     Gráficos (pendiente)
+├── notebooks/         Informe de resultados (pendiente)
+├── data/raw/          Datos generados (ignorados por git)
+└── plan/              Planificación
+```
+
+## 🚀 Puesta en marcha
+
+### 1. Entorno Python
 
 ```bash
 uv venv --python 3.12 .venv
 uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 ```
 
-### 2. Extracción de datos (no necesita Docker ni la VM)
+### 2. Extracción (no necesita Docker ni VM)
 
 ```bash
 .venv/Scripts/python.exe extract/01_eustat_api.py        # Eustat bankupx
@@ -73,25 +91,20 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 .venv/Scripts/python.exe extract/04_b5m_geo.py
 .venv/Scripts/python.exe extract/05_fotocasa_scraper.py  # Scraping
 .venv/Scripts/python.exe extract/06_ine_api.py           # INE wstempus
+.venv/Scripts/python.exe extract/07_ine_salarios.py      # Salarios EPA
+.venv/Scripts/python.exe extract/08_pisos_scraper.py     # Pisos.com (opcional)
+.venv/Scripts/python.exe extract/09_realtyapi.py         # Idealista vía RealtyAPI (opcional)
 ```
 
 Salida en `data/raw/`.
 
-### 2b. Verificar contra el contrato
+### 3. Verificar contra el contrato
 
 ```bash
 .venv/Scripts/python.exe -m pytest tests -q
 ```
 
-11 tests comprueban los escenarios del contrato que son verificables con
-datos reales. Un `xfail` significa que un criterio sigue abierto.
-
-### 3. Infraestructura (pendiente de completar)
-
-- **Docker Compose** en Windows: HDFS + MongoDB
-- **Kafka** en la VM Ubuntu Server (modo KRaft, puerto 9092)
-
-### 4. Carga y análisis (pendiente)
+### 4. Infraestructura y análisis (pendiente)
 
 ```bash
 .venv/Scripts/python.exe storage/hdfs_utils.py
@@ -100,7 +113,26 @@ datos reales. Un `xfail` significa que un criterio sigue abierto.
 .venv/Scripts/python.exe analysis/pipeline_agregaciones.py
 ```
 
-## Fuentes de datos
+## 📜 Contrato de requisitos (OpenSpec)
+
+La implementación está atada a la rúbrica del reto. El contrato vive en
+`openspec/` y **manda sobre el código**:
+
+| Fichero | Contenido |
+|---|---|
+| `openspec/specs/contrato-reto/spec.md` | **La verdad.** Rúbrica literal + 18 requisitos + prohibiciones |
+| `openspec/specs/extraccion-datos/spec.md` | Extracción API y scraping, formato, salarios |
+| `openspec/specs/almacenamiento-y-streaming/spec.md` | HDFS, Kafka, integración |
+| `openspec/specs/mongodb-y-analisis/spec.md` | Modelado, PyMongo, consultas, agregación, limpieza |
+| `openspec/specs/presentacion-de-resultados/spec.md` | Gráficos, datos, presentación, interpretación |
+| `openspec/config.yaml` | Contexto, reglas y `contract_first` |
+| `openspec/project.md` | Objetivo, stack, layout y fuentes |
+
+**Regla de oro:** antes de escribir código se lee
+`openspec/specs/contrato-reto/spec.md`. Un criterio solo se marca como cubierto
+cuando se puede verificar.
+
+## 🗂️ Fuentes de datos
 
 Todas verificadas en octubre de 2026.
 
@@ -113,13 +145,13 @@ Todas verificadas en octubre de 2026.
 | b5m Gipuzkoa | API JSON | No | Límites municipales, distancias |
 | Catastro INSPIRE | WFS/WMS | No | Parcelas, antigüedad (opcional) |
 | Fotocasa | Scraping | No | ~480 anuncios reales de alquiler |
-| Idealista Search API | API oficial | **Sí** (aprobación) | Opcional, si se concede |
+| Pisos.com | Scraping | No | Segunda fuente de anuncios (script 08) |
+| Idealista (RealtyAPI) | API | Sí (key) | Opcional, 139 anuncios generados |
 
-> **Nota:** la API del INE no publica el alquiler por municipio en
-> Euskadi (régimen foral): el valor viene a `null`. Para el alquiler se
-> usa Eustat, que sí lo publica.
+> **Nota:** la API del INE no publica el alquiler por municipio en Euskadi
+> (régimen foral): el valor viene a `null`. Para el alquiler se usa Eustat.
 
-## Datos generados (última ejecución)
+## 📦 Datos generados (última ejecución)
 
 | Fichero | Contenido |
 |---|---|
@@ -130,20 +162,15 @@ Todas verificadas en octubre de 2026.
 | `eustat_tenencia.json/csv` | 4.416 filas |
 | `alquiler_municipal.csv` | 253 registros, 159 municipios |
 | `anuncios_fotocasa.json/csv` | 480 anuncios únicos, 57 municipios |
+| `anuncios_realtyapi.json/csv` | 139 anuncios (opcional) |
+| `ine_salarios_edad.json/csv` | 198 series (EPA, nacional) |
 | `emancipacion_juventud.csv` | 867 filas |
 | `ine_*.json/csv` | 5 tablas (69301, 69302, 69303, 69323, 69330) |
 | `municipios_gipuzkoa.geojson` | 126 polígonos municipales |
 | `distancias_municipios.json` | 180.488 pares de distancias |
 
-## Estado del proyecto
+## ✅ Verificación
 
-| Fase | Estado |
-|---|---|
-| 0. Entorno y VM | ⚠️ venv, Docker Desktop y contrato OK; VM pendiente |
-| 1. Extracción | ✅ Hecha (scripts 01–06, 127 MB en `data/raw/`) |
-| 1b. Salarios (INE EPA) | ⬜ Abierto — el contrato lo marca como pendiente |
-| 2. Kafka | ⬜ |
-| 3. MongoDB modelado | ⬜ |
-| 4. Limpieza | ⬜ |
-| 5. Aggregation Pipeline | ⬜ |
-| 6. Visualización e informe | ⬜ |
+- Contrato: `openspec/specs/contrato-reto/spec.md` (rúbrica transcrita + 18 requisitos)
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q`
+- Prohibiciones verificadas: todo en Python, sin credenciales rastreadas, criterios transcritos
