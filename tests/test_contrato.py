@@ -83,19 +83,13 @@ def test_complementarios_renta_municipal():
     assert any("ámbitos territoriales__etiqueta" in f for f in filas[:50])
 
 
-@pytest.mark.xfail(
-    reason="COMPLEMENTARIOS-01 ABIERTO: falta ine_salarios_edad.json "
-           "(INE EPA, salario medio por grupo de edad). Ver P-02.",
-    strict=True,
-)
 def test_complementarios_salarios_no_simulados():
     """COMPLEMENTARIOS-01 / P-02: el salario proviene de una fuente real."""
-    # El contrato exige salario real. Mientras no exista el fichero, este test
-    # queda marcado como pendiente intencionado (xfail) y la suite sigue verde.
     ruta = RAW / "ine_salarios_edad.json"
     assert ruta.exists(), "falta el extractor de salarios del INE"
     datos = json.loads(ruta.read_text(encoding="utf-8"))
-    assert datos["registros"], "el fichero de salarios está vacío"
+    assert datos["metadata"]["n_registros"] > 0, "el fichero de salarios está vacío"
+    assert len(datos["datos"]["registros"]) > 0, "sin registros de salarios"
 
 
 # ─── FORMATO-01: JSON o CSV ───────────────────────────────────────
@@ -188,6 +182,110 @@ def test_p08_contrato_cubre_los_criterios():
         "INTERPRETACION-01",
     ):
         assert requisito in contrato, f"requisito sin asignar: {requisito}"
+
+
+# ─── Entity Resolution: capitales cruzan al 100% por codigo_ine ─────
+
+def test_entity_resolution_tres_capitales():
+    """MODELO-01: Donostia, Vitoria-Gasteiz y Bilbao cruzan por codigo_ine."""
+    dim_path = RAW / "dim_municipios.json"
+    if not dim_path.exists():
+        pytest.skip("dim_municipios.json no existe (ejecuta transform/dim_municipios.py)")
+    dim = json.loads(dim_path.read_text(encoding="utf-8"))
+    registros = dim["datos"] if isinstance(dim, dict) else dim
+    por_canonico = {r["nombre_canonico"]: r for r in registros}
+
+    capitales = {
+        "Donostia / San Sebastián": "Donostia - San Sebastián",
+        "Vitoria-Gasteiz": "Vitoria - Gasteiz",
+        "Bilbao": "Bilbao",
+    }
+    for canonico, variante_fotocasa in capitales.items():
+        assert canonico in por_canonico, f"falta {canonico} en dim_municipios"
+        r = por_canonico[canonico]
+        assert r["codigo_ine"], f"sin codigo_ine para {canonico}"
+        assert variante_fotocasa in r["variantes"], (
+            f"variante Fotocasa '{variante_fotocasa}' no mapeada a {canonico}"
+        )
+
+    # Alquiler municipal contiene las 3 capitales
+    ruta_alq = RAW / "alquiler_municipal.csv"
+    if ruta_alq.exists():
+        import csv as _csv
+
+        with ruta_alq.open(encoding="utf-8-sig") as fh:
+            munis_alq = {row["municipio"] for row in _csv.DictReader(fh)}
+        for canonico in capitales:
+            assert canonico in munis_alq, f"{canonico} no está en alquiler_municipal.csv"
+
+    # Eustat renta contiene las 3 capitales (por ambito etiqueta)
+
+
+# ─── P0: INE Atlas Renta ────────────────────────────────────────────
+
+def test_ine_atlas_renta_existe():
+    """P0: el fichero de renta del INE Atlas existe."""
+    ruta = RAW / "ine_atlas_renta.json"
+    assert ruta.exists(), "falta ine_atlas_renta.json (ejecuta extract/ine_atlas_renta.py)"
+
+
+def test_ine_atlas_renta_campos():
+    """P0: cada registro tiene renta_atlas, anio_renta, renta_origen."""
+    ruta = RAW / "ine_atlas_renta.json"
+    if not ruta.exists():
+        pytest.skip("ine_atlas_renta.json no existe")
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    assert len(registros) > 0, "sin registros en Atlas"
+    for r in registros[:5]:
+        assert "renta_atlas" in r, "falta renta_atlas"
+        assert "anio_renta" in r, "falta anio_renta"
+        assert "renta_origen" in r, "falta renta_origen"
+        assert r["renta_origen"] in ("Eustat", "INE_Atlas"), "origen invalido"
+
+
+def test_renta_municipal_completa_cobertura():
+    """P0: renta_municipal_completa cubre 252 municipios."""
+    ruta = RAW / "renta_municipal_completa.json"
+    if not ruta.exists():
+        pytest.skip("renta_municipal_completa.json no existe")
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    assert len(registros) == 252, f"esperados 252, hay {len(registros)}"
+    # Todos tienen renta_origen
+    sin_origen = [r for r in registros if not r.get("renta_origen")]
+    assert len(sin_origen) == 0, f"{len(sin_origen)} municipios sin renta_origen"
+
+
+# ─── P1a: Filtrado de outliers ──────────────────────────────────────
+
+def test_filtrar_outliers_marca_extremos():
+    """P1a: los outliers extremos se marcan como outlier=True."""
+    ruta = RAW.parent / "procesado" / "anuncios_fotocasa_filtrado.json"
+    if not ruta.exists():
+        pytest.skip("anuncios_fotocasa_filtrado.json no existe (ejecuta transform/filtrar_outliers.py)")
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    outliers = [r for r in registros if r.get("outlier")]
+    assert len(outliers) > 0, "no se marcaron outliers"
+    for o in outliers:
+        assert o.get("motivo_outlier"), "outlier sin motivo"
+
+
+def test_filtrar_outliers_validos():
+    """P1a: los anuncios validos no se marcan como outlier."""
+    ruta = RAW.parent / "procesado" / "anuncios_pisos_filtrado.json"
+    if not ruta.exists():
+        pytest.skip("anuncios_pisos_filtrado.json no existe")
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    validos = [r for r in registros if not r.get("outlier")]
+    assert len(validos) > 0, "todos marcados como outlier"
+    # Verificar que los validos tienen precio_m2 razonable
+    for v in validos[:10]:
+        pm2 = v.get("precio_m2_calculado") or v.get("precio_m2")
+        if pm2 is not None:
+            assert 3 <= pm2 <= 50, f"valido con precio_m2 fuera de rango: {pm2}"
 
 
 if __name__ == "__main__":

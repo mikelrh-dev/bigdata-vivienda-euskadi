@@ -82,3 +82,106 @@ fotocasa:
 idealista:
   api_oficial: https://developers.idealista.com/access-request
   nota: Aprobación manual. Opcional; solo si se concede la API key.
+
+# ─────────────────────────────────────────────────────────────
+# Cartografía municipal — Euskadi completo (Álava+Bizkaia+Gipuzkoa)
+# ─────────────────────────────────────────────────────────────
+cartografia_euskadi:
+  fuente: "Open Data Euskadi - Limites Administrativos del Pais Vasco"
+  url_municipios: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/MUNICIPIOS_5000_ETRS89.zip
+  url_comarcas: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/COMARCAS_5000_ETRS89.zip
+  url_territorios: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/TERRITORIOS_5000_ETRS89.zip
+  url_areas_funcionales: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/AREAS_FUNCIONALES_5000_ETRS89.zip
+  formato: "SHP (ETRS89, UTM 30)"
+  cobertura: "CAPV completa (251 municipios: Alava 51 + Bizkaia 112 + Gipuzkoa 88)"
+  granularidad: "Poligono municipal (mapa maestro)"
+  fecha_actualizacion: "07/05/2025"
+  alternativa_ign_cnig: "https://centrodedescargas.cnig.es/CentroDescargas/limites-municipales-provinciales-autonomicos"
+  alternativa_gisco_lau: "https://gisco-services.ec.europa.eu/distribution/v2/lau/download/"
+  nota: >
+    Reemplaza/complementa a b5m (solo Gipuzkoa, 126 municipios). Convertir
+    SHP a GeoJSON con geopandas y unificar por codigo INE (CODMUNIINE).
+
+secciones_censales_ine:
+  fuente: "INE - Cartografia secciones censales"
+  url_descarga: https://www.ine.es/dyngs/DAB/index.htm?cid=1389
+  url_api_ogc: https://www.ine.es/geoserver/ogc/features/v1/collections
+  formato: "SHP (UTM 30) / OGC API Features"
+  cobertura: "Toda Espana (incl. Euskadi)"
+  granularidad: "Seccion censal / distrito"
+  fecha: "Series desde 2007 hasta actualidad (Censo Electoral y Padron)"
+  nota: "Granularidad intra-municipal; opcional para el reto."
+
+catastro_inspire:
+  dg_catastro:
+    url: https://www.catastro.hacienda.gob.es/webinspire/index.html
+    formato: "WFS / GML / ATOM"
+    cobertura: "Espana excepto Pais Vasco y Navarra"
+    granularidad: "Parcela catastral / edificio"
+  gipuzkoa:
+    url_wfs_parcelas: https://b5m.gipuzkoa.eus/inspire/wfs/gipuzkoa_wfs_cp
+    url_wfs_unidades: https://b5m.gipuzkoa.eus/inspire/wfs/gipuzkoa_wfs_au
+    url_wfs_edificios: https://b5m.gipuzkoa.eus/inspire/wfs/gipuzkoa_wfs_bu
+  bizkaia:
+    url_wfs: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/Catastro/Annex1/MapServer/exts/InspireFeatureDownload/service?REQUEST=GetCapabilities&SERVICE=WFS&VERSION=2.0.0"
+    metadatos: https://apli.bizkaia.eus/apps/Danok/INSPIRE/inspireBizkaiaParcelsMetadata.xml
+  alava:
+    nota: "No se localizo servicio INSPIRE propio en IDEE para Alava. Consultar Diputacion Foral de Alava. Alternativa: CNIG/IGN o geo.euskadi (limites)."
+  nota: "Opcional para el reto (antiguedad de vivienda)."
+
+empleo_actividad_juvenil:
+  ine_69303:
+    url: https://www.ine.es/jaxiT3/Tabla.htm?t=69303
+    url_csv: https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/69303.csv
+    descripcion: "Aspectos economicos (Indicadores Urbanos Ciudades)"
+    indicadores: ["tasa de desempleo", "tasa de actividad", "proporcion ocupados 20-64", "proporcion empleo en servicios/industria", "renta neta media"]
+    cobertura: "113 municipios seleccionados (incl. Bilbao, Donostia/San Sebastian, Vitoria-Gasteiz)"
+    granularidad: Municipio
+    periodo: "2010-2025"
+  ine_tasas_ccaa_edad:
+    url: "https://www.ine.es/jaxi/Tabla.htm?path=/t22/e308/pae/px/l0/&file=02007.px"
+    descripcion: "Tasas de actividad, empleo y paro por CC.AA., sexo y grupos de edad"
+    cobertura: "CC.AA. (incl. Pais Vasco)"
+    granularidad: "CC.AA. x sexo x edad (16-19, 20-24, 25-54, 55+)"
+    periodo: "Trimestral (EPA)"
+  eustat_actividad_municipal:
+    url_banco: https://es.eustat.eus/banku/id_050407/indexlistaopera.html
+    url_tablas: https://es.eustat.eus/estadisticas/tema_131/opt_4/tipo_1/temas.html
+    descripcion: "Censo de poblacion y viviendas. Actividad (anual, municipal)"
+    cobertura: "CAPV (algunas tablas solo municipios >40.000 hab.)"
+    granularidad: "Municipio x relacion con actividad x edad x sexo x sector"
+    periodo: "2010-2025"
+  lanbide_paro_municipal:
+    url: "https://www.lanbide.euskadi.eus/estadistica/principales-colectivos-de-la-demanda-por-municipio-y-ramas-de-actividad-durante-el-2026/weblan00-estadisticas/es/"
+    descripcion: "Paro registrado por municipio y ramas de actividad"
+    cobertura: CAPV
+    granularidad: "Municipio x rama de actividad x colectivo"
+    periodo: "Mensual, 2026"
+  nota: >
+    INE 69303 solo cubre 113 ciudades (incluye las 3 capitales vascas). Para
+    todos los municipios usar Eustat (actividad municipal) + LANBIDE (paro
+    registrado). Eustat emancipacion juvenil ya en uso (867 filas, hasta 2024).
+
+distancias_municipios:
+  b5m_gipuzkoa:
+    url_web: https://b5m.gipuzkoa.eus/web5000/es/distancia-entre-municipios
+    url_csv: https://b5m.gipuzkoa.eus/datasets/GFA_DSET_DISTM_CSV.zip
+    cobertura: "Solo Gipuzkoa (126 municipios) + 4 territorios limitrofes (Alava, Bizkaia, Navarra, Pirineos Atlanticos)"
+    granularidad: "Par de municipios (distancia por carretera, OSRM/OpenStreetMap)"
+    fecha_calculo: "08/08/2024"
+    num_distancias: 180488
+  alava_bizkaia:
+    estado: "NO EXISTE fuente abierta equivalente para Alava ni Bizkaia"
+    opciones:
+      - "Calcular matriz con OSRM (router OpenStreetMap) para los 251 municipios de Euskadi (reproducible)"
+      - "Aproximar con centroides de poligonos municipales (geo.euskadi SHP) y distancia Haversine (menos preciso, sin red viaria)"
+      - "Usar indicador Euskadi 'distancia a capital del Territorio Historico' para accesibilidad basica"
+  nota: >
+    Para completar cobertura geografica del analisis, generar distancias para
+    Alava y Bizkaia con OSRM o aproximacion por centroides. No hay dataset
+    abierto equivalente al de b5m para esos territorios.
+
+ofertas_empleo:
+  estado: "NO hay dataset publico descargable de ofertas de empleo por municipio en Euskadi"
+  lanbide: "https://www.lanbide.euskadi.eus (publica estadisticas de demanda/paro, no ofertas abiertas descargables)"
+  nota: "Para ofertas reales: scraping o API no publica."

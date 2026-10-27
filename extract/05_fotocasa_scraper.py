@@ -149,14 +149,22 @@ def scrapear_provincia(
     nombre: str,
     ruta: str,
     max_paginas: int,
+    reusar_html: bool = False,
 ) -> list[dict]:
     anuncios: list[dict] = []
     pagina = 1
 
     while pagina <= max_paginas:
         url = f"{BASE}/{ruta}" if pagina == 1 else f"{BASE}/{ruta}/{pagina}"
+        destino_html = RAW_DIR / "html_fotocasa" / f"{nombre}_pagina_{pagina}.html"
         try:
-            html = cliente.get(url).text
+            if reusar_html and destino_html.exists():
+                html = destino_html.read_text(encoding="utf-8")
+                log.info("%s página %d: HTML reutilizado desde disco", nombre, pagina)
+            else:
+                html = cliente.get(url).text
+                destino_html.parent.mkdir(parents=True, exist_ok=True)
+                destino_html.write_text(html, encoding="utf-8")
         except RuntimeError as exc:
             log.error("%s página %d: %s", nombre, pagina, exc)
             break
@@ -196,6 +204,11 @@ def main() -> int:
         default=list(PROVINCIAS),
     )
     parser.add_argument("--max-paginas", type=int, default=20)
+    parser.add_argument(
+        "--reusar-html",
+        action="store_true",
+        help="Reparsear desde el HTML crudo guardado en data/raw/html_fotocasa/",
+    )
     args = parser.parse_args()
 
     cliente = Cliente("fotocasa", delay=2.0, reintentos=4)
@@ -204,7 +217,8 @@ def main() -> int:
     for nombre in args.provincias:
         log.info("=== %s ===", nombre)
         lote = scrapear_provincia(
-            cliente, nombre, PROVINCIAS[nombre], args.max_paginas
+            cliente, nombre, PROVINCIAS[nombre], args.max_paginas,
+            reusar_html=args.reusar_html,
         )
         for anuncio in lote:
             anuncio["provincia_origen"] = nombre
