@@ -52,28 +52,25 @@ def _limpiar(texto: str) -> str:
 
 
 def _parsear_anuncios(html: str) -> list[dict]:
-    """Extrae las tarjetas `ad-preview` de una página."""
-    anuncios = []
-    # Cada anuncio empieza en un <a ... class="... ad-preview...">
-    for bloque in re.split(r'(?=<a[^>]*class="[^"]*ad-preview)', html)[1:]:
-        segmento = bloque[:4000]
+    """Extrae las tarjetas `ad-preview` de una pagina.
 
-        precio_bruto = re.search(
-            r'<span class="ad-preview__price">(.*?)</span>', segmento, re.S
-        )
-        titulo = re.search(
-            r'class="ad-preview__title"[^>]*>(.*?)</a>', segmento, re.S
-        )
-        subtitulo = re.search(
-            r'ad-preview__subtitle">(.*?)</p>', segmento, re.S
-        )
+    El precio esta en un contenedor previo al titulo, por lo que se itera
+    sobre cada span de precio y se extrae el resto desde una ventana de
+    ~1500 caracteres a continuacion.
+    """
+    anuncios = []
+    for pm in re.finditer(r'<span class="ad-preview__price">(.*?)</span>', html, re.S):
+        segmento = html[pm.start():pm.start() + 1500]
+
+        titulo = re.search(r'class="ad-preview__title"[^>]*>(.*?)</a>', segmento, re.S)
+        subtitulo = re.search(r'ad-preview__subtitle">(.*?)</p>', segmento, re.S)
         enlace = re.search(r'href="(/alquilar/[^"]+)"', segmento)
         tipo = re.search(r'ad-preview__type[^>]*>(.*?)</', segmento, re.S)
+        superficie = re.search(r'ad-preview__char[^>]*>(\d+)\s*m', segmento, re.S | re.I)
+        habitaciones = re.search(r'ad-preview__char[^>]*>(\d+)\s*hab', segmento, re.S | re.I)
+        banos = re.search(r'ad-preview__char[^>]*>(\d+)\s*ba', segmento, re.S | re.I)
 
-        if not precio_bruto:
-            continue
-
-        precio_texto = _limpiar(precio_bruto.group(1)).replace("/mes", "").strip()
+        precio_texto = _limpiar(pm.group(1)).replace("/mes", "").strip()
         precio = None
         match = re.search(r"(\d[\d\.]*)", precio_texto.replace(".", ""))
         if match:
@@ -82,13 +79,22 @@ def _parsear_anuncios(html: str) -> list[dict]:
             except ValueError:
                 precio = None
 
+        if not titulo and not enlace:
+            continue
+
+        id_anuncio = enlace.group(1).rstrip("/").split("/")[-1] if enlace else None
+
         anuncios.append(
             {
+                "id_anuncio": id_anuncio,
                 "precio_eur": precio,
                 "precio_texto": precio_texto,
                 "titulo": _limpiar(titulo.group(1)) if titulo else None,
                 "subtitulo": _limpiar(subtitulo.group(1)) if subtitulo else None,
                 "tipo_inmueble": _limpiar(tipo.group(1)) if tipo else None,
+                "superficie_m2": int(superficie.group(1)) if superficie else None,
+                "habitaciones": int(habitaciones.group(1)) if habitaciones else None,
+                "banos": int(banos.group(1)) if banos else None,
                 "url_detalle": (
                     "https://www.pisos.com" + enlace.group(1)
                     if enlace
@@ -224,8 +230,9 @@ def main() -> int:
         )
 
         columnas = [
-            "precio_eur", "municipio_busqueda", "titulo", "subtitulo",
-            "tipo_inmueble", "url_detalle", "total_resultados",
+            "id_anuncio", "precio_eur", "municipio_busqueda", "titulo", "subtitulo",
+            "tipo_inmueble", "superficie_m2", "habitaciones", "banos",
+            "url_detalle", "total_resultados",
         ]
         destino_csv = RAW_DIR / "anuncios_pisos.csv"
         with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
