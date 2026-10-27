@@ -198,6 +198,7 @@ def main() -> int:
                 "anio_renta": e.get("anio"),
                 "renta_origen": "Eustat",
                 "renta_eustat": e.get("renta_eustat"),
+                "anio_fuente": 2024,
             })
         elif a:
             completa.append({
@@ -207,6 +208,7 @@ def main() -> int:
                 "anio_renta": a["anio_renta"],
                 "renta_origen": "INE_Atlas",
                 "renta_eustat": None,
+                "anio_fuente": 2022,
             })
         else:
             completa.append({
@@ -216,6 +218,7 @@ def main() -> int:
                 "anio_renta": None,
                 "renta_origen": None,
                 "renta_eustat": None,
+                "anio_fuente": None,
             })
 
     guardar_json(
@@ -231,7 +234,7 @@ def main() -> int:
         },
     )
     csv_path2 = RAW_DIR / "renta_municipal_completa.csv"
-    columnas2 = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen", "renta_eustat"]
+    columnas2 = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen", "renta_eustat", "anio_fuente"]
     with csv_path2.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=columnas2)
         w.writeheader()

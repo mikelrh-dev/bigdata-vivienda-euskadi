@@ -163,6 +163,26 @@ def main() -> int:
         else:
             m["dist_centroide_comarca_km"] = None
 
+    # Filtrar solo municipios canónicos (dim_municipios)
+    dim_path = RAW_DIR / "dim_municipios.json"
+    dim_codigos = set()
+    if dim_path.exists():
+        dim = json.loads(dim_path.read_text(encoding="utf-8"))
+        regs = dim.get("datos", dim) if isinstance(dim, dict) else dim
+        dim_codigos = {r["codigo_ine"] for r in regs}
+    if dim_codigos:
+        municipios = [m for m in municipios if m["codigo_ine"] in dim_codigos]
+
+    # Deduplicar por codigo_ine (el SHP puede tener múltiples polígonos por municipio)
+    vistos: set = set()
+    unicos: list[dict] = []
+    for m in municipios:
+        if m["codigo_ine"] in vistos:
+            continue
+        vistos.add(m["codigo_ine"])
+        unicos.append(m)
+    municipios = unicos
+
     csv_path = RAW_DIR / "distancias_capitales.csv"
     columnas = ["codigo_ine", "nombre", "territorio", "comarca", "centroide_lat", "centroide_lon",
                 "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km", "capital_mas_cercana",
