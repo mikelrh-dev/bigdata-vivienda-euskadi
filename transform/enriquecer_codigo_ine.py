@@ -27,6 +27,16 @@ PROC = RAW_DIR.parent / "procesado"
 PROC.mkdir(parents=True, exist_ok=True)
 
 
+def _zfill(codigo) -> str | None:
+    """Normaliza codigo_ine a 5 digitos (zfill) sin tocar nulos."""
+    if codigo is None:
+        return None
+    s = str(codigo).strip()
+    if s == "" or s.lower() in ("nan", "none", "null"):
+        return None
+    return s.zfill(5)
+
+
 def _backup(ruta: Path) -> None:
     bak = ruta.with_suffix(ruta.suffix + ".bak_f0")
     if not bak.exists() and ruta.exists():
@@ -41,7 +51,7 @@ def _enriquecer_csv(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bo
     cods, cans = [], []
     for v in df[col_muni].tolist():
         c, n = resolver_municipio(v)
-        cods.append(c)
+        cods.append(_zfill(c))
         cans.append(n)
     df["codigo_ine"] = cods
     df["nombre_canonico"] = cans
@@ -68,7 +78,7 @@ def _enriquecer_json(ruta: Path, col_muni: str, anio: int | None, es_busqueda: b
     for r in regs:
         if "codigo_ine" not in r or not r.get("codigo_ine"):
             c, n = resolver_municipio(r.get(col_muni))
-            r["codigo_ine"] = c
+            r["codigo_ine"] = _zfill(c)
             r["nombre_canonico_resuelto"] = n
         if anio and "anio_fuente" not in r:
             r["anio_fuente"] = anio
@@ -102,7 +112,7 @@ def main() -> int:
         c, n = resolver_municipio(row.get("municipio_busqueda"))
         if not c:
             c, n = resolver_municipio(row.get("municipio"))
-        cods.append(c)
+        cods.append(_zfill(c))
         cans.append(n)
     df["codigo_ine"] = cods
     df["nombre_canonico"] = cans
@@ -121,7 +131,7 @@ def main() -> int:
             c, n = resolver_municipio(r.get("municipio_busqueda")) or (None, None)
             if not c:
                 c, n = resolver_municipio(r.get("municipio"))
-            r["codigo_ine"] = c
+            r["codigo_ine"] = _zfill(c)
             r["nombre_canonico_resuelto"] = n
         r.setdefault("anio_fuente", 2026)
     _backup(rj)
