@@ -68,7 +68,8 @@ def _calcular_precio_m2(anuncio: dict) -> float | None:
 
 
 def _filtrar(anuncios: list[dict]) -> list[dict]:
-    resultado = []
+    # Primera pasada: calcular precio_m2 y tipo_alquiler
+    preparados = []
     for a in anuncios:
         copia = dict(a)
         precio_m2 = _calcular_precio_m2(copia)
@@ -77,23 +78,66 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
         else:
             copia["precio_m2_calculado"] = copia.get("precio_m2")
 
-        # Separar temporal vs larga estancia (Fotocasa)
         if "alquiler_temporal" in copia:
             copia["tipo_alquiler"] = "temporal" if copia.get("alquiler_temporal") else "larga_estancia"
         else:
             copia["tipo_alquiler"] = "desconocido"
+        preparados.append(copia)
 
+    # Limites IQR por segmento
+    grupos: dict[str, list[float]] = {}
+    for c in preparados:
+        pm2 = c.get("precio_m2_calculado")
+        if pm2 is None:
+            continue
+        try:
+            grupos.setdefault(c["tipo_alquiler"], []).append(float(pm2))
+        except (ValueError, TypeError):
+            pass
+
+    limites_iqr: dict[str, tuple[float, float]] = {}
+    for grupo, vals in grupos.items():
+        if len(vals) < 4:
+            continue
+        vals_sorted = sorted(vals)
+        n = len(vals_sorted)
+        q1 = vals_sorted[n // 4]
+        q3 = vals_sorted[(3 * n) // 4]
+        iqr = q3 - q1
+        if iqr <= 0:
+            continue
+        lower = q1 - 1.5 * iqr
+        upper = q3 + 1.5 * iqr
+        limites_iqr[grupo] = (lower, upper)
+
+    resultado = []
+    for copia in preparados:
         outlier = False
         motivos = []
 
         pm2 = copia.get("precio_m2_calculado")
         if pm2 is not None:
-            if pm2 < PRECIO_M2_MIN:
-                outlier = True
-                motivos.append("precio_m2_bajo")
-            if pm2 > PRECIO_M2_MAX:
-                outlier = True
-                motivos.append("precio_m2_alto")
+            try:
+                v = float(pm2)
+                # Guarda exterior (compatibilidad con test_filtrar_outliers_validos)
+                if v < PRECIO_M2_MIN:
+                    outlier = True
+                    motivos.append("precio_m2_bajo")
+                if v > PRECIO_M2_MAX:
+                    outlier = True
+                    motivos.append("precio_m2_alto")
+                # IQR por segmento
+                lim = limites_iqr.get(copia["tipo_alquiler"])
+                if lim is not None:
+                    lo, hi = lim
+                    if v < lo:
+                        outlier = True
+                        motivos.append("precio_m2_iqr_bajo")
+                    if v > hi:
+                        outlier = True
+                        motivos.append("precio_m2_iqr_alto")
+            except (ValueError, TypeError):
+                pass
 
         sup = copia.get("superficie_m2") or copia.get("superficie")
         if sup is not None:
@@ -110,6 +154,11 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
 
         copia["outlier"] = outlier
         copia["motivo_outlier"] = ";".join(motivos) if motivos else ""
+        # guardar limites aplicados (trazabilidad)
+        lim = limites_iqr.get(copia["tipo_alquiler"])
+        if lim is not None:
+            copia["iqr_lower"] = round(lim[0], 2)
+            copia["iqr_upper"] = round(lim[1], 2)
         resultado.append(copia)
     return resultado
 
