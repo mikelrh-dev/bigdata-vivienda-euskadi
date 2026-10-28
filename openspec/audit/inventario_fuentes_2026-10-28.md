@@ -24,15 +24,18 @@
 | Distancias haversine | Transformación | `transform/generar_distancias.py` | 9 | 63.504 pares (252×252). |
 | Filtrado outliers | Transformación | `transform/filtrar_outliers.py` | 8 | Marca 8 outliers. |
 | R1 dirigido (Fotocasa/Pisos) | Scraping dirigido | `transform/f4_pisos_dirigido.py` | 3 | Cobertura marginal (+12 Pisos). |
+| EMAL (fianzas alquiler) | Descarga directa | `extract/10_opendata_bizilagun_etxebide.py` | 8 | 730 registros (2016-2025) por municipio. |
+| Etxebide (vivienda protegida) | Descarga directa | `extract/10_opendata_bizilagun_etxebide.py` | 6 | 5040 registros (indicador 86). |
+| Transporte GTFS (paradas) | Descarga directa | `extract/11_transporte_gtfs_paradas.py` | 5 | 252 municipios, 2635 paradas asignadas. |
+| Fotocasa habitaciones | Scraping | `extract/13_scraping_habitaciones.py` | 7 | 155 anuncios (capitales+cabeceras). |
+| Pisos habitaciones | Scraping | `extract/13_scraping_habitaciones.py` | 6 | 46 anuncios. |
+| Enriquecimiento JSON anidado | Transformación | `extract/12_enriquecer_json_anidado.py` | 7 | 471+230 con ubicacion/equipamiento. |
 
 ## 2. Fuentes NO automatizadas (manuales / pendientes)
 
 | Fuente | Tipo | Automatizada | Automatizable | Importancia | Notas |
 |---|---|---|---|---:|---|
-| EMAL (fianzas alquiler) | Descarga directa | No | Sí (requests + pandas) | 8 | Alquiler oficial por municipio (Open Data). Consultar profesora. |
-| Etxebide VPO | Descarga directa | No | Sí (requests + pandas) | 5 | Vivienda protegida (CSV Open Data). |
 | SEPE/Lanbide paro | Descarga directa | No | Sí (requests + openpyxl) | 7 | Paro juvenil real (XLSX Open Data). |
-| GTFS Euskadi | Descarga directa | No | Sí (requests + zipfile) | 4 | Transporte (ZIP). |
 | Observatorio Vasco Vivienda | Descarga directa (PDF/XLSX) | No | Parcial (XLSX sí, PDF frágil) | 5 | Contexto comarcal (EMAL, ECVI). |
 | OSM Overpass | API | No (bloqueado 406) | No (bloqueado en este entorno) | 3 | Servicios a 500m (contexto). |
 | Fotocasa endpoint interno | API (POST complejo) | No | Parcial (reverse-engineering frágil) | 2 | Marginal vs scraping HTML. |
@@ -53,17 +56,17 @@
 | Tipo | Fuentes automatizadas | Fuentes no automatizadas | Importancia media (auto) |
 |---|---:|---:|---:|
 | API | 7 (Eustat, INE×2, b5m, RealtyAPI, entity, fotocasa_detalle*) | 2 (OSM, Idealista oficial) | 7.4 |
-| Scraping | 3 (Fotocasa, Pisos, Fotocasa detalle) | 0 | 7.0 |
-| Descarga directa | 6 (Eustat alquiler, Euskadi emancipación, b5m, Euskadi geo, INE Atlas, Udalmap) | 5 (EMAL, Etxebide, SEPE, GTFS, Observatorio) | 7.2 |
-| Transformación | 4 (dim, haversine, filtrado, R1) | 0 | 7.5 |
+| Scraping | 5 (Fotocasa, Pisos, Fotocasa detalle, Fotocasa habitaciones, Pisos habitaciones) | 0 | 7.0 |
+| Descarga directa | 9 (Eustat alquiler, Euskadi emancipación, b5m, Euskadi geo, INE Atlas, Udalmap, EMAL, Etxebide, GTFS) | 2 (SEPE, Observatorio) | 7.2 |
+| Transformación | 5 (dim, haversine, filtrado, R1, enriquecimiento JSON) | 0 | 7.5 |
 
 *Fotocasa detalle es scraping, no API.
 
 ## 4. Conclusión
 
-- **Automatizadas:** 18 fuentes (API 7, Scraping 3, Descarga directa 6, Transformación 4).
-- **No automatizadas:** 9 fuentes (5 descarga directa Open Data, 2 API bloqueadas/no viables, 2 API no aplicables).
-- **Mayor importancia:** Eustat API (10), dim_municipios (10), INE Atlas renta (9), Eustat alquiler (9), distancias haversine (9).
+- **Automatizadas:** 24 fuentes (API 7, Scraping 5, Descarga directa 9, Transformación 5).
+- **No automatizadas:** 6 fuentes (SEPE/Lanbide, Observatorio, OSM, Fotocasa endpoint, Idealista oficial, Catastro).
+- **Mayor importancia:** Eustat API (10), dim_municipios (10), INE Atlas renta (9), Eustat alquiler (9), distancias haversine (9), EMAL (8).
 - **Menor importancia:** Catastro (0), Idealista oficial (1), Fotocasa endpoint interno (2), OSM (3).
 
-Las fuentes no automatizadas de mayor valor (EMAL, SEPE/Lanbide) son descarga directa de Open Data; requieren consulta con la profesora. Las API/scraping sin key disponibles (OSM, Fotocasa endpoint) tienen baja importancia (2-3).
+Las fuentes no automatizadas de mayor valor (SEPE/Lanbide) son descarga directa de Open Data; requieren consulta con la profesora. Las API/scraping sin key disponibles (OSM, Fotocasa endpoint) tienen baja importancia (2-3). Nuevos datos cubren gaps de habitaciones, transporte, vivienda protegida y mercado oculto (EMAL).
