@@ -36,6 +36,8 @@ MANIFEST_NAME = "ingestion_manifest.json"
 
 # Extractores auxiliares (no numerados) que también deben ejecutarse.
 AUX_SCRIPTS = [
+    "educacion_centros.py",
+    "salud_centros.py",
     "entity_resolution.py",
     "euskadi_geo.py",
     "fotocasa_detalle.py",
