@@ -1,0 +1,11 @@
+# Parámetros financieros para análisis de emancipación juvenil
+umbral_esfuerzo_recomendado: 0.30
+umbral_esfuerzo_critico: 0.40
+ahorro_entrada_compra_pct: 0.20
+gastos_notaria_pct: 0.10
+aval_joven_pct: 0.05
+tipo_interes_hipoteca_fijo: 0.032
+plazo_anos: 30
+topes_gaztelagun:
+  max_subvencion: 200          # €/mes (ajustar según convocatoria vigente)
+  renta_maxima_admisible: 24000 # €/año (ajustar según convocatoria vigente)
