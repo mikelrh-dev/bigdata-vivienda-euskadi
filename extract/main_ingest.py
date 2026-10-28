@@ -11,6 +11,7 @@ Uso:
 
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import json
@@ -182,7 +183,7 @@ def _ejecutar_extractor(script: Path) -> tuple[int, list[dict]]:
     return rc, registros
 
 
-def main() -> int:
+def _live() -> int:
     scripts = sorted((PROJECT_ROOT / "extract").glob("[0-9][0-9]_*.py"))
     # Añadir extractores auxiliares no numerados.
     for nombre in AUX_SCRIPTS:
@@ -220,6 +221,92 @@ def main() -> int:
         fallos,
     )
     return 0 if fallos == 0 else 1
+
+
+def _cargar_manifest_previo() -> dict[str, str]:
+    manifest_path = RAW_DIR / MANIFEST_NAME
+    previo: dict[str, str] = {}
+    if not manifest_path.exists():
+        return previo
+    try:
+        data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        log.warning("No se pudo leer manifest previo: %s", exc)
+        return previo
+    if not isinstance(data, list):
+        return previo
+    for entrada in data:
+        if not isinstance(entrada, dict):
+            continue
+        rel = None
+        for clave in ("nombre_archivo", "nombre archivo", "archivo", "file",
+                      "filename", "file_name", "nombre"):
+            valor = entrada.get(clave)
+            if isinstance(valor, str):
+                rel = valor
+                break
+        sha = entrada.get("sha256")
+        if isinstance(rel, str) and isinstance(sha, str) and sha:
+            if Path(rel).suffix.lower() in DATA_EXTS:
+                previo[rel] = sha
+    return previo
+
+
+def _replay_raw() -> int:
+    log.info("Modo replay-raw: validando hashes SHA-256 de archivos existentes")
+    previo = _cargar_manifest_previo()
+    snap = _snapshot()
+
+    todos: list[dict] = []
+    fallos = 0
+
+    for rel, sha_prev in previo.items():
+        if rel not in snap:
+            fallos += 1
+            log.warning("Fichero ausente en replay-raw: %s", rel)
+
+    for rel, (mtime, size, sha) in snap.items():
+        status = "OK"
+        if rel in previo and previo[rel] != sha:
+            status = "FAIL"
+            fallos += 1
+            log.error("Hash no coincide: %s", rel)
+        path = RAW_DIR / rel
+        todos.append(_registro(rel, sha, _n_registros(path), status, "replay-raw"))
+
+    manifest_path = RAW_DIR / MANIFEST_NAME
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(
+        json.dumps(todos, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    log.info(
+        "Manifest final (replay-raw): %s (%d entradas, %d incidencias)",
+        manifest_path,
+        len(todos),
+        fallos,
+    )
+    return 0 if fallos == 0 else 1
+
+
+def main(mode: str | None = None) -> int:
+    if mode is None:
+        parser = argparse.ArgumentParser(
+            description="Orquestador de extracción (live/replay-raw)."
+        )
+        parser.add_argument(
+            "--mode",
+            choices=("live", "replay-raw"),
+            default="live",
+            help="Modo de ejecución (por defecto: live).",
+        )
+        args, _ = parser.parse_known_args()
+        mode = args.mode
+
+    if mode == "replay-raw":
+        return _replay_raw()
+    return _live()
 
 
 if __name__ == "__main__":
