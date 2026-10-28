@@ -141,6 +141,28 @@ class Cliente:
         return destino
 
 
+# ─── Lectura CSV segura (fase crudos, sin proxys) ─────────────────
+
+
+def leer_csv_seguro(path, **kwargs):
+    """read_csv con dtype=str + utf-8-sig y codigo_ine zfill(5).
+
+    Reglas plan crudos: todo read_csv con dtype=str y encoding utf-8.
+    Normaliza codigo_ine a 5 dígitos (01/20/48) si existe la columna.
+    """
+    from pathlib import Path as _Path
+
+    import pandas as _pd
+
+    kwargs.setdefault("dtype", str)
+    kwargs.setdefault("encoding", "utf-8-sig")
+    kwargs.setdefault("low_memory", False)
+    df = _pd.read_csv(_Path(path), **kwargs)
+    if "codigo_ine" in df.columns:
+        df["codigo_ine"] = df["codigo_ine"].astype(str).str.strip().str.zfill(5)
+    return df
+
+
 # ─── Guardado de JSON ─────────────────────────────────────────
 def guardar_json(destino: Path, datos, metadata: dict | None = None) -> Path:
     destino.parent.mkdir(parents=True, exist_ok=True)

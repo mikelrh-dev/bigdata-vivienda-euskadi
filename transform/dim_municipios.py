@@ -16,7 +16,7 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: E402
 
 log = get_logger("dim_municipios")
 
@@ -83,17 +83,17 @@ def main() -> int:
     # Variantes de Fotocasa
     import pandas as pd
 
-    fot = pd.read_csv(RAW_DIR / "anuncios_fotocasa.csv")
+    fot = leer_csv_seguro(RAW_DIR / "anuncios_fotocasa.csv")
     fot_mun = sorted(fot["municipio"].dropna().unique())
 
     # Variantes de alquiler municipal
-    alq = pd.read_csv(RAW_DIR / "alquiler_municipal.csv")
+    alq = leer_csv_seguro(RAW_DIR / "alquiler_municipal.csv")
     alq_mun = sorted(alq["municipio"].dropna().unique())
 
     # Variantes de Pisos (si existe)
     pisos_mun = []
     if (RAW_DIR / "anuncios_pisos.csv").exists():
-        pisos = pd.read_csv(RAW_DIR / "anuncios_pisos.csv")
+        pisos = leer_csv_seguro(RAW_DIR / "anuncios_pisos.csv")
         pisos_mun = sorted(pisos["municipio_busqueda"].dropna().unique())
 
     # Construir dim_municipios enriquecido con variantes

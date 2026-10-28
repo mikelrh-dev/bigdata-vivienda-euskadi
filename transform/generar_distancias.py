@@ -21,11 +21,11 @@ def _hav(lat1, lon1, lat2, lon2):
 
 def main() -> int:
     import pandas as pd
-    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str)
+    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
     dim_cods = set(dim["codigo_ine"].str.zfill(5))
 
     # 1. capitales
-    dc = pd.read_csv(RAW_DIR / "distancias_capitales.csv", dtype={"codigo_ine": str})
+    dc = pd.read_csv(RAW_DIR / "distancias_capitales.csv", dtype=str, encoding="utf-8-sig")
     dc["codigo_ine"] = dc["codigo_ine"].str.zfill(5)
     n_raw = len(dc)
     extras = sorted(set(dc["codigo_ine"]) - dim_cods)
