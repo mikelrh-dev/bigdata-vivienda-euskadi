@@ -288,5 +288,101 @@ def test_filtrar_outliers_validos():
             assert 3 <= pm2 <= 50, f"valido con precio_m2 fuera de rango: {pm2}"
 
 
+# ─── Nuevas fuentes (scripts 10-13) ─────────────────────────────────
+
+
+
+# Nuevas fuentes (scripts 10-13)
+
+NUEVAS_FUENTES_JSON = [
+    "emal_fianzas.json",
+    "etxebide_solicitudes.json",
+    "transporte_paradas_municipio.json",
+    "anuncios_fotocasa_enriquecido.json",
+    "anuncios_pisos_enriquecido.json",
+    "anuncios_fotocasa_habitaciones.json",
+    "anuncios_pisos_habitaciones.json",
+]
+
+NUEVAS_FUENTES_CSV = [
+    "emal_fianzas.csv",
+    "etxebide_solicitudes.csv",
+    "transporte_paradas_municipio.csv",
+    "anuncios_fotocasa_habitaciones.csv",
+    "anuncios_pisos_habitaciones.csv",
+]
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_JSON)
+def test_nuevas_fuentes_json_existen(nombre):
+    # Nuevas fuentes (10-13): el JSON generado existe.
+    assert (RAW / nombre).exists(), "falta " + nombre
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_JSON)
+def test_nuevas_fuentes_json_registros(nombre):
+    # Nuevas fuentes (10-13): el JSON tiene registros > 0.
+    datos = _cargar_json(nombre)
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    assert isinstance(registros, list), nombre + ": datos no es lista"
+    assert len(registros) > 0, nombre + ": sin registros"
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_JSON)
+def test_nuevas_fuentes_json_codigo_ine_rango(nombre):
+    # Nuevas fuentes (10-13): codigo_ine en rango valido (01xxx/20xxx/48xxx) cuando aplica.
+    datos = _cargar_json(nombre)
+    registros = datos.get("datos", datos) if isinstance(datos, dict) else datos
+    codigos = [
+        r.get("codigo_ine")
+        for r in registros
+        if isinstance(r, dict) and r.get("codigo_ine") is not None
+    ]
+    if not codigos:
+        pytest.skip(nombre + ": no incluye codigo_ine")
+    for c in codigos:
+        assert isinstance(c, str) and len(c) == 5 and c[:2] in {"01", "20", "48"}, (
+            nombre + ": codigo_ine fuera de rango: " + str(c)
+        )
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_CSV)
+def test_nuevas_fuentes_csv_existen(nombre):
+    # Nuevas fuentes (10-13): el CSV generado existe.
+    assert (RAW / nombre).exists(), "falta " + nombre
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_CSV)
+def test_nuevas_fuentes_csv_registros(nombre):
+    # Nuevas fuentes (10-13): el CSV tiene registros > 0.
+    import csv as _csv
+
+    ruta = RAW / nombre
+    assert ruta.exists(), "falta " + nombre
+    with ruta.open(encoding="utf-8-sig", newline="") as fh:
+        filas = list(_csv.DictReader(fh))
+    assert len(filas) > 0, nombre + ": sin registros"
+
+
+@pytest.mark.parametrize("nombre", NUEVAS_FUENTES_CSV)
+def test_nuevas_fuentes_csv_codigo_ine_rango(nombre):
+    # Nuevas fuentes (10-13): codigo_ine en rango valido en CSV cuando aplica.
+    import csv as _csv
+
+    ruta = RAW / nombre
+    assert ruta.exists(), "falta " + nombre
+    with ruta.open(encoding="utf-8-sig", newline="") as fh:
+        filas = list(_csv.DictReader(fh))
+    if not filas or "codigo_ine" not in (filas[0] or {}):
+        pytest.skip(nombre + ": no incluye codigo_ine")
+    codigos = [f.get("codigo_ine") for f in filas if f.get("codigo_ine")]
+    if not codigos:
+        pytest.skip(nombre + ": sin codigo_ine")
+    for c in codigos:
+        assert len(str(c)) == 5 and str(c)[:2] in {"01", "20", "48"}, (
+            nombre + ": codigo_ine fuera de rango: " + str(c)
+        )
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q", "-v"]))
