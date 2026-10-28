@@ -52,10 +52,13 @@ def _cargar_eustat() -> dict[str, dict]:
     """Devuelve {nombre_normalizado: {codigo_ine, nombre_canonico, territorio}}."""
     import pandas as pd
 
-    df = pd.read_csv(RAW_DIR / "eustat_renta_municipal.csv", low_memory=False)
+    df = pd.read_csv(RAW_DIR / "eustat_renta_municipal.csv", low_memory=False, dtype={"ámbitos territoriales": str})
     muni = df[df["ámbitos territoriales"].astype(str).str.len().isin([4, 5])][
         ["ámbitos territoriales", "ámbitos territoriales__etiqueta"]
     ].drop_duplicates()
+    # Excluir el agregado "C.A. de Euskadi" (codigo 00001, no es municipio) y
+    # cualquier ambito que no pertenezca a una provincia valida (01/20/48).
+    muni = muni[muni["ámbitos territoriales"].astype(str).str[:2].isin(["01", "20", "48"])]
 
     # territorio por codigo de provincia
     prov = {"48": "Bizkaia", "20": "Gipuzkoa", "01": "Araba/Álava"}
@@ -143,6 +146,77 @@ def main() -> int:
     if fot_no_resueltos:
         log.warning("Fotocasa municipios no resueltos: %s", fot_no_resueltos)
 
+    # --- Tipologia de mercado municipal (clasificacion para analisis) ---
+    import pandas as pd
+
+    # Contar anuncios por codigo_ine en las 3 fuentes
+    n_anuncios: dict[str, int] = {}
+    for ruta, col in [
+        (RAW_DIR / "anuncios_fotocasa.csv", "municipio"),
+        (RAW_DIR / "anuncios_pisos.csv", "municipio_busqueda"),
+        (RAW_DIR / "anuncios_realtyapi.csv", "municipio_busqueda"),
+    ]:
+        if not ruta.exists():
+            continue
+        try:
+            dfa = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
+            col_eff = col if col in dfa.columns else ("municipio" if "municipio" in dfa.columns else None)
+            if col_eff is None:
+                continue
+            if "codigo_ine" not in dfa.columns:
+                continue
+            for _, row in dfa.iterrows():
+                c = str(row.get("codigo_ine", "")).strip().zfill(5)
+                if c and c.lower() not in ("nan", "none", ""):
+                    n_anuncios[c] = n_anuncios.get(c, 0) + 1
+        except Exception as exc:  # noqa: BLE001
+            log.warning("No se pudo contar anuncios en %s: %s", ruta.name, exc)
+
+    # Alquiler oficial disponible
+    tiene_oficial: set[str] = set()
+    ruta_alq = RAW_DIR / "alquiler_municipal.csv"
+    if ruta_alq.exists():
+        try:
+            dfa = pd.read_csv(ruta_alq, dtype=str, encoding="utf-8-sig")
+            if "codigo_ine" in dfa.columns:
+                for c in dfa["codigo_ine"].dropna().astype(str):
+                    tiene_oficial.add(c.strip().zfill(5))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("No se pudo leer alquiler_municipal: %s", exc)
+
+    # Fianzas EMAL (ultimo anio con fianzas > 0)
+    tiene_fianzas: set[str] = set()
+    ruta_emal = RAW_DIR / "emal_fianzas.csv"
+    if ruta_emal.exists():
+        try:
+            dfe = pd.read_csv(ruta_emal, dtype=str, encoding="utf-8-sig")
+            if "codigo_ine" in dfe.columns and "fianzas" in dfe.columns:
+                dfe["fianzas_n"] = pd.to_numeric(dfe["fianzas"], errors="coerce")
+                for c in dfe.loc[dfe["fianzas_n"].fillna(0) > 0, "codigo_ine"].dropna().astype(str):
+                    tiene_fianzas.add(c.strip().zfill(5))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("No se pudo leer emal_fianzas: %s", exc)
+
+    for r in registros:
+        c = str(r["codigo_ine"]).strip().zfill(5)
+        na = n_anuncios.get(c, 0)
+        tof = c in tiene_oficial
+        tft = c in tiene_fianzas
+        if na >= 30:
+            tip = "Nivel1_Mercado_Dinamico"
+        elif na >= 1 and (tof or tft):
+            tip = "Nivel2_Mercado_Regulado"
+        else:
+            tip = "Nivel3_Mercado_Rural_Cerrado"
+        r["n_anuncios"] = na
+        r["tiene_alquiler_oficial"] = tof
+        r["tiene_fianzas_emal"] = tft
+        r["tipologia_mercado"] = tip
+
+    log.info("Tipologia mercado: %s",
+             {t: sum(1 for r in registros if r["tipologia_mercado"] == t) for t in
+              ("Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado", "Nivel3_Mercado_Rural_Cerrado")})
+
     # Guardar JSON
     guardar_json(
         RAW_DIR / "dim_municipios.json",
@@ -159,9 +233,12 @@ def main() -> int:
     csv_path = RAW_DIR / "dim_municipios.csv"
     with csv_path.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
-        w.writerow(["codigo_ine", "nombre_canonico", "territorio", "nombre_normalizado", "variantes"])
+        w.writerow(["codigo_ine", "nombre_canonico", "territorio", "nombre_normalizado", "variantes",
+                    "n_anuncios", "tiene_alquiler_oficial", "tiene_fianzas_emal", "tipologia_mercado"])
         for r in registros:
-            w.writerow([r["codigo_ine"], r["nombre_canonico"], r["territorio"], r["nombre_normalizado"], "|".join(r["variantes"])])
+            w.writerow([r["codigo_ine"], r["nombre_canonico"], r["territorio"], r["nombre_normalizado"], "|".join(r["variantes"]),
+                        r.get("n_anuncios", 0), r.get("tiene_alquiler_oficial", False),
+                        r.get("tiene_fianzas_emal", False), r.get("tipologia_mercado", "")])
     log.info("CSV -> %s", csv_path.name)
 
     # Verificación de los 3 municipios clave

@@ -97,16 +97,17 @@ def main() -> int:
             texto = zf.read(nombre).decode("utf-8", errors="replace")
             filas = list(csv.DictReader(io.StringIO(texto), delimiter=","))
             guardar_json(
-                RAW_DIR / "distancias_municipios.json",
-                filas[:5000],  # el fichero completo son ~180k pares
+                RAW_DIR / "distancias_b5m_gipuzkoa.json",
+                filas,
                 metadata={
                     "fuente": "b5m Gipuzkoa (GFA_DSET_DISTM_CSV.zip)",
                     "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                     "n_pares_total": len(filas),
-                    "n_pares_guardados": min(5000, len(filas)),
+                    "n_pares_guardados": len(filas),
+                    "nota": "Distancias viarias reales Gipuzkoa (no truncado).",
                 },
             )
-            log.info("Pares de distancias: %d (guardados 5000)", len(filas))
+            log.info("Pares de distancias: %d (guardados todos)", len(filas))
             resumen["pares_distancias"] = len(filas)
     except Exception as exc:  # noqa: BLE001
         log.error("Distancias: %s", exc)
