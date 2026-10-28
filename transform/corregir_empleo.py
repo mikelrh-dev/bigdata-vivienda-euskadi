@@ -25,7 +25,7 @@ EUROS = ["renta_familiar_eur", "renta_personal_total_eur", "renta_personal_dispo
 
 def main() -> int:
     import pandas as pd
-    df = pd.read_csv(RAW_DIR / "udalmap_empleo.csv", dtype={"codigo_ine": str})
+    df = pd.read_csv(RAW_DIR / "udalmap_empleo.csv", dtype=str, encoding="utf-8-sig")
     df["codigo_ine"] = df["codigo_ine"].str.zfill(5)
     assert len(df) == 252, f"esperados 252, hay {len(df)}"
     for c in PCT_100:

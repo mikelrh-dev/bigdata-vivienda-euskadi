@@ -15,8 +15,8 @@ log = get_logger("f1_renta")
 
 def main() -> int:
     import pandas as pd
-    rc = pd.read_csv(RAW_DIR / "renta_municipal_completa.csv", dtype={"codigo_ine": str})
-    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype={"codigo_ine": str})
+    rc = pd.read_csv(RAW_DIR / "renta_municipal_completa.csv", dtype=str, encoding="utf-8-sig")
+    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
     assert len(rc) == 252, f"esperados 252, hay {len(rc)}"
     assert rc["renta_origen"].notna().all(), "hay municipios sin origen"
     assert set(rc["codigo_ine"].str.zfill(5)) == set(dim["codigo_ine"].str.zfill(5)), "desajuste con dim"
