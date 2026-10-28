@@ -43,7 +43,7 @@ def cargar_dim() -> pd.DataFrame:
         from extract._common import RAW_DIR as _RAW
     except ModuleNotFoundError:
         from _common import RAW_DIR as _RAW  # noqa: E402
-    dim = pd.read_csv(_RAW / "dim_municipios.csv", dtype={"codigo_ine": str})
+    dim = pd.read_csv(_RAW / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
     dim["codigo_ine"] = dim["codigo_ine"].str.zfill(5)
     return dim
 
