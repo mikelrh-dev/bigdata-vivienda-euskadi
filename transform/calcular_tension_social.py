@@ -23,9 +23,11 @@ def _percentil(series: pd.Series) -> pd.Series:
 
 def main() -> int:
     dim = pd.read_csv(PROC / "dim_municipios_enriquecido.csv")
+    dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     etx = pd.read_csv(RAW / "etxebide_solicitudes.csv")
     etx24 = etx[etx["anio"] == 2024][["codigo_ine", "etxebide_solicitudes_por_mil"]].copy()
     etx24 = etx24.rename(columns={"etxebide_solicitudes_por_mil": "etxebide_solicitudes_por_mil_2024"})
+    etx24["codigo_ine"] = etx24["codigo_ine"].astype(str).str.zfill(5)
 
     # imputar nulo con mediana (si hubiera)
     med = etx24["etxebide_solicitudes_por_mil_2024"].median()
@@ -48,6 +50,7 @@ def main() -> int:
 
     dim["tension_categoria"] = dim["tension_demanda_social"].map(cat)
 
+    dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     out_path = PROC / "dim_municipios_enriquecido.csv"
     dim.to_csv(out_path, index=False, encoding="utf-8")
     print(f"OK: {out_path} ({len(dim)} filas, {len(dim.columns)} cols)")
