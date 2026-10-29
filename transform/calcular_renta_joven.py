@@ -57,6 +57,7 @@ SALARIO_OVJ_18_29 = 1381
 
 def main() -> int:
     base = pd.read_csv(PROC / "analisis_variables_base.csv")
+    base["codigo_ine"] = base["codigo_ine"].astype(str).str.zfill(5)
 
     # Proxy fiscal (media simple, sin ponderar por poblacion) - ratio dinamico desde eustat
     ratio_fiscal = _ratio_fiscal_desde_eustat()
@@ -86,6 +87,7 @@ def main() -> int:
 
     # Tarea 2: salario joven ajustado al riesgo local (paro joven Lanbide)
     paro = pd.read_csv(RAW / "lanbide_paro_juvenil.csv")[["codigo_ine", "tasa_paro_joven_pct"]]
+    paro["codigo_ine"] = paro["codigo_ine"].astype(str).str.zfill(5)
     out = out.merge(paro, on="codigo_ine", how="left")
     paro_mean = out["tasa_paro_joven_pct"].mean()
     paro_std = out["tasa_paro_joven_pct"].std(ddof=0)
@@ -102,6 +104,15 @@ def main() -> int:
     out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024) ajustado por paro joven Lanbide"
     out["fuente_renta_fiscal"] = "Eustat renta_edad 2024 (CAE)"
 
+    # T4: brecha de genero en esfuerzo de alquiler
+    ud_sex = pd.read_csv(RAW / "udalmap_indicadores_adicionales.csv")
+    ud_sex["codigo_ine"] = ud_sex["codigo_ine"].astype(str).str.zfill(5)
+    ud_sex = ud_sex[["codigo_ine", "renta_personal_total_hombres_eur", "renta_personal_total_mujeres_eur"]]
+    out = out.merge(ud_sex, on="codigo_ine", how="left")
+    out["esfuerzo_alquiler_hombres_pct"] = (out["alquiler_anual_calc"] / out["renta_personal_total_hombres_eur"]) * 100
+    out["esfuerzo_alquiler_mujeres_pct"] = (out["alquiler_anual_calc"] / out["renta_personal_total_mujeres_eur"]) * 100
+    out["brecha_esfuerzo_genero_pp"] = (out["esfuerzo_alquiler_hombres_pct"] - out["esfuerzo_alquiler_mujeres_pct"]).abs()
+    out["codigo_ine"] = out["codigo_ine"].astype(str).str.zfill(5)
     out_path = PROC / "dim_municipios_enriquecido.csv"
     out.to_csv(out_path, index=False, encoding="utf-8")
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
