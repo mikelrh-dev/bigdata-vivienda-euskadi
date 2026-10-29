@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json, os
 import pandas as pd
+from muni_resolve import resolver_codigo
 
 RAW = os.path.join("data", "raw")
 OUT = os.path.join("data", "procesado")
@@ -37,6 +38,9 @@ def transform_fotocasa(items):
                 coords = {"type": "Point", "coordinates": [float(lon), float(lat)]}
             except (ValueError, TypeError):
                 coords = None
+        ci, canon = resolver_codigo(it.get("municipio"), it.get("codigo_ine"))
+        if ci is None:
+            continue
         recs.append({
             "id_anuncio": it.get("id_anuncio"),
             "portal": "fotocasa",
@@ -45,9 +49,11 @@ def transform_fotocasa(items):
             "superficie_m2": it.get("superficie_m2"),
             "habitaciones": it.get("habitaciones"),
             "banos": it.get("banos"),
+            "titulo": it.get("titulo"),
+            "subtitulo": it.get("subtitulo"),
             "ubicacion": {
-                "codigo_ine": it.get("codigo_ine"),
-                "municipio": it.get("municipio"),
+                "codigo_ine": ci,
+                "municipio": canon,
                 "provincia": it.get("provincia"),
                 "barrio": it.get("barrio"),
                 "distrito": it.get("distrito"),
@@ -65,6 +71,9 @@ def transform_fotocasa(items):
 def transform_pisos(items):
     recs = []
     for it in items:
+        ci, canon = resolver_codigo(it.get("municipio_busqueda") or it.get("nombre_canonico_resuelto"), it.get("codigo_ine"))
+        if ci is None:
+            continue
         recs.append({
             "id_anuncio": it.get("id_anuncio"),
             "portal": "pisos",
@@ -73,9 +82,11 @@ def transform_pisos(items):
             "superficie_m2": it.get("superficie_m2"),
             "habitaciones": it.get("habitaciones"),
             "banos": it.get("banos"),
+            "titulo": it.get("titulo"),
+            "subtitulo": it.get("subtitulo"),
             "ubicacion": {
-                "codigo_ine": it.get("codigo_ine"),
-                "municipio": it.get("municipio_busqueda") or it.get("nombre_canonico_resuelto"),
+                "codigo_ine": ci,
+                "municipio": canon,
                 "provincia": None,
                 "barrio": None,
                 "distrito": None,
@@ -101,6 +112,9 @@ def transform_realtyapi(items):
                 coords = {"type": "Point", "coordinates": [float(lon), float(lat)]}
             except (ValueError, TypeError):
                 coords = None
+        ci, canon = resolver_codigo(it.get("municipio"), it.get("codigo_ine") if "codigo_ine" in it else None)
+        if ci is None:
+            continue
         recs.append({
             "id_anuncio": it.get("id_anuncio"),
             "portal": "realtyapi",
@@ -109,9 +123,11 @@ def transform_realtyapi(items):
             "superficie_m2": it.get("superficie_m2"),
             "habitaciones": it.get("habitaciones"),
             "banos": it.get("banos"),
+            "titulo": it.get("titulo"),
+            "subtitulo": it.get("subtitulo"),
             "ubicacion": {
-                "codigo_ine": it.get("codigo_ine") if "codigo_ine" in it else None,
-                "municipio": it.get("municipio"),
+                "codigo_ine": ci,
+                "municipio": canon,
                 "provincia": it.get("provincia"),
                 "barrio": it.get("barrio"),
                 "distrito": it.get("distrito"),
@@ -171,8 +187,11 @@ def main():
         "modalidad": r["modalidad"],
         "precio_eur": r["precio_eur"],
         "superficie_m2": r["superficie_m2"],
+        "habitaciones": r["habitaciones"],
         "codigo_ine": r["ubicacion"]["codigo_ine"],
         "municipio": r["ubicacion"]["municipio"],
+        "titulo": r.get("titulo"),
+        "subtitulo": r.get("subtitulo"),
         "equipamiento": ",".join(r["equipamiento"]),
     } for r in recs]).to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False)
     print("Anuncios unificados:", len(recs))
