@@ -26,6 +26,14 @@ def _num(v):
     try: return float(s)
     except ValueError: return None
 
+def _territorio(cod):
+    if cod is None: return ""
+    s = str(cod).strip()
+    if s.startswith("01"): return "Araba/Álava"
+    if s.startswith("20"): return "Gipuzkoa"
+    if s.startswith("48"): return "Bizkaia"
+    return ""
+
 def _parsear(ruta: Path) -> list[dict]:
     with open(ruta, encoding="utf-8") as fh:
         filas = list(csv.reader(fh, delimiter=";", quotechar='"'))
@@ -41,7 +49,7 @@ def _parsear(ruta: Path) -> list[dict]:
         vals = [(_num(f[i]) if i < len(f) else None) for i in range(3, 15)]
         if all(v is None for v in vals): continue
         cod, can = resolver_municipio(muni)
-        regs.append({"territorio": "", "municipio": muni, "codigo_ine": cod,
+        regs.append({"territorio": _territorio(cod), "municipio": muni, "codigo_ine": cod,
                      "nombre_canonico": can, "distrito": dist, "seccion": c2,
                      **dict(zip(METS, vals)), "anio_fuente": 2024})
     return regs

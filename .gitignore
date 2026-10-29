@@ -25,6 +25,32 @@ data/procesado_pre_silver/
 scratchpad/*.py
 *.zip
 auditoria_avanzada/
+# Graphify output
+graphify-out/
+
+# Obsidian
+docs/.obsidian/
+
+# DuckDB UI launcher (local only)
+launch_duckdb_ui.py
+
+# Mermaid URL (temporal)
+scratchpad/mermaid_url.txt
+
+# Argon (radiografía para revisión externa)
+argon/
+
+# Auditoría DuckDB (reporte temporal)
+scratchpad/auditoria_duckdb.md
+
+# Graphify ignore (local config)
+.graphifyignore
+
+# Openspec plan (local)
 openspec/plan/
+
+# Logs
 *.log
+
+# API keys
 api.txt

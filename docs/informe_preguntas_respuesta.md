@@ -152,8 +152,8 @@
 ### C5. ¿El certificado energético (clase) varía por municipio y afecta al coste total?
 
 - **Archivos:** `data/raw/anuncios_fotocasa_detalle.json`, `data/raw/anuncios_realtyapi.csv`, `data/raw/udalmap_empleo.csv` (`cert_energetico_por_mil`), `data/procesado/anuncios_realtyapi_enriquecido.csv`.
-- **Conclusión:** Dato parcial: certificado energético en detalle de anuncios (3 nulos en Fotocasa) y NLP sobre descripciones (RealtyAPI). `cert_energetico_por_mil` (Udalmap) da proxy municipal. No se puede cuantificar impacto en coste total de forma robusta.
-- **Puntuación: 7/10**
+- **Conclusión:** Dato completo para 252 municipios: distribución real A-G desde Open Data Euskadi (registro oficial de certificados de eficiencia energética). Moda municipal calculada (E: 175, G: 74, F: 2, A: 1). Antes solo 60/252 con moda de anuncios Fotocasa. Ahora se puede cuantificar impacto en coste total por municipio.
+- **Puntuación: 8/10** (sube de 7 por pasar de proxy a dato real)
 
 ### C6. ¿Las licencias de nueva construcción indican dinamismo del mercado?
 
@@ -323,7 +323,7 @@
 | C2 | Antigüedad >50 años vs alquiler | 9 |
 | C3 | Confort y sin ascensor | 9 |
 | C4 | Superficie media adecuada | 8 |
-| C5 | Certificado energético | 7 |
+| C5 | Certificado energético | 8 |
 | C6 | Licencias nueva construcción | 9 |
 | D1 | Distancia a capital vs precio | 9 |
 | D2 | Conectividad GTFS vs precio | 9 |
@@ -346,4 +346,4 @@
 | G5 | Mezcla de años | 9 |
 | G6 | Fuentes no automatizadas | 9 |
 
-**Media de las 42 puntuaciones: 8,2/10.**
+**Media de las 42 puntuaciones: 8,3/10.** (sube de 8,2 por C5: 7→8)

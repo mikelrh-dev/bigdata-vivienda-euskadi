@@ -3,7 +3,7 @@
 ## Universo de análisis
 - CAE (Euskadi): 1 nivel.
 - Comarca: 20 comarcas oficiales.
-- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 4 municipios (Bilbao, Donostia, Vitoria, Getxo).
+- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 6 municipios (Bilbao, Donostia-San Sebastián, Vitoria-Gasteiz, Getxo, Abanto y Ciérvana, Ayala).
 - Municipios con dato oficial de alquiler: 159/252.
 - Municipios sin dato oficial: 93/252 (imputados por comarca).
 
@@ -14,7 +14,7 @@
 - Anuncios unificados: 840 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
 - Tests: 57 passed.
-- Municipios robustos (n≥30): 4.
+- Municipios robustos (n≥30): 6.
 
 ## Fórmula canónica de esfuerzo
 ```
@@ -46,7 +46,7 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 ## Sesgos documentados
 - Proxy de renta joven (no salario real).
 - 93 municipios con alquiler comarcal (no municipal).
-- 170 municipios sin anuncios (solo 4 robustos).
+- 170 municipios sin anuncios (solo 6 robustos).
 - Mezcla de años (2026 anuncios vs 2024 alquiler/renta).
 - Emancipación juvenil solo a nivel CAE (no municipal).
 - Pisos con geo inválida (235/235, `geo_invalida=True`).
@@ -54,7 +54,7 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 - VPO 93.6% ceros (no respondible C1 con datos actuales).
 
 ## Limitaciones
-- Ranking municipal fino no defendible (solo 4 municipios robustos).
+- Ranking municipal fino no defendible (solo 6 municipios robustos).
 - Tasa de desempleo juvenil real no calculable (falta población activa joven municipal).
 - Compraventa vs alquiler solo a nivel territorial/área funcional (7 municipios directos).
 
