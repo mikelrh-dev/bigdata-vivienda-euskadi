@@ -1,7 +1,7 @@
 # Estado del proyecto — bigdata-vivienda-euskadi
 
 **Fecha del informe:** 2026-10-29
-**Rama / commit base:** `371275d` — *feat: scripts extraccion Udalmap adicional, ECVI y Lanbide historico + inventario datos*
+**Rama / commit base:** `1a993a9` — *chore: remove argon/ from git tracking (local-only radiography)*
 **Fuente de verdad:** `openspec/specs/contrato-reto/spec.md`
 **Generado a partir de:** estado real del repositorio (`git status`, `pytest`, inventario de archivos, `scratchpad/evaluacion_preguntas.md`, `scratchpad/calidad_procesado.md`). No se modificó ningún dato.
 
@@ -9,8 +9,8 @@
 
 ## 1. Resumen ejecutivo
 
-- **Fase de datos (Fase 0 + 1) completada y congelada.** `data/raw/` es inmutable: 301 archivos de datos, marcador `.FROZEN`, manifest SHA-256 de 301 entradas y test de integridad en verde.
-- **Silver regenerado y verificado byte-idéntico.** `data/procesado/` contiene 88 archivos de datos (más `.gitkeep`); los 88 archivos comunes con `data/procesado_pre_silver` son byte-idénticos (MD5), sin regresiones de filas/columnas/nulos.
+- **Fase de datos (Fase 0 + 1) completada y congelada.** `data/raw/` es inmutable: 313 archivos de datos, marcador `.FROZEN`, manifest SHA-256 de 312 entradas y test de integridad en verde.
+- **Silver regenerado y verificado byte-idéntico.** `data/procesado/` contiene 97 archivos de datos (más `.gitkeep`); los comunes con `data/procesado_pre_silver` son byte-idénticos (MD5), sin regresiones de filas/columnas/nulos.
 - **Transforms alineados con la regla bronce.** Los 8 transforms del grupo A ahora escriben a `data/procesado/` (y los 8 del grupo B ya lo hacían); ninguno escribe en `data/raw/` en modo silver.
 - **Tests en verde.** `pytest` → **59 passed** en 2,84 s (`tests/test_contrato.py`, `tests/test_crudos.py`, `tests/test_raw_inmutable.py`).
 - **Cobertura analítica.** 252 municipios de referencia; alquiler completo 252 (159 directo Eustat + 93 por comarca); 840 anuncios unificados en 85 municipios; 8,6/10 de grado medio en 42 preguntas objetivo.
@@ -43,9 +43,9 @@
 
 | Elemento | Valor real |
 |---|---|
-| Archivos de datos en `data/raw/` | **301** (más marcador `.FROZEN` = 302 entradas en el directorio) |
-| Marcador de congelación | `data/raw/.FROZEN` — *RAW CONGELADO — 2026-10-29 (post-regeneracion paralela)*; modo lectura (`r--r--r--`) |
-| Manifest SHA-256 | `docs/raw_manifest_sha256.txt` — **301 líneas** (un hash por archivo) |
+| Archivos de datos en `data/raw/` | **313** (más marcador `.FROZEN` = 314 entradas en el directorio) |
+| Marcador de congelación | `data/raw/.FROZEN` — archivo vacío (0 bytes), permisos 644 (no read-only) |
+| Manifest SHA-256 | `docs/raw_manifest_sha256.txt` — **312 líneas** (un hash por archivo) |
 | Test de integridad | `tests/test_raw_inmutable.py` — `test_raw_congelado_marker` + `test_raw_hashes_manifest` |
 | Resultado test | ✅ Incluido en los 59 passed |
 | Regeneración | Regenerado desde `data_regen/` (backup base `data/raw_backup_2026-10-29`); Eustat (`01_eustat_api`) falló HTTP 400 y esos archivos provienen del backup |
@@ -59,7 +59,7 @@
 
 | Elemento | Valor real |
 |---|---|
-| Archivos en `data/procesado/` | **89** (88 de datos + `.gitkeep`) |
+| Archivos en `data/procesado/` | **97** (96 de datos + `.gitkeep`) |
 | Archivos en backup `data/procesado_pre_silver/` | 107 (incl. `.gitkeep`) |
 | Archivos comunes analizados | 88 |
 | Archivos comunes tabulares | 86 |
@@ -95,6 +95,9 @@
 ### Grupo B — ya escribían a procesado (sin cambio de I/O)
 
 `filtrar_outliers.py`, `limpiar_ecvi.py`, `limpiar_eustat_demografia.py`, `normalizar_json_crudos.py`, `unificar_anuncios.py`, `enriquecer_equipamiento_realtyapi.py`, `enriquecer_gtfs_conectividad.py`, `generar_fingerprint.py`.
+
+### Nuevos transforms recientes (no listados arriba)
+`calcular_renta_joven.py`, `generar_cert_energetico_municipal.py`, `generar_dashboard_completo.py`, `generar_dashboard_visual.py`, `auditoria_duckdb.py`, `asignar_area_funcional_ecvi.py`, `generar_analisis_variables_base.py`, `generar_emancipacion_tier3_93.py`, `generar_municipios_faltantes_93.py`, `generar_poblacion_joven_municipal.py`.
 
 ### Protección de raw
 
@@ -190,6 +193,7 @@
 | EMAL fianzas | 73 municipios |
 | ECVI compraventa | 7 municipios + 15 áreas funcionales + 7 territorios |
 | Certificado energético (Fotocasa detalle) | 467 / 470 anuncios |
+| Certificado energético (Open Data Euskadi) | 252 / 252 municipios (distribución A-G real) |
 | Emancipación juvenil (Eustat) | nivel CAE, 2010–2026, 14 indicadores |
 
 ---
@@ -204,8 +208,8 @@
 
 - Renta joven estimada es **proxy transparente** (factor ×0,3534), no salario real municipal; población activa joven municipal nula (`poblacion_joven_15_29` = 252 nulos).
 - Anuncios: solo **7 municipios con n≥30**, 55 con n<5; no se defiende ranking municipal fino.
-- ECVI: solo 7 municipios + 15 áreas funcionales + 7 territorios; `precio_m2_usada_eur` nulo en 29/29; falta mapeo municipio→área funcional para los 252.
-- Certificado energético no agregado por municipio; sin coste energético real.
+- ECVI: solo 7 municipios + 15 áreas funcionales + 7 territorios; `precio_m2_usada_eur` nulo en 29/29; mapeo municipio→área funcional ya disponible (252/252).
+- Certificado energético agregado por municipio (252/252) desde Open Data Euskadi; coste energético real aún pendiente.
 - Stock de VPO municipal no disponible; Etxebide mide solicitudes (≠ viviendas disponibles).
 - `transporte_paradas_municipio_enriquecido.csv`: `paradas_por_1000_hab` nulo en los 252 (derivable con población); `operadores` nulo en 51.
 - EMAL solo 73 municipios; SERPAVI 249/252 (89 nulos); Idealista no automatizado.
