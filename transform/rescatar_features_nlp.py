@@ -20,6 +20,13 @@ def rescue(rec):
             if 15 <= val <= 500:
                 rec["superficie_m2"] = val
                 rescued_m2 = True
+            # update outlier flag
+            sup = rec.get("superficie_m2")
+            try:
+                supf = float(sup) if sup is not None else None
+            except (ValueError, TypeError):
+                supf = None
+            rec["es_outlier_superficie"] = bool(supf is not None and (supf < 10 or supf > 500))
     if rec.get("habitaciones") is None:
         text = " ".join(str(x) for x in [rec.get("titulo"), rec.get("subtitulo")] if x)
         m = RE_HAB.search(text)
@@ -58,6 +65,7 @@ def main():
         "precio_eur": r["precio_eur"],
         "superficie_m2": r["superficie_m2"],
         "habitaciones": r["habitaciones"],
+        "es_outlier_superficie": r.get("es_outlier_superficie", False),
         "codigo_ine": r["ubicacion"]["codigo_ine"],
         "municipio": r["ubicacion"]["municipio"],
         "titulo": r.get("titulo"),
