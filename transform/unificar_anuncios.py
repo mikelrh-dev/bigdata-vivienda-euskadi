@@ -189,6 +189,8 @@ def main():
     for pattern, transform_fn, etiqueta in [
         ("anuncios_pisos_dirigido_*.json", transform_pisos, "pisos"),
         ("anuncios_fotocasa_dirigido_*.json", transform_fotocasa, "fotocasa"),
+        ("anuncios_faltantes_fotocasa_*.json", transform_fotocasa, "fotocasa"),
+        ("anuncios_faltantes_pisos_*.json", transform_pisos, "pisos"),
     ]:
         for path in sorted(_glob.glob(os.path.join(RAW, pattern))):
             base = os.path.basename(path)
