@@ -4,6 +4,7 @@ Fuentes:
 - data/raw/eustat_renta_edad.csv: renta fiscal CAE por tramo de edad (2024)
 - data/raw/ovj_salario_joven_2024.json: salario neto joven OVJ (2024)
 - data/procesado/analisis_variables_base.csv: renta_personal_total, alquiler por municipio
+- data/raw/lanbide_paro_juvenil.csv: tasa de paro joven por municipio
 
 Proxy fiscal (media simple de 3 tramos, sin ponderar por poblacion):
   ratio_fiscal = (1599 + 8156 + 20109) / 3 / 28170 = 0.353
@@ -21,10 +22,12 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RAW = PROJECT_ROOT / "data" / "raw"
 PROC = PROJECT_ROOT / "data" / "procesado"
+
 
 def _ratio_fiscal_desde_eustat() -> float:
     """Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eustat_renta_edad.csv."""
@@ -81,11 +84,22 @@ def main() -> int:
     out["esfuerzo_ovj_pareja_pct"] = (out["cuantia_media_eur_mes_media"] / (2 * SALARIO_OVJ_18_29)) * 100
     out["brecha_emancipacion_eur"] = out["housing_wage_mes"] - SALARIO_OVJ_18_29
 
+    # Tarea 2: salario joven ajustado al riesgo local (paro joven Lanbide)
+    paro = pd.read_csv(RAW / "lanbide_paro_juvenil.csv")[["codigo_ine", "tasa_paro_joven_pct"]]
+    out = out.merge(paro, on="codigo_ine", how="left")
+    paro_mean = out["tasa_paro_joven_pct"].mean()
+    paro_std = out["tasa_paro_joven_pct"].std(ddof=0)
+    z = (out["tasa_paro_joven_pct"] - paro_mean) / paro_std
+    z = z.clip(-1.0, 1.0)
+    factor = 1.0 - 0.15 * z
+    out["salario_joven_ajustado_local_eur"] = (SALARIO_OVJ_18_29 * factor).round(2)
+    out["esfuerzo_ajustado_pct"] = (out["cuantia_media_eur_mes_media"] / out["salario_joven_ajustado_local_eur"]) * 100
+
     # Metadata
     out["ratio_fiscal"] = ratio_fiscal
     out["ratio_salarial_18_34"] = ratio_sal_18_34
     out["ratio_salarial_16_29"] = ratio_sal_18_29
-    out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024)"
+    out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024) ajustado por paro joven Lanbide"
     out["fuente_renta_fiscal"] = "Eustat renta_edad 2024 (CAE)"
 
     out_path = PROC / "dim_municipios_enriquecido.csv"
@@ -94,6 +108,7 @@ def main() -> int:
     print(f"ratio_fiscal={ratio_fiscal:.4f}, ratio_sal_18_34={ratio_sal_18_34:.4f}, ratio_sal_18_29={ratio_sal_18_29:.4f}")
     print(f"esfuerzo_min mediana={out['esfuerzo_min_pct'].median():.1f}%, esfuerzo_max mediana={out['esfuerzo_max_pct'].median():.1f}%")
     print(f"esfuerzo_ovj_individual mediana={out['esfuerzo_ovj_individual_pct'].median():.1f}%, housing_wage mediana={out['housing_wage_mes'].median():.0f} EUR")
+    print(f"salario_ajustado mediana={out['salario_joven_ajustado_local_eur'].median():.0f} EUR, esfuerzo_ajustado mediana={out['esfuerzo_ajustado_pct'].median():.1f}%")
     return 0
 
 
