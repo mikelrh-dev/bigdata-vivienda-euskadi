@@ -12,6 +12,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 from _common import RAW_DIR, get_logger  # noqa: E402
 from entity_resolution import resolver_municipio  # noqa: E402
 log = get_logger("v4_secciones")
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
 METS = ["renta_media_eur_m2_media", "renta_media_eur_m2_mediana", "renta_media_eur_m2_p25",
         "renta_media_eur_m2_p75", "cuantia_media_eur_mes_media", "cuantia_media_eur_mes_mediana",
         "cuantia_media_eur_mes_p25", "cuantia_media_eur_mes_p75", "superficie_media_m2_media",
@@ -53,7 +55,7 @@ def main() -> int:
         todos.extend(lote)
     import pandas as pd
     df = pd.DataFrame(todos)
-    df.to_csv(RAW_DIR / "alquiler_seccion.csv", index=False, encoding="utf-8-sig")
+    df.to_csv(PROC_DIR / "alquiler_seccion.csv", index=False, encoding="utf-8-sig")
     g = df.groupby(["codigo_ine", "municipio"]).agg(
         n_secciones=("seccion", "count"),
         renta_mediana_min=("renta_media_eur_m2_mediana", "min"),

@@ -18,6 +18,8 @@ spec = importlib.util.spec_from_file_location(
 pisos_mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(pisos_mod)
 
 log = get_logger("f4_pisos")
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
 MAX_PAG = 3
 
 def main() -> int:
@@ -51,13 +53,13 @@ def main() -> int:
         vistos.add(clave)
         viejos.append(a)
         añadidos += 1
-    guardar_json(RAW_DIR / "anuncios_pisos.json", viejos,
+    guardar_json(PROC_DIR / "anuncios_pisos_dirigido.json", viejos,
                  metadata={**meta, "f4_nuevos": añadidos,
                            "f4_municipios": len(objetivos)})
     cols = ["codigo_ine", "nombre_canonico", "anio_fuente", "id_anuncio", "precio_eur",
             "municipio_busqueda", "titulo", "subtitulo", "tipo_inmueble", "superficie_m2",
             "habitaciones", "banos", "url_detalle", "total_resultados", "es_busqueda_no_ubicacion"]
-    with open(RAW_DIR / "anuncios_pisos.csv", "w", newline="", encoding="utf-8-sig") as fh:
+    with open(PROC_DIR / "anuncios_pisos_dirigido.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
         w.writeheader(); w.writerows(viejos)
     with open(RAW_DIR.parent / "procesado" / "f4_pisos_informe.csv", "w", newline="", encoding="utf-8-sig") as fh:

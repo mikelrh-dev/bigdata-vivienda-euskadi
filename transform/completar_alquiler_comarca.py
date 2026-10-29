@@ -19,7 +19,7 @@ from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
 
 log = get_logger("completar_alquiler_comarca")
 
-PROC_DIR = Path(__file__).resolve().parent.parent / "data" / "procesado"
+PROC_DIR = RAW_DIR.parent / "procesado"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 
