@@ -14,5 +14,10 @@ lxml==5.3.0
 python-dotenv==1.0.1
 pyyaml==6.0.2
 
+# Procesado de datos
+openpyxl==3.1.5
+pytest==8.3.3
+shapely==2.0.6
+
 # Opcional: para el informe
 jupyter==1.1.1

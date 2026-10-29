@@ -1,0 +1,129 @@
+                                                                  Curso de especialización en IA y Big data
+                                                                       Reto primera evaluación SBD + BDA
+
+RETO INTERMODULAR ­ BDA Y SBD
+
+¿Dónde pueden vivir los jóvenes en Euskadi?
+
+Situación de partida
+
+El acceso a la vivienda se ha convertido en uno de los principales problemas de la
+población joven. El aumento de los precios del alquiler y de la compraventa plantea
+una pregunta:
+
+¿Puede una persona joven independizarse en Euskadi con su salario?
+
+Una entidad pública os ha encargado desarrollar un sistema de recogida,
+almacenamiento y análisis de datos que permita estudiar la situación de la vivienda en
+distintos municipios de Euskadi.
+
+Vuestro trabajo consistirá en obtener datos reales, procesarlos y utilizarlos para
+responder a esta pregunta con conclusiones fundamentadas.
+
+Objetivos del reto
+
+Debéis desarrollar una solución utilizando Python que permita:
+
+    1. Recopilar datos reales sobre precios de alquiler o compraventa mediante API y
+         web scraping.
+
+    2. Obtener información complementaria sobre salarios, población u otros
+         indicadores que consideréis relevantes.
+
+    3. Almacenar en HDFS los datos originales obtenidos.
+    4. Utilizar Apache Kafka para simular la recepción de nuevos anuncios
+
+         inmobiliarios.
+    5. Guardar la información en MongoDB.
+    6. Realizar la limpieza y transformación de los datos utilizando PyMongo.
+    7. Analizar la información mediante consultas y Aggregation Pipeline de
+
+         MongoDB.
+    8. Presentar los resultados y justificar vuestras conclusiones.
+
+Requisitos técnicos
+
+BDA ­ Big Data Aplicado
+
+    · Extracción de datos mediante API y scraping.
+    · Almacenamiento de datos en HDFS.
+    · Creación de un productor y un consumidor Kafka utilizando Python.
+    · Gestión de datos en formato JSON o CSV.
+                                                                  Curso de especialización en IA y Big data
+                                                                       Reto primera evaluación SBD + BDA
+
+SBD ­ Sistemas Big Data
+
+    · Diseño de una base de datos MongoDB.
+    · Inserción y actualización de documentos mediante PyMongo.
+    · Limpieza de datos incompletos, duplicados o incorrectos.
+    · Transformaciones mediante operaciones de MongoDB.
+    · Consultas y agregaciones para obtener indicadores estadísticos.
+
+Todos los programas desarrollados deberán estar escritos en Python.
+
+Entregables
+
+Cada equipo entregará:
+
+    1. Código fuente: scripts Python organizados y documentados.
+    2. Datos: ficheros originales almacenados en HDFS y base de datos MongoDB.
+    3. Arquitectura: esquema explicativo del recorrido de los datos desde su origen
+
+         hasta el análisis.
+    4. Informe de resultados: gráficos, tablas y conclusiones.
+    5. Demostración: ejecución del sistema y explicación de las decisiones técnicas.
+
+Resultado final
+
+El objetivo no es simplemente recopilar anuncios de viviendas.
+
+Debéis demostrar, utilizando datos reales, qué municipios de Euskadi ofrecen
+mejores posibilidades de emancipación para una persona joven y explicar por qué.
+
+Las conclusiones deberán estar respaldadas por los datos analizados.
+                                                                                           Curso de especialización en IA y Big data
+                                                                                                Reto primera evaluación SBD + BDA
+
+BDA ­ Big Data Aplicado
+
+RA1. Gestión de soluciones y almacenamiento
+
+            Criterio     0 puntos                       3 puntos              7 puntos                     10 puntos
+Extracción de datos   No obtiene             Obtiene datos de una    Automatiza una API o  Automatiza API y scraping
+mediante Python       datos                  fuente manualmente      scraping
+Almacenamiento HDFS   No almacena            Crea directorios        Guarda y recupera     Organiza originales y procesados y
+                      datos                                          archivos              demuestra su recuperación
+Kafka                 No funciona            Crea un tópico          Envía mensajes con    Productor y consumidor Python
+                                                                     productor Python      funcionan y procesan mensajes
+Integración           No hay                 Los componentes         Integra dos o más     Demuestra el flujo completo hasta
+                      integración            funcionan por separado  componentes           MongoDB
+                                                                                               Curso de especialización en IA y Big data
+                                                                                                    Reto primera evaluación SBD + BDA
+
+SBD ­ Sistemas Big Data
+
+RA3. Gestión, almacenamiento y consultas en MongoDB
+
+      Criterio       0 puntos                3 puntos                    7 puntos                                10 puntos
+Modelado        No crea la BD     Crea una colección sin     Diseña colecciones con            Justifica el modelo y las relaciones
+MongoDB                           estructura definida        campos adecuados                  entre datos
+Operaciones     No realiza        Inserta documentos         Inserta, actualiza y elimina      Además, automatiza las operaciones y
+PyMongo         operaciones                                  documentos                        comprueba resultados
+Consultas       No realiza        Realiza consultas simples  Utiliza filtros, proyecciones     Combina condiciones y consultas sobre
+                consultas                                    y ordenaciones                    campos anidados o arrays
+Aggregation     No utiliza        Utiliza $match y $group    Utiliza al menos cuatro           Combina varias etapas para obtener
+Pipeline        agregaciones                                 etapas diferentes                 indicadores complejos
+
+RA4. Visualización y presentación de resultados
+
+    Criterio         0 puntos              3 puntos                       7 puntos                               10 puntos
+Gráficos        No crea gráficos  Presenta un gráfico      Presenta tres tipos de gráficos     Presenta tres tipos adecuados a los
+                                                                                               datos
+Datos           No utiliza datos  Introduce valores        Obtiene los datos de MongoDB        Genera gráficos directamente a partir de
+utilizados      reales            manualmente                                                  consultas PyMongo
+Presentación    No presenta       Presenta gráficos sin    Incluye títulos, unidades y         Además, los gráficos facilitan la
+                resultados        títulos                  leyendas cuando proceda             comparación entre municipios
+Interpretación  No interpreta     Describe lo que aparece  Explica tres resultados relevantes  Relaciona resultados y explica sus
+                                                                                               implicaciones
+

@@ -11,6 +11,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 from _common import RAW_DIR, get_logger  # noqa: E402
 log = get_logger("f3_dist")
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 def _hav(lat1, lon1, lat2, lon2):
     R = 6371.0
@@ -30,7 +32,7 @@ def main() -> int:
     n_raw = len(dc)
     extras = sorted(set(dc["codigo_ine"]) - dim_cods)
     dc252 = dc[dc["codigo_ine"].isin(dim_cods)].drop_duplicates("codigo_ine", keep="first")
-    dc252.to_csv(RAW_DIR / "distancias_capitales_252.csv", index=False, encoding="utf-8-sig")
+    dc252.to_csv(PROC_DIR / "distancias_capitales_252.csv", index=False, encoding="utf-8-sig")
     log.info("capitales: %d -> %d (extras fuera dim: %s)", n_raw, len(dc252), extras)
 
     # 2. haversine 252x252
@@ -50,7 +52,7 @@ def main() -> int:
             filas.append((b, a, km))
         filas.append((a, a, 0.0))
     hav = pd.DataFrame(filas, columns=["origen_codigo", "destino_codigo", "km_haversine"])
-    hav.to_csv(RAW_DIR / "distancias_haversine_252.csv", index=False, encoding="utf-8-sig")
+    hav.to_csv(PROC_DIR / "distancias_haversine_252.csv", index=False, encoding="utf-8-sig")
     log.info("haversine: %d pares (%d municipios con centroide; sin centroide: %s)",
              len(hav), len(coords), faltan)
 
@@ -73,7 +75,7 @@ def main() -> int:
                         "f3_nota": "filtrado a 252 dim_municipios, UTF-8, EPSG:4326",
                         "n_municipios": len(unicos)},
            "datos": fc} if "datos" in data else fc
-    ruta_geo.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
+    (PROC_DIR / "municipios_euskadi_252.geojson").write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
     log.info("geojson: %d -> %d features", n_feat, len(unicos))
     assert len(unicos) == 252, f"geo debe quedar en 252, hay {len(unicos)}"
     assert len(dc252) == 252

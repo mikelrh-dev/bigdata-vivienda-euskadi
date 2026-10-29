@@ -9,3 +9,44 @@ plazo_anos: 30
 topes_gaztelagun:
   max_subvencion: 200          # €/mes (ajustar según convocatoria vigente)
   renta_maxima_admisible: 24000 # €/año (ajustar según convocatoria vigente)
+
+# --- Parámetros del estudio (fuente única) ---
+universo:
+  n_min_robusto: 30
+  municipios_con_dato_oficial: 159
+  municipios_sin_dato: 93
+  municipios_total: 252
+
+formulas:
+  esfuerzo_joven_pct: "alquiler_anual / renta_joven_estimada * 100"
+  renta_joven_estimada: "renta_municipal_18plus * (renta_media_18_34_CAE / renta_media_18plus_CAE)"
+  paro_juvenil_ratio: "paro_joven_lanbide / poblacion_joven_15_29 * 100"
+
+umbrales:
+  esfuerzo_asequible: 20
+  esfuerzo_moderado: 30
+  esfuerzo_tensionado: 40
+  n_min_anuncios: 30
+
+vintage:
+  anuncios: 2026
+  alquiler_oficial: 2024
+  renta: 2024
+  poblacion: 2025
+  paro_lanbide: 2026
+  udalmap: 2024
+
+pesos_indice_compuesto:
+  esfuerzo: 0.4
+  paro: 0.3
+  distancia: 0.2
+  renta: 0.1
+
+fuentes:
+  alquiler_oficial: "Eustat Bizilagun 2024"
+  renta: "Eustat RPF 2024"
+  poblacion: "Eustat Población 2025"
+  paro: "Lanbide 2026"
+  anuncios: "Fotocasa, Pisos, RealtyAPI 2026"
+  compraventa: "ECVI 2026T2"
+  transporte: "GTFS 13 operadores"

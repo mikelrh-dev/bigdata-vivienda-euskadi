@@ -12,6 +12,7 @@ Los originales se conservan con sufijo .bak_f0 una sola vez.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import shutil
@@ -25,6 +26,18 @@ from entity_resolution import resolver_municipio  # noqa: E402
 log = get_logger("f0_entity")
 PROC = RAW_DIR.parent / "procesado"
 PROC.mkdir(parents=True, exist_ok=True)
+
+FROZEN_MARKER = RAW_DIR / ".FROZEN"
+
+
+def _check_frozen(force: bool) -> None:
+    if FROZEN_MARKER.exists() and not force:
+        log.error(
+            "data/raw está CONGELADO (%s). Abortando para no modificar raw in place. "
+            "Usa --force para override consciente.",
+            FROZEN_MARKER,
+        )
+        raise SystemExit(2)
 
 
 def _zfill(codigo) -> str | None:
@@ -44,7 +57,8 @@ def _backup(ruta: Path) -> None:
         log.info("Backup %s", bak.name)
 
 
-def _enriquecer_csv(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bool = False) -> dict:
+def _enriquecer_csv(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bool = False,
+                    destino: Path | None = None, sufijo: str = "") -> dict:
     import pandas as pd
     df = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
     # conservar columnas originales + añadir
@@ -59,16 +73,22 @@ def _enriquecer_csv(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bo
         df["anio_fuente"] = anio
     if es_busqueda and "es_busqueda_no_ubicacion" not in df.columns:
         df["es_busqueda_no_ubicacion"] = True
-    _backup(ruta)
-    df.to_csv(ruta, index=False, encoding="utf-8-sig")
+    if destino is None:
+        destino = ruta
+    else:
+        destino = destino / (ruta.stem + sufijo + ruta.suffix)
+    if destino == ruta:
+        _backup(ruta)  # conservar original solo en legacy in-place
+    df.to_csv(destino, index=False, encoding="utf-8-sig")
     n_ok = int(df["codigo_ine"].notna().sum())
     no_res = sorted(df.loc[df["codigo_ine"].isna(), col_muni].dropna().unique().tolist())
-    log.info("%s: %d/%d con codigo_ine. No resueltos: %s", ruta.name, n_ok, len(df), no_res)
-    return {"fichero": ruta.name, "total": len(df), "con_codigo": n_ok,
+    log.info("%s -> %s: %d/%d con codigo_ine. No resueltos: %s", ruta.name, destino.name, n_ok, len(df), no_res)
+    return {"fichero": destino.name, "total": len(df), "con_codigo": n_ok,
             "sin_codigo": len(df) - n_ok, "no_resueltos": "|".join(no_res)}
 
 
-def _enriquecer_json(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bool = False) -> dict:
+def _enriquecer_json(ruta: Path, col_muni: str, anio: int | None, es_busqueda: bool = False,
+                     destino: Path | None = None, sufijo: str = "") -> dict:
     data = json.loads(ruta.read_text(encoding="utf-8"))
     meta = data.get("metadata", {}) if isinstance(data, dict) else {}
     regs = data.get("datos", data) if isinstance(data, dict) else data
@@ -84,28 +104,44 @@ def _enriquecer_json(ruta: Path, col_muni: str, anio: int | None, es_busqueda: b
             r["anio_fuente"] = anio
         if es_busqueda:
             r.setdefault("es_busqueda_no_ubicacion", True)
-    _backup(ruta)
+    if destino is None:
+        destino = ruta
+    else:
+        destino = destino / (ruta.stem + sufijo + ruta.suffix)
+    if destino == ruta:
+        _backup(ruta)
     out = {"metadata": {**meta, "f0_entity_resolution": "codigo_ine añadido via dim_municipios (local, sin proxy)",
                         "anio_fuente_nota": anio}, "datos": regs} if isinstance(data, dict) else regs
-    ruta.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    destino.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     n_ok = sum(1 for r in regs if r.get("codigo_ine"))
     no_res = sorted({str(r.get(col_muni)) for r in regs if not r.get("codigo_ine")})
-    log.info("%s: %d/%d con codigo_ine. No resueltos: %s", ruta.name, n_ok, len(regs), no_res)
-    return {"fichero": ruta.name, "total": len(regs), "con_codigo": n_ok,
+    log.info("%s -> %s: %d/%d con codigo_ine. No resueltos: %s", ruta.name, destino.name, n_ok, len(regs), no_res)
+    return {"fichero": destino.name, "total": len(regs), "con_codigo": n_ok,
             "sin_codigo": len(regs) - n_ok, "no_resueltos": "|".join(no_res)}
 
 
-def main() -> int:
+def main(force: bool = False, silver: bool = False) -> int:
+    if not silver:
+        _check_frozen(force)
+    dest_dir = (RAW_DIR.parent / "procesado") if silver else RAW_DIR
+    sufijo = "_enriquecido" if silver else ""
     informe = []
-    informe.append(_enriquecer_csv(RAW_DIR / "alquiler_municipal.csv", "municipio", 2024))
-    informe.append(_enriquecer_json(RAW_DIR / "alquiler_municipal.json", "municipio", 2024))
-    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_fotocasa.csv", "municipio", 2026))
-    informe.append(_enriquecer_json(RAW_DIR / "anuncios_fotocasa.json", "municipio", 2026))
-    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_pisos.csv", "municipio_busqueda", 2026, es_busqueda=True))
-    informe.append(_enriquecer_json(RAW_DIR / "anuncios_pisos.json", "municipio_busqueda", 2026, es_busqueda=True))
+    informe.append(_enriquecer_csv(RAW_DIR / "alquiler_municipal.csv", "municipio", 2024,
+                                  destino=dest_dir, sufijo=sufijo))
+    informe.append(_enriquecer_json(RAW_DIR / "alquiler_municipal.json", "municipio", 2024,
+                                   destino=dest_dir, sufijo=sufijo))
+    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_fotocasa.csv", "municipio", 2026,
+                                  destino=dest_dir, sufijo=sufijo))
+    informe.append(_enriquecer_json(RAW_DIR / "anuncios_fotocasa.json", "municipio", 2026,
+                                   destino=dest_dir, sufijo=sufijo))
+    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_pisos.csv", "municipio_busqueda", 2026, es_busqueda=True,
+                                  destino=dest_dir, sufijo=sufijo))
+    informe.append(_enriquecer_json(RAW_DIR / "anuncios_pisos.json", "municipio_busqueda", 2026, es_busqueda=True,
+                                   destino=dest_dir, sufijo=sufijo))
     # RealtyAPI: preferir municipio_busqueda (canónico), fallback municipio
     import pandas as pd
     ruta = RAW_DIR / "anuncios_realtyapi.csv"
+    dest_csv = (dest_dir / ("anuncios_realtyapi" + sufijo + ".csv")) if silver else ruta
     df = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
     cods, cans = [], []
     for _, row in df.iterrows():
@@ -118,11 +154,13 @@ def main() -> int:
     df["nombre_canonico"] = cans
     if "anio_fuente" not in df.columns:
         df["anio_fuente"] = 2026
-    _backup(ruta)
-    df.to_csv(ruta, index=False, encoding="utf-8-sig")
-    informe.append({"fichero": ruta.name, "total": len(df), "con_codigo": int(df["codigo_ine"].notna().sum()),
+    if dest_csv == ruta:
+        _backup(ruta)
+    df.to_csv(dest_csv, index=False, encoding="utf-8-sig")
+    informe.append({"fichero": dest_csv.name, "total": len(df), "con_codigo": int(df["codigo_ine"].notna().sum()),
                     "sin_codigo": int(df["codigo_ine"].isna().sum()), "no_resueltos": ""})
     rj = RAW_DIR / "anuncios_realtyapi.json"
+    dest_json = (dest_dir / ("anuncios_realtyapi" + sufijo + ".json")) if silver else rj
     data = json.loads(rj.read_text(encoding="utf-8"))
     meta = data.get("metadata", {})
     regs = data.get("datos", data)
@@ -134,10 +172,11 @@ def main() -> int:
             r["codigo_ine"] = _zfill(c)
             r["nombre_canonico_resuelto"] = n
         r.setdefault("anio_fuente", 2026)
-    _backup(rj)
-    rj.write_text(json.dumps({"metadata": {**meta, "f0_entity_resolution": "local sin proxy"}, "datos": regs},
+    if dest_json == rj:
+        _backup(rj)
+    dest_json.write_text(json.dumps({"metadata": {**meta, "f0_entity_resolution": "local sin proxy"}, "datos": regs},
                              ensure_ascii=False, indent=2), encoding="utf-8")
-    informe.append({"fichero": rj.name, "total": len(regs),
+    informe.append({"fichero": dest_json.name, "total": len(regs),
                     "con_codigo": sum(1 for r in regs if r.get("codigo_ine")),
                     "sin_codigo": sum(1 for r in regs if not r.get("codigo_ine")), "no_resueltos": ""})
 
@@ -150,4 +189,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--force", action="store_true", help="Override raw congelado (no recomendado)")
+    parser.add_argument("--silver", action="store_true", help="Escribir a procesado/*_enriquecido sin tocar raw")
+    args = parser.parse_args()
+    raise SystemExit(main(force=args.force, silver=args.silver))

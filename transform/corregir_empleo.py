@@ -14,6 +14,8 @@ log = get_logger("f2_empleo")
 NOTA = ("tasa_paro_aprox_pct invalidada (cociente con distinta base). Usar "
         "tasa_paro_lanbide_pct (ind.13 Udalmap, paro registrado 16-64). "
         "U1: vivienda/movilidad/renta de contraste (Etxebide, VPO, commuting).")
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
 PCT_100 = ["tasa_actividad_pct", "tasa_ocupacion_pct", "tasa_paro_lanbide_pct",
            "tasa_ocupacion_juvenil_16_24_pct", "trabaja_fuera_pct",
            "afiliacion_ss_16_24_pct", "renta_trabajo_pct", "suelo_urbanizable_pct",
@@ -30,18 +32,21 @@ def main() -> int:
     assert len(df) == 252, f"esperados 252, hay {len(df)}"
     for c in PCT_100:
         if c in df.columns:
-            bad = df[~df[c].isna() & ~df[c].between(0, 100)]
+            num = pd.to_numeric(df[c], errors="coerce")
+            bad = df[~df[c].isna() & ~num.between(0, 100)]
             assert len(bad) == 0, f"{c} fuera de 0-100: {bad[['codigo_ine', c]].head()}"
     for c in POR_MIL + EUROS:
         if c in df.columns:
-            bad = df[~df[c].isna() & ~(df[c] >= 0)]
+            num = pd.to_numeric(df[c], errors="coerce")
+            bad = df[~df[c].isna() & ~(num >= 0)]
             assert len(bad) == 0, f"{c} negativo: {bad[['codigo_ine', c]].head()}"
     df["tasa_paro_aprox_pct"] = None
-    df["brecha_ocupacion_actividad_pct"] = (df["tasa_ocupacion_pct"] - df["tasa_actividad_pct"]).round(2)
+    df["brecha_ocupacion_actividad_pct"] = (pd.to_numeric(df["tasa_ocupacion_pct"], errors="coerce")
+                                            - pd.to_numeric(df["tasa_actividad_pct"], errors="coerce")).round(2)
     df["tasa_paro_valida"] = df["tasa_paro_lanbide_pct"].notna()
     df["nota_metodologica"] = NOTA
-    df.to_csv(RAW_DIR / "udalmap_empleo_corregido.csv", index=False, encoding="utf-8-sig")
-    guardar_json(RAW_DIR / "udalmap_empleo_corregido.json", df.to_dict(orient="records"),
+    df.to_csv(PROC_DIR / "udalmap_empleo_corregido.csv", index=False, encoding="utf-8-sig")
+    guardar_json(PROC_DIR / "udalmap_empleo_corregido.json", df.to_dict(orient="records"),
                  metadata={"fuente": "Udalmap corregido F2/F4d/U1 (local)",
                            "n_municipios": len(df), "nota": NOTA,
                            "cobertura": {c: int(df[c].notna().sum()) for c in df.columns
