@@ -66,13 +66,15 @@ def service_active_on(trip_id, calendar, calendar_dates, target_date):
 def main():
     os.makedirs(OUT, exist_ok=True)
     munis = load_geojson_municipios()
-    # population from udalmap (fallback)
+    # population from udalmap indicadores adicionales (poblacion_total)
     pop_map = {}
     try:
         import pandas as pd
-        ud = pd.read_csv(os.path.join(RAW, "udalmap_empleo_corregido.csv"))
+        ud = pd.read_csv(os.path.join(RAW, "udalmap_indicadores_adicionales.csv"))
         for _, row in ud.iterrows():
-            pop_map[str(row["codigo_ine"]).zfill(5)] = row.get("poblacion_total", None)
+            ci = str(row["codigo_ine"]).strip().zfill(5) if pd.notna(row["codigo_ine"]) else None
+            if ci:
+                pop_map[ci] = row.get("poblacion_total", None)
     except Exception:
         pass
 
