@@ -3,9 +3,8 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Extracción completada. Infraestructura (HDFS, Kafka, MongoDB) y
-análisis pendientes.
-**Fecha:** 2026-10-23
+**Estado:** Raw inmutable congelado (314 archivos, 313 manifest), capa silver regenerada (96 archivos, byte-idénticos), 59 tests en verde, features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka, MongoDB) y análisis pendientes.
+**Fecha:** 2026-10-29
 
 ---
 
@@ -75,12 +74,12 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | Fase | Estado |
 |---|---|
 | 0. Entorno y VM | ⚠️ venv y Docker Desktop OK; VM pendiente |
-| 1. Extracción | ✅ scripts 01–06, 127 MB en `data/raw/` |
+| 1. Extracción | ✅ scripts 01–09, 314 archivos en `data/raw/` |
 | 2. Kafka | ⬜ |
 | 3. MongoDB (modelado, PyMongo, consultas) | ⬜ |
-| 4. Limpieza y transformación | ⬜ |
-| 5. Aggregation Pipeline | ⬜ |
-| 6. Visualización e informe | ⬜ |
+| 4. Limpieza y transformación | ✅ silver regenerado (96 archivos, byte-idénticos), transforms v2 |
+| 5. Aggregation Pipeline | ⚠️ parcial: comparativa compra/alquiler por AF (15), tensión social |
+| 6. Visualización e informe | ⚠️ dashboards HTML generados; informe pendiente |
 
 ## Reglas del contrato
 
