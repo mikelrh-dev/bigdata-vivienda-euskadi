@@ -27,14 +27,7 @@ def norm(texto: str) -> str:
     return t
 
 
-# Variantes con guion que el norm convierte a espacio pero conviene
-# dejar explícitas para auditoría.
-EQUIVALENCIAS_EXTRA = {
-    "donostia san sebastian": None,  # se resuelve contra dim
-    "vitoria gasteiz": None,
-    "arrasate mondragon": None,
-    "arrankudiaga zollo": None,
-}
+# (bloque EQUIVALENCIAS_EXTRA eliminado: dead code, las variantes viven en dim_municipios.json)
 
 
 @lru_cache(maxsize=1)
