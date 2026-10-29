@@ -1,35 +1,52 @@
-# Decisión: Uso de renta municipal como proxy de salario
+# Decisión: Uso de renta municipal como proxy de salario joven
 
-**Fecha:** 2026-10-27  
-**Contexto:** El proyecto necesita un indicador de capacidad económica municipal para calcular la tasa de esfuerzo (alquiler / ingresos).
+**Fecha:** 2026-10-29
+**Contexto:** El proyecto necesita un indicador de capacidad económica municipal para calcular la tasa de esfuerzo (alquiler / ingresos joven).
 
-## Problema
+## Fuentes verificadas
 
-No existe salario municipal por edad disponible gratuitamente:
-- INE salarios por edad (`ine_salarios_edad.csv`) es **nacional** (1.372,8 € para 16-24 años).
-- Eustat no publica salario municipal por edad.
-- Observatorio Vasco de la Juventud no ofrece dato municipal.
+1. **OVJ (Observatorio Vasco de la Juventud)** — Irekia, 13/10/2025:
+   - Salario neto medio asalariado 18-34 años (2024, pagas prorrateadas): **1.564 €/mes**
+   - Salario neto medio asalariado 16-29 años (2024): **1.381 €/mes**
+   - Fuente URL: https://www.irekia.euskadi.eus/es/news/105137
+   - Archivo raw: `data/raw/ovj_salario_joven_2024.json`
 
-## Decisión
+2. **Eustat renta edad** — `data/raw/eustat_renta_edad.csv` (2024, sexo Total, CAE):
+   - Renta fiscal media 18-19 años: 1.599 €/año
+   - Renta fiscal media 20-24 años: 8.156 €/año
+   - Renta fiscal media 25-29 años: 20.109 €/año
+   - Renta fiscal media Total CAE: 28.170 €/año
 
-Usar la **renta media municipal (Eustat, 2024)** como proxy de capacidad económica.
+## Proxies calculados
 
-### Justificación
-1. La renta municipal captura el nivel de ingresos del hogar, que es el determinante principal de la capacidad de pago del alquiler.
-2. Es el único indicador económico disponible a nivel municipal para los 252 municipios.
-3. La correlación Pearson renta vs alquiler es r = 0.2094 (débil), lo que indica que el precio de alquiler no se explica únicamente por la renta local. Esto se documentará en el informe final.
+| Proxy | Fórmula | Ratio | Esfuerzo (mediana) |
+|-------|---------|-------|-------------------|
+| Fiscal (media simple 3 tramos) | (1599+8156+20109)/3 / 28170 | 0,3534 | 76,3% (max) |
+| Salarial 18-34 (OVJ) | 1564*12 / 28170 | 0,6662 | 40,5% (min) |
+| Salarial 16-29 (OVJ) | 1381*12 / 28170 | 0,5883 | — |
 
-### Limitaciones
-- La renta es un proxy, no un salario. No refleja la distribución por edad ni la precariedad juvenil.
-- Mezclar renta (2024) con alquiler (2024) es coherente temporalmente.
-- Para una defensa rigurosa, se debe advertir que la tasa de esfuerzo calculada es orientativa, no exacta.
+## Rango de esfuerzo
 
-### Alternativas descartadas
-- Salario nacional (INE): no es municipal, inútil para ranking.
-- Simular salario municipal: prohibido (los datos deben ser reales).
-- Observatorio Vasco de la Juventud: sin dato municipal.
+- **Esfuerzo mínimo (salarial):** mediana 40,5% — asume renta joven = salario neto asalariado.
+- **Esfuerzo máximo (fiscal):** mediana 76,3% — asume renta joven = media simple de tramos fiscales.
+- **Conclusión:** el esfuerzo real está en el intervalo **[40,5% – 76,3%]**, no en un único valor.
 
-### Referencia en código
-- `renta_municipal_completa.csv` → campo `renta_eustat` (Euros/año, 2024).
-- `transform/completar_alquiler_comarca.py` → usa renta como proxy en análisis.
+## Limitaciones
+
+- El ratio fiscal es media simple (no ponderada por población) porque Eustat no publica población por tramo de edad a nivel municipal ni CAE.
+- El salario OVJ es para Euskadi (CAE), no municipal. Se aplica como ratio uniforme a la renta personal total municipal.
+- Mezcla de fuentes: renta fiscal (Eustat, 2024) + salario neto (OVJ, 2024). Ambos de 2024.
+- Brecha sexo: OVJ publica series por sexo (hombres 1.566-1.498, mujeres 1.318-1.299 en 2022, último dato por sexo). Para 2024 solo hay total.
+
+## Referencia en código
+
+- `transform/calcular_renta_joven.py` → genera `data/procesado/dim_municipios_enriquecido.csv`
+- Campos: `renta_joven_fiscal_proxy`, `renta_joven_salarial_18_34`, `renta_joven_salarial_16_29`, `esfuerzo_min_pct`, `esfuerzo_max_pct`
+- Fuente raw: `data/raw/ovj_salario_joven_2024.json` (añadido sin modificar existentes)
+
+## Alternativas descartadas
+
+- Eustat PXWeb (PX_173402): solo da distribución por decil de renta familiar, no renta media por edad por TH. No útil.
+- Valores de 2021 (1273€, 1558€ del Observatorio Vasco de la Vivienda): no comparables con datos 2024.
+- Simular salario municipal: prohibido (datos reales).
 PY

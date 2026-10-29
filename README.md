@@ -64,7 +64,7 @@ flowchart LR
 | 9 | Gráficos desde PyMongo | ⬜ Pendiente |
 | 10 | Informe, arquitectura y demo | ⬜ Pendiente |
 
-Tests del contrato: `54 passed, 0 xfail` (salarios + alquiler corregido).
+Tests del contrato: `59 passed, 0 xfail` (54 originales + 5 nuevos de inmutabilidad raw).
 
 ## 📁 Estructura
 
@@ -83,7 +83,9 @@ bigdata-vivienda-euskadi/
 │   ├── 06_ine_api.py             INE wstempus (población, hogares, urbanos)
 │   ├── 07_ine_salarios.py        INE EPA (salarios, nacional)
 │   ├── 08_pisos_scraper.py       Scraping Pisos.com
-│   ├── 09_realtyapi.py           Idealista vía RealtyAPI (opcional)
+│   ├── 10_ovj_salario.py        OVJ salario joven (scraping Irekia, 1564€/1381€)
+│   ├── 22_geo_areas_funcionales.py GeoEuskadi shapefile → 15 áreas funcionales
+│   ├── 23_certificados_energeticos.py Open Data Euskadi certificados energéticos (6 CSVs)
 │   ├── 16_serpavi_renta.py       SERPAVI/MIVAU renta fiscal municipal (descarga)
 │   ├── 17_osrm_tiempos.py        OSRM minutos de conducción a capitales (API)
 │   ├── 18_lanbide_paro_juvenil.py Lanbide paro juvenil municipal (descarga)
@@ -107,7 +109,12 @@ bigdata-vivienda-euskadi/
 │   ├── completar_alquiler_comarca.py Agrega alquiler comarcal a los 93 municipios sin dato
 │   ├── enriquecer_json_anidado.py  Enriquece anuncios con ubicacion/equipamiento
 │   ├── add_metadata_fingerprint.py _metadata + property_fingerprint
-│   └── add_geojson.py           location 2dsphere para MongoDB (Fotocasa 471/471)
+│   ├── add_geojson.py           location 2dsphere para MongoDB (Fotocasa 471/471)
+│   ├── calcular_renta_joven.py   Proxy renta joven (ratio 0,3534 + OVJ) → dim_municipios_enriquecido.csv
+│   ├── generar_cert_energetico_municipal.py Open Data Euskadi cert. energético → 252 mun
+│   ├── generar_dashboard_visual.py 4 gráficos PNG + HTML
+│   ├── generar_dashboard_completo.py 8 gráficos PNG + HTML (7 bloques A-G)
+│   ├── auditoria_duckdb.py       Auditoría DuckDB (27 archivos)
 ├── analysis/          Aggregation Pipeline (pendiente)
 ├── visualization/     Gráficos (pendiente)
 ├── notebooks/         Informe de resultados (pendiente)
@@ -343,7 +350,7 @@ completos.
 | euskadi.eus | CSV | No | Emancipación juvenil (16 indicadores) |
 | b5m Gipuzkoa | API JSON | No | Límites municipales, distancias (solo Gipuzkoa) |
 | Open Data Euskadi (geo.euskadi.eus) | SHP | No | Límites municipales Euskadi completo (251) |
-| Open Data Euskadi (opendata.euskadi.eus) | ODS/CSV | No | EMAL, Etxebide VPO, GTFS, SEPE/Lanbide |
+| Open Data Euskadi (opendata.euskadi.eus) | ODS/CSV | No | EMAL, Etxebide VPO, GTFS, SEPE/Lanbide, certificados energéticos (6 CSVs, 283K registros) |
 | LANBIDE | Web/CSV | No | Paro registrado por municipio (mensual) |
 | Fotocasa | Scraping | No | ~470 anuncios reales de alquiler |
 | Pisos.com | Scraping | No | ~218 anuncios de alquiler |
@@ -376,6 +383,9 @@ completos.
 | `municipios_euskadi.geojson` | 251 polígonos municipales (CAPV completo) |
 | `distancias_capitales.csv` | 252 municipios con distancia a Bilbao, Donostia, Vitoria |
 | `distancias_municipios.json` | 63.504 pares de distancias (Haversine, 252×252) |
+| `cert_energetico_municipal_252.csv` | 252 municipios con distribución real A-G (Open Data Euskadi) |
+| `dim_municipios_enriquecido.csv` | 252×44 con ratio fiscal/salarial y esfuerzo [40.5%-76.3%] |
+| `municipio_area_funcional_ecvi.csv` | 252 municipios → 15 áreas funcionales ECVI |
 | `dim_municipios.json/csv` | 252 municipios canónicos (tabla de verdad) |
 | `udalmap_empleo.json/csv` | 252 municipios, 24 indicadores (actividad, ocupación, paro Lanbide, VPO, renta...) |
 | `emal_fianzas.json/csv` | 730 registros (fianzas de alquiler, 2016-2025) |
@@ -402,6 +412,7 @@ completos.
   Depende de MongoDB levantado y de los datos limpios.
 - **Cobertura de anuncios (71/252, solo 4 con n≥30):** es la limitación principal del
   ranking municipal fino. Los municipios sin datos se marcan “sin dato”, no se imputan.
+  Mejorado con certificados energéticos (252/252) y áreas funcionales ECVI (252/252).
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal
   para los 93 faltantes (`alquiler_comarca_completado.csv`). El valor es comarcal, no
   municipal; se documenta el `nivel_geografico`.
@@ -410,6 +421,8 @@ completos.
 - **Distancias completas (252×252):** generadas con Haversine (`distancias_municipios.json`),
   pero solo Gipuzkoa tiene distancia por carretera (b5m). Álava y Bizkaia usan
   aproximación por centroides.
+- **Certificado energético (252/252):** RESUELTO con Open Data Euskadi (registro oficial).
+  Distribución real A-G por municipio en `cert_energetico_municipal_252.csv`.
 - **Código INE de Araba en distancias (4 dígitos):** corregido en
   `transform/enriquecer_codigo_ine.py`, pero queda verificar que el join funciona en
   todos los módulos.

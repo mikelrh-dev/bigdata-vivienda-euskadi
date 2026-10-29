@@ -33,16 +33,36 @@
 | B. Enriquecer GTFS | `transform/enriquecer_gtfs_conectividad.py` | 13 ZIPs en `data/raw/gtfs/` + `municipios_euskadi.geojson` | `data/procesado/transporte_paradas_municipio_enriquecido.csv` (252) | D2: 6→9 |
 | C. Enriquecer equipamiento RealtyAPI | `transform/enriquecer_equipamiento_realtyapi.py` | `anuncios_unificados.json` + `anuncios_realtyapi.json` | `anuncios_unificados.json` + `.csv` actualizados | C4/C5: parcial (139/840) |
 
+## Quick wins silver (post-Tier2/Tier3)
+
+| Tarea | Script / Comando | Entrada | Salida | Impacto |
+|---|---|---|---|---|
+| paradas_por_1000_hab | inline Python | `transporte_paradas_municipio_enriquecido.csv` + `eustat_demografia_renta_252.csv` | `transporte_paradas_municipio_enriquecido.csv` (252, 0 nulos) | D2: 6→9 (paradas_por_1000_hab derivado) |
+| Fingerprint duplicados | `transform/generar_fingerprint.py` | `anuncios_unificados.json` (840) | `anuncios_unificados.csv` (840, 727 únicos, 113 duplicados = 13.45%) | trazabilidad de duplicados |
+| Cert energético moda | inline Python | `anuncios_fotocasa_detalle.json` (470, 3 nulos) | `cert_energetico_moda_municipio.csv` (60 municipios) | C5: 6→7 (parcial) |
+
 ## Relación con inventario de datos
 
-- `docs/inventario_datos.md` inventaria los **302 archivos crudos** en `data/raw/` y **93 archivos** en `data/procesado/`.
-- `data/raw/` no se modificó (solo lectura); la única adición raw nueva es `areas_funcionales_municipios.csv` (generada por `extract/22_geo_areas_funcionales.py`).
-- Tras Tier2/Tier3, `data/procesado/` contiene los derivados listados arriba.
+- `docs/inventario_datos.md` inventaria los **303 archivos crudos** en `data/raw/` y **94 archivos** en `data/procesado/`.
+- `data/raw/` no se modificó (solo lectura); la única adición raw nueva es `areas_funcionales_municipios.csv` y `ovj_salario_joven_2024.json` (añadidos sin modificar existentes).
+- Tras Tier2/Tier3 + quick wins, `data/procesado/` contiene los derivados listados arriba + `cert_energetico_moda_municipio.csv`.
 
-## Limitaciones documentadas
+## Certificados energéticos (Open Data Euskadi) — nuevo (2026-10-29)
+
+- `extract/23_certificados_energeticos.py` → descarga 6 CSVs (3 territoriales + 3 ciudades) de certificados de eficiencia energética.
+- `transform/generar_cert_energetico_municipal.py` → agrega por municipio: moda + distribución A-G. **252/252 municipios con datos reales** (antes 60/252 con moda de anuncios).
+- Raw: `certificados_energeticos_{araba,bizkaia,gipuzkoa,bilbao,donostia,vitoria}_completo.csv` (9 archivos incluyendo v2).
+- Procesado: `cert_energetico_municipal_252.csv` (252×11).
+- Fuente: Open Data Euskadi (registro oficial de certificados de eficiencia energética).
+- Impacto: C5 sube de 7 a 8 (de proxy a dato real por municipio).
+
+## Limitaciones documentadas actualizadas
 
 - `poblacion_joven_15_29` queda null en Eustat (solo grupos 0-19, 20-64, ≥65); se estima en `poblacion_joven_municipal.csv`.
 - ECVI solo cubre territorios, áreas funcionales y 7 municipios >40k hab.
 - Anuncios unificados: solo Fotocasa tiene `equipamiento` array; Pisos/RealtyAPI vacío.
 - Modalidad inferida por heurística (temporal si `alquiler_temporal`=true, habitación si tipo contiene "habitación", resto larga_estancia).
+- Cert. energético: ahora 252/252 municipios con distribución real (antes 60/252 con moda de anuncios).
 - Estimación de población 15-29 es aproximación, no dato real.
+- `operadores` en transporte: 51 nulos (municipios sin operador GTFS registrado).
+- Cert energético: solo 60 municipios con moda (de 470 anuncios Fotocasa, 3 nulos cert).
