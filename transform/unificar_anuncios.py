@@ -1,15 +1,48 @@
 """Unifica anuncios de Fotocasa, Pisos y RealtyAPI en esquema único para MongoDB."""
 from __future__ import annotations
-import json, os
+import json, os, glob as _glob
 import pandas as pd
 from muni_resolve import resolver_codigo
 
 RAW = os.path.join("data", "raw")
 OUT = os.path.join("data", "procesado")
 
+REQUIRED_KEYS = ("precio_eur", "municipio")
+
+
 def load_json(name):
     with open(os.path.join(RAW, name), encoding="utf-8") as f:
-        return json.load(f)["datos"]
+        payload = json.load(f)
+    if isinstance(payload, dict) and "datos" in payload:
+        return payload["datos"]
+    return payload
+
+
+def load_payload(name):
+    with open(os.path.join(RAW, name), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _es_lote_valido(path, payload):
+    """Schema guard para lotes dirigidos append-only."""
+    if not isinstance(payload, dict):
+        print("Schema guard: payload no es dict ->", path)
+        return None
+    datos = payload.get("datos")
+    if not isinstance(datos, list):
+        print("Schema guard: 'datos' no es lista ->", path)
+        return None
+    meta = payload.get("metadata", {})
+    if "n_anuncios" in meta and meta["n_anuncios"] != len(datos):
+        print(f"Schema guard: metadata.n_anuncios={meta['n_anuncios']} != len(datos)={len(datos)} ->", path)
+    for it in datos[:5]:
+        if not isinstance(it, dict):
+            print("Schema guard: registro no-dict ->", path)
+            return None
+        if not any(k in it for k in ("precio_eur", "municipio", "municipio_busqueda")):
+            print("Schema guard: claves básicas ausentes ->", path)
+            return None
+    return datos
 
 def equipamiento_fotocasa(item):
     eq = []
@@ -144,7 +177,6 @@ def transform_realtyapi(items):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    import glob as _glob
     fc = load_json("anuncios_fotocasa_enriquecido_geo.json")
     pis = load_json("anuncios_pisos_enriquecido_geo.json")
     ra = load_json("anuncios_realtyapi.json")
@@ -152,14 +184,26 @@ def main():
     recs += transform_fotocasa(fc)
     recs += transform_pisos(pis)
     recs += transform_realtyapi(ra)
-    # Integrar lotes dirigidos (append-only) si existen
-    for path in sorted(_glob.glob(os.path.join(RAW, "anuncios_pisos_dirigido_*.json"))):
-        try:
-            items = load_json(os.path.basename(path))
-            recs += transform_pisos(items)
-            print("Integrado lote dirigido:", os.path.basename(path), len(items))
-        except Exception as e:
-            print("Aviso: no se pudo integrar", path, e)
+    # Integrar lotes dirigidos (append-only) con schema guard
+    import glob as _glob
+    for pattern, transform_fn, etiqueta in [
+        ("anuncios_pisos_dirigido_*.json", transform_pisos, "pisos"),
+        ("anuncios_fotocasa_dirigido_*.json", transform_fotocasa, "fotocasa"),
+    ]:
+        for path in sorted(_glob.glob(os.path.join(RAW, pattern))):
+            base = os.path.basename(path)
+            try:
+                payload = load_payload(base)
+            except Exception as e:
+                print(f"Aviso: no se pudo leer {base}: {e}")
+                continue
+            datos = _es_lote_valido(path, payload)
+            if datos is None:
+                print(f"Schema guard: lote saltado -> {base}")
+                continue
+            nuevos = transform_fn(datos)
+            recs += nuevos
+            print(f"Integrado lote {etiqueta}: {base} -> {len(datos)} registros, {len(nuevos)} transformados")
     # Deduplicar por portal + id_anuncio (mantener primero)
     seen = set()
     deduped = []
