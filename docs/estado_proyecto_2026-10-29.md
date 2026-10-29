@@ -13,7 +13,7 @@
 - **Silver regenerado y verificado byte-idéntico.** `data/procesado/` contiene 97 archivos de datos (más `.gitkeep`); los comunes con `data/procesado_pre_silver` son byte-idénticos (MD5), sin regresiones de filas/columnas/nulos.
 - **Transforms alineados con la regla bronce.** Los 8 transforms del grupo A ahora escriben a `data/procesado/` (y los 8 del grupo B ya lo hacían); ninguno escribe en `data/raw/` en modo silver.
 - **Tests en verde.** `pytest` → **59 passed** en 2,84 s (`tests/test_contrato.py`, `tests/test_crudos.py`, `tests/test_raw_inmutable.py`).
-- **Cobertura analítica.** 252 municipios de referencia; alquiler completo 252 (159 directo Eustat + 93 por comarca); 840 anuncios unificados en 85 municipios; 8,6/10 de grado medio en 42 preguntas objetivo.
+- **Cobertura analítica.** 252 municipios de referencia; alquiler completo 252 (159 directo Eustat + 93 por comarca); 871 anuncios unificados en 85 municipios; GTFS paradas_por_1000_hab resuelto (0 nulos); 8,6/10 de grado medio en 42 preguntas objetivo.
 - **Pendiente principal.** Infraestructura y análisis (HDFS, MongoDB, Kafka, agregaciones, visualización, informe) — Fases 2 a 9 del plan. `data/resultados/` sigue vacío.
 
 ---
@@ -97,7 +97,7 @@
 `filtrar_outliers.py`, `limpiar_ecvi.py`, `limpiar_eustat_demografia.py`, `normalizar_json_crudos.py`, `unificar_anuncios.py`, `enriquecer_equipamiento_realtyapi.py`, `enriquecer_gtfs_conectividad.py`, `generar_fingerprint.py`.
 
 ### Nuevos transforms recientes (no listados arriba)
-`calcular_renta_joven.py`, `generar_cert_energetico_municipal.py`, `generar_dashboard_completo.py`, `generar_dashboard_visual.py`, `auditoria_duckdb.py`, `asignar_area_funcional_ecvi.py`, `generar_analisis_variables_base.py`, `generar_emancipacion_tier3_93.py`, `generar_municipios_faltantes_93.py`, `generar_poblacion_joven_municipal.py`.
+`calcular_renta_joven.py`, `generar_cert_energetico_municipal.py`, `generar_dashboard_completo.py`, `generar_dashboard_visual.py`, `auditoria_duckdb.py`, `asignar_area_funcional_ecvi.py`, `generar_analisis_variables_base.py`, `generar_emancipacion_tier3_93.py`, `generar_municipios_faltantes_93.py`, `generar_poblacion_joven_municipal.py`, `completar_alquiler_comarca.py` (IDW), `calcular_tension_social.py`, `generar_mercado_area_funcional.py`.
 
 ### Protección de raw
 
@@ -176,15 +176,16 @@
 |---|---:|
 | Municipios de referencia | 252 / 252 |
 | Alquiler oficial (Eustat 2024) directo | 159 / 252 |
-| Alquiler completado por comarca | 93 / 252 (nivel_geografico=comarcal) |
-| Anuncios unificados (Fotocasa+Pisos+RealtyAPI) | 840 anuncios, 85 municipios |
-| Municipios con ≥30 anuncios | 7 |
+| Alquiler completado por IDW (5 vecinos) | 93 / 252 (metodo_imputacion='IDW_5_vecinos') |
+| Anuncios unificados (Fotocasa+Pisos+RealtyAPI) | 871 anuncios, 85 municipios |
+| Dimensión enriquecida | 252 × 65 (salario ajustado, tensión social, brecha género, desempleo juvenil, etc.) |
+| Municipios con ≥30 anuncios | 7 (6 canónicos: Donostia dividida en 2 variantes) |
 | Municipios con 5–29 anuncios | 23 |
 | Municipios con <5 anuncios | 55 |
 | Tipología de mercado | 6 Nivel1 / 41 Nivel2 / 205 Nivel3 |
 | Lanbide paro juvenil | 252 / 252 |
 | Udalmap empleo + indicadores | 252 / 252 |
-| Transporte público enriquecido (GTFS) | 252 / 252 (expediciones_dia sin nulos; paradas_por_1000_hab = 252 nulos) |
+| Transporte público enriquecido (GTFS) | 252 / 252 (expediciones_dia y paradas_por_1000_hab sin nulos; operadores nulo en 51) |
 | Distancias OSRM a capitales | 252 / 252 |
 | Renta municipal (hogar/atlas) | 252 / 252 |
 | Renta joven estimada (16–29) | 252 / 252 (proxy transparente) |
@@ -208,12 +209,31 @@
 
 - Renta joven estimada es **proxy transparente** (factor ×0,3534), no salario real municipal; población activa joven municipal nula (`poblacion_joven_15_29` = 252 nulos).
 - Anuncios: solo **7 municipios con n≥30**, 55 con n<5; no se defiende ranking municipal fino.
+- Outliers de superficie marcados con `es_outlier_superficie` (5 anuncios >500 m²); valor original conservado.
 - ECVI: solo 7 municipios + 15 áreas funcionales + 7 territorios; `precio_m2_usada_eur` nulo en 29/29; mapeo municipio→área funcional ya disponible (252/252).
 - Certificado energético agregado por municipio (252/252) desde Open Data Euskadi; coste energético real aún pendiente.
 - Stock de VPO municipal no disponible; Etxebide mide solicitudes (≠ viviendas disponibles).
-- `transporte_paradas_municipio_enriquecido.csv`: `paradas_por_1000_hab` nulo en los 252 (derivable con población); `operadores` nulo en 51.
+- `transporte_paradas_municipio_enriquecido.csv`: `paradas_por_1000_hab` sin nulos (0 nulos tras corrección); `operadores` nulo en 51.
 - EMAL solo 73 municipios; SERPAVI 249/252 (89 nulos); Idealista no automatizado.
 - GTFS: `enriquecer_gtfs_conectividad.py` lee `data/raw/municipios_euskadi.geojson`, mientras `generar_distancias.py` ahora escribe el geojson filtrado a `data/procesado/municipios_euskadi_252.geojson` (posible inconsistencia de ruta si se reejecuta la cadena).
+
+### Extracción y entity resolution (auditoría framework)
+
+- `extract/05_fotocasa_scraper.py` no persiste HTML crudo → incumple EXTRACCION-01.
+- `extract/09_realtyapi.py` tiene literal `PY` suelto (línea 269) → NameError al importar.
+- `extract/08_pisos.py` no extrae `superficie_m2` ni `habitaciones` (solo precio/título/subtítulo/enlace/tipo).
+- `extract/04_b5m.py` trunca distancias a 5.000 de ~180.000 pares.
+- `EQUIVALENCIAS_EXTRA` eliminado (dead code).
+- Variantes Fotocasa (Arrankudiaga/Zollo, Arrasate, Donostia, Vitoria) mapeadas a canónico en unificación (Donostia unificada 130 anuncios).
+- `distancias_capitales.csv`: 259 filas (252 Euskadi + 5 limítrofes + 2 duplicados por `codigo_ine`); filtrar a dim para análisis.
+
+### Conclusiones recientes (features v2)
+
+- **IDW**: los 93 municipios sin dato directo se imputan por distancia; mantiene gradientes espaciales y evita el “mapa plano” comarcal.
+- **Salario ajustado**: mediana 1.402 € (base 1.381 €); el esfuerzo mediano sube 0,7 pp (40,9 → 41,6 %); el ajuste ±15 % solo afecta a colas de paro joven.
+- **Tensión social**: 76 municipios en tensión alta (áreas caras + alta demanda Etxebide), 93 media, 83 baja.
+- **Compra vs alquiler**: ratio 237–557 meses de alquiler; Urola Kosta y Donostialdea los más desequilibrados; Ríoja Alavesa el más accesible.
+- **Limitaciones**: entity resolution (Donostia dividida), superficie en pisos, raw HTML fotocasa; los nuevos features son proxy/estimación, no dato real.
 
 ### Infraestructura y análisis (Fases 4–10)
 
