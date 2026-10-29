@@ -19,5 +19,18 @@ openpyxl==3.1.5
 pytest==8.3.3
 shapely==2.0.6
 
+# DuckDB (consultas SQL sobre CSVs)
+duckdb==2.0.0
+
+# Geo (shapefile → GeoJSON, point-in-polygon)
+pyproj==3.8.0
+pyshp==3.1.6
+
+# Validación de datos (opcional, auditoría)
+# frictionless==5.21.0
+
 # Opcional: para el informe
 jupyter==1.1.1
+
+# Opcional: dashboards interactivos (Plotly)
+# plotly>=5.0.0
