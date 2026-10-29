@@ -13,6 +13,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 from _common import RAW_DIR, get_logger  # noqa: E402
 log = get_logger("f1_renta")
 
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
+
 def main() -> int:
     import pandas as pd
     rc = pd.read_csv(RAW_DIR / "renta_municipal_completa.csv", dtype=str, encoding="utf-8-sig")
@@ -31,9 +34,10 @@ def main() -> int:
                        "renta_personal_eustat=personal (Eustat, secundaria). No mezclar.",
     })
     # esfuerzo usa hogar; si faltara, fallback a personal con factor declarado
-    out.to_csv(RAW_DIR / "renta_municipal_referencia.csv", index=False, encoding="utf-8-sig")
+    out.to_csv(PROC_DIR / "renta_municipal_referencia.csv", index=False, encoding="utf-8-sig")
     log.info("REFERENCIA: 252/252, hogar media=%.0f, personal media=%.0f",
-             out["renta_hogar_atlas_eur"].mean(), out["renta_personal_eustat_eur"].mean())
+             pd.to_numeric(out["renta_hogar_atlas_eur"], errors="coerce").mean(),
+             pd.to_numeric(out["renta_personal_eustat_eur"], errors="coerce").mean())
     log.info("CSV -> renta_municipal_referencia.csv (252)")
     return 0
 

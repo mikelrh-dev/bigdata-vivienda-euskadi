@@ -19,6 +19,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 from _common import RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: E402
 
 log = get_logger("dim_municipios")
+PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _norm(texto: str) -> str:
@@ -219,7 +221,7 @@ def main() -> int:
 
     # Guardar JSON
     guardar_json(
-        RAW_DIR / "dim_municipios.json",
+        PROC_DIR / "dim_municipios.json",
         registros,
         metadata={
             "fuente": "Eustat (codigo INE + nombre canonico) + equivalencias manuales",
@@ -230,7 +232,7 @@ def main() -> int:
     )
 
     # Guardar CSV plano (sin listas)
-    csv_path = RAW_DIR / "dim_municipios.csv"
+    csv_path = PROC_DIR / "dim_municipios.csv"
     with csv_path.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
         w.writerow(["codigo_ine", "nombre_canonico", "territorio", "nombre_normalizado", "variantes",
