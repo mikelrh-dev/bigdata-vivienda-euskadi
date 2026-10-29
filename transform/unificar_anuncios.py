@@ -128,6 +128,7 @@ def transform_realtyapi(items):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
+    import glob as _glob
     fc = load_json("anuncios_fotocasa_enriquecido_geo.json")
     pis = load_json("anuncios_pisos_enriquecido_geo.json")
     ra = load_json("anuncios_realtyapi.json")
@@ -135,7 +136,25 @@ def main():
     recs += transform_fotocasa(fc)
     recs += transform_pisos(pis)
     recs += transform_realtyapi(ra)
-    # normalizar codigo_ine en ubicacion
+    # Integrar lotes dirigidos (append-only) si existen
+    for path in sorted(_glob.glob(os.path.join(RAW, "anuncios_pisos_dirigido_*.json"))):
+        try:
+            items = load_json(os.path.basename(path))
+            recs += transform_pisos(items)
+            print("Integrado lote dirigido:", os.path.basename(path), len(items))
+        except Exception as e:
+            print("Aviso: no se pudo integrar", path, e)
+    # Deduplicar por portal + id_anuncio (mantener primero)
+    seen = set()
+    deduped = []
+    for r in recs:
+        key = (r.get("portal"), r.get("id_anuncio"))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(r)
+    recs = deduped
+    print("Anuncios tras dedup:", len(recs))
     for r in recs:
         ci = r["ubicacion"].get("codigo_ine")
         if ci is not None:
