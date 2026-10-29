@@ -113,7 +113,7 @@ Tras ejecutar micro-tareas A/B/C (solo datos, sin MongoDB), las puntuaciones mej
 | F5 Compraventa vs alquiler | 6/10 | 6/10 | Sin mapeo municipio→Área Funcional; limitación estructural |
 
 **Puntuación global: 7.0 → 8.2/10** (profesional con limitaciones documentadas).  
-Limitaciones restantes: F5 (ECVI sin mapeo municipal), B6 (ocupación ≠ desempleo), C4/C5 (solo 139/840 anuncios enriquecidos).
+Limitaciones restantes: F5 (ECVI sin mapeo municipal), B6 (ocupación ≠ desempleo), C4/C5 (solo 139/871 anuncios enriquecidos).
 
 ## Conclusión
 
