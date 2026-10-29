@@ -27,7 +27,7 @@ def main() -> int:
     regs = dim["datos"] if isinstance(dim, dict) else dim
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
     objetivos = json.loads((RAW_DIR.parent / "procesado" / "f4_pisos_objetivo.json").read_text())
-    cliente = Cliente("pisos_f4", delay=2.0, reintentos=2)
+    cliente = Cliente("pisos_f4", delay=3.0, reintentos=2)
     informe, nuevos = [], []
     for cod in objetivos:
         nombre = nombres.get(cod, cod)
@@ -40,6 +40,18 @@ def main() -> int:
             estado = f"FALLO: {type(exc).__name__}: {exc}"
         log.info("%s [%s]: %s", nombre, cod, estado)
         informe.append({"codigo_ine": cod, "municipio": nombre, "estado": estado})
+    # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
+    from datetime import datetime
+    fecha = datetime.now().strftime("%Y%m%d")
+    raw_path = RAW_DIR / f"anuncios_pisos_dirigido_{fecha}.json"
+    guardar_json(raw_path, nuevos, metadata={
+        "fuente": "Pisos.com dirigido F4",
+        "fecha_extraccion": datetime.now().isoformat(),
+        "n_anuncios": len(nuevos),
+        "municipios_objetivo": len(objetivos),
+    })
+    log.info("Lote nuevo guardado en raw: %s (%d anuncios)", raw_path.name, len(nuevos))
+
     # fusionar con existentes
     data = json.loads((RAW_DIR / "anuncios_pisos.json").read_text(encoding="utf-8"))
     meta = data.get("metadata", {})
