@@ -1,10 +1,8 @@
 """Completa alquiler_municipal.csv para los 93 municipios sin dato oficial
-agregando a nivel de comarca (media de los municipios con dato).
+usando imputacion espacial IDW (Inverse Distance Weighting) con los 5 vecinos
+mas cercanos que si tienen dato oficial.
 
 Genera: data/procesado/alquiler_municipal_completo.csv
-
-Los municipios con dato original mantienen nivel_geografico='municipal'.
-Los completados tienen nivel_geografico='comarcal'.
 """
 from __future__ import annotations
 
@@ -15,12 +13,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, get_logger  # noqa: E402
 
 log = get_logger("completar_alquiler_comarca")
 
 PROC_DIR = RAW_DIR.parent / "procesado"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
+
+K_VECINOS = 5
+POTENCIA = 2.0
 
 
 def _cargar_dim() -> dict[str, dict]:
@@ -29,18 +30,15 @@ def _cargar_dim() -> dict[str, dict]:
     return {r["codigo_ine"]: r for r in regs}
 
 
-def _cargar_distancias() -> dict[str, str]:
-    """codigo_ine -> comarca."""
-    import csv as _csv
+def _cargar_distancias_capitales() -> dict[str, str]:
     result = {}
     with (RAW_DIR / "distancias_capitales.csv").open(encoding="utf-8-sig") as fh:
-        for row in _csv.DictReader(fh):
+        for row in csv.DictReader(fh):
             result[row["codigo_ine"]] = row.get("comarca", "")
     return result
 
 
 def _cargar_alquiler() -> dict[str, dict]:
-    """municipio (normalizado) -> fila de alquiler (primer distrito)."""
     result = {}
     with (RAW_DIR / "alquiler_municipal.csv").open(encoding="utf-8-sig") as fh:
         for row in csv.DictReader(fh):
@@ -50,78 +48,99 @@ def _cargar_alquiler() -> dict[str, dict]:
     return result
 
 
-def _normalizar_nombre(nombre: str) -> str:
-    return nombre.strip().lower()
+def _cargar_haversine() -> dict[tuple[str, str], float]:
+    out: dict[tuple[str, str], float] = {}
+    with (PROC_DIR / "distancias_haversine_252.csv").open(encoding="utf-8-sig") as fh:
+        for row in csv.DictReader(fh):
+            try:
+                out[(row["origen_codigo"], row["destino_codigo"])] = float(row["km_haversine"])
+            except (ValueError, TypeError):
+                continue
+    return out
+
+
+def _es_numero(v) -> bool:
+    try:
+        float(v)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 
 def main() -> int:
     dim = _cargar_dim()
-    dist = _cargar_distancias()
+    dist_cap = _cargar_distancias_capitales()
     alquiler = _cargar_alquiler()
+    hav = _cargar_haversine()
 
-    # Mapa nombre_canonico -> codigo_ine
-    nombre_a_codigo = {r["nombre_canonico"]: c for c, r in dim.items()}
+    codigo_a_nombre = {c: r["nombre_canonico"] for c, r in dim.items()}
 
-    # Calcular media de alquiler por comarca (solo municipios con dato)
-    comarca_valores: dict[str, list[dict]] = {}
+    con_dato: set[str] = set()
+    codigo_a_fila_oficial: dict[str, dict] = {}
     for codigo, info in dim.items():
         nombre = info["nombre_canonico"]
         row = alquiler.get(nombre)
-        if row is None:
-            continue
-        comarca = dist.get(codigo, "")
-        comarca_valores.setdefault(comarca, []).append(row)
+        if row is not None:
+            con_dato.add(codigo)
+            codigo_a_fila_oficial[codigo] = row
 
-    comarca_media: dict[str, dict] = {}
-    for comarca, rows in comarca_valores.items():
-        if not rows:
-            continue
-        # Media de las columnas numéricas
-        cols = [k for k in rows[0].keys() if k not in ("territorio", "municipio", "distrito")]
-        media = {}
-        for col in cols:
-            vals = []
-            for r in rows:
-                try:
-                    vals.append(float(r[col]))
-                except (ValueError, TypeError):
-                    pass
-            media[col] = round(sum(vals) / len(vals), 2) if vals else None
-        comarca_media[comarca] = media
+    cols_numericas = [k for k in next(iter(codigo_a_fila_oficial.values())).keys()
+                      if k not in ("territorio", "municipio", "distrito")]
 
-    # Generar lista completa de 252 municipios
     salida = []
     for codigo in sorted(dim.keys()):
         info = dim[codigo]
         nombre = info["nombre_canonico"]
         territorio = info.get("territorio", "")
-        comarca = dist.get(codigo, "")
+        comarca = dist_cap.get(codigo, "")
         row = alquiler.get(nombre)
+
         if row is not None:
             fila = dict(row)
             fila["codigo_ine"] = codigo
             fila["nivel_geografico"] = "municipal"
+            fila["metodo_imputacion"] = "oficial"
             salida.append(fila)
-        else:
-            # Agregar a comarca
-            media = comarca_media.get(comarca, {})
-            fila = {"territorio": territorio, "municipio": nombre, "distrito": "00 (comarcal)"}
-            fila["codigo_ine"] = codigo
-            for col in (row.keys() if row else []):
-                if col not in ("territorio", "municipio", "distrito"):
-                    fila[col] = media.get(col)
-            if not row:
-                # columnas por defecto
-                for col in ["renta_media_eur_m2_media", "renta_media_eur_m2_mediana", "renta_media_eur_m2_p25", "renta_media_eur_m2_p75",
-                            "cuantia_media_eur_mes_media", "cuantia_media_eur_mes_mediana", "cuantia_media_eur_mes_p25", "cuantia_media_eur_mes_p75",
-                            "superficie_media_m2_media", "superficie_media_m2_mediana", "superficie_media_m2_p25", "superficie_media_m2_p75"]:
-                    fila[col] = media.get(col)
-            fila["nivel_geografico"] = "comarcal"
-            salida.append(fila)
+            continue
 
-    # Guardar CSV
-    columnas = ["codigo_ine", "territorio", "municipio", "distrito", "nivel_geografico"] + \
-               [k for k in salida[0].keys() if k not in ("codigo_ine", "territorio", "municipio", "distrito", "nivel_geografico")]
+        vecinos = []
+        for dest in con_dato:
+            km = hav.get((codigo, dest))
+            if km is None or km <= 0:
+                continue
+            vecinos.append((dest, km))
+        vecinos.sort(key=lambda x: x[1])
+        vecinos = vecinos[:K_VECINOS]
+
+        pesos = [1.0 / (km ** POTENCIA) for _, km in vecinos]
+        suma_pesos = sum(pesos)
+
+        fila = {"territorio": territorio, "municipio": nombre, "distrito": "00 (IDW)"}
+        fila["codigo_ine"] = codigo
+        for col in cols_numericas:
+            if suma_pesos == 0:
+                fila[col] = None
+                continue
+            acc = 0.0
+            wsum = 0.0
+            for (dest, km), w in zip(vecinos, pesos):
+                vrow = codigo_a_fila_oficial[dest]
+                val = vrow.get(col)
+                if not _es_numero(val):
+                    continue
+                acc += w * float(val)
+                wsum += w
+            fila[col] = round(acc / wsum, 2) if wsum > 0 else None
+
+        fila["nivel_geografico"] = "comarcal"
+        fila["metodo_imputacion"] = "IDW_5_vecinos"
+        fila["idw_vecinos"] = ";".join(f"{codigo_a_nombre[d]}({km:.1f}km)" for d, km in vecinos)
+        salida.append(fila)
+
+    columnas = ["codigo_ine", "territorio", "municipio", "distrito", "nivel_geografico", "metodo_imputacion", "idw_vecinos"] + \
+               [k for k in salida[0].keys() if k not in ("codigo_ine", "territorio", "municipio", "distrito",
+                                                          "nivel_geografico", "metodo_imputacion", "idw_vecinos")]
+
     ruta_csv = PROC_DIR / "alquiler_municipal_completo.csv"
     with ruta_csv.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=columnas, extrasaction="ignore")
@@ -129,9 +148,8 @@ def main() -> int:
         w.writerows(salida)
 
     n_municipal = sum(1 for r in salida if r.get("nivel_geografico") == "municipal")
-    n_comarcal = sum(1 for r in salida if r.get("nivel_geografico") == "comarcal")
-    log.info("alquiler_municipal_completo: %d municipios (%d municipal, %d comarcal)",
-             len(salida), n_municipal, n_comarcal)
+    n_idw = sum(1 for r in salida if r.get("metodo_imputacion") == "IDW_5_vecinos")
+    log.info("alquiler_municipal_completo: %d municipios (%d municipal, %d IDW)", len(salida), n_municipal, n_idw)
     log.info("CSV -> %s", ruta_csv.name)
     return 0
 
