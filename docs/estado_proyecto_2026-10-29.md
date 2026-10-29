@@ -177,7 +177,7 @@
 | Municipios de referencia | 252 / 252 |
 | Alquiler oficial (Eustat 2024) directo | 159 / 252 |
 | Alquiler completado por IDW (5 vecinos) | 93 / 252 (metodo_imputacion='IDW_5_vecinos') |
-| Anuncios unificados (Fotocasa+Pisos+RealtyAPI) | 871 anuncios, 85 municipios |
+| Anuncios unificados (Fotocasa+Pisos+RealtyAPI) | 872 anuncios, 85 municipios |
 | Dimensión enriquecida | 252 × 65 (salario ajustado, tensión social, brecha género, desempleo juvenil, etc.) |
 | Municipios con ≥30 anuncios | 7 (6 canónicos: Donostia dividida en 2 variantes) |
 | Municipios con 5–29 anuncios | 23 |
