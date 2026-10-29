@@ -179,6 +179,13 @@ def main():
                 r["ubicacion"]["codigo_ine"] = s.zfill(5)
             else:
                 r["ubicacion"]["codigo_ine"] = s if s else None
+        # flag outlier de superficie (no se borra el valor)
+        sup = r.get("superficie_m2")
+        try:
+            supf = float(sup) if sup is not None else None
+        except (ValueError, TypeError):
+            supf = None
+        r["es_outlier_superficie"] = bool(supf is not None and (supf < 10 or supf > 500))
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     pd.DataFrame([{
@@ -188,6 +195,7 @@ def main():
         "precio_eur": r["precio_eur"],
         "superficie_m2": r["superficie_m2"],
         "habitaciones": r["habitaciones"],
+        "es_outlier_superficie": r["es_outlier_superficie"],
         "codigo_ine": r["ubicacion"]["codigo_ine"],
         "municipio": r["ubicacion"]["municipio"],
         "titulo": r.get("titulo"),
