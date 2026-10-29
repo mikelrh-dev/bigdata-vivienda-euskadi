@@ -49,4 +49,20 @@
 - Eustat PXWeb (PX_173402): solo da distribución por decil de renta familiar, no renta media por edad por TH. No útil.
 - Valores de 2021 (1273€, 1558€ del Observatorio Vasco de la Vivienda): no comparables con datos 2024.
 - Simular salario municipal: prohibido (datos reales).
+## Solución 1+2: Estándar OVJ + Housing Wage (aditivo)
+
+**Motivo:** el salario joven municipal no existe públicamente por secreto estadístico (Ley 4/1986 de la Función Estadística Pública). No se inventa ningún salario municipal.
+
+- Solución 1 (OVJ): salario neto real joven = 1.381 €/mes (18-29) y 1.564 €/mes (18-34), certificado por el Observatorio Vasco de la Juventud (2024).
+- Solución 2 (Housing Wage): salario neto necesario para no superar el 30% de esfuerzo = alquiler_medio_mes / 0,30.
+
+Campos añadidos (aditivos, sin eliminar los anteriores):
+- `salario_ovj_neto_mes` (1381,0)
+- `housing_wage_mes`
+- `esfuerzo_ovj_individual_pct`
+- `esfuerzo_ovj_pareja_pct`
+- `brecha_emancipacion_eur` (housing_wage_mes - 1381,0)
+
+Referencia: `transform/calcular_renta_joven.py` → `data/procesado/dim_municipios_enriquecido.csv`.
+
 PY

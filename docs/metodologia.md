@@ -74,3 +74,10 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 - ECVI compraventa se publica por territorio, área funcional y 7 municipios >40k hab.; no es municipal.
 - Cruce en `data/procesado/municipio_area_funcional_ecvi.csv` (252 municipios × área funcional × trimestre × precio medio total/m² libre/usada).
 - Limitación: el precio ECVI asignado a un municipio es el de su área funcional, no un dato municipal directo.
+
+## Estándar OVJ + Housing Wage (aditivo)
+- Solución 1 (OVJ): salario neto real joven = 1.381 €/mes (18-29) y 1.564 €/mes (18-34), certificado por el Observatorio Vasco de la Juventud (2024).
+- Solución 2 (Housing Wage): salario neto necesario para no superar el 30% de esfuerzo = alquiler_medio_mes / 0,30.
+- Motivo: el salario joven municipal no existe por secreto estadístico (Ley 4/1986). No se inventa salario municipal.
+- Campos añadidos: `salario_ovj_neto_mes`, `housing_wage_mes`, `esfuerzo_ovj_individual_pct`, `esfuerzo_ovj_pareja_pct`, `brecha_emancipacion_eur`.
+- Referencia: `transform/calcular_renta_joven.py`.
