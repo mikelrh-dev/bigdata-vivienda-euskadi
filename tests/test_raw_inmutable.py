@@ -45,3 +45,49 @@ def test_raw_hashes_manifest():
         if real != esperado:
             errores.append(f"hash distinto: {ruta_rel}")
     assert not errores, "Integridad raw rota:\n" + "\n".join(errores)
+
+
+EXCLUDED_FROM_MANIFEST = {
+    ".FROZEN",
+    ".gitkeep",
+    "ingestion_manifest.json",
+    "manifest_sha256.txt",  # copia legacy del manifiesto (auto-referencial)
+}
+
+
+def test_raw_manifest_complete():
+    """Todo fichero de data/raw (salvo excepciones) esta en el manifest."""
+    lines = [ln for ln in MANIFEST.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    listed = set()
+    for ln in lines:
+        parts = ln.split(None, 1)
+        if len(parts) != 2:
+            continue
+        ruta_rel = parts[1].lstrip("*").strip().lstrip()
+        listed.add(ruta_rel)
+    actual = set()
+    for p in RAW.rglob("*"):
+        if not p.is_file():
+            continue
+        if p.name in EXCLUDED_FROM_MANIFEST:
+            continue
+        actual.add(str(p.relative_to(RAW)).replace("\\", "/"))
+    missing = actual - listed
+    extra = listed - actual
+    assert not missing, "ficheros sin listar en manifest:\n" + "\n".join(sorted(missing))
+    assert not extra, "ficheros listados que no existen:\n" + "\n".join(sorted(extra))
+
+
+def test_raw_guard_reason():
+    """assert_raw_writable valida el reason (no escribe nada)."""
+    import sys
+    if str(ROOT / "transform") not in sys.path:
+        sys.path.insert(0, str(ROOT / "transform"))
+    from _raw_guard import assert_raw_writable
+    assert_raw_writable("test ok")
+    with pytest.raises(ValueError):
+        assert_raw_writable("")
+    with pytest.raises(ValueError):
+        assert_raw_writable(None)
+    with pytest.raises(ValueError):
+        assert_raw_writable("   ")

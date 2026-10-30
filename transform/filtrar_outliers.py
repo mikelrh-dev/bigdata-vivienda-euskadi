@@ -174,7 +174,7 @@ def _guardar(nombre_base: str, anuncios: list[dict]) -> None:
         anuncios,
         metadata={
             "fuente": f"filtrado heuristico de {nombre_base}",
-            "fecha": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
+            "fecha": "2026-10-30T00:00:00",
             "n_total": len(anuncios),
             "n_outliers": sum(1 for a in anuncios if a.get("outlier")),
             "umbrales": {

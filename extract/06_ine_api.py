@@ -113,13 +113,29 @@ def main() -> int:
                 "tabla": tabla,
                 "descripcion": TABLAS[tabla],
                 "n_series": len(series),
+                "n_registros": len(registros),
                 "registros": registros,
+                "payload_original": series,
             },
             metadata={
                 "fuente": "INE wstempus API",
                 "url": f"{BASE_URL}/{tabla}",
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                 "n_series": len(series),
+                "n_registros": len(registros),
+            },
+        )
+
+        # Payload original (respuesta cruda de la API) guardado aparte
+        guardar_json(
+            RAW_DIR / f"ine_{tabla}_raw.json",
+            series,
+            metadata={
+                "fuente": "INE wstempus API (payload original)",
+                "url": f"{BASE_URL}/{tabla}",
+                "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+                "n_series": len(series),
+                "n_registros": len(series),
             },
         )
 

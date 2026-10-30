@@ -52,7 +52,7 @@ def main() -> int:
 
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     out_path = PROC / "dim_municipios_enriquecido.csv"
-    dim.to_csv(out_path, index=False, encoding="utf-8")
+    dim.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(dim)} filas, {len(dim.columns)} cols)")
     print(dim["tension_categoria"].value_counts().to_string())
     print(f"tension media={dim['tension_demanda_social'].median():.1f}")

@@ -100,7 +100,7 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ⬜ Pendiente |
 | 10 | Informe, arquitectura y demo | ⬜ Pendiente |
 
-Tests del contrato: `59 passed, 0 xfail`.
+Tests del contrato: `66 passed, 0 xfail` (59 originales + 7 guardrails de inmutabilidad raw).
 
 ## 📁 Estructura
 
@@ -128,15 +128,15 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 317 |
-| Archivos silver | 101 |
+| Archivos raw (bronce) | 317 (316 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos silver | 103 |
 | Anuncios unificados | 873 (570 residencial + 303 temporal) en 84 municipios |
 | Anuncios residenciales | 570 en 76 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
 | Municipios sin anuncios residenciales | 176 |
 | Municipios robustos (n≥30) | 6 (Bilbao, Donostia, Vitoria-Gasteiz, Getxo, Abanto, Ayala) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 59 passed |
+| Tests | 66 passed |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -231,8 +231,11 @@ completos.
 ## ✅ Verificación
 
 - Contrato: `openspec/specs/contrato-reto/spec.md`
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q`
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (66 passed)
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
+- Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
+  solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
+  (lista blanca de 2 scripts). Bloqueado por `tests/test_raw_guardrails.py`, no por convención.
 
 ## ⚠️ Cosas que faltan
 
@@ -263,7 +266,7 @@ Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` 
 - Proxy renta (falacia ecológica): renta municipal aplicada homogéneamente, no captura precariedad juvenil.
 - Emancipación solo a nivel CAE, no municipal.
 - Mezcla de años: anuncios 2026 vs alquiler/renta 2024.
-- VPO 93,6% ceros: sin stock real.
+- VPO 83.73% ceros: sin stock real.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
 - Infraestructura pendiente: HDFS, MongoDB, Kafka no implementados.

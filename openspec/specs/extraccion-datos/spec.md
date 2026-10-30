@@ -14,6 +14,10 @@ Recoger datos reales de vivienda en alquiler en Euskadi mediante **API y
 scraping**, más información complementaria (salarios, población e indicadores),
 y guardarlos en formato JSON o CSV, todo en Python.
 
+Las fuentes concretas citadas (Eustat, INE, Fotocasa, euskadi.eus, b5m) son
+la instancia de este proyecto; el reto exige automatizar una API y un
+scraping, no unas fuentes fijas ni un esquema universal.
+
 ---
 
 ## Requirements
@@ -24,14 +28,14 @@ El sistema SHALL obtener los precios del alquiler automatizando **a la vez**
 una API y un scraping, y SHALL guardar la respuesta original junto con la forma
 parseada.
 
-#### Scenario: La API de Eustat responde datos completos
+#### Scenario: La API del proyecto responde datos completos (instancia: Eustat/INE)
 
-- GIVEN la API de Eustat (`bankupx`) y el INE (`wstempus`)
+- GIVEN la API de Eustat (`bankupx`) y el INE (`wstempus`) en esta instancia
 - WHEN se ejecutan los scripts de extracción
 - THEN cada tabla se descarga completa y se guarda en `data/raw/`
 - AND el número de filas se registra en el log
 
-#### Scenario: El scraping de Fotocasa produce anuncios reales
+#### Scenario: El scraping del proyecto produce anuncios reales (instancia: Fotocasa)
 
 - GIVEN las tres provincias (Álava, Bizkaia, Gipuzkoa)
 - WHEN se ejecuta el scraper

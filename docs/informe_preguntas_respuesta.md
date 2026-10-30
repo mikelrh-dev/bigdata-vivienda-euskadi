@@ -38,7 +38,7 @@
 ### O4. ¿Qué limitaciones tiene el estudio y cómo se documentan?
 
 - **Archivos:** `docs/metodologia.md`, `docs/trazabilidad_datos.md`, `docs/decision_salario_proxy.md`, `docs/preguntas_analisis_profesional.md`, `data/procesado/informe_entity_resolution.csv`, `data/procesado/informe_calidad_f5.csv`.
-- **Conclusión:** Limitaciones principales documentadas: proxy de renta por falacia ecológica, 93 municipios sin alquiler directo, solo 6 municipios robustos, emancipación solo a nivel CAE, mezcla de años, ECVI no municipal, VPO 93,6% ceros, anuncios con geo inválida, duplicados 13,45%.
+- **Conclusión:** Limitaciones principales documentadas: proxy de renta por falacia ecológica, 93 municipios sin alquiler directo, solo 6 municipios robustos, emancipación solo a nivel CAE, mezcla de años, ECVI no municipal, VPO 83.73% ceros, anuncios con geo inválida, duplicados 13,06%.
 - **Puntuación: 9/10**
 
 ---
@@ -146,7 +146,7 @@
 ### C4. ¿La superficie media de las viviendas en alquiler es adecuada para jóvenes?
 
 - **Archivos:** `data/raw/anuncios_fotocasa.csv`, `data/raw/anuncios_pisos.csv`, `data/raw/anuncios_realtyapi.csv`, `data/procesado/anuncios_unificados.csv`, `data/procesado/anuncios_realtyapi_enriquecido.csv`.
-- **Conclusión:** Superficie media disponible solo en anuncios (871 unificados; 139 enriquecidos con equipamiento RealtyAPI). Para los 6 municipios robustos se puede calcular; para el resto no hay muestra suficiente. Adecuación juvenil (habitaciones, m²) solo defendible parcialmente.
+- **Conclusión:** Superficie media disponible solo en anuncios (873 unificados; 139 enriquecidos con equipamiento RealtyAPI). Para los 6 municipios robustos se puede calcular; para el resto no hay muestra suficiente. Adecuación juvenil (habitaciones, m²) solo defendible parcialmente.
 - **Puntuación: 8/10**
 
 ### C5. ¿El certificado energético (clase) varía por municipio y afecta al coste total?
@@ -254,8 +254,8 @@
 ### F5. ¿Compraventa (ECVI) vs alquiler: el mercado de compra es más o menos accesible?
 
 - **Archivos:** `data/procesado/ecvi_compraventa_limpio.csv`, `data/raw/ECVI_es_2026T2.xlsx`, `data/procesado/alquiler_municipal_completo.csv`.
-- **Conclusión:** Solo se puede comparar a nivel territorial/área funcional (29 registros: CAE, 3 TH, 15 áreas funcionales, 7 municipios >40k). No hay mapeo municipio→área funcional completo, por lo que la comparación municipal no es defendible.
-- **Puntuación: 6/10**
+- **Conclusión:** Comparación a nivel territorial/área funcional (29 registros: CAE, 3 TH, 15 áreas funcionales, 7 municipios >40k). Mapeo municipio→área funcional ECVI disponible (252/252), por lo que la comparación compraventa vs alquiler es defendible a nivel de área funcional (no municipal fino).
+- **Puntuación: 7/10**
 
 ---
 
@@ -338,7 +338,7 @@
 | F2 | Oficial vs anuncios | 7 |
 | F3 | Capitales vs comarca | 8 |
 | F4 | Álava vs Bizkaia vs Gipuzkoa | 9 |
-| F5 | Compraventa vs alquiler | 6 |
+| F5 | Compraventa vs alquiler | 7 |
 | G1 | Sin dato de alquiler | 9 |
 | G2 | n<5 anuncios | 8 |
 | G3 | Sesgos proxy renta | 9 |

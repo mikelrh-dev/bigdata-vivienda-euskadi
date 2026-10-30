@@ -1,6 +1,6 @@
 """Unifica anuncios de Fotocasa, Pisos y RealtyAPI en esquema único para MongoDB."""
 from __future__ import annotations
-import json, os, glob as _glob
+import json, os, glob as _glob, hashlib
 import pandas as pd
 from muni_resolve import resolver_codigo
 
@@ -8,6 +8,28 @@ RAW = os.path.join("data", "raw")
 OUT = os.path.join("data", "procesado")
 
 REQUIRED_KEYS = ("precio_eur", "municipio")
+
+
+def _property_fingerprint(rec):
+    """Huella determinista de una propiedad (misma logica que generar_fingerprint)."""
+    ubic = rec.get("ubicacion") or {}
+    ci = ubic.get("codigo_ine")
+    if ci is None:
+        ci = ""
+    sup = rec.get("superficie_m2")
+    hab = rec.get("habitaciones")
+    precio = rec.get("precio_eur")
+    try:
+        sup_r = round(float(sup) / 5) * 5 if sup is not None else 0
+    except (ValueError, TypeError):
+        sup_r = 0
+    try:
+        precio_r = round(float(precio) / 50) * 50 if precio is not None else 0
+    except (ValueError, TypeError):
+        precio_r = 0
+    hab_r = hab if hab is not None else 0
+    key = f"{ci}|{sup_r}|{hab_r}|{precio_r}"
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()
 
 
 def load_json(name):
@@ -181,42 +203,94 @@ def main():
     pis = load_json("anuncios_pisos_enriquecido_geo.json")
     ra = load_json("anuncios_realtyapi.json")
     recs = []
-    recs += transform_fotocasa(fc)
-    recs += transform_pisos(pis)
-    recs += transform_realtyapi(ra)
+    fc_recs = transform_fotocasa(fc)
+    for r in fc_recs:
+        r["_source_order"] = 0
+    recs += fc_recs
+    pis_recs = transform_pisos(pis)
+    for r in pis_recs:
+        r["_source_order"] = 1
+    recs += pis_recs
+    ra_recs = transform_realtyapi(ra)
+    for r in ra_recs:
+        r["_source_order"] = 2
+    recs += ra_recs
     # Integrar lotes dirigidos (append-only) con schema guard
     import glob as _glob
-    for pattern, transform_fn, etiqueta in [
+    lot_specs = [
         ("anuncios_pisos_dirigido_*.json", transform_pisos, "pisos"),
         ("anuncios_fotocasa_dirigido_*.json", transform_fotocasa, "fotocasa"),
         ("anuncios_faltantes_fotocasa_*.json", transform_fotocasa, "fotocasa"),
         ("anuncios_faltantes_pisos_*.json", transform_pisos, "pisos"),
-    ]:
-        for path in sorted(_glob.glob(os.path.join(RAW, pattern))):
-            base = os.path.basename(path)
-            try:
-                payload = load_payload(base)
-            except Exception as e:
-                print(f"Aviso: no se pudo leer {base}: {e}")
-                continue
-            datos = _es_lote_valido(path, payload)
-            if datos is None:
-                print(f"Schema guard: lote saltado -> {base}")
-                continue
-            nuevos = transform_fn(datos)
-            recs += nuevos
-            print(f"Integrado lote {etiqueta}: {base} -> {len(datos)} registros, {len(nuevos)} transformados")
-    # Deduplicar por portal + id_anuncio (mantener primero)
+    ]
+    lot_files = []
+    for pattern, transform_fn, etiqueta in lot_specs:
+        for path in _glob.glob(os.path.join(RAW, pattern)):
+            lot_files.append((pattern, transform_fn, etiqueta, path))
+    lot_files.sort(key=lambda x: os.path.basename(x[3]))
+    for lot_idx, (pattern, transform_fn, etiqueta, path) in enumerate(lot_files):
+        base = os.path.basename(path)
+        try:
+            payload = load_payload(base)
+        except Exception as e:
+            print(f"Aviso: no se pudo leer {base}: {e}")
+            continue
+        datos = _es_lote_valido(path, payload)
+        if datos is None:
+            print(f"Schema guard: lote saltado -> {base}")
+            continue
+        nuevos = transform_fn(datos)
+        for r in nuevos:
+            r["_source_order"] = 10 + lot_idx
+        recs += nuevos
+        print(f"Integrado lote {etiqueta}: {base} -> {len(datos)} registros, {len(nuevos)} transformados")
+    # Calcular property_fingerprint para cada registro (consumo cross-portal)
+    for r in recs:
+        r["_fingerprint"] = _property_fingerprint(r)
+
+    # Dedup determinista por portal + id_anuncio
+    recs_sorted = sorted(recs, key=lambda r: (r.get("_source_order", 99), r.get("portal") or "", r.get("id_anuncio") or ""))
     seen = set()
     deduped = []
-    for r in recs:
+    duplicados = []
+    for r in recs_sorted:
         key = (r.get("portal"), r.get("id_anuncio"))
         if key in seen:
+            duplicados.append({"portal": r.get("portal"), "id_anuncio": r.get("id_anuncio"),
+                             "source_order": r.get("_source_order"), "tipo": "portal_id"})
             continue
         seen.add(key)
         deduped.append(r)
     recs = deduped
-    print("Anuncios tras dedup:", len(recs))
+    print(f"Anuncios tras dedup portal+id: {len(recs)} (eliminados: {len(duplicados)})")
+
+    # Dedup cross-portal por property_fingerprint (marcar duplicados)
+    recs_sorted_fp = sorted(recs, key=lambda r: (r.get("_source_order", 99), r.get("portal") or "", r.get("id_anuncio") or ""))
+    seen_fp = set()
+    deduped_fp = []
+    duplicados_fp = []
+    for r in recs_sorted_fp:
+        fp = r.get("_fingerprint")
+        if fp in seen_fp:
+            duplicados_fp.append({"portal": r.get("portal"), "id_anuncio": r.get("id_anuncio"),
+                                 "fingerprint": fp, "source_order": r.get("_source_order"), "tipo": "fingerprint"})
+            continue
+        seen_fp.add(fp)
+        deduped_fp.append(r)
+    recs = deduped_fp
+    duplicados = duplicados + duplicados_fp
+    print(f"Anuncios tras dedup fingerprint: {len(recs)} (eliminados cross-portal: {len(duplicados_fp)})")
+
+    import json as _json
+    os.makedirs(OUT, exist_ok=True)
+    with open(os.path.join(OUT, "dedup_report.json"), "w", encoding="utf-8") as fh:
+        _json.dump({"total": len(recs_sorted), "unicos": len(recs),
+                    "eliminados": len(duplicados), "duplicados": duplicados}, fh,
+                   ensure_ascii=False, indent=2)
+    for r in recs:
+        r["property_fingerprint"] = r.pop("_fingerprint", None)
+        r.pop("_source_order", None)
+    recs.sort(key=lambda r: (r.get("portal") or "", r.get("id_anuncio") or ""))
     for r in recs:
         ci = r["ubicacion"].get("codigo_ine")
         if ci is not None:
@@ -275,7 +349,7 @@ def main():
     print("Descartados cuarentena:", before_q - len(recs), dropped)
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
-    pd.DataFrame([{
+    _df = pd.DataFrame([{
         "id_anuncio": r["id_anuncio"],
         "portal": r["portal"],
         "modalidad": r["modalidad"],
@@ -288,7 +362,10 @@ def main():
         "titulo": r.get("titulo"),
         "subtitulo": r.get("subtitulo"),
         "equipamiento": ",".join(r["equipamiento"]),
-    } for r in recs]).to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False)
+        "property_fingerprint": r.get("property_fingerprint"),
+    } for r in recs])
+    _df["codigo_ine"] = _df["codigo_ine"].astype(str).str.strip().str.zfill(5)
+    _df.to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False, encoding="utf-8-sig")
     print("Anuncios unificados:", len(recs))
 
 if __name__ == "__main__":

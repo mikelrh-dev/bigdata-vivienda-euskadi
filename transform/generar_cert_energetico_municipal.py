@@ -133,7 +133,7 @@ def main():
         out = result
 
     out_path = os.path.join(PROC, "cert_energetico_municipal_252.csv")
-    out.to_csv(out_path, index=False, encoding="utf-8")
+    out.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"\n[OK] Guardado: {out_path}")
     print(f"  Municipios: {len(out)}")
     print(f"  Con certificados: {(out['n_certificados'] > 0).sum()}")

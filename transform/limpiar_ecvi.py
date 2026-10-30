@@ -163,7 +163,7 @@ def main():
     with open(os.path.join(OUT, "ecvi_compraventa_limpio.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     import pandas as pd
-    pd.DataFrame(recs).to_csv(os.path.join(OUT, "ecvi_compraventa_limpio.csv"), index=False)
+    pd.DataFrame(recs).to_csv(os.path.join(OUT, "ecvi_compraventa_limpio.csv"), index=False, encoding="utf-8-sig")
     print("ECVI limpio:", len(recs), "registros")
 
 if __name__ == "__main__":

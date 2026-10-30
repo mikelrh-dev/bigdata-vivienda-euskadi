@@ -197,7 +197,7 @@ def main():
         })
     import pandas as pd
     df = pd.DataFrame(rows)
-    df.to_csv(os.path.join(OUT, "transporte_paradas_municipio_enriquecido.csv"), index=False)
+    df.to_csv(os.path.join(OUT, "transporte_paradas_municipio_enriquecido.csv"), index=False, encoding="utf-8-sig")
     print("GTFS enriquecido:", len(df), "municipios")
     print("Municipios con expediciones>0:", (df["expediciones_dia"] > 0).sum())
     print("Municipios con tren/metro:", df["tiene_tren_metro"].sum())

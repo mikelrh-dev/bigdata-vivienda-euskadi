@@ -1,8 +1,17 @@
 """Helper de resolucion de municipios para unificar_anuncios."""
 from __future__ import annotations
-import unicodedata, difflib, pandas as pd, os
+import difflib
+import os
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
+from entity_resolution import norm, MANUAL_MAP  # noqa: E402
 
 RAW = os.path.join("data", "raw")
+
 
 def _load_dim():
     dim = pd.read_csv(os.path.join(RAW, "dim_municipios.csv"), dtype=str, encoding="utf-8-sig")
@@ -10,30 +19,15 @@ def _load_dim():
     code2name = dict(zip(dim["codigo_ine"], dim["nombre_canonico"]))
     name2code = {}
     for _, r in dim.iterrows():
-        name2code[str(r["nombre_canonico"]).strip().lower()] = r["codigo_ine"]
+        name2code.setdefault(norm(r["nombre_canonico"]), r["codigo_ine"])
         for v in str(r.get("variantes", "")).split("|"):
-            v = v.strip().lower()
+            v = v.strip()
             if v:
-                name2code[v] = r["codigo_ine"]
+                name2code.setdefault(norm(v), r["codigo_ine"])
     return code2name, name2code, set(dim["codigo_ine"])
 
+
 CODE2NAME, NAME2CODE, VALID_CODES = _load_dim()
-
-MANUAL_MAP = {
-    "donostia-san sebastian": "Donostia/San Sebastián",
-    "donostia - san sebastian": "Donostia/San Sebastián",
-    "arrasate": "Arrasate/Mondragón",
-    "vitoria": "Vitoria-Gasteiz",
-    "arrankudiaga-zollo": "Arrankudiaga",
-    "arrankudiaga zollo": "Arrankudiaga",
-}
-
-
-def norm(s):
-    if s is None:
-        return ""
-    s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode("ascii")
-    return " ".join(s.lower().replace("-", " ").replace("_", " ").split())
 
 
 def resolver_codigo(municipio, codigo_ine):
@@ -43,7 +37,7 @@ def resolver_codigo(municipio, codigo_ine):
             s = s.zfill(5)
         if s in VALID_CODES:
             return s, CODE2NAME.get(s)
-    key = norm(municipio)
+    key = norm(municipio) if municipio is not None else ""
     if key in MANUAL_MAP:
         canon = MANUAL_MAP[key]
         for c, n in CODE2NAME.items():

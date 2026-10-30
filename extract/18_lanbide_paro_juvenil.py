@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -63,8 +64,11 @@ def main() -> int:
     regs = out.to_dict(orient="records")
     guardar_json(RAW_DIR / "lanbide_paro_juvenil.json", regs,
                 metadata={"fuente": "Lanbide Dap_Historico.xlsx",
+                          "url": URL,
+                          "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                           "periodo": f"{latest} T{tri}",
                           "n_municipios": len(out),
+                          "n_registros": len(out),
                           "nota": "paro registrado (no tasa de desempleo). Joven = <20 + 20-24."})
     log.info("JSON -> lanbide_paro_juvenil.json")
     return 0

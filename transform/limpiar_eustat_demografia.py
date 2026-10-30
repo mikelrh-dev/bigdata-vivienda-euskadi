@@ -67,7 +67,7 @@ def main():
             "poblacion_total", "poblacion_joven_15_29"]
     df = df[cols]
     df.to_json(os.path.join(OUT, "eustat_demografia_renta_252.json"), orient="records", force_ascii=False, indent=2)
-    df.to_csv(os.path.join(OUT, "eustat_demografia_renta_252.csv"), index=False)
+    df.to_csv(os.path.join(OUT, "eustat_demografia_renta_252.csv"), index=False, encoding="utf-8-sig")
     print("Demografia renta:", len(df), "filas")
 
 if __name__ == "__main__":

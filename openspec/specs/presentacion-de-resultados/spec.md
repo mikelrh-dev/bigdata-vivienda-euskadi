@@ -22,7 +22,8 @@ posibilidades de emancipación y por qué.
 ### Requirement: GRAFICOS-01 — Tres tipos adecuados a los datos
 
 El sistema SHALL presentar al menos tres tipos de gráfico, cada uno adecuado al
-tipo de dato que representa.
+tipo de dato que representa. Un mapa es opcional, solo si existe variable
+geográfica disponible.
 
 #### Scenario: Cada tipo encaja con su dato
 
@@ -31,7 +32,7 @@ tipo de dato que representa.
 - THEN un ranking usa barras
 - AND una relación entre dos variables usa dispersión
 - AND una distribución usa caja y bigotes
-- AND una variable geográfica usa mapa
+- AND, si hay variable geográfica disponible, un mapa es opcional
 
 ### Requirement: DATOS-PYMONGO-01 — Gráficos desde consultas PyMongo
 

@@ -58,7 +58,14 @@ def main():
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     import pandas as pd
-    pd.DataFrame([{
+    csv_path = os.path.join(OUT, "anuncios_unificados.csv")
+    prev = None
+    if os.path.exists(csv_path):
+        try:
+            prev = pd.read_csv(csv_path)
+        except Exception:
+            prev = None
+    df = pd.DataFrame([{
         "id_anuncio": r["id_anuncio"],
         "portal": r["portal"],
         "modalidad": r["modalidad"],
@@ -71,7 +78,18 @@ def main():
         "titulo": r.get("titulo"),
         "subtitulo": r.get("subtitulo"),
         "equipamiento": ",".join(r["equipamiento"]),
-    } for r in recs]).to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False)
+    } for r in recs])
+    # Salida aditiva: conservar las columnas que ya existian en el CSV.
+    if prev is not None:
+        for col in prev.columns:
+            if col in df.columns:
+                continue
+            if "id_anuncio" in prev.columns and "id_anuncio" in df.columns:
+                mapping = dict(zip(prev["id_anuncio"].astype(str), prev[col]))
+                df[col] = df["id_anuncio"].astype(str).map(mapping)
+            else:
+                df[col] = pd.NA
+    df.to_csv(csv_path, index=False)
     print(f"Rescatados: superficie={r_m2}, habitaciones={r_hab}")
     print("Total anuncios:", len(recs))
 

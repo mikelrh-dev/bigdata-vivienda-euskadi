@@ -16,7 +16,7 @@
 | Renta personal Eustat | 201/252 | 51 municipios (INE Atlas) | Proxy fiscal incompleto |
 | ECVI precio | 7/252 | 245 municipios | Solo grandes ciudades |
 | Cert. energético | 252/252 | 0 municipios | RESUELTO: Open Data Euskadi (registro oficial) |
-| VPO terminadas | ~16/252 | 93,6% ceros | No hay stock VPO municipal público |
+| VPO terminadas | ~16/252 | 83.73% ceros | No hay stock VPO municipal público |
 
 ## 2. Calidad de datos (bugs y problemas)
 

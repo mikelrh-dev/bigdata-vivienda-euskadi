@@ -76,10 +76,20 @@
 | `tipo_inmueble` nulos (Pisos.com) | 248/251 | `anuncios_pisos_dirigido.csv` | Alta |
 | `nombre_canonico` nulos (Pisos.com) | 218/251 | `anuncios_pisos_dirigido.csv` | Alta |
 | Pisos sin geo | 235/235 | `anuncios_pisos_enriquecido.csv` | Media |
-| Duplicados anuncios | 113/840 (13,45%) | `anuncios_unificados.csv` | Media |
+| Duplicados anuncios | 114/873 (13,06%) | `anuncios_unificados.csv` | Media |
 | GTFS operadores nulos | 51/252 | `transporte_paradas_municipio_enriquecido.csv` | Baja |
 | Población joven estimada | Estimación (no fuente) | `poblacion_joven_municipal.csv` | Media |
 | Cert. energético cobertura | 60/252 | `cert_energetico_moda_municipio.csv` | Baja |
+
+---
+
+## 3.1 Null-handling por fuente (EMAL / SERPAVI / transporte)
+
+| Fuente | Cobertura / nulos | Estrategia de null-handling |
+|---|---|---|
+| EMAL (fianzas) | 73 / 252 municipios (179 nulos) | Mantener como cobertura parcial: analizar solo los 73 municipios con dato; documentar sesgo de cobertura; no imputar por comarca/IDW. |
+| SERPAVI | 89 nulos (249/252 con dato) | Mantener nulos explícitos; no imputar; usar como indicador de disponibilidad y excluir de rankings finos. |
+| Transporte / GTFS (`operadores`) | 51 / 252 nulos | Mantener `paradas_por_1000_hab` y `expediciones_dia` sin nulos; `operadores` nulo documentado como "sin operador identificado"; no bloquea análisis de conectividad. |
 
 ---
 
@@ -118,3 +128,30 @@
 ---
 
 *Documento para seguimiento. No bloquea Fase 1-3.*
+
+---
+
+## 6. Excepciones documentadas (reproducibilidad de silver)
+
+### E1. `cert_energetico_moda_municipio.csv` — 60/252 cobertura
+- **Generador:** `transform/generar_cert_energetico_moda_municipio.py`
+- **Fuente:** `data/procesado/cert_energetico_municipal_252.csv` (252 filas, cert_moda para todos).
+- **Diferencia:** el original tenía 60 filas (subconjunto de municipios con certificados de vivienda). El generador produce 252 filas (versión completa). El original es de una versión anterior de los datos; no reproducible bit-identical.
+- **Acción:** generador produce versión completa; original preservado en `data/procesado_backup_pre_gen/`.
+
+### E2. `anuncios_vivienda_residencial_filtrado.csv` — reproducible
+- **Generador:** `transform/generar_anuncios_residencial_filtrado.py`
+- **Fuente:** `data/procesado/anuncios_vivienda_unificados.csv`.
+- **Resultado:** bit-identical con el original (570 filas, 16 outliers).
+
+### E3. `fotocasa_dirigido_informe.csv` — counts actualizados
+- **Generador:** `transform/generar_fotocasa_dirigido_informe.py`
+- **Fuente:** `data/raw/anuncios_fotocasa_dirigido_*.json` + `f4_pisos_objetivo.json` (62 objetivos).
+- **Diferencia:** el original tenía counts de una ejecución anterior. El generador produce 62 filas con counts actuales (n=0 para municipios sin raw dirigido).
+- **Acción:** generador produce versión actual; original preservado en backup.
+
+### E4. `f4_pisos_objetivo.json` — selección manual
+- **Generador:** `transform/generar_f4_pisos_objetivo.py`
+- **Comportamiento:** idempotente (valida si existe, no modifica). Si no existe, genera aproximación (62 códigos INE).
+- **Criterio original:** municipios con tipología Nivel2/Nivel3 y baja cobertura de anuncios en Fotocasa (selección ad-hoc, no reproducible por criterio simple).
+- **Acción:** no regenerar automáticamente; preservar el archivo original.

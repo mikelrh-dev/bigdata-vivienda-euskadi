@@ -114,7 +114,7 @@ def main() -> int:
     out["brecha_esfuerzo_genero_pp"] = (out["esfuerzo_alquiler_hombres_pct"] - out["esfuerzo_alquiler_mujeres_pct"]).abs()
     out["codigo_ine"] = out["codigo_ine"].astype(str).str.zfill(5)
     out_path = PROC / "dim_municipios_enriquecido.csv"
-    out.to_csv(out_path, index=False, encoding="utf-8")
+    out.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
     print(f"ratio_fiscal={ratio_fiscal:.4f}, ratio_sal_18_34={ratio_sal_18_34:.4f}, ratio_sal_18_29={ratio_sal_18_29:.4f}")
     print(f"esfuerzo_min mediana={out['esfuerzo_min_pct'].median():.1f}%, esfuerzo_max mediana={out['esfuerzo_max_pct'].median():.1f}%")
