@@ -110,10 +110,10 @@ Tras ejecutar micro-tareas A/B/C (solo datos, sin MongoDB), las puntuaciones mej
 | B6 Desempleo juvenil | 3/10 | 7/10 | `tasa_ocupacion_juvenil_16_24_pct`, `afiliacion_ss_16_24_pct` (252/252) |
 | C4 Superficie media anuncios | 7/10 | 8/10 | RealtyAPI equipamiento enriquecido (139 anuncios) |
 | C5 Certificado energético | 6/10 | 7/10 | RealtyAPI descripcion NLP (parcial) |
-| F5 Compraventa vs alquiler | 6/10 | 6/10 | Sin mapeo municipio→Área Funcional; limitación estructural |
+| F5 Compraventa vs alquiler | 6/10 | 7/10 | Mapeo municipio→Área Funcional ECVI disponible (252/252) |
 
 **Puntuación global: 7.0 → 8.2/10** (profesional con limitaciones documentadas).  
-Limitaciones restantes: F5 (ECVI sin mapeo municipal), B6 (ocupación ≠ desempleo), C4/C5 (solo 139/871 anuncios enriquecidos).
+Limitaciones restantes: F5 (ECVI con mapeo a área funcional, no municipal fino), B6 (ocupación ≠ desempleo), C4/C5 (solo 139/873 anuncios enriquecidos).
 
 ## Conclusión
 

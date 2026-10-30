@@ -134,7 +134,7 @@ flowchart LR
 | O4 | Limitaciones | metodologia.md + gaps_misconceptions_errores.md | 9/10 |
 | A1-A6 | Accesibilidad | alquiler_municipal_completo.csv + dim_municipios_enriquecido.csv | 8-9/10 |
 | B1-B6 | Mercado laboral | analisis_variables_base.csv + lanbide_paro_juvenil.csv | 7-9/10 |
-| C1 | VPO | udalmap_empleo.csv (93.6% ceros) | 3/10 |
+| C1 | VPO | udalmap_empleo.csv (83.73% ceros) | 3/10 |
 | C2-C6 | Vivienda stock/calidad | udalmap + anuncios + cert_energetico_municipal_252.csv | 7-9/10 |
 | D1-D5 | Geografía | distancias_capitales_252.csv + transporte_paradas_enriquecido.csv | 8-9/10 |
 | E1-E4 | Demografía | eustat_demografia_renta_252.csv + udalmap_indicadores_adicionales.csv | 9/10 |

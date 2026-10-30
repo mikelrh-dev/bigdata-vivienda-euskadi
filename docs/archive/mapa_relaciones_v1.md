@@ -120,7 +120,7 @@ graph LR
 ### Bloque C — Vivienda stock y calidad
 | Pregunta | Archivo | Conclusión |
 |----------|---------|------------|
-| C1 VPO | udalmap_empleo_corregido.csv | 93.6% ceros |
+| C1 VPO | udalmap_empleo_corregido.csv | 83.73% ceros |
 | C2 Antigüedad | udalmap_empleo_corregido.csv | antiguedad_media_anyos |
 | C3 Confort/ascensor | udalmap_empleo_corregido.csv | indice_confort |
 | C4 Superficie media | anuncios_unificados.csv | superficie_m2 |

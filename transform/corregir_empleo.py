@@ -27,6 +27,8 @@ EUROS = ["renta_familiar_eur", "renta_personal_total_eur", "renta_personal_dispo
 
 def main() -> int:
     import pandas as pd
+    # Nota Latin-1: udalmap_empleo.csv se lee en UTF-8-sig (ya saneado).
+    # La fuente etxebide original (Latin-1) se sanea en la capa silver.
     df = pd.read_csv(RAW_DIR / "udalmap_empleo.csv", dtype=str, encoding="utf-8-sig")
     df["codigo_ine"] = df["codigo_ine"].str.zfill(5)
     assert len(df) == 252, f"esperados 252, hay {len(df)}"

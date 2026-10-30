@@ -26,8 +26,16 @@ for rec in data:
 with open(path, "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
-# update CSV
+# update CSV (additive: preserve existing columns)
 import pandas as pd
+csv_path = os.path.join(OUT, "anuncios_unificados.csv")
+prev = None
+if os.path.exists(csv_path):
+    try:
+        # dtype=str: preservar codigo_ine con 5 digitos (no perder el "0" de Alava)
+        prev = pd.read_csv(csv_path, dtype=str, encoding="utf-8-sig")
+    except Exception:
+        prev = None
 df = pd.DataFrame([{
     "id_anuncio": r["id_anuncio"],
     "portal": r["portal"],
@@ -39,6 +47,17 @@ df = pd.DataFrame([{
     "equipamiento": ",".join(r["equipamiento"]),
     "property_fingerprint": r["property_fingerprint"],
 } for r in data])
-df.to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False)
+df["codigo_ine"] = df["codigo_ine"].astype(str).str.strip().str.zfill(5)
+# preserve any previous columns not in df
+if prev is not None:
+    for col in prev.columns:
+        if col in df.columns:
+            continue
+        if "id_anuncio" in prev.columns and "id_anuncio" in df.columns:
+            mapping = dict(zip(prev["id_anuncio"].astype(str), prev[col]))
+            df[col] = df["id_anuncio"].astype(str).map(mapping)
+        else:
+            df[col] = pd.NA
+df.to_csv(csv_path, index=False, encoding="utf-8-sig")
 print("Fingerprints generados:", len(data))
 print("Unicos:", len(set(r["property_fingerprint"] for r in data)))

@@ -136,12 +136,30 @@ def extraer_tabla(cliente: Cliente, clave: str, tabla_id: str) -> dict:
             ],
             "columnas": datos.get("columns"),
             "filas": filas,
+            "payload_original": {
+                "metadatos": meta,
+                "datos": datos,
+            },
         },
         metadata={
             "fuente": "Eustat bankupx API",
             "url": f"{BASE_URL}/{tabla_id}",
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_filas": len(filas),
+            "n_registros": len(filas),
+        },
+    )
+
+    # Payload original (respuestas crudas GET/POST) guardado aparte
+    guardar_json(
+        RAW_DIR / f"eustat_{clave}_raw.json",
+        {"metadatos": meta, "datos": datos},
+        metadata={
+            "fuente": "Eustat bankupx API (payload original)",
+            "url": f"{BASE_URL}/{tabla_id}",
+            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+            "n_filas": len(filas),
+            "n_registros": len(filas),
         },
     )
 

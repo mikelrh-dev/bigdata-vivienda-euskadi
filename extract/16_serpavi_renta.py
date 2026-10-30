@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -81,8 +82,11 @@ def main() -> int:
     regs = out_df.to_dict(orient="records")
     guardar_json(RAW_DIR / "serpavi_renta_municipal.json", regs,
                 metadata={"fuente": "SERPAVI/MIVAU (Modelo 100, datos tributarios)",
+                          "url": URL,
+                          "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                           "periodo": "2011-2024 (LOCF)",
                           "n_municipios": len(out_df),
+                          "n_registros": len(out_df),
                           "nota": "Renta fiscal (declaraciones), no precio de mercado. "
                                   "Cubre solo municipios con declaraciones."})
     log.info("JSON -> serpavi_renta_municipal.json")

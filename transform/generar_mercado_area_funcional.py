@@ -58,7 +58,7 @@ def main() -> int:
     out["ratio_compra_alquiler_m2"] = (out["compraventa_eur_m2"] / out["alquiler_eur_m2_mediana"]).round(2)
 
     out_path = PROC / "comparativa_compra_alquiler_af.csv"
-    out.to_csv(out_path, index=False, encoding="utf-8")
+    out.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
     print(out[["area_funcional", "n_municipios", "alquiler_eur_m2_mediana", "compraventa_eur_m2", "ratio_compra_alquiler_m2"]].to_string(index=False))
     return 0

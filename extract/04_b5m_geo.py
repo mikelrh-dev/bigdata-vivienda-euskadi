@@ -43,19 +43,29 @@ def main() -> int:
     # 1. Catálogo de datasets (referencia de qué existe)
     try:
         catalogo = cliente.get(DATASETS_API).json()
+        _docs = (
+            catalogo.get("response", {}).get("docs", [])
+            if isinstance(catalogo.get("response"), dict)
+            else []
+        )
         guardar_json(
             RAW_DIR / "b5m_catalogo.json",
             catalogo.get("response", catalogo),
-            metadata={"url": DATASETS_API},
+            metadata={
+                "fuente": "b5m Gipuzkoa (catalogo de datasets)",
+                "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+                "url": DATASETS_API,
+                "n_registros": len(_docs),
+            },
         )
-        resumen["catalogo"] = len(catalogo.get("response", {}).get("docs", []))
+        resumen["catalogo"] = len(_docs)
     except Exception as exc:  # noqa: BLE001
         log.error("Catálogo: %s", exc)
 
     # 2. Límites municipales (GeoJSON)
     try:
         destino = cliente.descargar(MUNICIPIOS_URL, RAW_DIR / "municipios_gipuzkoa.geojson")
-        geo = json.loads(destino.read_text(encoding="utf-8"))
+        geo = json.loads(destino.read_text(encoding="utf-8-sig"))
         propiedades = [
             f.get("properties", {}) for f in geo.get("features", [])
         ]
@@ -80,6 +90,8 @@ def main() -> int:
             metadata={
                 "fuente": "b5m Gipuzkoa (GFA_DSET_MB.geojson)",
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+                "url": MUNICIPIOS_URL,
+                "n_registros": len(propiedades),
                 "n_municipios": len(propiedades),
             },
         )
@@ -102,6 +114,8 @@ def main() -> int:
                 metadata={
                     "fuente": "b5m Gipuzkoa (GFA_DSET_DISTM_CSV.zip)",
                     "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+                    "url": DISTANCIAS_URL,
+                    "n_registros": len(filas),
                     "n_pares_total": len(filas),
                     "n_pares_guardados": len(filas),
                     "nota": "Distancias viarias reales Gipuzkoa (no truncado).",

@@ -20,13 +20,21 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import RAW_DIR, get_logger  # noqa: E402
 from entity_resolution import resolver_municipio  # noqa: E402
+try:
+    from _raw_guard import assert_raw_writable  # noqa: E402
+except Exception:  # pragma: no cover
+    from transform._raw_guard import assert_raw_writable  # noqa: E402
 
 log = get_logger("f0_entity")
 PROC = RAW_DIR.parent / "procesado"
 PROC.mkdir(parents=True, exist_ok=True)
 
+# Excepción de inmutabilidad: por defecto escribe en silver (data/procesado).
+# Solo con --write-raw (y --reason) se permite escribir in-place en data/raw,
+# previa comprobación de .FROZEN y --force. Documentado como excepción temporal.
 FROZEN_MARKER = RAW_DIR / ".FROZEN"
 
 
@@ -120,7 +128,21 @@ def _enriquecer_json(ruta: Path, col_muni: str, anio: int | None, es_busqueda: b
             "sin_codigo": len(regs) - n_ok, "no_resueltos": "|".join(no_res)}
 
 
-def main(force: bool = False, silver: bool = False) -> int:
+def main(force: bool = False, silver: bool = True, write_raw: bool = False,
+        reason: str | None = None) -> int:
+    if write_raw:
+        if not reason or not str(reason).strip():
+            log.error("Se requiere --reason para --write-raw. Abortando.")
+            return 2
+        assert_raw_writable(reason)
+        silver = False
+        _check_frozen(force)
+        log.warning(
+            "DEPRECACION: escritura in-place en data/raw (legacy). "
+            "Preferir salida silver (default)."
+        )
+    else:
+        silver = True
     if not silver:
         _check_frozen(force)
     dest_dir = (RAW_DIR.parent / "procesado") if silver else RAW_DIR
@@ -191,6 +213,9 @@ def main(force: bool = False, silver: bool = False) -> int:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true", help="Override raw congelado (no recomendado)")
-    parser.add_argument("--silver", action="store_true", help="Escribir a procesado/*_enriquecido sin tocar raw")
+    parser.add_argument("--silver", action="store_true", help="Compat: ya es el default (no-op)")
+    parser.add_argument("--write-raw", action="store_true", help="Opt-in: escribir in-place en data/raw")
+    parser.add_argument("--reason", default=None, help="Motivo para --write-raw (obligatorio)")
     args = parser.parse_args()
-    raise SystemExit(main(force=args.force, silver=args.silver))
+    raise SystemExit(main(force=args.force, silver=args.silver, write_raw=args.write_raw,
+                         reason=args.reason))

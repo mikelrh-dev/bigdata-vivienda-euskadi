@@ -51,6 +51,11 @@ contrato antes de cambiar el código).
 
 ### Requisitos adicionales del PDF
 
+Las fuentes concretas citadas en este contrato y en los specs (Eustat, INE,
+Fotocasa, euskadi.eus, b5m) son la instancia de este proyecto; el reto exige
+automatizar API y scraping con fuentes reales, no unas fuentes fijas ni un
+esquema universal.
+
 - Objetivo 1: *"Recopilar datos reales sobre precios de alquiler o compraventa
   mediante API y web scraping."*
 - Objetivo 2: *"Obtener información complementaria sobre salarios, población u
@@ -67,6 +72,34 @@ contrato antes de cambiar el código).
   Euskadi ofrecen mejores posibilidades de emancipación para una persona joven y
   explicar por qué."*
 - *"Las conclusiones deberán estar respaldadas por los datos analizados."*
+
+## Entregables del reto
+
+### Requirement: ENTREGABLES-01 — Entregables y demostración
+
+El sistema SHALL entregar código fuente organizado, datos originales en HDFS y
+MongoDB, un esquema de arquitectura del recorrido de los datos, un informe de
+resultados con gráficos y tablas, y una demostración con explicación de las
+decisiones técnicas.
+
+#### Scenario: El esquema de arquitectura existe
+
+- GIVEN el flujo completo
+- WHEN se documenta
+- THEN existe un esquema explicativo desde el origen de los datos hasta el
+  análisis
+
+#### Scenario: El informe incluye tablas y gráficos
+
+- GIVEN los resultados calculados
+- WHEN se redacta el informe
+- THEN incluye gráficos, tablas y conclusiones
+
+#### Scenario: La demostración explica decisiones
+
+- GIVEN el sistema ejecutable
+- WHEN se demuestra
+- THEN se ejecuta el flujo y se explican las decisiones técnicas
 
 ---
 
