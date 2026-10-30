@@ -43,9 +43,6 @@ AUX_SCRIPTS = [
     "fotocasa_detalle.py",
     "ine_atlas_renta.py",
     "udalmap_empleo.py",
-    "16_serpavi_renta.py",
-    "17_osrm_tiempos.py",
-    "18_lanbide_paro_juvenil.py",
 ]
 
 

@@ -88,7 +88,7 @@ erDiagram
 | 1 | Extracción (scripts 01–06 + auxiliares) | ✅ Hecha |
 | 1b | Salarios INE EPA (script 07) | ✅ Hecha |
 | 1c | Pisos.com (script 08) | ✅ Hecha |
-| 1d | Idealista/RealtyAPI (script 09) | ✅ Opcional, 139 anuncios |
+| 1d | Idealista/RealtyAPI (script 09) | ✅ Opcional, 84 anuncios |
 | 2 | Descargas directas Open Data Euskadi (EMAL, Etxebide, GTFS) | ✅ Hecha |
 | 3 | Transformaciones (entity resolution, dim_municipios, distancias, filtrado, enriquecimiento, geojson, metadata) | ✅ Hecha (parcial) |
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
@@ -151,7 +151,7 @@ bigdata-vivienda-euskadi/
 - `mapa_esquema_silver.html` — grafo de relaciones entre 33 CSVs (PyVis, hubs: dim_municipios, anuncios_unificados).
 - `auditoria_lagunas_silver.csv` — profiling de 33 CSVs (filas, nulos, cobertura/252 muns).
 - `dashboard.html` / `dashboard_completo.html` — dashboards estáticos con conclusiones.
-- 18 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
+- 13 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
 - `README.md` — índice de artefactos.
 
 ## 🚀 Puesta en marcha
