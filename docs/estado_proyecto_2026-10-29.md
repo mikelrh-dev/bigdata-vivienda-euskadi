@@ -9,11 +9,11 @@
 
 ## 1. Resumen ejecutivo
 
-- **Fase de datos (Fase 0 + 1) completada y congelada.** `data/raw/` es inmutable: 313 archivos de datos, marcador `.FROZEN`, manifest SHA-256 de 312 entradas y test de integridad en verde.
-- **Silver regenerado y verificado byte-idéntico.** `data/procesado/` contiene 97 archivos de datos (más `.gitkeep`); los comunes con `data/procesado_pre_silver` son byte-idénticos (MD5), sin regresiones de filas/columnas/nulos.
+- **Fase de datos (Fase 0 + 1) completada y congelada.** `data/raw/` es inmutable: 317 archivos de datos, marcador `.FROZEN`, manifest SHA-256 de 317 entradas y test de integridad en verde.
+- **Silver regenerado y verificado byte-idéntico.** `data/procesado/` contiene 101 archivos de datos (más `.gitkeep`); los comunes con `data/procesado_pre_silver` son byte-idénticos (MD5), sin regresiones de filas/columnas/nulos.
 - **Transforms alineados con la regla bronce.** Los 8 transforms del grupo A ahora escriben a `data/procesado/` (y los 8 del grupo B ya lo hacían); ninguno escribe en `data/raw/` en modo silver.
 - **Tests en verde.** `pytest` → **59 passed** en 2,84 s (`tests/test_contrato.py`, `tests/test_crudos.py`, `tests/test_raw_inmutable.py`).
-- **Cobertura analítica.** 252 municipios de referencia; alquiler completo 252 (159 directo Eustat + 93 por comarca); 871 anuncios unificados en 85 municipios; GTFS paradas_por_1000_hab resuelto (0 nulos); 8,6/10 de grado medio en 42 preguntas objetivo.
+- **Cobertura analítica.** 252 municipios de referencia; alquiler completo 252 (159 directo Eustat + 93 por comarca); 873 anuncios unificados (570 residencial + 303 temporal) en 84 municipios + 201 habitaciones; GTFS paradas_por_1000_hab resuelto (0 nulos); 8,6/10 de grado medio en 42 preguntas objetivo.
 - **Pendiente principal.** Infraestructura y análisis (HDFS, MongoDB, Kafka, agregaciones, visualización, informe) — Fases 2 a 9 del plan. `data/resultados/` sigue vacío.
 
 ---
@@ -219,12 +219,7 @@
 
 ### Extracción y entity resolution (auditoría framework)
 
-- `extract/05_fotocasa_scraper.py` no persiste HTML crudo → incumple EXTRACCION-01.
-- `extract/09_realtyapi.py` tiene literal `PY` suelto (línea 269) → NameError al importar.
-- `extract/08_pisos.py` no extrae `superficie_m2` ni `habitaciones` (solo precio/título/subtítulo/enlace/tipo).
-- `extract/04_b5m.py` trunca distancias a 5.000 de ~180.000 pares.
-- `EQUIVALENCIAS_EXTRA` eliminado (dead code).
-- Variantes Fotocasa (Arrankudiaga/Zollo, Arrasate, Donostia, Vitoria) mapeadas a canónico en unificación (Donostia unificada 130 anuncios).
+- **Deuda resuelta / actualizada:** HTML crudo Fotocasa persistido en `data/raw/html_fotocasa/` (101 archivos); superficie y habitaciones ya extraídos en unificados; haversine completo (63504 pares); nombres reales de scripts: `extract/04_b5m_geo.py`, `extract/08_pisos_scraper.py`. Variantes Fotocasa (Arrankudiaga/Zollo, Arrasate, Donostia, Vitoria) mapeadas a canónico en unificación (Donostia unificada 130 anuncios).
 - `distancias_capitales.csv`: 259 filas (252 Euskadi + 5 limítrofes + 2 duplicados por `codigo_ine`); filtrar a dim para análisis.
 
 ### Conclusiones recientes (features v2)

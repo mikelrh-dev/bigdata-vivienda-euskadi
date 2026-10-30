@@ -1,6 +1,6 @@
 """F2/F4d/U1: corrige y valida udalmap_empleo (local, sin proxy).
 
-- tasa_paro_aprox_pct (cociente, distinta base) -> None.
+- tasa_paro_aprox_pct (cociente, distinta base) -> dropped in memory (no se escribe).
 - tasa_paro_lanbide_pct (ind.13) + ocupacion juvenil (50) -> validas 0-100.
 - U1: valida nuevos bloques (porcentaje 0-100, por-mil >=0, euros >0).
 Genera data/raw/udalmap_empleo_corregido.csv/.json.
@@ -40,7 +40,9 @@ def main() -> int:
             num = pd.to_numeric(df[c], errors="coerce")
             bad = df[~df[c].isna() & ~(num >= 0)]
             assert len(bad) == 0, f"{c} negativo: {bad[['codigo_ine', c]].head()}"
-    df["tasa_paro_aprox_pct"] = None
+    # Drop in memory before writing processed outputs (raw untouched).
+    if "tasa_paro_aprox_pct" in df.columns:
+        df = df.drop(columns=["tasa_paro_aprox_pct"])
     df["brecha_ocupacion_actividad_pct"] = (pd.to_numeric(df["tasa_ocupacion_pct"], errors="coerce")
                                             - pd.to_numeric(df["tasa_actividad_pct"], errors="coerce")).round(2)
     df["tasa_paro_valida"] = df["tasa_paro_lanbide_pct"].notna()
