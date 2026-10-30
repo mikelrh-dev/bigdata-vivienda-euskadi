@@ -66,15 +66,16 @@ def g2_renta_vs_alquiler():
 
 def g3_top10_precio():
     df = duckdb.query("""
-        SELECT municipio, ROUND(AVG(precio_eur),0) AS precio_medio, COUNT(*) AS n
-        FROM read_csv('data/procesado/anuncios_unificados.csv')
+        SELECT municipio, ROUND(MEDIAN(precio_eur),0) AS precio_medio, COUNT(*) AS n
+        FROM read_csv('data/procesado/anuncios_vivienda_residencial_filtrado.csv')
+        WHERE outlier = FALSE
         GROUP BY municipio
         ORDER BY precio_medio DESC
         LIMIT 10
     """).df()
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.barplot(data=df, x="precio_medio", y="municipio", ax=ax, palette="Reds_r")
-    ax.set_title("Top 10 municipios por precio medio de alquiler")
+    ax.set_title("Top 10 municipios por precio mediano de alquiler (datos filtrados)")
     ax.set_xlabel("Precio medio (EUR/mes)")
     ax.set_ylabel("")
     return _save(fig, "g3_top10_precio.png")

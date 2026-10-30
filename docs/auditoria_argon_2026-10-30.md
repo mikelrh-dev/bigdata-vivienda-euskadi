@@ -22,7 +22,7 @@ Discrepancias principales:
 - Municipios robustos (n>=30): argon dice 4 (Bilbao, Donostia, Vitoria, Getxo); real 6 (añade Abanto y Ciérvana 31 y Ayala/Aiara 30).
 - Municipios sin anuncios: argon dice 170; real 168.
 - Fotocasa: argon 57 municipios; real 60 canónicos (61 variantes raw incl. Las Rozas Madrid).
-- Anuncios unificados: argon 871; real 873 (fotocasa 473, pisos 261, realtyapi 139).
+- Anuncios unificados: argon 873; real 873 (fotocasa 473, pisos 261, realtyapi 139).
 - Pisos: argon 230; raw 235 (230 = enriquecido).
 - Fotocasa detalle codigo_ine: argon 55/252; real 60/252.
 - Alquiler municipal: argon 253x18 con codigo_ine; real 253x15 sin codigo_ine (cobertura 159/252 por municipio OK).
@@ -41,7 +41,7 @@ Gaps detectados:
 - README_proyecto.md (argon) desactualizado vs README raíz en varios puntos (dim_municipios_enriquecido 252x65 vs 252x44; cobertura 85 vs 71 municipios con anuncios). README raíz referencia openspec/plan/PLAN.md inexistente.
 - Errores de nombres de archivo en argon: extract/04_b5m.py -> real 04_b5m_geo.py; extract/08_pisos.py -> real 08_pisos_scraper.py; transform/limpieza.py y transform/enrich.py no existen aún; docs plan_* viven en docs/legacy/; docs/informe_resultados.md no creado.
 - Deuda desactualizada: "05_fotocasa no persiste HTML" es falso (escribe data/raw/html_fotocasa/); "09_realtyapi stray PY" y "08_pisos no extrae superficie/habitaciones" también desactualizados.
-- Drift de conteos vs repo: raw 319 vs doc 313; manifest 317 vs 312; silver 101 vs 96; unificados 873/84 muns con 6 >=30 (docs dicen 871-872/85 y 4-7).
+- Drift de conteos vs repo: raw 319 vs doc 313; manifest 317 vs 312; silver 101 vs 96; unificados 873/84 muns con 6 >=30 (docs dicen 873-872/85 y 4-7).
 
 Veredicto: los docs de argon son útiles como radiografía y coinciden con el contrato en lo macro (extracción hecha, infra pendiente), pero su metadata (scores, conteos, nombres de archivo, deuda) está inconsistente/desactualizada y no debe tratarse como autoritativa hasta reconciliarse.
 

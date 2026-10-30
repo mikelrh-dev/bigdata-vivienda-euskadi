@@ -3,18 +3,20 @@
 ## Universo de análisis
 - CAE (Euskadi): 1 nivel.
 - Comarca: 20 comarcas oficiales.
-- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 4 municipios (Bilbao, Donostia, Vitoria, Getxo).
+- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 6 municipios (Bilbao 239, Donostia 130, Vitoria 48, Getxo 40, Abanto 31, Ayala 30).
 - Municipios con dato oficial de alquiler: 159/252.
-- Municipios sin dato oficial: 93/252 (imputados por comarca).
+- Municipios sin dato oficial: 93/252 (imputados por IDW_5_vecinos, no comarcal).
 
 ## Métricas canónicas
 - Fotocasa anuncios: 471 (57 municipios).
 - Pisos anuncios: 230 (37 ámbitos de búsqueda).
 - RealtyAPI anuncios: 139 (3 municipios).
-- Anuncios unificados: 871 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
+- Anuncios unificados: 873 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
 - Tests: 59 passed.
 - Municipios robustos (n≥30): 6 canónicos (7 claves por variante Donostia).
+- Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
+- Tensión social (Etxebide): 73 municipios alta / 102 media / 77 baja.
 
 ## Fórmula canónica de esfuerzo
 ```
@@ -45,15 +47,19 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 
 ## Sesgos documentados
 - Proxy de renta joven (no salario real).
-- 93 municipios con alquiler comarcal (no municipal).
-- 170 municipios sin anuncios (solo 4 robustos).
+- 93 municipios con alquiler imputado por IDW_5_vecinos (no comarcal).
+- 170 municipios sin anuncios (solo 6 robustos).
 - Mezcla de años (2026 anuncios vs 2024 alquiler/renta).
 - Emancipación juvenil solo a nivel CAE (no municipal).
 - Pisos con geo inválida (235/235, `geo_invalida=True`).
-- 13.45% duplicados en anuncios unificados (sin consumir fingerprint).
-- VPO 93.6% ceros (no respondible C1 con datos actuales).
+- 13,06% duplicados en anuncios unificados (114 filas extra en 93 grupos; sin consumir fingerprint).
+- VPO 83.73% ceros (no respondible C1 con datos actuales).
 
 ## Limitaciones
-- Ranking municipal fino no defendible (solo 4 municipios robustos).
+- Ranking municipal fino no defendible (solo 6 municipios robustos).
 - Tasa de desempleo juvenil real no calculable (falta población activa joven municipal).
 - Compraventa vs alquiler solo a nivel territorial/área funcional (7 municipios directos).
+
+## Decisiones congeladas
+
+- No ranking municipal fino: solo 6 municipios robustos (Bilbao, Donostia, Vitoria, Getxo, Abanto, Ayala) + tipología (Nivel1/Nivel2/Nivel3). Evita ataque en defensa por F5/B6.

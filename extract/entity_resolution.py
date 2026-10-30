@@ -27,7 +27,16 @@ def norm(texto: str) -> str:
     return t
 
 
-# (bloque EQUIVALENCIAS_EXTRA eliminado: dead code, las variantes viven en dim_municipios.json)
+MANUAL_MAP = {
+    norm("donostia san sebastian"): "Donostia/San Sebastián",
+    norm("donostia - san sebastian"): "Donostia/San Sebastián",
+    norm("arrasate"): "Arrasate/Mondragón",
+    norm("vitoria"): "Vitoria-Gasteiz",
+    norm("arrankudiaga zollo"): "Arrankudiaga",
+    norm("donostia/san sebastian"): "Donostia/San Sebastián",
+    norm("arrasate/mondragon"): "Arrasate/Mondragón",
+    norm("arrasate - mondragon"): "Arrasate/Mondragón",
+}
 
 
 @lru_cache(maxsize=1)
@@ -54,6 +63,11 @@ def _mapa() -> dict[str, tuple[str, str]]:
             v = v.strip()
             if v:
                 mapa.setdefault(norm(v), (cod, can))
+    # fold manual aliases
+    for key, canon in MANUAL_MAP.items():
+        canon_norm = norm(canon)
+        if canon_norm in mapa:
+            mapa.setdefault(key, mapa[canon_norm])
     return mapa
 
 

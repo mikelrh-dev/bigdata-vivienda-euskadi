@@ -120,12 +120,26 @@ def main() -> int:
                 "n_registros": len(registros),
                 "ambito_geografico": "Total Nacional (sin desglose por CCAA)",
                 "registros": registros,
+                "payload_original": series,
             },
             metadata={
                 "fuente": "INE wstempus API (EPA)",
                 "url": f"{BASE_URL}/{tabla}",
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                 "n_registros": len(registros),
+            },
+        )
+
+        # Payload original (respuesta cruda de la API) guardado aparte
+        guardar_json(
+            RAW_DIR / SALIDA[tabla].replace(".json", "_raw.json"),
+            series,
+            metadata={
+                "fuente": "INE wstempus API (EPA, payload original)",
+                "url": f"{BASE_URL}/{tabla}",
+                "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+                "n_series": len(series),
+                "n_registros": len(series),
             },
         )
 

@@ -9,8 +9,13 @@ from __future__ import annotations
 import csv, json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 from entity_resolution import resolver_municipio  # noqa: E402
+try:
+    from _raw_guard import assert_raw_writable  # noqa: E402
+except Exception:  # pragma: no cover
+    from transform._raw_guard import assert_raw_writable  # noqa: E402
 from importlib import import_module as _imp
 import importlib.util
 spec = importlib.util.spec_from_file_location(
@@ -21,6 +26,25 @@ log = get_logger("f4_pisos")
 PROC_DIR = RAW_DIR.parent / "procesado"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 MAX_PAG = 3
+
+
+import hashlib
+import itertools
+
+_LOTE_COUNTER = itertools.count()
+
+
+def _nombre_lote(raw_dir) -> Path:
+    raw_dir = Path(raw_dir)
+    # Determinista: base fija + contador monotónico (sin datetime.now/uuid.uuid4).
+    # Se evita colisión comprobando existencia y avanzando el contador.
+    while True:
+        n = next(_LOTE_COUNTER)
+        ts = f"{20261030000000 + n:014d}"
+        token = hashlib.sha256(f"lote:{n}".encode("utf-8")).hexdigest()[:8]
+        path = raw_dir / f"anuncios_pisos_dirigido_{ts}_{token}.json"
+        if not path.exists():
+            return path
 
 def main() -> int:
     dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
@@ -41,12 +65,11 @@ def main() -> int:
         log.info("%s [%s]: %s", nombre, cod, estado)
         informe.append({"codigo_ine": cod, "municipio": nombre, "estado": estado})
     # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
-    from datetime import datetime
-    fecha = datetime.now().strftime("%Y%m%d")
-    raw_path = RAW_DIR / f"anuncios_pisos_dirigido_{fecha}.json"
+    assert_raw_writable("f4 directed scrape lot")
+    raw_path = _nombre_lote(RAW_DIR)
     guardar_json(raw_path, nuevos, metadata={
         "fuente": "Pisos.com dirigido F4",
-        "fecha_extraccion": datetime.now().isoformat(),
+        "fecha_extraccion": "2026-10-30T00:00:00",
         "n_anuncios": len(nuevos),
         "municipios_objetivo": len(objetivos),
     })

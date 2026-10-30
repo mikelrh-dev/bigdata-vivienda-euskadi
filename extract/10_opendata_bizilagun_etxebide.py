@@ -275,6 +275,7 @@ def parsear_etxebide(texto: str) -> list[dict]:
 
 
 def _escribir_csv(destino: Path, registros: list[dict], columnas: list[str]) -> None:
+    # Escritura siempre en UTF-8-sig (sanear Latin-1 de la fuente etxebide).
     destino.parent.mkdir(parents=True, exist_ok=True)
     with destino.open("w", newline="", encoding="utf-8-sig") as fh:
         escritor = csv.DictWriter(fh, fieldnames=columnas, extrasaction="ignore")

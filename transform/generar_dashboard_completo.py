@@ -71,8 +71,9 @@ def g_B_paro_vs_precio():
         SELECT a.nombre_canonico AS municipio, a.tasa_paro_lanbide_pct, b.precio_medio, a.territorio
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN (
-            SELECT municipio, AVG(precio_eur) AS precio_medio
-            FROM read_csv('data/procesado/anuncios_unificados.csv')
+            SELECT municipio, MEDIAN(precio_eur) AS precio_medio
+            FROM read_csv('data/procesado/anuncios_vivienda_residencial_filtrado.csv')
+            WHERE outlier = FALSE
             GROUP BY municipio
         ) b ON a.nombre_canonico = b.municipio
     """).df()
@@ -126,8 +127,7 @@ def g_D_distancia_precio():
 def g_E_demografia():
     df = duckdb.query("""
         SELECT a.territorio,
-               AVG(CAST(b.poblacion_total AS DOUBLE)) AS pob_total,
-               AVG(CAST(b.poblacion_joven_15_29 AS DOUBLE)) AS pob_joven
+               AVG(CAST(b.poblacion_total AS DOUBLE)) AS pob_total
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN read_csv('data/procesado/eustat_demografia_renta_252.csv') b
           ON a.codigo_ine = b.codigo_ine
@@ -138,10 +138,10 @@ def g_E_demografia():
     axes[0].set_title("E: Poblacion total media por territorio")
     axes[0].set_ylabel("Habitantes")
     axes[0].set_xlabel("")
-    sns.barplot(data=df, x="territorio", y="pob_joven", ax=axes[1], palette="Purples")
+    axes[1].axis("off")
+    axes[1].text(0.5, 0.5, "No disponible en fuente Eustat (solo grupos 0-19, 20-64, >=65)",
+                 ha="center", va="center", fontsize=11, wrap=True)
     axes[1].set_title("E: Poblacion joven 15-29 media")
-    axes[1].set_ylabel("Habitantes")
-    axes[1].set_xlabel("")
     return _save(fig, "E_demografia.png")
 
 
@@ -174,7 +174,7 @@ def g_G_gaps():
     gaps = [
         ("93 municipios sin alquiler oficial", "imputados por comarca"),
         ("170 municipios sin anuncios", "solo 6 robustos (n>=30)"),
-        ("VPO Etxebide", "93.6% ceros, sin stock real"),
+        ("VPO Etxebide", "83.73% ceros, sin stock real"),
         ("ECVI compraventa", "solo 7 municipios >40k"),
         ("Emancipacion juvenil", "solo nivel CAE, no municipal"),
         ("Pisos sin geo", "235/235 sin coordenadas"),
