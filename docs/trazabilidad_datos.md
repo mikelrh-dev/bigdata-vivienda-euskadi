@@ -10,7 +10,7 @@
 | 1.1 Normalizar `codigo_ine` | `transform/normalizar_json_crudos.py` | `data/raw/*.json` (47) | `data/procesado/*_normalizado.json` (47) | — | Forzar `str.zfill(5)` en `codigo_ine` raíz y `ubicacion.codigo_ine`; eliminar `None`. |
 | 1.2 Limpiar ECVI | `transform/limpiar_ecvi.py` | `data/raw/ecvi_ecvi_es_2026t2_t{1,2,3}_{2,3}.csv` (6) | `data/procesado/ecvi_compraventa_limpio.json` + `.csv` | 29 | Parser de cabeceras múltiples → columnas nombradas (territorio, área funcional, municipio). |
 | 1.3 Desglosar Eustat | `transform/limpiar_eustat_demografia.py` | `data/raw/eustat_renta_municipal.csv`, `eustat_poblacion_edad.csv` | `data/procesado/eustat_demografia_renta_252.json` + `.csv` | 252 | Renta personal (ambos/hombres/mujeres), renta disponible, población total, año. `poblacion_joven_15_29` = null (no disponible en fuente). |
-| 1.4 Unificar anuncios | `transform/unificar_anuncios.py` | `anuncios_fotocasa_enriquecido_geo.json`, `anuncios_pisos_enriquecido_geo.json`, `anuncios_realtyapi.json`, `anuncios_pisos_dirigido_*.json` | `data/procesado/anuncios_unificados.json` + `.csv` | 873 | Esquema único + dedup por portal+id_anuncio. |
+| 1.4 Unificar anuncios | `transform/unificar_anuncios.py` | `anuncios_fotocasa_enriquecido_geo.json`, `anuncios_pisos_enriquecido_geo.json`, `anuncios_realtyapi.json`, `anuncios_pisos_dirigido_*.json` | `data/procesado/anuncios_unificados.json` + `.csv` | 759 | Esquema único + dedup por portal+id_anuncio. |
 
 ## Relación con inventario de datos
 
@@ -31,4 +31,4 @@
 |---|---|---|---|---|
 | A. Verificar udalmap JSON | (verificación) | `udalmap_empleo_corregido.json`, `udalmap_indicadores_adicionales.json` | — | C6/C2/C3/E1-E3/B6: datos ya presentes en JSON normalizado |
 | B. Enriquecer GTFS | `transform/enriquecer_gtfs_conectividad.py` | 13 ZIPs en `data/raw/gtfs/` + `municipios_euskadi.geojson` | `data/procesado/transporte_paradas_municipio_enriquecido.csv` (252) | D2: 6→9 |
-| C. Enriquecer equipamiento RealtyAPI | `transform/enriquecer_equipamiento_realtyapi.py` | `anuncios_unificados.json` + `anuncios_realtyapi.json` | `anuncios_unificados.json` + `.csv` actualizados | C4/C5: parcial (134/873) |
+| C. Enriquecer equipamiento RealtyAPI | `transform/enriquecer_equipamiento_realtyapi.py` | `anuncios_unificados.json` + `anuncios_realtyapi.json` | `anuncios_unificados.json` + `.csv` actualizados | C4/C5: parcial (0/759, enricher no re-ejecutado post-quarantine) |

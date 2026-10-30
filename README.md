@@ -1,8 +1,8 @@
 # bigdata-vivienda-euskadi — ¿Dónde pueden vivir los jóvenes en Euskadi?
 
 Reto intermodal **SBD + BDA**: pipeline en Python que analiza la accesibilidad
-de la vivienda para la población joven en Euskadi con datos reales, midiendo cada
-criterio contra el contrato OpenSpec de `openspec/specs/contrato-reto/spec.md`.
+de la vivienda para la población joven en Euskadi con datos reales, verificando
+cada criterio contra la rúbrica del reto.
 
 ## 🎯 Objetivo
 
@@ -106,7 +106,6 @@ Tests del contrato: `66 passed, 0 xfail` (59 originales + 7 guardrails de inmuta
 
 ```
 bigdata-vivienda-euskadi/
-├── openspec/          Contrato y specs (la verdad)
 ├── tests/             Verificación del contrato
 ├── config/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
@@ -116,8 +115,8 @@ bigdata-vivienda-euskadi/
 ├── analysis/          Aggregation Pipeline (pendiente)
 ├── visualization/     Gráficos (pendiente)
 ├── notebooks/         Informe de resultados (pendiente)
-├── data/raw/          Datos generados (ignorados por git, 317 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 101 archivos)
+├── data/raw/          Datos generados (ignorados por git, 319 archivos)
+├── data/procesado/    Datos normalizados (ignorados por git, 113 archivos)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 ├── docs/              Documentación (índice en docs/README.md)
 └── plan/              Planificación y decisiones
@@ -128,22 +127,22 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 317 (316 con hash en `docs/raw_manifest_sha256.txt`) |
-| Archivos silver | 103 |
-| Anuncios unificados | 873 (570 residencial + 303 temporal) en 84 municipios |
+| Archivos raw (bronce) | 319 (316 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos silver | 113 |
+| Anuncios unificados | 759 (570 residencial + 303 temporal) en 83 municipios |
 | Anuncios residenciales | 570 en 76 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
 | Municipios sin anuncios residenciales | 176 |
-| Municipios robustos (n≥30) | 6 (Bilbao, Donostia, Vitoria-Gasteiz, Getxo, Abanto, Ayala) |
+| Municipios robustos (n≥30) | 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
 | Tests | 66 passed |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
 - **O1 — ¿Puede un joven independizarse?** Esfuerzo joven mediano 43,5%; 100% de los 159 municipios con dato supera el 30%. Emancipación municipal no defendible (proxy renta). Puntuación 7/10.
-- **O2 — ¿Qué municipios son viables?** Solo 6 robustos (n≥30); resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 6. 8/10.
+- **O2 — ¿Qué municipios son viables?** Solo 4 robustos (n≥30); resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 4. 8/10.
 - **O3 — ¿Trabajo + vivienda barata?** r(paro juvenil, alquiler)=+0,385 (no hay trade-off simple); r(densidad, alquiler)=+0,456; r(distancia mín. a capital, alquiler)=-0,603. 8/10.
-- **O4 — ¿Limitaciones?** Proxy renta (falacia ecológica), 93 sin alquiler directo, solo 6 robustos, emancipación solo CAE, mezcla de años, ECVI solo territorial. 9/10.
+- **O4 — ¿Limitaciones?** Proxy renta (falacia ecológica), 93 sin alquiler directo, solo 4 robustos, emancipación solo CAE, mezcla de años, ECVI solo territorial. 9/10.
 - **Media global (42 preguntas):** 8,2/10.
 - Renta como proxy salarial: Pearson renta–alquiler r≈0,28 (159 municipios).
 
@@ -193,21 +192,6 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 .venv/Scripts/python.exe transform/auditar_lagunas_silver.py
 ```
 
-## 📜 Contrato de requisitos (OpenSpec)
-
-La implementación está atada a la rúbrica del reto. El contrato vive en
-`openspec/` y **manda sobre el código**:
-
-| Fichero | Contenido |
-|---|---|
-| `openspec/specs/contrato-reto/spec.md` | **La verdad.** Rúbrica literal + 18 requisitos + prohibiciones |
-| `openspec/specs/extraccion-datos/spec.md` | Extracción API y scraping |
-| `openspec/specs/almacenamiento-y-streaming/spec.md` | HDFS, Kafka, integración |
-| `openspec/specs/mongodb-y-analisis/spec.md` | Modelado, PyMongo, consultas, agregación |
-| `openspec/specs/presentacion-de-resultados/spec.md` | Gráficos, datos, presentación |
-
-**Regla de oro:** antes de escribir código se lee `openspec/specs/contrato-reto/spec.md`.
-
 ## 🗂️ Fuentes de datos
 
 Todas verificadas en octubre de 2026. Ver `config/fuentes.yaml` para URLs e IDs
@@ -224,13 +208,12 @@ completos.
 | LANBIDE | Web/CSV | Paro registrado por municipio |
 | Fotocasa | Scraping | ~470 anuncios reales de alquiler |
 | Pisos.com | Scraping | ~218 anuncios de alquiler |
-| Idealista (RealtyAPI) | API | Opcional, 139 anuncios |
+| Idealista (RealtyAPI) | API | Opcional, 84 anuncios |
 | INE Atlas de la renta | Descarga directa | Rellena 51 municipios faltantes |
 | Udalmap (api.euskadi.eus) | API | Actividad, ocupación, paro Lanbide, VPO, renta... |
 
 ## ✅ Verificación
 
-- Contrato: `openspec/specs/contrato-reto/spec.md`
 - Tests: `.venv/Scripts/python.exe -m pytest tests -q` (66 passed)
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
@@ -241,7 +224,7 @@ completos.
 
 - **Infraestructura (HDFS + MongoDB + Kafka):** pendiente. Docker Desktop arrancado, `docker-compose.yml` por escribir. Kafka en VM Ubuntu Server.
 - **Análisis (Aggregation Pipeline + indicadores + gráficos + informe):** pendiente. Depende de MongoDB levantado.
-- **Cobertura de anuncios (76/252, solo 6 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
+- **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal para los 93 faltantes.
 - **Paro: `tasa_paro_aprox_pct` invalidado** → usar `tasa_paro_lanbide_pct` del Udalmap/Lanbide.
 - **Distancias completas (252×252):** generadas con Haversine, pero solo Gipuzkoa tiene distancia por carretera.
@@ -261,7 +244,7 @@ Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` 
 
 ## ⚠️ Puntos débiles (limitaciones defendibles)
 
-- Cobertura de anuncios: solo 76/252 municipios, 6 robustos (n≥30). Ranking municipal fino no defendible para la mayoría.
+- Cobertura de anuncios: solo 83/252 municipios, 4 robustos (n≥30). Ranking municipal fino no defendible para la mayoría.
 - Alquiler oficial: solo 159/252; 93 imputados por comarca (no municipal).
 - Proxy renta (falacia ecológica): renta municipal aplicada homogéneamente, no captura precariedad juvenil.
 - Emancipación solo a nivel CAE, no municipal.

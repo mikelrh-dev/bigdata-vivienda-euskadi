@@ -11,10 +11,10 @@
 - Fotocasa anuncios: 471 (57 municipios).
 - Pisos anuncios: 230 (37 ámbitos de búsqueda).
 - RealtyAPI anuncios: 139 (3 municipios).
-- Anuncios unificados: 873 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
+- Anuncios unificados: 759 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
 - Tests: 59 passed.
-- Municipios robustos (n≥30): 6 canónicos (7 claves por variante Donostia).
+- Municipios robustos (n≥30): 4 canónicos (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
 - Tensión social (Etxebide): 73 municipios alta / 102 media / 77 baja.
 
@@ -48,7 +48,7 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 ## Sesgos documentados
 - Proxy de renta joven (no salario real).
 - 93 municipios con alquiler imputado por IDW_5_vecinos (no comarcal).
-- 170 municipios sin anuncios (solo 6 robustos).
+- 170 municipios sin anuncios (solo 4 robustos).
 - Mezcla de años (2026 anuncios vs 2024 alquiler/renta).
 - Emancipación juvenil solo a nivel CAE (no municipal).
 - Pisos con geo inválida (235/235, `geo_invalida=True`).
@@ -56,10 +56,10 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 - VPO 83.73% ceros (no respondible C1 con datos actuales).
 
 ## Limitaciones
-- Ranking municipal fino no defendible (solo 6 municipios robustos).
+- Ranking municipal fino no defendible (solo 4 municipios robustos).
 - Tasa de desempleo juvenil real no calculable (falta población activa joven municipal).
 - Compraventa vs alquiler solo a nivel territorial/área funcional (7 municipios directos).
 
 ## Decisiones congeladas
 
-- No ranking municipal fino: solo 6 municipios robustos (Bilbao, Donostia, Vitoria, Getxo, Abanto, Ayala) + tipología (Nivel1/Nivel2/Nivel3). Evita ataque en defensa por F5/B6.
+- No ranking municipal fino: solo 4 municipios robustos (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) + tipología (Nivel1/Nivel2/Nivel3). Evita ataque en defensa por F5/B6.
