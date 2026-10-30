@@ -47,6 +47,7 @@ def parse_t1(path_total, path_m2):
             ambito = t if n == "Total" else n
             price_map[ambito] = idx
     m2_map = {}
+    m2_usadas_map = {}
     for idx in range(2, len(terrs_m)):
         s = subcols_m[idx].strip()
         n = names_m[idx].strip()
@@ -59,11 +60,16 @@ def parse_t1(path_total, path_m2):
         if (s in ("Viv", "Viv total") and n == "Total") or (n in ("Vitoria-Gasteiz", "Bilbao", "Donostia-San Sebastián")):
             ambito = t if n == "Total" else n
             m2_map[ambito] = idx
+        if s in ("Viv. Usadas", "Viv usadas", "Usadas"):
+            ambito = t if n == "Total" else n
+            m2_usadas_map[ambito] = idx
     records = []
     for ambito, col in price_map.items():
         m2_col = m2_map.get(ambito)
+        m2_usadas_col = m2_usadas_map.get(ambito)
         pv = target[col].strip() if col < len(target) else ""
         mv = target_m[m2_col].strip() if (m2_col is not None and m2_col < len(target_m)) else ""
+        mv_usada = target_m[m2_usadas_col].strip() if (m2_usadas_col is not None and m2_usadas_col < len(target_m)) else ""
         records.append({
             "ambito_tipo": "territorio",
             "nombre_ambito": ambito,
@@ -71,7 +77,7 @@ def parse_t1(path_total, path_m2):
             "trimestre": "2026T2",
             "precio_medio_total_eur": float(pv) if pv else None,
             "precio_m2_libre_eur": float(mv) if mv else None,
-            "precio_m2_usada_eur": None,
+            "precio_m2_usada_eur": float(mv_usada) if mv_usada and mv_usada not in ("n.d.", "nd", "ND") else None,
         })
     return records
 
@@ -93,8 +99,10 @@ def parse_t2(path_total, path_m2):
             continue
         col = i
         m2_col = i
+        usada_col = i + 2
         pv = target[col].strip() if col < len(target) else ""
         mv = target_m[m2_col].strip() if m2_col < len(target_m) else ""
+        mv_usada = target_m[usada_col].strip() if usada_col < len(target_m) else ""
         records.append({
             "ambito_tipo": "area_funcional",
             "nombre_ambito": area_name,
@@ -102,7 +110,7 @@ def parse_t2(path_total, path_m2):
             "trimestre": "2026T2",
             "precio_medio_total_eur": float(pv) if pv else None,
             "precio_m2_libre_eur": float(mv) if mv else None,
-            "precio_m2_usada_eur": None,
+            "precio_m2_usada_eur": float(mv_usada) if mv_usada and mv_usada not in ("n.d.", "nd", "ND") else None,
         })
         i += 3
     return records
@@ -131,8 +139,10 @@ def parse_t3(path_total, path_m2):
             name = name.strip()
         col = i
         m2_col = i
+        usada_col = i + 2
         pv = target[col].strip() if col < len(target) else ""
         mv = target_m[m2_col].strip() if m2_col < len(target_m) else ""
+        mv_usada = target_m[usada_col].strip() if usada_col < len(target_m) else ""
         records.append({
             "ambito_tipo": "municipio",
             "nombre_ambito": name,
@@ -140,7 +150,7 @@ def parse_t3(path_total, path_m2):
             "trimestre": "2026T2",
             "precio_medio_total_eur": float(pv) if pv else None,
             "precio_m2_libre_eur": float(mv) if mv else None,
-            "precio_m2_usada_eur": None,
+            "precio_m2_usada_eur": float(mv_usada) if mv_usada and mv_usada not in ("n.d.", "nd", "ND") else None,
         })
         i += 3
     return records
