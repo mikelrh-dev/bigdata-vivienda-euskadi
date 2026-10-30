@@ -232,6 +232,47 @@ def main():
         except (ValueError, TypeError):
             supf = None
         r["es_outlier_superficie"] = bool(supf is not None and (supf < 10 or supf > 500))
+    # Cuarentena estricta Silver Maestro: integridad referencial + anomalías
+    before_q = len(recs)
+    dropped = {"codigo_ine_null": 0, "codigo_ine_no_dim": 0, "superficie_lt_10": 0, "pm2_gt_100": 0}
+    dim_path = os.path.join(OUT, "dim_municipios.csv")
+    if not os.path.exists(dim_path):
+        dim_path = os.path.join(RAW, "dim_municipios.csv")
+    _dim = pd.read_csv(dim_path, dtype=str, encoding="utf-8-sig")
+    valid_codes = set(_dim["codigo_ine"].astype(str).str.strip().str.zfill(5))
+    cleaned = []
+    for r in recs:
+        ci = r["ubicacion"].get("codigo_ine")
+        if ci is None:
+            dropped["codigo_ine_null"] += 1
+            continue
+        ci_norm = str(ci).strip()
+        if ci_norm.isdigit():
+            ci_norm = ci_norm.zfill(5)
+        if ci_norm not in valid_codes:
+            dropped["codigo_ine_no_dim"] += 1
+            continue
+        sup = r.get("superficie_m2")
+        price = r.get("precio_eur")
+        try:
+            supf = float(sup) if sup is not None else None
+        except (ValueError, TypeError):
+            supf = None
+        try:
+            pf = float(price) if price is not None else None
+        except (ValueError, TypeError):
+            pf = None
+        if supf is not None and supf < 10:
+            dropped["superficie_lt_10"] += 1
+            continue
+        if supf is not None and supf > 0 and pf is not None and (pf / supf) > 100:
+            dropped["pm2_gt_100"] += 1
+            continue
+        cleaned.append(r)
+    recs = cleaned
+    print("Anuncios antes de cuarentena:", before_q)
+    print("Anuncios tras cuarentena:", len(recs))
+    print("Descartados cuarentena:", before_q - len(recs), dropped)
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     pd.DataFrame([{

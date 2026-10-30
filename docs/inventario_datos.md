@@ -223,7 +223,7 @@ _Archivos: 8_
 | Archivo | Tipo | Tamaño | Filas×Cols | Columnas principales | Cobertura municipal | Nulos / outliers | Pregunta del proyecto |
 |---|---|---:|---:|---|---|---|---|
 | `data/raw/alquiler_distrito_seccion_original.csv` | CSV (multi-cab.) | 16.8 KB | 197×15 | Municipio, Distrito, Sección, Unnamed: 3, Unnamed: 4, Unnamed: 5 … | Municipio: 20/252 | 398 nulos en 15 cols (Municipio:174, Distrito:172, Sección:4); outliers>3σ: 11 en 9 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
-| `data/raw/alquiler_municipal.csv` | CSV | 26.5 KB | 253×18 | territorio, municipio, distrito, renta_media_eur_m2_media, renta_media_eur_m2_mediana, renta… | municipio: 159/252; codigo_ine: 159/252 | Sin nulos; outliers>3σ: 44 en 13 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
+| `data/raw/alquiler_municipal.csv` | CSV | 26.5 KB | 253×15 | territorio, municipio, distrito, renta_media_eur_m2_media, renta_media_eur_m2_mediana, renta… | municipio: 159/252 (sin codigo_ine) | Sin nulos; outliers>3σ: 44 en 13 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
 | `data/raw/alquiler_municipal.json` | JSON | 177.0 KB | 253×18 | territorio, municipio, distrito, renta_media_eur_m2_media, renta_media_eur_m2_mediana, renta… | municipio: 159/252; nombre_canonico_resuelto: 159/252 | Sin nulos; outliers>3σ: 38 en 12 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
 | `data/raw/alquiler_municipio_original.csv` | CSV (multi-cab.) | 22.1 KB | 265×14 | Municipio, Distrito, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5 … | Municipio: 159/252 | 256 nulos en 14 cols (Municipio:100, Distrito:12, Unnamed: 2:12); outliers>3σ: 29 en 9 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
 | `data/raw/alquiler_seccion.csv` | CSV | 161.0 KB | 1569×19 | territorio, municipio, codigo_ine, nombre_canonico, distrito, seccion … | municipio: 159/252; codigo_ine: 159/252 | 1569 nulos en 1 cols (territorio:1569); outliers>3σ: 193 en 14 cols | ¿Cuál es el alquiler medio oficial por municipio (Eustat 2024)? |
@@ -460,7 +460,7 @@ _Archivos: 3_
 |---|---|---:|---:|---|---|---|---|
 | `data/raw/dim_municipios.csv` | CSV | 22.0 KB | 252×9 | codigo_ine, nombre_canonico, territorio, nombre_normalizado, variantes, n_anuncios … | codigo_ine: 252/252; nombre_canonico: 252/252 | Sin nulos; outliers>3σ: 2 en 1 cols | ¿Dónde están los municipios y cómo se identifican (dimensión)? |
 | `data/raw/dim_municipios.json` | JSON | 91.6 KB | 252×9 | codigo_ine, nombre_canonico, territorio, nombre_normalizado, variantes, n_anuncios … | nombre_canonico: 252/252; nombre_normalizado: 252/252 | Sin nulos; outliers>3σ: 2 en 1 cols | ¿Dónde están los municipios y cómo se identifican (dimensión)? |
-| `data/raw/municipios_euskadi.geojson` | GeoJSON | 10.5 MB | 0×0 | — | — | Sin nulos; sin outliers>3σ | ¿Dónde están los municipios y cómo se identifican (dimensión)? |
+| `data/raw/municipios_euskadi.geojson` | GeoJSON | 10.5 MB | 252 features | — | — | Sin nulos; sin outliers>3σ | ¿Dónde están los municipios y cómo se identifican (dimensión)? |
 
 ### 2.20 Geografía (distancias)
 
