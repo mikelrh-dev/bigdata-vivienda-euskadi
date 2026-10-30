@@ -87,11 +87,21 @@
 
 | Fuente | Cobertura / nulos | Estrategia de null-handling |
 |---|---|---|
-| EMAL (fianzas) | 73 / 252 municipios (179 nulos) | Mantener como cobertura parcial: analizar solo los 73 municipios con dato; documentar sesgo de cobertura; no imputar por comarca/IDW. |
-| SERPAVI | 89 nulos (249/252 con dato) | Mantener nulos explícitos; no imputar; usar como indicador de disponibilidad y excluir de rankings finos. |
-| Transporte / GTFS (`operadores`) | 51 / 252 nulos | Mantener `paradas_por_1000_hab` y `expediciones_dia` sin nulos; `operadores` nulo documentado como "sin operador identificado"; no bloquea análisis de conectividad. |
+| EMAL (fianzas) | 73 / 252 municipios (179 nulos) | Mantener como cobertura parcial: analizar solo los 73 municipios con dato; documentar sesgo de cobertura; no imputar por comarca/IDW. Los ceros en `tiene_fianzas_emal` son datos reales (0 = no tiene fianzas EMAL). |
+| SERPAVI | 89 nulos (249/252 con dato) | **Imputado** por mediana de provincia → fallback regional (script `imputar_nulos_fuentes.py`). Flags: `serpavi_imputado`, `metodo_imputacion_serpavi`. Valores originales preservados donde existen. Output: `serpavi_renta_imputado.csv`. |
+| Transporte / GTFS (`operadores`) | 51 / 252 nulos → **0** | **Corregido**: `operadores` vacío rellenado con `"sin_servicio"` + flag `tiene_transporte_publico`. `paradas_por_1000_hab` y `expediciones_dia` sin nulos. Output regenerado con BOM. |
 
 ---
+
+## 3.2 Limitaciones documentadas (VPO, Idealista, cobertura anuncios)
+
+| Limitación | Detalle | Estrategia |
+|---|---|---|
+| VPO stock municipal | No existe dataset público de stock VPO municipal. Los ceros en `tiene_fianzas_emal` son datos reales (0 = no tiene fianzas EMAL). EMAL mide demanda (solicitudes), no stock. | Documentar como limitación. No imputar (fabricaría efecto de política). Analizar solo los 73 municipios con dato. |
+| Idealista no automatizado | Script `extract/09_realtyapi.py` existe (soporta `--todos`), pero no hay `REALTYAPI_KEY` configurada. Requiere compra de key y/o aprobación de API oficial. | Documentar como limitación. Si se justifica por necesidad de cobertura media, obtener key y ejecutar. |
+| Cobertura anuncios (84/252, 6 robustos) | Fotocasa provincial ya agota páginas disponibles (Gipuzkoa 117, Bizkaia 338, Araba 14). Los municipios rurales no tienen anuncios. | Scraping dirigido para municipios de alta población sin cobertura (2 páginas cada uno). Documentar sesgo de selección (urbano vs rural). |
+| Pisos.com geo inválida 100% | Las ubicaciones de Pisos.com son aproximadas ("cerca de..."). No hay coordenadas exactas. | Opcional: pilot geocoding en 20 anuncios para cuantificar valor. Documentar como limitación si no se pursue. |
+| ECVI precio_m2 usada (13/29) | Solo 13 de 29 registros tienen precio m2 de vivienda usada (resto n.d.). | Capturado de raw ECVI (t1_3, t2_3, t3_3). Documentar n.d. restantes como limitación de fuente. |
 
 ## 4. Lo que SÍ es sólido (no tocar)
 

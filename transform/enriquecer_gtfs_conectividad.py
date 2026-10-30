@@ -186,13 +186,16 @@ def main():
         tiene_tren = any(op in tren_operadores for op in a["operadores"])
         pop = pop_map.get(ci)
         paradas_1000 = (n_paradas / (pop / 1000)) if (pop and pop > 0) else None
+        tiene_transporte = len(a["operadores"]) > 0
+        operadores_str = ",".join(sorted(a["operadores"])) if tiene_transporte else "sin_servicio"
         rows.append({
             "codigo_ine": ci,
             "nombre": m["nombre"],
             "n_paradas": n_paradas,
             "expediciones_dia": exp,
             "tiene_tren_metro": tiene_tren,
-            "operadores": ",".join(sorted(a["operadores"])),
+            "operadores": operadores_str,
+            "tiene_transporte_publico": tiene_transporte,
             "paradas_por_1000_hab": round(paradas_1000, 2) if paradas_1000 is not None else None,
         })
     import pandas as pd
