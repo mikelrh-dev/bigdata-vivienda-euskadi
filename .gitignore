@@ -46,6 +46,16 @@ scratchpad/auditoria_duckdb.md
 # Graphify ignore (local config)
 .graphifyignore
 
+# Backups de procesado/raw (generados localmente)
+data/procesado_backup*/
+data/procesado_pre_*/
+data/raw_backup*/
+data/raw_pre_*/
+data/raw_crudo*/
+
+# Streamlit (si se habilita)
+.streamlit/
+
 # Openspec plan (local)
 openspec/plan/
 

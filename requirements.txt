@@ -34,3 +34,7 @@ jupyter==1.1.1
 
 # Opcional: dashboards interactivos (Plotly)
 # plotly>=5.0.0
+
+# Visualización de esquema (T1-T5)
+networkx==3.7
+pyvis==0.3.2
