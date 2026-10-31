@@ -69,7 +69,7 @@ def main() -> int:
         renta_mediana_min=("renta_media_eur_m2_mediana", "min"),
         renta_mediana_max=("renta_media_eur_m2_mediana", "max")).reset_index()
     g["rango_intra_municipal"] = (g["renta_mediana_max"] - g["renta_mediana_min"]).round(2)
-    g.to_csv(RAW_DIR.parent / "procesado" / "alquiler_seccion_resumen.csv",
+    g.to_csv(PROC_DIR / "alquiler_seccion_resumen.csv",
              index=False, encoding="utf-8-sig")
     log.info("V4: %d secciones, %d municipios. Rango medio intra: %.2f eur/m2",
              len(df), df["codigo_ine"].nunique(), g["rango_intra_municipal"].mean())
