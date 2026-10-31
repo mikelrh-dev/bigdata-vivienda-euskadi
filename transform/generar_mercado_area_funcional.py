@@ -29,9 +29,9 @@ def _norm_area(name: str) -> str:
 
 
 def main() -> int:
-    muni_af = pd.read_csv(PROC / "municipio_area_funcional_ecvi.csv")
-    alq = pd.read_csv(PROC / "alquiler_municipal_completo.csv")
-    ecvi = pd.read_csv(PROC / "ecvi_compraventa_limpio.csv")
+    muni_af = pd.read_csv(PROC / "municipio_area_funcional_ecvi.csv", dtype=str, encoding="utf-8-sig")
+    alq = pd.read_csv(PROC / "alquiler_municipal_completo.csv", dtype=str, encoding="utf-8-sig")
+    ecvi = pd.read_csv(PROC / "ecvi_compraventa_limpio.csv", dtype=str, encoding="utf-8-sig")
 
     # Join alquiler con area funcional por codigo_ine
     af_map = muni_af[["codigo_ine", "area_funcional"]].copy()

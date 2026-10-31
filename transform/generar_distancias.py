@@ -23,7 +23,12 @@ def _hav(lat1, lon1, lat2, lon2):
 
 def main() -> int:
     import pandas as pd
-    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
+    # WP-16: dim canonica vive en procesado; raw solo como fallback historico.
+    _dim_src = PROC_DIR / "dim_municipios.csv"
+    if not _dim_src.exists():
+        log.warning("dim en procesado no existe, fallback a raw")
+        _dim_src = RAW_DIR / "dim_municipios.csv"
+    dim = pd.read_csv(_dim_src, dtype=str, encoding="utf-8-sig")
     dim_cods = set(dim["codigo_ine"].str.zfill(5))
 
     # 1. capitales

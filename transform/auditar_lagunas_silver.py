@@ -97,7 +97,7 @@ def main() -> None:
     for nombre in CURATED_VITAL_CSVS:
         ruta = CSV_DIR / nombre
         try:
-            df = pd.read_csv(ruta, encoding="utf-8-sig")
+            df = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
         except Exception as exc:  # noqa: BLE001
             filas_out.append({
                 "archivo": nombre,

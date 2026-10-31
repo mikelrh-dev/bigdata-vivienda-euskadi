@@ -26,9 +26,9 @@ def _percentil(series: pd.Series) -> pd.Series:
 
 
 def main() -> int:
-    dim = pd.read_csv(PROC / "dim_municipios_renta.csv")
+    dim = pd.read_csv(PROC / "dim_municipios_renta.csv", dtype=str, encoding="utf-8-sig")
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
-    etx = pd.read_csv(RAW / "etxebide_solicitudes.csv")
+    etx = pd.read_csv(RAW / "etxebide_solicitudes.csv", dtype=str, encoding="utf-8-sig")
     etx24 = etx[etx["anio"] == 2024][["codigo_ine", "etxebide_solicitudes_por_mil"]].copy()
     etx24 = etx24.rename(columns={"etxebide_solicitudes_por_mil": "etxebide_solicitudes_por_mil_2024"})
     etx24["codigo_ine"] = etx24["codigo_ine"].astype(str).str.zfill(5)

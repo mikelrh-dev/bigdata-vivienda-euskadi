@@ -70,7 +70,7 @@ def main():
     pop_map = {}
     try:
         import pandas as pd
-        ud = pd.read_csv(os.path.join(RAW, "udalmap_indicadores_adicionales.csv"))
+        ud = pd.read_csv(os.path.join(RAW, "udalmap_indicadores_adicionales.csv"), dtype=str, encoding="utf-8-sig")
         for _, row in ud.iterrows():
             ci = str(row["codigo_ine"]).strip().zfill(5) if pd.notna(row["codigo_ine"]) else None
             if ci:

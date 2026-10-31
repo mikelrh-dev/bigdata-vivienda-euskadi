@@ -17,7 +17,7 @@ OUT = os.path.join("data", "procesado")
 
 def main():
     # Load SERPAVI raw
-    df = pd.read_csv(os.path.join(RAW, "serpavi_renta_municipal.csv"), encoding="utf-8-sig")
+    df = pd.read_csv(os.path.join(RAW, "serpavi_renta_municipal.csv"), dtype=str, encoding="utf-8-sig")
     target = "renta_m2_mes_eur"
 
     # Ensure codigo_ine is string 5 digits

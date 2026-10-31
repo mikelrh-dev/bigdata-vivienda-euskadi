@@ -14,7 +14,11 @@ RAW = os.path.join("data", "raw")
 
 
 def _load_dim():
-    dim = pd.read_csv(os.path.join(RAW, "dim_municipios.csv"), dtype=str, encoding="utf-8-sig")
+    # WP-16: dim canonica en procesado; raw solo fallback historico.
+    _src = os.path.join("data", "procesado", "dim_municipios.csv")
+    if not os.path.exists(_src):
+        _src = os.path.join(RAW, "dim_municipios.csv")
+    dim = pd.read_csv(_src, dtype=str, encoding="utf-8-sig")
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     code2name = dict(zip(dim["codigo_ine"], dim["nombre_canonico"]))
     name2code = {}
