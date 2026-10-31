@@ -74,7 +74,8 @@ def main():
         for _, row in ud.iterrows():
             ci = str(row["codigo_ine"]).strip().zfill(5) if pd.notna(row["codigo_ine"]) else None
             if ci:
-                pop_map[ci] = row.get("poblacion_total", None)
+                # WP-10: lectura str; poblacion a numerico explicito.
+                pop_map[ci] = pd.to_numeric(row.get("poblacion_total", None), errors="coerce")
     except Exception:
         pass
 

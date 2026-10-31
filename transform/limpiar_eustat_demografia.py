@@ -24,8 +24,11 @@ def main():
     renta["codigo_ine"] = renta["key"].map(name2code)
     renta = renta[renta["codigo_ine"].notna()].copy()
     renta["municipio"] = renta["ámbitos territoriales__etiqueta"].astype(str).str.strip()
-    last_year = int(renta["periodo"].max())
-    renta = renta[renta["periodo"] == last_year]
+    # WP-10: valores euros a numerico (lectura str para preservar claves).
+    renta["Renta personal media de la C.A. de Euskadi (euros)"] = pd.to_numeric(
+        renta["Renta personal media de la C.A. de Euskadi (euros)"], errors="coerce")
+    last_year = int(pd.to_numeric(renta["periodo"], errors="coerce").max())
+    renta = renta[renta["periodo"].astype(str) == str(last_year)]
 
     def pivot_renta(tipo):
         sub = renta[renta["tipo de renta__etiqueta"] == tipo]
@@ -54,6 +57,9 @@ def main():
     pob["codigo_ine"] = pob["key"].map(name2code)
     pob = pob[pob["codigo_ine"].notna()].copy()
     pob["anio"] = pob["periodo"].astype(str).str[:4].astype(int)
+    # WP-10: poblacion a numerico antes de agregar (str sumaria textos).
+    pob["Población de la C.A. de Euskadi"] = pd.to_numeric(
+        pob["Población de la C.A. de Euskadi"], errors="coerce")
     last_pob_year = int(pob["anio"].max())
     pob = pob[(pob["anio"] == last_pob_year) & (pob["grandes grupos de edad cumplida__etiqueta"] == "Total")]
     pob_total = pob.groupby("codigo_ine")["Población de la C.A. de Euskadi"].sum().reset_index()

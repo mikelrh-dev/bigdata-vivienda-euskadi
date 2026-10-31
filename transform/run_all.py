@@ -335,13 +335,17 @@ def _estado(script: str) -> tuple[str, str]:
 
 def _run_script(script: Path) -> tuple[int, float]:
     """Ejecuta un script y retorna (returncode, duracion_segundos)."""
+    import os
     inicio = time.monotonic()
     try:
+        # Higiene Windows: UTF-8 en hijos (pyvis y prints con euskera).
+        env = dict(os.environ, PYTHONUTF8="1")
         proc = subprocess.run(
             [sys.executable, str(script)],
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
+            env=env,
         )
         rc = proc.returncode
         if proc.stdout:
