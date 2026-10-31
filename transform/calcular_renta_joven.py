@@ -32,7 +32,7 @@ PROC = PROJECT_ROOT / "data" / "procesado"
 
 def _ratio_fiscal_desde_eustat() -> float:
     """Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eustat_renta_edad.csv."""
-    df = pd.read_csv(RAW / "eustat_renta_edad.csv")
+    df = pd.read_csv(RAW / "eustat_renta_edad.csv", dtype=str, encoding="utf-8-sig")
     d = df[(df["sexo__etiqueta"] == "Total") & (df["tipo de renta__etiqueta"] == "Renta total")]
     d = d[d["periodo"] == 2024]
     tramos = {}
@@ -57,7 +57,7 @@ SALARIO_OVJ_18_29 = 1381
 
 
 def main() -> int:
-    base = pd.read_csv(PROC / "analisis_variables_base.csv")
+    base = pd.read_csv(PROC / "analisis_variables_base.csv", dtype=str, encoding="utf-8-sig")
     base["codigo_ine"] = base["codigo_ine"].astype(str).str.zfill(5)
 
     # Proxy fiscal (media simple, sin ponderar por poblacion) - ratio dinamico desde eustat
@@ -89,7 +89,7 @@ def main() -> int:
     out["brecha_emancipacion_eur"] = out["housing_wage_mes"] - SALARIO_OVJ_18_29
 
     # Tarea 2: salario joven ajustado al riesgo local (paro joven Lanbide)
-    paro = pd.read_csv(RAW / "lanbide_paro_juvenil.csv")[["codigo_ine", "tasa_paro_joven_pct"]]
+    paro = pd.read_csv(RAW / "lanbide_paro_juvenil.csv", dtype=str, encoding="utf-8-sig")[["codigo_ine", "tasa_paro_joven_pct"]]
     paro["codigo_ine"] = paro["codigo_ine"].astype(str).str.zfill(5)
     out = out.merge(paro, on="codigo_ine", how="left")
     paro_mean = out["tasa_paro_joven_pct"].mean()
@@ -108,7 +108,7 @@ def main() -> int:
     out["fuente_renta_fiscal"] = "Eustat renta_edad 2024 (CAE)"
 
     # T4: brecha de genero en esfuerzo de alquiler
-    ud_sex = pd.read_csv(RAW / "udalmap_indicadores_adicionales.csv")
+    ud_sex = pd.read_csv(RAW / "udalmap_indicadores_adicionales.csv", dtype=str, encoding="utf-8-sig")
     ud_sex["codigo_ine"] = ud_sex["codigo_ine"].astype(str).str.zfill(5)
     ud_sex = ud_sex[["codigo_ine", "renta_personal_total_hombres_eur", "renta_personal_total_mujeres_eur"]]
     out = out.merge(ud_sex, on="codigo_ine", how="left")

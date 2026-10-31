@@ -62,7 +62,7 @@ def main():
     prev = None
     if os.path.exists(csv_path):
         try:
-            prev = pd.read_csv(csv_path)
+            prev = pd.read_csv(csv_path, dtype=str, encoding="utf-8-sig")
         except Exception:
             prev = None
     df = pd.DataFrame([{
@@ -89,7 +89,7 @@ def main():
                 df[col] = df["id_anuncio"].astype(str).map(mapping)
             else:
                 df[col] = pd.NA
-    df.to_csv(csv_path, index=False)
+    df.to_csv(csv_path, index=False, encoding="utf-8-sig")
     print(f"Rescatados: superficie={r_m2}, habitaciones={r_hab}")
     print("Total anuncios:", len(recs))
 

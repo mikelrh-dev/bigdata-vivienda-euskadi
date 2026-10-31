@@ -91,3 +91,71 @@ def test_wp09_nombres_canonicos():
     assert (t["codigo_ine"].astype(str).str.zfill(5).str.len() == 5).all()
     assert set(t["codigo_ine"].astype(str).str.zfill(5)) <= set(
         dim["codigo_ine"].astype(str))
+
+
+def _llamadas_sin(texto, marcador, clave):
+    """Localiza llamadas marcador(...) cuyo argumento no contiene clave.
+
+    Recorre parentesis balanceados (el regex simple se rompia con
+    os.path.join(...) anidado). Devuelve lineas 1-based."""
+    out, i = [], 0
+    while True:
+        j = texto.find(marcador, i)
+        if j < 0:
+            return out
+        k = j + len(marcador)
+        depth, p = 1, k
+        while p < len(texto) and depth:
+            if texto[p] == "(":
+                depth += 1
+            elif texto[p] == ")":
+                depth -= 1
+            p += 1
+        if clave not in texto[k:p]:
+            out.append(texto[:j].count("\n") + 1)
+        i = p
+
+
+def test_wp10_lectura_tipografica():
+    """WP-10: todo pd.read_csv de transform usa dtype=str (cero de Alava)."""
+    mal = []
+    for py in sorted((ROOT / "transform").glob("*.py")):
+        texto = py.read_text(encoding="utf-8")
+        for ln in _llamadas_sin(texto, "pd.read_csv(", "dtype"):
+            mal.append(f"{py.name}:{ln}")
+    assert not mal, "lecturas sin dtype=str:\n" + "\n".join(mal)
+
+
+def test_wp11_fallback_poblacion_joven():
+    """WP-11: estimacion 15-29 con periodo y metodo declarados por fila."""
+    pj = pd.read_csv(PROC / "poblacion_joven_municipal.csv",
+                     encoding="utf-8-sig", dtype=str)
+    assert len(pj) == 252, f"esperados 252, hay {len(pj)}"
+    assert pj["metodo"].str.contains("periodo=").all()
+    assert pd.to_numeric(pj["poblacion_15_29_est"], errors="coerce").notna().all()
+
+
+def test_wp12_cobertura_mercado():
+    """WP-12: n_anuncios real post-dedup, crudo conservado, tipologia cerrada."""
+    dim = pd.read_csv(PROC / "dim_municipios.csv", encoding="utf-8-sig",
+                      dtype=str)
+    assert "n_anuncios_raw" in dim.columns
+    real = pd.to_numeric(dim["n_anuncios"], errors="coerce")
+    crudo = pd.to_numeric(dim["n_anuncios_raw"], errors="coerce")
+    # El dedup reduce el total (843 -> 759); por municipio el recuento real
+    # puede superar al crudo porque el unificador resuelve mas variantes.
+    assert int(crudo.sum()) >= int(real.sum()), "el dedup no reduce el total"
+    assert (real >= 0).all() and (crudo >= 0).all()
+    assert set(dim["tipologia_mercado"].unique()) <= {
+        "Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado",
+        "Nivel3_Mercado_Rural_Cerrado"}
+
+
+def test_wp13_higiene_escritura():
+    """WP-13: todo to_csv de transform escribe con encoding utf-8-sig."""
+    mal = []
+    for py in sorted((ROOT / "transform").glob("*.py")):
+        texto = py.read_text(encoding="utf-8")
+        for ln in _llamadas_sin(texto, ".to_csv(", "encoding"):
+            mal.append(f"{py.name}:{ln}")
+    assert not mal, "escrituras sin encoding:\n" + "\n".join(mal)

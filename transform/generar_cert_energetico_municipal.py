@@ -28,7 +28,7 @@ def main():
         if not os.path.exists(path):
             print(f"[WARN] No existe {path}, saltando")
             continue
-        df = pd.read_csv(path, sep=";", encoding="utf-8-sig", low_memory=False)
+        df = pd.read_csv(path, sep=";", encoding="utf-8-sig", low_memory=False, dtype=str)
         frames.append(df)
         print(f"[LOAD] {t}: {len(df)} filas, {df['Municipio'].nunique()} municipios")
 

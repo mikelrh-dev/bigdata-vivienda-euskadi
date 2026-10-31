@@ -14,12 +14,12 @@ def norm(s):
 def main():
     os.makedirs(OUT, exist_ok=True)
     # dim municipios para mapeo nombre -> codigo_ine
-    dim = pd.read_csv(os.path.join(RAW, "dim_municipios.csv"))
+    dim = pd.read_csv(os.path.join(RAW, "dim_municipios.csv"), dtype=str, encoding="utf-8-sig")
     dim["key"] = dim["nombre_canonico"].apply(norm)
     name2code = dict(zip(dim["key"], dim["codigo_ine"].astype(str).str.zfill(5)))
 
     # Renta
-    renta = pd.read_csv(os.path.join(RAW, "eustat_renta_municipal.csv"), low_memory=False)
+    renta = pd.read_csv(os.path.join(RAW, "eustat_renta_municipal.csv"), low_memory=False, dtype=str, encoding="utf-8-sig")
     renta["key"] = renta["ámbitos territoriales__etiqueta"].apply(norm)
     renta["codigo_ine"] = renta["key"].map(name2code)
     renta = renta[renta["codigo_ine"].notna()].copy()
@@ -49,7 +49,7 @@ def main():
     df["anio_renta"] = last_year
 
     # Población total (último año, grupo Total)
-    pob = pd.read_csv(os.path.join(RAW, "eustat_poblacion_edad.csv"), low_memory=False)
+    pob = pd.read_csv(os.path.join(RAW, "eustat_poblacion_edad.csv"), low_memory=False, dtype=str, encoding="utf-8-sig")
     pob["key"] = pob["ámbitos territoriales__etiqueta"].apply(norm)
     pob["codigo_ine"] = pob["key"].map(name2code)
     pob = pob[pob["codigo_ine"].notna()].copy()

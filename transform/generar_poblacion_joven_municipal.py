@@ -16,7 +16,11 @@ RAW = BASE / "data" / "raw"
 PROC = BASE / "data" / "procesado"
 
 pob = pd.read_csv(RAW / "eustat_poblacion_edad.csv", dtype=str, encoding="utf-8-sig")
-pob = pob[pob["periodo__etiqueta"] == "2025/01/01"]
+# WP-11: fallback explicito de periodo (2025/01/01 -> max disponible).
+periodos = sorted(pob["periodo__etiqueta"].dropna().unique())
+periodo = "2025/01/01" if "2025/01/01" in periodos else periodos[-1]
+print(f"periodo poblacion: {periodo} (disponibles: {periodos[0]}..{periodos[-1]})")
+pob = pob[pob["periodo__etiqueta"] == periodo]
 
 # pivot: un row por municipio con columnas por grupo
 grupos = pob.pivot_table(
@@ -50,7 +54,7 @@ out = out.rename(columns={"ámbitos territoriales__etiqueta": "nombre"})
 out["codigo_ine"] = out["codigo_ine"].astype(str).str.zfill(5)
 # filtrar solo municipios (codigos 01xxx, 20xxx, 48xxx de 5 digitos)
 out = out[out["codigo_ine"].str[:2].isin(["01", "20", "48"]) & (out["codigo_ine"].str.len() == 5)]
-out["metodo"] = "estimacion: 0.25*(0-19)+0.222*(20-64)"
+out["metodo"] = f"estimacion: 0.25*(0-19)+0.222*(20-64) periodo={periodo}"
 out = out.sort_values("codigo_ine").reset_index(drop=True)
 
 dest = PROC / "poblacion_joven_municipal.csv"

@@ -54,7 +54,7 @@ def _cargar_eustat() -> dict[str, dict]:
     """Devuelve {nombre_normalizado: {codigo_ine, nombre_canonico, territorio}}."""
     import pandas as pd
 
-    df = pd.read_csv(RAW_DIR / "eustat_renta_municipal.csv", low_memory=False, dtype={"ámbitos territoriales": str})
+    df = pd.read_csv(RAW_DIR / "eustat_renta_municipal.csv", low_memory=False, dtype=str, encoding="utf-8-sig")
     muni = df[df["ámbitos territoriales"].astype(str).str.len().isin([4, 5])][
         ["ámbitos territoriales", "ámbitos territoriales__etiqueta"]
     ].drop_duplicates()
