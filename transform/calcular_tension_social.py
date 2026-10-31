@@ -41,8 +41,15 @@ def main() -> int:
     dim["etxebide_solicitudes_por_mil_2024"] = dim["etxebide_solicitudes_por_mil_2024"].fillna(med)
 
     # percentiles
+    # WP-06: esfuerzo canonico = esfuerzo_joven_pct (base municipal fiscal).
+    # esfuerzo_ovj_referencia_pct usa un denominador autonomico constante y
+    # solo refleja diferencias de alquiler, no de renta: no se usa aqui.
+    # Fallback fiscal (mismo numerador, ratio CAE) donde el municipal falta.
+    esf = dim["esfuerzo_joven_pct"].fillna(dim["esfuerzo_max_pct"])
+    n_fb = int(dim["esfuerzo_joven_pct"].isna().sum())
+    print(f"esfuerzo canonico: {int(esf.notna().sum())} mun., fallback fiscal: {n_fb}")
     p_sol = _percentil(dim["etxebide_solicitudes_por_mil_2024"])
-    p_esf = _percentil(dim["esfuerzo_ovj_referencia_pct"])
+    p_esf = _percentil(esf)
     dim["tension_demanda_social"] = ((p_sol + p_esf) / 2).round(1)
 
     def cat(v):
