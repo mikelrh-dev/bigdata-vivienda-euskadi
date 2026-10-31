@@ -1,9 +1,13 @@
 """Calcula indice de tension social de demanda de vivienda (Etxebide + esfuerzo).
 
-Genera/actualiza columnas en data/procesado/dim_municipios_enriquecido.csv:
+Lee data/procesado/dim_municipios_renta.csv y genera la tabla de features
+de un solo escritor data/procesado/dim_municipios_tension.csv:
 - etxebide_solicitudes_por_mil_2024
 - tension_demanda_social (0-100)
 - tension_categoria (baja/media/alta)
+
+La tabla final la construye construir_dim_gold.py. No reescribir nunca
+dim_municipios_enriquecido.csv desde aqui.
 """
 from __future__ import annotations
 
@@ -22,7 +26,7 @@ def _percentil(series: pd.Series) -> pd.Series:
 
 
 def main() -> int:
-    dim = pd.read_csv(PROC / "dim_municipios_enriquecido.csv")
+    dim = pd.read_csv(PROC / "dim_municipios_renta.csv")
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     etx = pd.read_csv(RAW / "etxebide_solicitudes.csv")
     etx24 = etx[etx["anio"] == 2024][["codigo_ine", "etxebide_solicitudes_por_mil"]].copy()
@@ -51,8 +55,10 @@ def main() -> int:
     dim["tension_categoria"] = dim["tension_demanda_social"].map(cat)
 
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
-    out_path = PROC / "dim_municipios_enriquecido.csv"
-    dim.to_csv(out_path, index=False, encoding="utf-8-sig")
+    tension = dim[["codigo_ine", "etxebide_solicitudes_por_mil_2024",
+                   "tension_demanda_social", "tension_categoria"]].copy()
+    out_path = PROC / "dim_municipios_tension.csv"
+    tension.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(dim)} filas, {len(dim.columns)} cols)")
     print(dim["tension_categoria"].value_counts().to_string())
     print(f"tension media={dim['tension_demanda_social'].median():.1f}")

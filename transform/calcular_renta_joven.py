@@ -13,7 +13,8 @@ Proxy salarial (OVJ 2024):
   ratio_salarial_18_34 = 1564*12 / 28170 = 0.666
   ratio_salarial_16_29 = 1381*12 / 28170 = 0.588
 
-Guarda data/procesado/dim_municipios_enriquecido.csv.
+Guarda data/procesado/dim_municipios_renta.csv (tabla intermedia de un solo
+escritor). La tabla final la construye construir_dim_gold.py.
 No toca raw.
 """
 from __future__ import annotations
@@ -113,7 +114,7 @@ def main() -> int:
     out["esfuerzo_alquiler_mujeres_pct"] = (out["alquiler_anual_calc"] / out["renta_personal_total_mujeres_eur"]) * 100
     out["brecha_esfuerzo_genero_pp"] = (out["esfuerzo_alquiler_hombres_pct"] - out["esfuerzo_alquiler_mujeres_pct"]).abs()
     out["codigo_ine"] = out["codigo_ine"].astype(str).str.zfill(5)
-    out_path = PROC / "dim_municipios_enriquecido.csv"
+    out_path = PROC / "dim_municipios_renta.csv"
     out.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
     print(f"ratio_fiscal={ratio_fiscal:.4f}, ratio_sal_18_34={ratio_sal_18_34:.4f}, ratio_sal_18_29={ratio_sal_18_29:.4f}")
