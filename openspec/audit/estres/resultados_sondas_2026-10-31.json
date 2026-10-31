@@ -1,0 +1,529 @@
+{
+  "fecha": "2026-10-31",
+  "root": "C:\\Users\\mikel\\Documents\\bigdata-vivienda-euskadi",
+  "inventario": {
+    "raw_files": 319,
+    "proc_files": 113,
+    "res_files": 19,
+    "raw_mb": 844.5,
+    "frozen_marker": true,
+    "manifest_files": [
+      "manifest_sha256.txt",
+      "manifest_sha256.txt"
+    ],
+    "manifest_entries": "error: Expecting value: line 1 column 1 (char 0)"
+  },
+  "formato01_json": {
+    "json_raiz": 60,
+    "con_gaps": 47,
+    "gaps": [
+      {
+        "file": "anuncios_faltantes_fotocasa_batch1_20261029_230030.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_faltantes_pisos_batch1_20261029_230030.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_detalle.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_dirigido_20261029.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_dirigido_20261029_223523.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_enriquecido.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_enriquecido_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_enriquecido_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_habitaciones.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_habitaciones_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_habitaciones_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_fotocasa_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_dirigido_20261029.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_enriquecido.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_enriquecido_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_enriquecido_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_habitaciones.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_habitaciones_geo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_habitaciones_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_pisos_meta.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "anuncios_realtyapi.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "b5m_catalogo.json",
+        "issue": "falta fecha/fuente/recuento"
+      },
+      {
+        "file": "dim_municipios.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "distancias_b5m_gipuzkoa.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "distancias_municipios.json",
+        "issue": "falta fecha/recuento"
+      },
+      {
+        "file": "educacion_centros.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "emal_fianzas_ampliado.json",
+        "issue": "falta fecha"
+      },
+      {
+        "file": "emancipacion_juventud_resumen.json",
+        "issue": "falta fuente"
+      },
+      {
+        "file": "ine_69301.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "ine_69302.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "ine_69303.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "ine_69323.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "ine_69330.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "lanbide_paro_juvenil.json",
+        "issue": "falta fecha/recuento"
+      },
+      {
+        "file": "municipios_gipuzkoa_lista.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "osrm_tiempos_capitales.json",
+        "issue": "falta fecha/recuento"
+      },
+      {
+        "file": "ovj_salario_joven_2024.json",
+        "issue": "falta fuente"
+      },
+      {
+        "file": "salud_centros.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "serpavi_renta_municipal.json",
+        "issue": "falta fecha/recuento"
+      },
+      {
+        "file": "transporte_paradas_municipio.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "udalmap_empleo.json",
+        "issue": "falta recuento"
+      },
+      {
+        "file": "udalmap_empleo_corregido.json",
+        "issue": "falta fecha/recuento"
+      },
+      {
+        "file": "udalmap_indicadores_adicionales.json",
+        "issue": "falta recuento"
+      }
+    ]
+  },
+  "formato01_encoding_csv": {
+    "csv_raiz": 124,
+    "no_bom": 16,
+    "detalle": [
+      {
+        "file": "alquiler_distrito_seccion_original.csv",
+        "encoding": "utf-8",
+        "delimiter": ","
+      },
+      {
+        "file": "alquiler_municipio_original.csv",
+        "encoding": "utf-8",
+        "delimiter": ","
+      },
+      {
+        "file": "alquiler_seccion_a_original.csv",
+        "encoding": "utf-8",
+        "delimiter": ","
+      },
+      {
+        "file": "alquiler_seccion_b_original.csv",
+        "encoding": "utf-8",
+        "delimiter": ","
+      },
+      {
+        "file": "alquiler_territorial_original.csv",
+        "encoding": "utf-8",
+        "delimiter": ","
+      },
+      {
+        "file": "certificados_energeticos_araba.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_araba_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_bilbao_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_bizkaia.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_bizkaia_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_donostia_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_gipuzkoa.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_gipuzkoa_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "certificados_energeticos_vitoria_completo.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "emancipacion_juventud.csv",
+        "encoding": "utf-8",
+        "delimiter": ";"
+      },
+      {
+        "file": "etxebide_indicador_86.csv",
+        "encoding": "no-utf8",
+        "delimiter": ";"
+      }
+    ]
+  },
+  "dim_municipios": {
+    "rows": 252,
+    "codigos_unicos": 252,
+    "duplicados_codigo": [],
+    "duplicados_nombre": [],
+    "longitudes": {
+      "5": 252
+    },
+    "prefijos": {
+      "48": 113,
+      "20": 88,
+      "01": 51
+    },
+    "esperado_oficial_euskadi": 251,
+    "delta_vs_oficial": 1
+  },
+  "integridad_referencial": {
+    "alquiler_municipal_completo.csv": {
+      "rows": 252,
+      "codigos": 252,
+      "sin_codigo": 0,
+      "huerfanos_vs_dim": 0,
+      "ejemplos_huerfanos": [],
+      "municipios_del_dim_ausentes": 0
+    },
+    "analisis_variables_base.csv": {
+      "rows": 252,
+      "codigos": 252,
+      "sin_codigo": 0,
+      "huerfanos_vs_dim": 0,
+      "ejemplos_huerfanos": [],
+      "municipios_del_dim_ausentes": 0
+    },
+    "distancias_capitales_252.csv": {
+      "rows": 252,
+      "codigos": 252,
+      "sin_codigo": 0,
+      "huerfanos_vs_dim": 0,
+      "ejemplos_huerfanos": [],
+      "municipios_del_dim_ausentes": 0
+    },
+    "anuncios_unificados.csv": {
+      "rows": 759,
+      "codigos": 83,
+      "sin_codigo": 0,
+      "huerfanos_vs_dim": 0,
+      "ejemplos_huerfanos": [],
+      "municipios_del_dim_ausentes": 169
+    }
+  },
+  "alquiler_percentiles": {
+    "rows": 252,
+    "metodo_imputacion": {
+      "oficial": 159,
+      "IDW_5_vecinos": 93
+    },
+    "nivel_geografico": {
+      "municipal": 159,
+      "comarcal": 93
+    },
+    "checks": {
+      "renta_media_eur_m2": {
+        "viola_p25_le_p50": 0,
+        "viola_p50_le_p75": 0,
+        "negativos": 0,
+        "ceros": 0,
+        "nulos": 0,
+        "min": 3.1,
+        "max": 17.5
+      },
+      "cuantia_media_eur_mes": {
+        "viola_p25_le_p50": 0,
+        "viola_p50_le_p75": 0,
+        "negativos": 0,
+        "ceros": 0,
+        "nulos": 0,
+        "min": 288.0,
+        "max": 1203.0
+      },
+      "superficie_media_m2": {
+        "viola_p25_le_p50": 0,
+        "viola_p50_le_p75": 0,
+        "negativos": 0,
+        "ceros": 0,
+        "nulos": 0,
+        "min": 48.0,
+        "max": 113.0
+      }
+    }
+  },
+  "centinelas_pct": {
+    "tasa_actividad_pct": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 40.63,
+      "max": 60.09,
+      "fuera_0_100": 0
+    },
+    "tasa_ocupacion_pct": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 41.39,
+      "max": 74.14,
+      "fuera_0_100": 0
+    },
+    "tasa_paro_lanbide_pct": {
+      "nulos": 0,
+      "ceros_exactos": 3,
+      "negativos": 0,
+      "min": 0.0,
+      "max": 12.57,
+      "fuera_0_100": 0
+    },
+    "tasa_ocupacion_juvenil_16_24_pct": {
+      "nulos": 0,
+      "ceros_exactos": 2,
+      "negativos": 0,
+      "min": 0.0,
+      "max": 87.5,
+      "fuera_0_100": 0
+    },
+    "trabaja_fuera_pct": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 15.32,
+      "max": 100.0,
+      "fuera_0_100": 0
+    },
+    "afiliacion_ss_16_24_pct": {
+      "nulos": 0,
+      "ceros_exactos": 1,
+      "negativos": 0,
+      "min": 0.0,
+      "max": 68.75,
+      "fuera_0_100": 0
+    },
+    "esfuerzo_renta_hogar": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 0.08,
+      "max": 0.23,
+      "fuera_0_100": 0
+    },
+    "esfuerzo_renta_eustat": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 0.16,
+      "max": 0.39,
+      "fuera_0_100": 0
+    },
+    "esfuerzo_renta_joven": {
+      "nulos": 0,
+      "ceros_exactos": 0,
+      "negativos": 0,
+      "min": 0.23,
+      "max": 0.65,
+      "fuera_0_100": 0
+    },
+    "tasa_desempleo_juvenil_real_pct": {
+      "nulos": 53,
+      "ceros_exactos": 8,
+      "negativos": 0,
+      "min": 0.0,
+      "max": 20.64,
+      "fuera_0_100": 0
+    }
+  },
+  "anuncios": {
+    "rows": 759,
+    "por_portal": {
+      "fotocasa": 428,
+      "pisos": 247,
+      "realtyapi": 84
+    },
+    "modalidad": {
+      "larga_estancia": 491,
+      "temporal": 268
+    },
+    "dup_portal_id": 0,
+    "dup_fingerprint": 0,
+    "precio": {
+      "min": 80.0,
+      "max": 9500.0,
+      "nulos": 37,
+      "cero_o_neg": 0
+    },
+    "superficie": {
+      "min": 16.0,
+      "max": 6973.0,
+      "nulos": 10,
+      "menor_10m2": 0,
+      "mayor_1000m2": 2
+    },
+    "habitaciones_min": 0.0,
+    "flags_outlier": {
+      "False": 754,
+      "True": 5
+    }
+  },
+  "cobertura": {
+    "dim_n_anuncios_max": 239.0,
+    "dim_n_anuncios_suma": 843.0,
+    "anuncios_rows": 759,
+    "municipios_con_anuncio": 83,
+    "municipios_oficial_alquiler": 159,
+    "municipios_sin_anuncio": 169,
+    "municipios_imputados": 93
+  },
+  "reproducibilidad": {
+    "procesado_con_timestamp_en_nombre": [
+      "anuncios_faltantes_fotocasa_batch1_20261029_230030_normalizado.json",
+      "anuncios_faltantes_pisos_batch1_20261029_230030_normalizado.json",
+      "anuncios_fotocasa_dirigido_20261029_223523_normalizado.json"
+    ],
+    "n_con_timestamp": 3,
+    "manifests_transform": [],
+    "gold_hashes": {
+      "anuncios_habitaciones_unificados.csv": "4f7f639c212d2b8f",
+      "anuncios_unificados.csv": "131e8738a4f04fdc",
+      "anuncios_unificados.json": "4f5cc431218c15ab",
+      "analisis_variables_base.csv": "e4442209d9e4111b"
+    }
+  },
+  "escala": {
+    "segundos_lectura_todos_los_csv_procesado": 0.08,
+    "csv_procesado": 36
+  },
+  "duracion_total_s": 3.27
+}

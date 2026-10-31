@@ -143,8 +143,9 @@ def test_no_transform_writes_raw():
     assert not offenders, "Transforms que escriben en data/raw:\n" + "\n".join(offenders)
 
 
-def test_f4_filename_unique():
-    """_nombre_lote devuelve nombre con 14 digitos + token, y dos llamadas difieren."""
+def test_f4_filename_stable():
+    """WP-09: _nombre_lote devuelve un nombre estable (sin timestamp); la
+    trazabilidad de lotes vive en metadata.run_id, no en el nombre."""
     if str(TRANSFORM_DIR) not in sys.path:
         sys.path.insert(0, str(TRANSFORM_DIR))
     if str(EXTRACT_DIR) not in sys.path:
@@ -154,13 +155,9 @@ def test_f4_filename_unique():
     import f4_pisos_dirigido
     p1 = f4_pisos_dirigido._nombre_lote(RAW_DIR)
     p2 = f4_pisos_dirigido._nombre_lote(RAW_DIR)
-    assert p1 != p2
-    assert re.match(
-        r"anuncios_pisos_dirigido_\d{14}_[0-9a-f]{8}\.json", p1.name
-    ), p1.name
-    assert re.match(
-        r"anuncios_pisos_dirigido_\d{14}_[0-9a-f]{8}\.json", p2.name
-    ), p2.name
+    assert p1 == p2, "el lote debe tener nombre estable"
+    assert not re.search(r"\d{8}_\d{6}", p1.name), p1.name
+    assert p1.name == "anuncios_pisos_dirigido_lote.json"
 
 
 def test_geo_temp_not_tmp_root():

@@ -28,23 +28,14 @@ PROC_DIR.mkdir(parents=True, exist_ok=True)
 MAX_PAG = 3
 
 
-import hashlib
-import itertools
-
-_LOTE_COUNTER = itertools.count()
 
 
 def _nombre_lote(raw_dir) -> Path:
     raw_dir = Path(raw_dir)
-    # Determinista: base fija + contador monotónico (sin datetime.now/uuid.uuid4).
-    # Se evita colisión comprobando existencia y avanzando el contador.
-    while True:
-        n = next(_LOTE_COUNTER)
-        ts = f"{20261030000000 + n:014d}"
-        token = hashlib.sha256(f"lote:{n}".encode("utf-8")).hexdigest()[:8]
-        path = raw_dir / f"anuncios_pisos_dirigido_{ts}_{token}.json"
-        if not path.exists():
-            return path
+    # WP-09: nombre estable (un lote vigente). La trazabilidad de lotes va en
+    # metadata (run_id + contadores), no en el nombre. Los lotes historicos
+    # con timestamp que ya existen en raw se conservan congelados.
+    return Path(raw_dir) / "anuncios_pisos_dirigido_lote.json"
 
 def main() -> int:
     dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
@@ -67,11 +58,15 @@ def main() -> int:
     # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
     assert_raw_writable("f4 directed scrape lot")
     raw_path = _nombre_lote(RAW_DIR)
+    from datetime import datetime, timezone  # noqa: E402
     guardar_json(raw_path, nuevos, metadata={
         "fuente": "Pisos.com dirigido F4",
-        "fecha_extraccion": "2026-10-30T00:00:00",
+        "url": "https://www.pisos.com/alquiler/",
+        "fecha_extraccion": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
         "n_anuncios": len(nuevos),
+        "n_registros": len(nuevos),
         "municipios_objetivo": len(objetivos),
+        "run_id": f"f4-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}",
     })
     log.info("Lote nuevo guardado en raw: %s (%d anuncios)", raw_path.name, len(nuevos))
 

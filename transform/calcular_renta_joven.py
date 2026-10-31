@@ -82,8 +82,10 @@ def main() -> int:
     # Solucion 1+2 (aditivo): OVJ + Housing Wage
     out["salario_ovj_neto_mes"] = SALARIO_OVJ_18_29
     out["housing_wage_mes"] = out["cuantia_media_eur_mes_media"] / 0.30
-    out["esfuerzo_ovj_individual_pct"] = (out["cuantia_media_eur_mes_media"] / SALARIO_OVJ_18_29) * 100
-    out["esfuerzo_ovj_pareja_pct"] = (out["cuantia_media_eur_mes_media"] / (2 * SALARIO_OVJ_18_29)) * 100
+    # WP-06: el salario OVJ es una constante autonomica: sirve de referencia,
+    # no para ordenar municipios. El canonico es esfuerzo_joven_pct (fiscal).
+    out["esfuerzo_ovj_referencia_pct"] = (out["cuantia_media_eur_mes_media"] / SALARIO_OVJ_18_29) * 100
+    out["esfuerzo_ovj_pareja_referencia_pct"] = (out["cuantia_media_eur_mes_media"] / (2 * SALARIO_OVJ_18_29)) * 100
     out["brecha_emancipacion_eur"] = out["housing_wage_mes"] - SALARIO_OVJ_18_29
 
     # Tarea 2: salario joven ajustado al riesgo local (paro joven Lanbide)
@@ -119,7 +121,7 @@ def main() -> int:
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
     print(f"ratio_fiscal={ratio_fiscal:.4f}, ratio_sal_18_34={ratio_sal_18_34:.4f}, ratio_sal_18_29={ratio_sal_18_29:.4f}")
     print(f"esfuerzo_min mediana={out['esfuerzo_min_pct'].median():.1f}%, esfuerzo_max mediana={out['esfuerzo_max_pct'].median():.1f}%")
-    print(f"esfuerzo_ovj_individual mediana={out['esfuerzo_ovj_individual_pct'].median():.1f}%, housing_wage mediana={out['housing_wage_mes'].median():.0f} EUR")
+    print(f"esfuerzo_ovj_referencia mediana={out['esfuerzo_ovj_referencia_pct'].median():.1f}%, housing_wage mediana={out['housing_wage_mes'].median():.0f} EUR")
     print(f"salario_ajustado mediana={out['salario_joven_ajustado_local_eur'].median():.0f} EUR, esfuerzo_ajustado mediana={out['esfuerzo_ajustado_pct'].median():.1f}%")
     return 0
 
