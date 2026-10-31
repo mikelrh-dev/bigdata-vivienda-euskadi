@@ -45,9 +45,17 @@ def main() -> int:
     # Drop in memory before writing processed outputs (raw untouched).
     if "tasa_paro_aprox_pct" in df.columns:
         df = df.drop(columns=["tasa_paro_aprox_pct"])
-    df["brecha_ocupacion_actividad_pct"] = (pd.to_numeric(df["tasa_ocupacion_pct"], errors="coerce")
-                                            - pd.to_numeric(df["tasa_actividad_pct"], errors="coerce")).round(2)
-    df["tasa_paro_valida"] = df["tasa_paro_lanbide_pct"].notna()
+    # NOTA WP-05: no se calcula brecha_ocupacion_actividad_pct. Las tasas de
+    # ocupacion y actividad de Udalmap no comparten base (248/252 dan
+    # ocupacion > actividad, imposible por definicion), asi que la resta no
+    # mide ninguna brecha. Ver docs/reglas_limpieza.md.
+    # WP-04: un 0,00 exacto con muy pocos activos es artefacto, no medicion.
+    # Se conserva el valor publicado y la tasa de trabajo queda en NaN.
+    p = pd.to_numeric(df["tasa_paro_lanbide_pct"], errors="coerce")
+    df["tasa_paro_lanbide_bruto"] = p
+    df["paro_registrado_cero"] = p.eq(0)
+    df["tasa_paro_valida"] = p.notna() & p.gt(0)
+    df["tasa_paro_lanbide_pct"] = p.mask(p.le(0))
     df["nota_metodologica"] = NOTA
     df.to_csv(PROC_DIR / "udalmap_empleo_corregido.csv", index=False, encoding="utf-8-sig")
     guardar_json(PROC_DIR / "udalmap_empleo_corregido.json", df.to_dict(orient="records"),

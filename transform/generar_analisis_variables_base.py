@@ -17,7 +17,8 @@ dim = loadcsv(PROC / "dim_municipios.csv")
 rc = loadcsv(RAW / "renta_municipal_completa.csv")
 alq = loadcsv(PROC / "alquiler_municipal_completo.csv")
 dc = loadcsv(RAW / "distancias_capitales_252.csv")
-ud = loadcsv(RAW / "udalmap_empleo_corregido.csv")
+# WP-04/C-03: se lee la copia de PROCESADO, no el duplicado congelado de raw.
+ud = loadcsv(PROC / "udalmap_empleo_corregido.csv")
 
 # normalize codes
 for df in (dim, rc, dc, ud):
@@ -32,7 +33,8 @@ base = base.merge(rc[["codigo_ine", "renta_eustat", "renta_hogar", "renta_atlas"
                       "renta_joven_estimada_16_29"]],
                   on="codigo_ine", how="left")
 base = base.merge(ud[["codigo_ine", "tasa_actividad_pct", "tasa_ocupacion_pct",
-                      "tasa_paro_lanbide_pct", "tasa_ocupacion_juvenil_16_24_pct",
+                      "tasa_paro_lanbide_pct", "tasa_paro_valida",
+                      "tasa_ocupacion_juvenil_16_24_pct",
                       "trabaja_fuera_pct", "afiliacion_ss_16_24_pct",
                       "renta_familiar_eur", "renta_personal_total_eur",
                       "renta_personal_disponible_eur", "superficie_media_m2",
@@ -98,15 +100,17 @@ base.loc[mask, "tasa_desempleo_juvenil_real_pct"] = (
     base.loc[mask, "paro_joven_menores_25"] / base.loc[mask, "activos_16_24"] * 100.0
 )
 base["tasa_desempleo_juvenil_real_pct"] = base["tasa_desempleo_juvenil_real_pct"].clip(0, 100)
-# sanity: no mayor que 4x paro lanbide
+# sanity: no mayor que 4x paro lanbide. WP-04: nunca recortar contra un cap
+# nulo o cero (un techo de 0 anularia un valor calculado correctamente).
 if "tasa_paro_lanbide_pct" in base.columns:
     cap = base["tasa_paro_lanbide_pct"] * 4
-    m = base["tasa_desempleo_juvenil_real_pct"].notna() & cap.notna()
+    m = base["tasa_desempleo_juvenil_real_pct"].notna() & cap.gt(0)
     base.loc[m, "tasa_desempleo_juvenil_real_pct"] = base.loc[m, "tasa_desempleo_juvenil_real_pct"].clip(upper=cap[m])
 cols = ["codigo_ine", "nombre_canonico", "territorio", "tipologia_mercado", "n_anuncios",
         "tiene_alquiler_oficial", "renta_eustat", "renta_hogar", "renta_atlas",
         "renta_joven_estimada_16_29", "tasa_actividad_pct", "tasa_ocupacion_pct",
-        "tasa_paro_lanbide_pct", "tasa_ocupacion_juvenil_16_24_pct", "trabaja_fuera_pct",
+        "tasa_paro_lanbide_pct", "tasa_paro_valida",
+        "tasa_ocupacion_juvenil_16_24_pct", "trabaja_fuera_pct",
         "afiliacion_ss_16_24_pct", "renta_familiar_eur", "renta_personal_total_eur",
         "renta_personal_disponible_eur", "superficie_media_m2", "antiguedad_media_anyos",
         "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km", "capital_mas_cercana",

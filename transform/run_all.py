@@ -96,6 +96,11 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["raw:alquiler_municipal.csv", "raw:distancias_capitales.csv",
                "proc:distancias_haversine_252.csv"],
         "out": ["proc:alquiler_municipal_completo.csv"], "out_glob": []},
+    # cobertura (recuento real post-dedup; reescribe dim de forma declarada)
+    "aplicar_cobertura_mercado.py": {
+        "group": "cobertura",
+        "in": ["proc:dim_municipios.csv", "proc:anuncios_unificados.csv"],
+        "out": ["proc:dim_municipios.csv"], "out_glob": []},
     # analisis_base
     "generar_analisis_variables_base.py": {
         "group": "analisis_base",
