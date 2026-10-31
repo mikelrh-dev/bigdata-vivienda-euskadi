@@ -15,7 +15,8 @@ falt = pd.read_csv(PROC / "municipios_faltantes_93.csv", dtype=str, encoding="ut
 codes = falt["codigo_ine"].astype(str).str.zfill(5).tolist()
 
 # 2. Fuentes
-ud = pd.read_csv(RAW / "udalmap_empleo_corregido.csv", dtype=str, encoding="utf-8-sig")
+# WP-08: el corregido vive en procesado (raw no contiene derivados).
+ud = pd.read_csv(PROC / "udalmap_empleo_corregido.csv", dtype=str, encoding="utf-8-sig")
 ud["codigo_ine"] = ud["codigo_ine"].astype(str).str.zfill(5)
 
 rc = pd.read_csv(RAW / "renta_municipal_completa.csv", dtype=str, encoding="utf-8-sig")

@@ -22,6 +22,10 @@ def main():
 
     # Ensure codigo_ine is string 5 digits
     df["codigo_ine"] = df["codigo_ine"].astype(str).str.strip().str.zfill(5)
+    # WP-10: lectura tipada como str; medidas a numerico explicito.
+    for _c in [target, "renta_m2_p25", "renta_m2_p75", "anio_renta", "n_declaraciones"]:
+        if _c in df.columns:
+            df[_c] = pd.to_numeric(df[_c], errors="coerce")
 
     # Track original nulls
     null_mask = df[target].isna()
