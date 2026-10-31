@@ -42,7 +42,7 @@ def main() -> int:
 
     # percentiles
     p_sol = _percentil(dim["etxebide_solicitudes_por_mil_2024"])
-    p_esf = _percentil(dim["esfuerzo_ovj_individual_pct"])
+    p_esf = _percentil(dim["esfuerzo_ovj_referencia_pct"])
     dim["tension_demanda_social"] = ((p_sol + p_esf) / 2).round(1)
 
     def cat(v):

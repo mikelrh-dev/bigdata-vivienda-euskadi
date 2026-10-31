@@ -6,6 +6,7 @@ salida y ofrece un cliente HTTP con reintentos.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -164,10 +165,49 @@ def leer_csv_seguro(path, **kwargs):
 
 
 # ─── Guardado de JSON ─────────────────────────────────────────
+# WP-07: esquema unico de metadata. Campos obligatorios en RAW (FORMATO-01):
+# fuente, url, fecha_extraccion, n_registros, hash_sha256, version_parser.
+# En raw la validacion es estricta (falla en vez de escribir incompleto);
+# en procesado/scratchpad se rellenan defectos y se avisa por log.
+REQUIRED_METADATA = ("fuente", "url", "fecha_extraccion",
+                      "n_registros", "hash_sha256", "version_parser")
+SCRAPER_VERSION = "1"
+
+
+def _es_raw(destino: Path) -> bool:
+    try:
+        destino.resolve().relative_to(RAW_DIR.resolve())
+        return True
+    except ValueError:
+        return False
+
+
 def guardar_json(destino: Path, datos, metadata: dict | None = None) -> Path:
+    from datetime import datetime, timezone
+
+    destino = Path(destino)
     destino.parent.mkdir(parents=True, exist_ok=True)
-    if metadata is not None:
-        datos = {"metadata": metadata, "datos": datos}
+    meta = dict(metadata or {})
+    if isinstance(datos, list):
+        meta.setdefault("n_registros", len(datos))
+    meta.setdefault("fecha_extraccion",
+                    datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"))
+    meta.setdefault("version_parser", SCRAPER_VERSION)
+    meta["hash_sha256"] = hashlib.sha256(
+        json.dumps(datos, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+    faltan = [k for k in REQUIRED_METADATA if meta.get(k) in (None, "", [])]
+    if faltan and _es_raw(destino):
+        raise ValueError(
+            f"{destino.name}: metadata incompleta para raw, faltan {faltan}. "
+            "FORMATO-01 exige fuente, url, fecha_extraccion, n_registros, "
+            "hash_sha256 y version_parser."
+        )
+    if faltan:
+        get_logger("guardar_json").warning(
+            "%s: metadata sin %s (solo aviso fuera de raw)",
+            destino.name, ",".join(faltan))
+    datos = {"metadata": meta, "datos": datos}
     destino.write_text(
         json.dumps(datos, ensure_ascii=False, indent=2), encoding="utf-8"
     )

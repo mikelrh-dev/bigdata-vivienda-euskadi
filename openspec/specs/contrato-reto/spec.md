@@ -146,6 +146,16 @@ El sistema **MUST NOT**:
 
 ---
 
+## Indicador canónico de esfuerzo (aclaración 2026-10-31)
+
+El indicador canónico de esfuerzo joven es `esfuerzo_joven_pct`
+(`alquiler_anual / renta_joven_estimada_16_29 × 100`, base municipal fiscal).
+`esfuerzo_ovj_referencia_pct` (salario OVJ neto 2024, constante autonómica) es una
+referencia y **no se usa para ordenar municipios**. Las variantes antiguas
+en fracción (`esfuerzo_renta_*`) quedan retiradas.
+
+---
+
 ## Regla de lectura (contract-first)
 
 Antes de escribir o modificar código, la sesión **MUST**:

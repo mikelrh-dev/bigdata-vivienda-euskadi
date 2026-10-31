@@ -85,11 +85,12 @@ for c in num_cols:
     if c in base.columns:
         base[c] = pd.to_numeric(base[c], errors="coerce")
 
-# alquiler anual y esfuerzo
+# alquiler anual y esfuerzo (WP-06: todo en % de la renta anual; el canonico
+# es esfuerzo_joven_pct, de base municipal. El salario OVJ es referencia, no ranking.)
 base["alquiler_anual"] = base["cuantia_media_eur_mes_media"] * 12
-base["esfuerzo_renta_hogar"] = base["alquiler_anual"] / base["renta_hogar"]
-base["esfuerzo_renta_eustat"] = base["alquiler_anual"] / base["renta_eustat"]
-base["esfuerzo_renta_joven"] = base["alquiler_anual"] / base["renta_joven_estimada_16_29"]
+base["esfuerzo_hogar_pct"] = (base["alquiler_anual"] / base["renta_hogar"] * 100).round(1)
+base["esfuerzo_eustat_pct"] = (base["alquiler_anual"] / base["renta_eustat"] * 100).round(1)
+base["esfuerzo_joven_pct"] = (base["alquiler_anual"] / base["renta_joven_estimada_16_29"] * 100).round(1)
 
 # T3 desempleo juvenil real con mitigaciones
 base["ocupados_16_24"] = base["poblacion_16_24_estimada"] * (base["tasa_ocupacion_juvenil_16_24_pct"] / 100.0)
@@ -115,8 +116,8 @@ cols = ["codigo_ine", "nombre_canonico", "territorio", "tipologia_mercado", "n_a
         "renta_personal_disponible_eur", "superficie_media_m2", "antiguedad_media_anyos",
         "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km", "capital_mas_cercana",
         "dist_centroide_comarca_km", "renta_media_eur_m2_media", "cuantia_media_eur_mes_media",
-        "superficie_media_m2_media", "alquiler_anual", "esfuerzo_renta_hogar",
-        "esfuerzo_renta_eustat", "esfuerzo_renta_joven",
+        "superficie_media_m2_media", "alquiler_anual", "esfuerzo_hogar_pct",
+        "esfuerzo_eustat_pct", "esfuerzo_joven_pct",
         "poblacion_16_24_estimada", "paro_joven_menores_25", "ocupados_16_24",
         "activos_16_24", "tasa_desempleo_juvenil_real_pct"]
 base = base[cols]
