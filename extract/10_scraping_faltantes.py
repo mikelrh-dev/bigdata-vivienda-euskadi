@@ -49,7 +49,9 @@ def _municipios_faltantes(umbral: int) -> list[tuple[str, str]]:
     import pandas as pd
 
     csv_path = PROC_DIR / "anuncios_unificados.csv"
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, dtype=str, encoding="utf-8-sig")
+    if "codigo_ine" in df.columns:  # M-1: claves siempre string 5 digitos
+        df["codigo_ine"] = df["codigo_ine"].astype(str).str.zfill(5)
     counts = df.groupby("codigo_ine").size().to_dict()
     # cargar dim para nombres
     dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))

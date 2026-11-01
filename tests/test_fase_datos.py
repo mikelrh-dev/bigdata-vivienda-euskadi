@@ -135,6 +135,28 @@ def test_wp11_fallback_poblacion_joven():
     assert pd.to_numeric(pj["poblacion_15_29_est"], errors="coerce").notna().all()
 
 
+def test_wp11_flag_fiscal():
+    """WP-11: ratio fiscal con flag calculado|fallback, sin nulos silenciosos."""
+    df = pd.read_csv(PROC / "dim_municipios_renta.csv", encoding="utf-8-sig",
+                      dtype=str)
+    assert "flag_ratio_fiscal" in df.columns
+    assert set(df["flag_ratio_fiscal"].unique()) <= {"calculado", "fallback"}
+    assert pd.to_numeric(df["ratio_fiscal"], errors="coerce").notna().all()
+
+
+def test_wp18_metadata_salario():
+    """WP-18: sidecars canonicos completos para salario y emancipacion."""
+    import json
+    for nombre in ("ovj_salario_joven_2024.json",
+                   "emancipacion_juventud_resumen.json"):
+        sc = json.loads((PROC / "_meta" / f"{nombre}.meta.json").read_text(
+            encoding="utf-8"))
+        assert sc["completa"] is True, sc["incidencias"]
+        assert all(sc[k] not in (None, "", [])
+                   for k in ("fuente", "url", "fecha_extraccion",
+                             "n_registros", "hash_sha256", "version_parser"))
+
+
 def test_wp12_cobertura_mercado():
     """WP-12: n_anuncios real post-dedup, crudo conservado, tipologia cerrada."""
     dim = pd.read_csv(PROC / "dim_municipios.csv", encoding="utf-8-sig",
