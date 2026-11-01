@@ -149,6 +149,37 @@ def test_wp12_cobertura_mercado():
     assert set(dim["tipologia_mercado"].unique()) <= {
         "Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado",
         "Nivel3_Mercado_Rural_Cerrado"}
+    cob = pd.read_csv(PROC / "cobertura_anuncios.csv", encoding="utf-8-sig",
+                      dtype=str)
+    assert list(cob.columns) == ["codigo_ine", "n_crudo", "n_unico",
+                                 "fuente_mix", "nivel_fiabilidad"]
+    assert len(cob) == 252
+    assert set(cob["nivel_fiabilidad"].unique()) <= {
+        "alta", "media", "baja", "sin_mercado"}
+
+
+def test_wp15_renta_origen_fila():
+    """WP-15: renta_joven_origen derivada de nulidad real, valores cerrados."""
+    df = pd.read_csv(PROC / "dim_municipios_renta.csv", encoding="utf-8-sig",
+                      dtype=str)
+    assert "renta_joven_origen" in df.columns
+    assert set(df["renta_joven_origen"].unique()) <= {
+        "Eustat+INE_Atlas", "Eustat", "INE_Atlas", "imputado"}
+    eu = pd.to_numeric(df["renta_eustat"], errors="coerce")
+    at = pd.to_numeric(df["renta_atlas"], errors="coerce")
+    ambos = df[eu.notna() & at.notna()]["renta_joven_origen"]
+    assert (ambos == "Eustat+INE_Atlas").all()
+
+
+def test_wp17_ingestion_manifest():
+    """WP-17: acta maquina-leible con una entrada por fichero raw."""
+    import json
+    man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(
+        encoding="utf-8"))
+    assert man["n_ficheros"] == len(man["ficheros"]) == 314
+    for e in man["ficheros"]:
+        assert set(e) >= {"fichero", "bytes", "sha256", "fuente",
+                          "url", "fecha_extraccion", "n_registros"}
 
 
 def test_wp13_higiene_escritura():

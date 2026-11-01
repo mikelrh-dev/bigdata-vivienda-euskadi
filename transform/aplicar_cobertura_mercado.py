@@ -10,7 +10,10 @@ Lee:
 - data/procesado/dim_municipios.csv (n_anuncios crudo -> n_anuncios_raw)
 - data/procesado/anuncios_unificados.csv (recuento real por codigo_ine)
 
-Escribe: data/procesado/dim_municipios.csv (misma tabla + n_anuncios_raw).
+Escribe:
+- data/procesado/dim_municipios.csv (misma tabla + n_anuncios_raw).
+- data/procesado/cobertura_anuncios.csv (WP-12: codigo_ine, n_crudo,
+  n_unico, fuente_mix, nivel_fiabilidad; 252 filas, una por municipio).
 No toca raw.
 """
 
@@ -36,9 +39,16 @@ def main() -> int:
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
 
     # Trazabilidad: conservar el recuento crudo antes de sustituirlo.
-    dim["n_anuncios_raw"] = pd.to_numeric(dim["n_anuncios"], errors="coerce")
+    # Idempotente: si ya existe (re-ejecucion), se preserva el original.
+    if "n_anuncios_raw" in dim.columns:
+        crudo = pd.to_numeric(dim["n_anuncios_raw"], errors="coerce")
+        dim = dim.drop(columns=["n_anuncios", "n_anuncios_raw"])
+    else:
+        crudo = pd.to_numeric(dim["n_anuncios"], errors="coerce")
+        dim = dim.drop(columns=["n_anuncios"])
+    dim["n_anuncios_raw"] = crudo
     real = uni.groupby("codigo_ine").size().rename("n_anuncios")
-    dim = dim.drop(columns=["n_anuncios"]).merge(real, on="codigo_ine", how="left")
+    dim = dim.merge(real, on="codigo_ine", how="left")
     dim["n_anuncios"] = dim["n_anuncios"].fillna(0).astype(int)
 
     con_alquiler = _es_verdadero(dim["tiene_alquiler_oficial"])
@@ -48,6 +58,23 @@ def main() -> int:
         [dim["n_anuncios"] >= 30, (dim["n_anuncios"] >= 1) & con_mercado],
         ["Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado"],
         default="Nivel3_Mercado_Rural_Cerrado")
+
+    # WP-12: artefacto auditable de cobertura por municipio.
+    uni["portal"] = uni["portal"].fillna("desconocido")
+    mix = uni.groupby("codigo_ine")["portal"].agg(
+        lambda s: "|".join(sorted(set(s.astype(str))))).rename("fuente_mix")
+    cob = dim[["codigo_ine"]].copy()
+    cob["n_crudo"] = pd.to_numeric(dim["n_anuncios_raw"], errors="coerce").fillna(0).astype(int)
+    cob["n_unico"] = pd.to_numeric(dim["n_anuncios"], errors="coerce").fillna(0).astype(int)
+    cob = cob.merge(mix, on="codigo_ine", how="left")
+    cob["fuente_mix"] = cob["fuente_mix"].fillna("sin_mercado")
+    import numpy as _np
+    cob["nivel_fiabilidad"] = _np.select(
+        [cob["n_unico"] >= 5, cob["n_unico"] >= 2, cob["n_unico"] >= 1],
+        ["alta", "media", "baja"], default="sin_mercado")
+    cob.to_csv(PROC / "cobertura_anuncios.csv", index=False, encoding="utf-8-sig")
+    print(f"OK: {PROC / 'cobertura_anuncios.csv'} "
+          f"({len(cob)} filas, niveles={cob['nivel_fiabilidad'].value_counts().to_dict()})")
 
     out = PROC / "dim_municipios.csv"
     dim.to_csv(out, index=False, encoding="utf-8-sig")
