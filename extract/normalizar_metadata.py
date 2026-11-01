@@ -30,7 +30,18 @@ META_DIR = PROJECT_ROOT / "data" / "procesado" / "_meta"
 ALIASES_FECHA = ("fecha_extraccion", "fecha", "fecha_descarga")
 ALIASES_RECUENTO = ("n_registros", "n_filas", "n_anuncios", "n_series",
                     "n_municipios", "n_items", "n_sin_duplicar")
-ALIASES_URL = ("url", "url_fuente")
+ALIASES_URL = ("url", "url_fuente", "fuente_url")
+# WP-18: ficheros legacy congelados sin envoltura {"metadata","datos"}.
+# Se rescata su procedencia desde las claves escalares de nivel superior
+# (solo lectura de raw; la canonica vive en el sidecar de _meta).
+ALIASES_FUENTE = ("fuente", "origen", "descripcion")
+# WP-18: procedencia conocida de ficheros legacy congelados cuya unica
+# carencia es la fuente (url/fecha/recuento se rescatan del propio fichero).
+# No reescribe raw; solo completa el sidecar canonico de _meta.
+FUENTES_LEGACY = {
+    "emancipacion_juventud_resumen.json":
+        "Gobierno Vasco - Observatorio Vasco de la Juventud (opendata euskadi.eus)",
+}
 
 
 def _primero(meta: dict, claves: tuple[str, ...]):
@@ -47,8 +58,16 @@ def _normalizar(ruta: Path) -> tuple[dict, list[str]]:
     incidencias = []
     if not isinstance(datos, dict) or "metadata" not in datos:
         incidencias.append("sin-bloque-metadata")
+        if isinstance(datos, dict):  # WP-18: rescate legacy top-level
+            for k, v in datos.items():
+                if k != "datos" and not isinstance(v, (dict, list)):
+                    meta.setdefault(k, v)
 
-    fuente = meta.get("fuente")
+    fuente, _ = _primero(meta, ALIASES_FUENTE)
+    if not fuente:
+        fuente = FUENTES_LEGACY.get(ruta.name)
+        if fuente:
+            incidencias.append("fuente-rescatada-legacy")
     if not fuente:
         incidencias.append("sin-fuente")
     url, _ = _primero(meta, ALIASES_URL)

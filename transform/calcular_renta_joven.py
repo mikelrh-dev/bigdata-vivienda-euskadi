@@ -30,8 +30,11 @@ RAW = PROJECT_ROOT / "data" / "raw"
 PROC = PROJECT_ROOT / "data" / "procesado"
 
 
-def _ratio_fiscal_desde_eustat() -> float:
-    """Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eustat_renta_edad.csv."""
+def _ratio_fiscal_desde_eustat() -> tuple[float, str]:
+    """Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eustat_renta_edad.csv.
+
+    Retorna (ratio, flag) con flag=calculado|fallback (WP-11: sin nulos silenciosos).
+    """
     df = pd.read_csv(RAW / "eustat_renta_edad.csv", dtype=str, encoding="utf-8-sig")
     d = df[(df["sexo__etiqueta"] == "Total") & (df["tipo de renta__etiqueta"] == "Renta total")]
     d = d[d["periodo"].astype(str) == "2024"]  # WP-10: periodo leido como str
@@ -40,13 +43,23 @@ def _ratio_fiscal_desde_eustat() -> float:
         etiqueta = str(row["edad__etiqueta"]).strip()
         valor = row["Renta personal media de la C.A. de Euskadi (euros)"]
         tramos[etiqueta] = valor
-    r18_19 = tramos.get("De 18 a 19 años") or tramos.get("18 a 19 años")
-    r20_24 = tramos.get("De 20 a 24 años") or tramos.get("20 a 24 años")
-    r25_29 = tramos.get("De 25 a 29 años") or tramos.get("25 a 29 años")
+    r18_19 = (tramos.get("18 - 19 años") or tramos.get("De 18 a 19 años")
+               or tramos.get("18 a 19 años"))
+    r20_24 = (tramos.get("20 - 24 años") or tramos.get("De 20 a 24 años")
+               or tramos.get("20 a 24 años"))
+    r25_29 = (tramos.get("25 - 29 años") or tramos.get("De 25 a 29 años")
+               or tramos.get("25 a 29 años"))
     rtotal = tramos.get("Total") or tramos.get("Total (todas las edades)")
     if r18_19 is None or r20_24 is None or r25_29 is None or rtotal is None:
         r18_19, r20_24, r25_29, rtotal = 1599, 8156, 20109, 28170
-    return (r18_19 + r20_24 + r25_29) / 3 / rtotal
+        return (r18_19 + r20_24 + r25_29) / 3 / rtotal, "fallback"
+    out = []
+    for v in (r18_19, r20_24, r25_29, rtotal):
+        try:
+            out.append(float(str(v).replace(".", "").replace(",", ".")))
+        except (TypeError, ValueError):
+            return (1599 + 8156 + 20109) / 3 / 28170, "fallback"
+    return (out[0] + out[1] + out[2]) / 3 / out[3], "calculado"
 
 
 RENTA_TOTAL_CAE = 28170
@@ -69,7 +82,8 @@ def main() -> int:
     base["codigo_ine"] = base["codigo_ine"].astype(str).str.zfill(5)
 
     # Proxy fiscal (media simple, sin ponderar por poblacion) - ratio dinamico desde eustat
-    ratio_fiscal = _ratio_fiscal_desde_eustat()
+    ratio_fiscal, flag_fiscal = _ratio_fiscal_desde_eustat()
+    out_flag_fiscal = flag_fiscal
 
     # Proxy salarial
     ratio_sal_18_34 = (SALARIO_OVJ_18_34 * 12) / RENTA_TOTAL_CAE
@@ -118,6 +132,7 @@ def main() -> int:
 
     # Metadata
     out["ratio_fiscal"] = ratio_fiscal
+    out["flag_ratio_fiscal"] = out_flag_fiscal  # WP-11: calculado|fallback
     out["ratio_salarial_18_34"] = ratio_sal_18_34
     out["ratio_salarial_16_29"] = ratio_sal_18_29
     out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024) ajustado por paro joven Lanbide"
