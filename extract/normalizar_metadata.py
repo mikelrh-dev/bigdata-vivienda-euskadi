@@ -41,6 +41,8 @@ ALIASES_FUENTE = ("fuente", "origen", "descripcion")
 FUENTES_LEGACY = {
     "emancipacion_juventud_resumen.json":
         "Gobierno Vasco - Observatorio Vasco de la Juventud (opendata euskadi.eus)",
+    "b5m_catalogo.json":
+        "B5M - Diputacion Foral de Gipuzkoa (b5m.gipuzkoa.eus)",
 }
 
 
@@ -77,6 +79,11 @@ def _normalizar(ruta: Path) -> tuple[dict, list[str]]:
     if not fecha:
         incidencias.append("sin-fecha")
     recuento, clave_rec = _primero(meta, ALIASES_RECUENTO)
+    if recuento is None and isinstance(cuerpo, list):
+        # Rescate honesto: contar filas presentes (no se inventa procedencia,
+        # se cuenta lo que hay; la coherencia se valida debajo).
+        recuento, clave_rec = len(cuerpo), "contado-desde-datos"
+        incidencias.append("recuento-contado")
     if recuento is None:
         incidencias.append("sin-recuento")
     if (isinstance(cuerpo, list) and isinstance(recuento, int)

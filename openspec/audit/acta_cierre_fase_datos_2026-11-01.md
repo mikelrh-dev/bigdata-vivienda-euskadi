@@ -44,6 +44,23 @@ Artefactos generados no versionados (`data/` está ignorado por git):
 - `verificar_fase_datos.py`: OK 15/15.
 - `generar_manifest.py --verify`: raw 314 + silver 180, 0 errores; raw intacto.
 
+## 6b. Adenda 2026-11-01 — cierre G-1, G-2, G-4
+
+- **G-1 (sidecars): 17/59 → 19/59 completas.** Segundo rescate en
+  `extract/normalizar_metadata.py`: `n_registros` se cuenta desde `datos`
+  (incidencia `recuento-contado`, validado contra el propio recuento) y
+  `b5m_catalogo.json` recibe fuente legacy documentada. Resto declarado
+  como desconocido conocido, no fabricado: 39 `sin-url` (los scrapers de
+  2026-10-28/29 nunca guardaron la URL de consulta), 8 `sin-fecha`,
+  1 `sin-recuento`. Las URL exactas de scraping son irrecuperables por
+  diseño del congelado; constan aquí como limitación, no como deuda.
+- **G-2 (`renta_municipal_completa.json`):** derivado sin acta de
+  construcción (fuente y 252 registros sí, fecha/URL no). Excepción
+  documentada; no reconstruible sin tocar raw.
+- **G-4 (`legacy_obsoleto_no_usar/`):** forma parte del manifest 314 a
+  propósito (integridad de lo observado, aunque ya no se use). No es
+  deuda: es evidencia con nombre desafortunado.
+
 ## 6. Qué queda pendiente (NO es de esta fase, para el siguiente agente)
 
 HDFS (subida de originales/procesados), Kafka (productor/consumidor),
