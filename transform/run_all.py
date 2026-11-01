@@ -16,6 +16,10 @@ Reglas:
   data/procesado, data/resultados). También se admiten globs en ``out_glob``.
 - Los scripts sin salidas declaradas conservan su orden relativo y se
   reportan como SIN-DECLARAR en --check (deuda a declarar, no a ocultar).
+- Nodos in-place (aplicar_cobertura_mercado.py: dim->dim,
+  deduplicar_alquiler_enriquecido.py: json->json): --check es sensible al
+  orden; el estado de referencia se obtiene tras una ejecucion completa en
+  orden topologico, nunca tras re-ejecuciones parciales.
 - Los scripts fuera del pipeline van en ``EXCLUIDOS`` con motivo obligatorio.
 """
 

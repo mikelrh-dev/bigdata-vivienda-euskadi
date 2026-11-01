@@ -93,6 +93,21 @@ def test_wp09_nombres_canonicos():
         dim["codigo_ine"].astype(str))
 
 
+def test_wp09_mapa_nombres_estables():
+    """WP-09: todo *_normalizado.json con timestamp esta en el mapa o es canonico."""
+    import json
+    import re
+    mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").
+                      read_text(encoding="utf-8"))
+    registrados = {e["nombre_actual"] for e in mapa["ficheros_con_timestamp_heredado"]}
+    for p in PROC.glob("*_normalizado.json"):
+        if re.search(r"_20\d{6}(_\d+)?_normalizado\.json$", p.name):
+            assert p.name in registrados, f"sin registrar en mapa: {p.name}"
+            entrada = [e for e in mapa["ficheros_con_timestamp_heredado"]
+                       if e["nombre_actual"] == p.name][0]
+            assert (ROOT / "data" / "raw" / entrada["origen_raw"]).exists()
+
+
 def _llamadas_sin(texto, marcador, clave):
     """Localiza llamadas marcador(...) cuyo argumento no contiene clave.
 
