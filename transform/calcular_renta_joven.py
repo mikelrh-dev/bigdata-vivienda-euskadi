@@ -109,6 +109,13 @@ def main() -> int:
     out["salario_joven_ajustado_local_eur"] = (SALARIO_OVJ_18_29 * factor).round(2)
     out["esfuerzo_ajustado_pct"] = (out["cuantia_media_eur_mes_media"] / out["salario_joven_ajustado_local_eur"]) * 100
 
+    # WP-15: origen por fila (trazabilidad real, no constante).
+    _eu = pd.to_numeric(out.get("renta_eustat"), errors="coerce")
+    _at = pd.to_numeric(out.get("renta_atlas"), errors="coerce")
+    out["renta_joven_origen"] = np.select(
+        [_eu.notna() & _at.notna(), _eu.notna(), _at.notna()],
+        ["Eustat+INE_Atlas", "Eustat", "INE_Atlas"], default="imputado")
+
     # Metadata
     out["ratio_fiscal"] = ratio_fiscal
     out["ratio_salarial_18_34"] = ratio_sal_18_34

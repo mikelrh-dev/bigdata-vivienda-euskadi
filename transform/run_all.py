@@ -100,7 +100,8 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "aplicar_cobertura_mercado.py": {
         "group": "cobertura",
         "in": ["proc:dim_municipios.csv", "proc:anuncios_unificados.csv"],
-        "out": ["proc:dim_municipios.csv"], "out_glob": []},
+        "out": ["proc:dim_municipios.csv",
+                "proc:cobertura_anuncios.csv"], "out_glob": []},
     # analisis_base
     "generar_analisis_variables_base.py": {
         "group": "analisis_base",
