@@ -238,7 +238,8 @@ def parsear_etxebide(texto: str) -> list[dict]:
         sep=";",
         decimal=",",
         thousands=".",
-        dtype={0: str, 1: str},
+        dtype=str,  # M-1: todo texto; la conversion numerica es explicita abajo
+
     )
     df.columns = [str(c).strip() for c in df.columns]
     columnas = list(df.columns)
