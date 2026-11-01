@@ -3,7 +3,7 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Raw inmutable congelado (314 archivos, 313 manifest), capa silver regenerada (96 archivos, byte-idénticos), 59 tests en verde, features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka, MongoDB) y análisis pendientes.
+**Estado:** Raw inmutable congelado (manifest 314 = 316 ficheros recursivos − .FROZEN/.gitkeep; 195 en raíz + 121 en gtfs/html_fotocasa/shp_euskadi/legacy_obsoleto_no_usar), capa silver regenerada (manifest 115), 52 funciones de test en verde, features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka, MongoDB) y análisis pendientes.
 **Fecha:** 2026-10-29
 
 ---
