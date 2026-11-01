@@ -87,7 +87,36 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
                "raw:emal_fianzas.csv", "raw:eustat_renta_municipal.csv"],
         "out": ["proc:dim_municipios.json", "proc:dim_municipios.csv"],
         "out_glob": []},
-    # distancias (requiere dim)
+    # unificacion temprana: los escritores in-place de anuncios_unificados
+    # (fingerprint, equipamiento, rescatar) van justo despues de unificar y
+    # antes de cualquier lector, para que --check no marque stale espurio.
+    "unificar_anuncios.py": {
+        "group": "unificacion",
+        "in": [],
+        "out": ["proc:anuncios_unificados.csv"],
+        "out_glob": ["proc:anuncios_unificados.json"]},
+    "generar_fingerprint.py": {
+        "group": "unificacion",
+        "in": ["proc:anuncios_unificados.csv"],
+        "out": ["proc:anuncios_unificados.csv"], "out_glob": []},
+    "enriquecer_equipamiento_realtyapi.py": {
+        "group": "enriquecimiento",
+        "in": ["proc:anuncios_unificados.csv"],
+        "out": ["proc:anuncios_unificados.csv"], "out_glob": []},
+    "rescatar_features_nlp.py": {
+        "group": "analisis",
+        "in": ["proc:anuncios_unificados.csv"],
+        "out": ["proc:anuncios_unificados.csv",
+                "proc:anuncios_unificados.json"], "out_glob": []},
+    # cobertura (recuento real post-dedup; reescribe dim de forma declarada).
+    # Va justo tras los escritores de unificados y antes de todo lector de
+    # dim, para que distancias/analisis/gaps lean el dim ya enriquecido.
+    "aplicar_cobertura_mercado.py": {
+        "group": "cobertura",
+        "in": ["proc:dim_municipios.csv", "proc:anuncios_unificados.csv"],
+        "out": ["proc:dim_municipios.csv",
+                "proc:cobertura_anuncios.csv"], "out_glob": []},
+    # distancias (requiere dim ya con cobertura)
     "generar_distancias.py": {
         "group": "distancias",
         "in": ["proc:dim_municipios.csv"],
@@ -100,12 +129,6 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["raw:alquiler_municipal.csv", "raw:distancias_capitales.csv",
                "proc:distancias_haversine_252.csv"],
         "out": ["proc:alquiler_municipal_completo.csv"], "out_glob": []},
-    # cobertura (recuento real post-dedup; reescribe dim de forma declarada)
-    "aplicar_cobertura_mercado.py": {
-        "group": "cobertura",
-        "in": ["proc:dim_municipios.csv", "proc:anuncios_unificados.csv"],
-        "out": ["proc:dim_municipios.csv",
-                "proc:cobertura_anuncios.csv"], "out_glob": []},
     # analisis_base
     "generar_analisis_variables_base.py": {
         "group": "analisis_base",
@@ -114,16 +137,7 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
                "raw:udalmap_empleo_corregido.csv", "raw:eustat_poblacion_edad.csv",
                "raw:lanbide_paro_juvenil.csv"],
         "out": ["proc:analisis_variables_base.csv"], "out_glob": []},
-    # unificacion
-    "unificar_anuncios.py": {
-        "group": "unificacion",
-        "in": [],
-        "out": ["proc:anuncios_unificados.csv"],
-        "out_glob": ["proc:anuncios_unificados.json"]},
-    "generar_fingerprint.py": {
-        "group": "unificacion",
-        "in": ["proc:anuncios_unificados.csv"],
-        "out": ["proc:anuncios_unificados.csv"], "out_glob": []},
+    # unificacion (lectores: tras los escritores in-place de arriba)
     "filtrar_outliers.py": {
         "group": "unificacion",
         "in": ["proc:anuncios_unificados.csv"],
@@ -139,10 +153,6 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": [],
         "out": [], "out_glob": ["proc:anuncios_*_enriquecido.csv",
                                 "proc:anuncios_*_enriquecido.json"]},
-    "enriquecer_equipamiento_realtyapi.py": {
-        "group": "enriquecimiento",
-        "in": ["proc:anuncios_unificados.csv"],
-        "out": ["proc:anuncios_unificados.csv"], "out_glob": []},
     "generar_cert_energetico_municipal.py": {
         "group": "enriquecimiento",
         "in": [],
@@ -202,21 +212,28 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "generar_vistas_mercado.py": {
         "group": "analisis",
         "in": ["proc:anuncios_unificados.csv"],
-        "out": [], "out_glob": []},
-    "rescatar_features_nlp.py": {
-        "group": "analisis",
-        "in": ["proc:anuncios_unificados.csv"],
-        "out": ["proc:anuncios_unificados.csv",
-                "proc:anuncios_unificados.json"], "out_glob": []},
+        "out": ["proc:anuncios_vivienda_residencial.csv",
+                "proc:anuncios_habitaciones_unificados.csv"], "out_glob": []},
     # resultados
     "generar_dashboard_visual.py": {
         "group": "resultados",
         "in": ["proc:analisis_variables_base.csv"],
-        "out": [], "out_glob": ["res:*.png"]},
+        "out": ["res:g1_esfuerzo_territorio.png",
+                "res:g2_renta_vs_alquiler.png",
+                "res:g3_top10_precio.png",
+                "res:g4_distribucion_anuncios.png",
+                "res:g5_esfuerzo_robustos.png"], "out_glob": []},
     "generar_dashboard_completo.py": {
         "group": "resultados",
         "in": ["proc:dim_municipios_enriquecido.csv"],
-        "out": [], "out_glob": ["res:*.png", "res:*.html"]},
+        "out": ["res:A1_esfuerzo_territorio.png",
+                "res:A2_municipios_inasequibles.png",
+                "res:B_paro_vs_precio.png",
+                "res:C_vpo_antiguedad.png",
+                "res:D_distancia_precio.png",
+                "res:E_demografia.png",
+                "res:F_comparativa_th.png",
+                "res:G_gaps_limitaciones.png"], "out_glob": []},
     "generar_mapa_esquema.py": {
         "group": "resultados",
         "in": [],
@@ -324,7 +341,12 @@ def _estado(script: str) -> tuple[str, str]:
     if faltan:
         return "FALTA", "faltan: " + ", ".join(faltan[:3])
     mtime_out = min(p.stat().st_mtime for p in salidas)
-    entradas = _entradas(script)
+    propias = {p.resolve() for p in salidas}
+    entradas = [p for p in _entradas(script) if p.resolve() not in propias]
+    # Las entradas que son salidas del propio script (nodos in-place como
+    # aplicar_cobertura o rescatar_features_nlp) se excluyen: un script no
+    # puede estar desactualizado respecto a si mismo por el orden de
+    # escritura interno (csv vs json separados por ms).
     if not entradas:
         return "OK", f"{len(salidas)} salidas presentes"
     nuevas = [p.name for p in entradas
