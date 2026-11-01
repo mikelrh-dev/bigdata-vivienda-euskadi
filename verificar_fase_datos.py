@@ -126,7 +126,22 @@ def main() -> int:
             escritores.append(py.name + ":to_csvRAW")
     check("15 transform no escribe raw", not escritores, f"{escritores}" if escritores else "solo lectura")
 
-    print("RESULTADO:", "OK 15/15" if ok else "PENDIENTE (ver FAIL)")
+    # 16-18. Artefactos de trazabilidad WP-12/17/09 (lo que verifica demo = tests)
+    cob = pd.read_csv(PROC / "cobertura_anuncios.csv", encoding="utf-8-sig", dtype=str)
+    check("16 cobertura auditable", len(cob) == 252
+          and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
+          f"{len(cob)} mun")
+    man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(encoding="utf-8"))
+    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 314,
+          f"{man['n_ficheros']} ficheros")
+    mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").read_text(encoding="utf-8"))
+    import re as _re
+    con_ts = [p.name for p in PROC.glob("*_normalizado.json")
+              if _re.search(r"_20\d{6}(_\d+)?_normalizado\.json$", p.name)]
+    reg = {e["nombre_actual"] for e in mapa["ficheros_con_timestamp_heredado"]}
+    check("18 nombres estables registrados", set(con_ts) <= reg, f"{len(con_ts)} con ts")
+
+    print("RESULTADO:", "OK 18/18" if ok else "PENDIENTE (ver FAIL)")
     return 0 if ok else 1
 
 

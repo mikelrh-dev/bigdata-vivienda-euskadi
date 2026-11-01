@@ -1,6 +1,6 @@
 """F17: tiempos reales de conduccion a capitales via OSRM (API publica, sin key).
 
-Consulta el endpoint publico http://router.project-osrm.org/table/v1/driving/
+Consulta el endpoint publico https://router.project-osrm.org/table/v1/driving/
 para obtener minutos de coche desde cada uno de los 252 municipios a las
 3 capitales (Vitoria, Bilbao, Donostia). Guarda CSV + JSON.
 
@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
 
 log = get_logger("osrm_tiempos")
-OSRM = "http://router.project-osrm.org/table/v1/driving/"
+OSRM = "https://router.project-osrm.org/table/v1/driving/"
 CAPITALES = {
     "Vitoria-Gasteiz": (42.8467, -2.6716),
     "Bilbao": (43.2630, -2.9350),

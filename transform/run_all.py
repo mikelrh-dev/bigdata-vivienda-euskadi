@@ -253,6 +253,7 @@ EXCLUIDOS: dict[str, str] = {
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
     "validar_renta.py": "QA bajo demanda, no paso del pipeline",
     "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
+    "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }
 
 

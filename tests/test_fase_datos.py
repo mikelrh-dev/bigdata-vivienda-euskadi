@@ -93,6 +93,17 @@ def test_wp09_nombres_canonicos():
         dim["codigo_ine"].astype(str))
 
 
+def test_wp01_todo_script_declarado():
+    """WP-01: todo transform/*.py esta en SCRIPTS o EXCLUIDOS de run_all."""
+    import sys
+    sys.path.insert(0, str(ROOT))
+    import transform.run_all as orch
+    en_disco = {p.name for p in (ROOT / "transform").glob("*.py")}
+    en_disco.discard("run_all.py")  # el propio orquestador
+    declarados = set(orch.SCRIPTS) | set(orch.EXCLUIDOS)
+    assert en_disco <= declarados, f"sin declarar: {sorted(en_disco - declarados)}"
+
+
 def test_wp09_mapa_nombres_estables():
     """WP-09: todo *_normalizado.json con timestamp esta en el mapa o es canonico."""
     import json
