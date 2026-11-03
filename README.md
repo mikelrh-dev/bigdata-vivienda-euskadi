@@ -100,7 +100,7 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ⬜ Pendiente |
 | 10 | Informe, arquitectura y demo | ⬜ Pendiente |
 
-Tests del contrato: `83 passed` (ver `pytest tests/ -q`; WP-19 incluido).
+Tests del contrato: `84 passed` (ver `pytest tests/ -q`; WP-19 incluido).
 
 ## 📁 Estructura
 
@@ -115,8 +115,8 @@ bigdata-vivienda-euskadi/
 ├── analysis/          Aggregation Pipeline (pendiente)
 ├── visualization/     Gráficos (pendiente)
 ├── notebooks/         Informe de resultados (pendiente)
-├── data/raw/          Datos generados (ignorados por git, 319 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 113 archivos)
+├── data/raw/          Datos generados (ignorados por git, 316 archivos)
+├── data/procesado/    Datos normalizados (ignorados por git, 118 archivos)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 ├── docs/              Documentación (índice en docs/README.md)
 └── plan/              Planificación y decisiones
@@ -127,15 +127,15 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 319 (316 con hash en `docs/raw_manifest_sha256.txt`) |
-| Archivos silver | 113 |
-| Anuncios unificados | 759 (570 residencial + 303 temporal) en 83 municipios |
-| Anuncios residenciales | 570 en 76 municipios |
+| Archivos raw (bronce) | 316 (314 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos silver | 118 |
+| Anuncios unificados | 759 (491 larga estancia + 268 temporal) en 83 municipios |
+| Anuncios residenciales | 491 en 75 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
-| Municipios sin anuncios residenciales | 176 |
+| Municipios sin anuncios residenciales | 169 |
 | Municipios robustos (n≥30) | 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 83 passed |
+| Tests | 84 passed |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -202,19 +202,24 @@ completos.
 | Eustat bankupx API | API JSON | Población, renta, PIB, tenencia por municipio |
 | Eustat ExtractorBlob | CSV/XLSX | Alquiler municipal (€/m², €/mes, m²) |
 | INE wstempus API | API JSON | Población, hogares, precios de compraventa |
+| INE EPA (salarios) | API JSON | Salarios por edad/decil (INE) |
+| INE ECVI | XLSX | Transacciones de vivienda por territorio |
 | euskadi.eus | CSV | Emancipación juvenil (16 indicadores) |
-| Open Data Euskadi (geo.euskadi.eus) | SHP | Límites municipales Euskadi completo (251) |
-| Open Data Euskadi (opendata.euskadi.eus) | ODS/CSV | EMAL, Etxebide VPO, GTFS, SEPE/Lanbide, certificados energéticos |
-| LANBIDE | Web/CSV | Paro registrado por municipio |
+| Open Data Euskadi (geo.euskadi.eus) | SHP | Límites municipales + áreas funcionales |
+| Open Data Euskadi (opendata.euskadi.eus) | ODS/CSV | EMAL, Etxebide VPO, GTFS, SEPE/Lanbide, certificados energéticos, centros educativos/sanitarios |
+| b5m Gipuzkoa (GFA) | API/JSON | Catálogo municipal y distancias por carretera |
+| OSRM | API | Tiempos de ruta a capitales |
+| SERPAVI/MIVAU | CSV/JSON | Renta municipal basada en datos fiscales |
+| LANBIDE / SEPE | Web/CSV | Paro registrado por municipio |
 | Fotocasa | Scraping | ~470 anuncios reales de alquiler |
 | Pisos.com | Scraping | ~218 anuncios de alquiler |
-| Idealista (RealtyAPI) | API | Opcional, 84 anuncios |
-| INE Atlas de la renta | Descarga directa | Rellena 51 municipios faltantes |
+| RealtyAPI.io (Idealista, no oficial) | API | Opcional, 84 anuncios |
+| INE Atlas de la renta | Descarga directa | Rellena municipios faltantes de renta |
 | Udalmap (api.euskadi.eus) | API | Actividad, ocupación, paro Lanbide, VPO, renta... |
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (83 passed)
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (84 passed)
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
