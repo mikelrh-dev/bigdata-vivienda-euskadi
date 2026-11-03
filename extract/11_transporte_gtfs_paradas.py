@@ -67,6 +67,37 @@ GTFS_DIR = RAW_DIR / "gtfs"
 GEOJSON_PATH = RAW_DIR / "municipios_euskadi.geojson"
 
 
+def cargar_operadores_desde_indice() -> list[tuple[str, str, str]]:
+    """Descarga el indice GTFS de Moveuskadi y devuelve (nombre, slug, url)."""
+    import requests
+
+    idx_url = "https://opendata.euskadi.eus/transport/moveuskadi/data-index-gtfs.json"
+    resp = requests.get(idx_url, timeout=60)
+    resp.raise_for_status()
+    data = resp.json().get("data", {})
+    out: list[tuple[str, str, str]] = []
+    for nombre, entries in data.items():
+        if not isinstance(entries, list):
+            continue
+        for e in entries:
+            url = e.get("url")
+            fname = e.get("name") or ""
+            if not url:
+                continue
+            slug = Path(fname).stem if fname else nombre.lower().replace(" ", "_")
+            slug = re.sub(r"[^a-z0-9_]+", "_", slug.lower()).strip("_")
+            out.append((nombre, slug, url))
+    # dedup por url
+    seen: set[str] = set()
+    uniq: list[tuple[str, str, str]] = []
+    for item in out:
+        if item[2] in seen:
+            continue
+        seen.add(item[2])
+        uniq.append(item)
+    return uniq
+
+
 # ─── shapely (opcional) ───────────────────────────────────────────────────────
 try:
     from shapely.geometry import Point, shape  # type: ignore
@@ -209,7 +240,10 @@ def main() -> int:
     total_sin_asignar = 0
     resumen_ops: dict[str, dict] = {}
 
-    for nombre_op, slug, url in OPERADORES:
+    operadores = cargar_operadores_desde_indice()
+    log.info("Operadores GTFS en indice: %d", len(operadores))
+
+    for nombre_op, slug, url in operadores:
         zip_dest = GTFS_DIR / f"{slug}.zip"
         try:
             cliente.descargar(url, zip_dest)
@@ -297,9 +331,10 @@ def main() -> int:
 
     metadata = {
         "fuente": "Moveuskadi / Open Data Euskadi (GTFS por operador)",
+        "url": "https://opendata.euskadi.eus/transport/moveuskadi/data-index-gtfs.json",
         "metodo_asignacion": "point-in-polygon (shapely)" if HAS_SHAPELY else "por nombre de stop",
         "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-        "n_operadores": len(OPERADORES),
+        "n_operadores": len(operadores),
         "n_municipios": len(filas_salida),
         "total_stops_leidos": total_stops,
         "total_stops_asignados": total_asignadas,
