@@ -128,6 +128,7 @@ bigdata-vivienda-euskadi/
 |---|---:|
 | Municipios de referencia | 252 |
 | Archivos raw (bronce) | 316 (314 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos raw por tipo | CSV 126, JSON 59, HTML 101, ZIP 14, XLSX 6, geodata 7, legacy 4 |
 | Archivos silver | 118 |
 | Anuncios unificados | 759 (491 larga estancia + 268 temporal) en 83 municipios |
 | Anuncios residenciales | 491 en 75 municipios |
