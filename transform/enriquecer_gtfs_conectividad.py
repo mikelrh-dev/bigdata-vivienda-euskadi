@@ -99,7 +99,7 @@ def main():
             # read stops
             stops = {}
             with z.open("stops.txt") as f:
-                reader = csv.DictReader(f.read().decode("utf-8").splitlines())
+                reader = csv.DictReader(f.read().decode("utf-8-sig").splitlines())
                 for row in reader:
                     try:
                         lat = float(row["stop_lat"])
@@ -120,7 +120,7 @@ def main():
             calendar_dates = {}  # service_id -> {date: exception_type}
             if "calendar.txt" in z.namelist():
                 with z.open("calendar.txt") as f:
-                    reader = csv.DictReader(f.read().decode("utf-8").splitlines())
+                    reader = csv.DictReader(f.read().decode("utf-8-sig").splitlines())
                     for row in reader:
                         row = {k.strip(): v for k, v in row.items()}
                         sid = row["service_id"]
@@ -131,7 +131,7 @@ def main():
                         calendar[sid] = (start, end, days)
             if "calendar_dates.txt" in z.namelist():
                 with z.open("calendar_dates.txt") as f:
-                    reader = csv.DictReader(f.read().decode("utf-8").splitlines())
+                    reader = csv.DictReader(f.read().decode("utf-8-sig").splitlines())
                     for row in reader:
                         row = {k.strip(): v for k, v in row.items()}
                         sid = row["service_id"]
@@ -155,14 +155,14 @@ def main():
             trip_service = {}
             if "trips.txt" in z.namelist():
                 with z.open("trips.txt") as f:
-                    reader = csv.DictReader(f.read().decode("utf-8").splitlines())
+                    reader = csv.DictReader(f.read().decode("utf-8-sig").splitlines())
                     for row in reader:
                         row = {k.strip(): v for k, v in row.items()}
                         trip_service[row["trip_id"]] = row["service_id"]
             # read stop_times and count trips per municipio
             if "stop_times.txt" in z.namelist():
                 with z.open("stop_times.txt") as f:
-                    reader = csv.DictReader(f.read().decode("utf-8").splitlines())
+                    reader = csv.DictReader(f.read().decode("utf-8-sig").splitlines())
                     seen_trips = set()
                     for row in reader:
                         row = {k.strip(): v for k, v in row.items()}
