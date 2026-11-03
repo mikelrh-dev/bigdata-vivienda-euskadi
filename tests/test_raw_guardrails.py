@@ -207,11 +207,12 @@ def test_muni_resolve_accented_slash():
 
 
 def test_unificados_columns_superset():
-    """Los CSV derivados del canonico conservan las 12 columnas base."""
+    """Los CSV derivados del canonico conservan las columnas base (A1: 15 con precio_m2_calc + es_outlier_iqr)."""
     canonical_path = PROC_DIR / "anuncios_unificados.csv"
     assert canonical_path.exists(), "canonico ausente"
     base = list(__import__("pandas").read_csv(canonical_path, nrows=0).columns)
-    assert len(base) == 13, base
+    assert len(base) == 15, base
+    assert "precio_m2_calc" in base and "es_outlier_iqr" in base, base
     for path in PROC_DIR.glob("anuncios_unificados*.csv"):
         cols = list(__import__("pandas").read_csv(path, nrows=0).columns)
         missing = [c for c in base if c not in cols]

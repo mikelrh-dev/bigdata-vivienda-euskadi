@@ -3,7 +3,7 @@
 ## Universo de análisis
 - CAE (Euskadi): 1 nivel.
 - Comarca: 20 comarcas oficiales.
-- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 6 municipios (Bilbao 239, Donostia 130, Vitoria 48, Getxo 40, Abanto 31, Ayala 30).
+- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 4 municipios (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
 - Municipios con dato oficial de alquiler: 159/252.
 - Municipios sin dato oficial: 93/252 (imputados por IDW_5_vecinos, no comarcal).
 

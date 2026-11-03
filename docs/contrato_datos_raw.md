@@ -81,8 +81,13 @@ Referencia OpenSpec: `openspec/changes/raw-immutability-hardening/`
 
 ```
 id_anuncio, portal, modalidad, precio_eur, superficie_m2, habitaciones,
-es_outlier_superficie, codigo_ine, municipio, titulo, subtitulo, equipamiento
+es_outlier_superficie, precio_m2_calc, es_outlier_iqr, codigo_ine, municipio,
+titulo, subtitulo, equipamiento, property_fingerprint
 ```
+
+- `precio_m2_calc` = `precio_eur/superficie_m2` (2 decimales, `None` si falta
+  alguno); `es_outlier_iqr` = flag IQR global post-cuarentena (advisory, no
+  borra). Ambos viven también en `auditoria` del JSON.
 
 - **Regla de salida aditiva:** cualquier fichero derivado del canónico
   (`anuncios_unificados*.csv`) debe tener como **superset** estas columnas.
