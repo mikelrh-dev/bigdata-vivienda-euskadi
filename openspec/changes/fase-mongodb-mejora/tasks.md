@@ -1,0 +1,8 @@
+- [x] 1.1 Refactor `_id` en load_mongo.py
+- [x] 1.2 Corregir `idw_vecinos` y `tiene_alquiler_oficial`
+- [x] 2.1 Loaders huérfanos (ECVI, Udalmap, OSRM, emancipación)
+- [x] 3.1 Extender clean_mongo.py
+- [x] 4.1 Pipelines analíticos
+- [x] 5.1 Índices + explain
+- [x] 6.1 Tests Mongo
+- [x] 7.1 Verify report
