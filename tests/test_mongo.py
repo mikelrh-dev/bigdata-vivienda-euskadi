@@ -39,6 +39,8 @@ def test_conteos():
     assert get_collection("osrm_tiempos").count_documents({}) == 252
     assert get_collection("emancipacion_juventud").count_documents({}) == 1
     assert get_collection("etxebide_solicitudes").count_documents({}) == 5040
+    assert get_collection("udalmap_extendido").count_documents({}) == 252
+    assert get_collection("etxebide_promociones").count_documents({}) == 406
 
 
 def test_codigo_ine_canonico():
