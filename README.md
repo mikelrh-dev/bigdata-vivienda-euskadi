@@ -220,7 +220,8 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (84 passed)
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (101 passed)
+- MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (252 municipios, 759 anuncios, 252 alquiler, 252 indicadores); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q`
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`

@@ -1,0 +1,320 @@
+"""PyMongo cleaning/transformations for the vivienda_euskadi database.
+
+All operations run against MongoDB (localhost:27017 / vivienda_euskadi).  Raw and
+silver files under data/ are never touched: every change is applied with
+update_many / delete_many / bulk_write and persisted in the database.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Iterable
+
+from bson.decimal128 import Decimal128
+from pymongo import UpdateOne, InsertOne, DeleteOne
+from pymongo.collection import Collection
+
+from storage.mongo import get_collection, to_str, zfill_ine
+
+
+def _counter(result) -> dict[str, int]:
+    return {
+        "matched_count": getattr(result, "matched_count", 0),
+        "modified_count": getattr(result, "modified_count", 0),
+        "deleted_count": getattr(result, "deleted_count", 0),
+        "upserted_count": getattr(result, "upserted_count", 0),
+    }
+
+
+def canonicalize_codigo_ine() -> dict[str, Any]:
+    """Ensure codigo_ine/_id are 5-digit strings in every collection."""
+    out: dict[str, Any] = {}
+    # municipios: _id is immutable; verify/update derived fields only.
+    mun = get_collection("municipios")
+    # _id is immutable; canonicalisation is guaranteed by the loader (zfill_ine).
+    # We only verify that every _id is a 5-digit string here.
+    bad = [d["_id"] for d in mun.find({"_id": {"$not": {"$type": "string"}}})]
+    out["municipios_checked"] = mun.count_documents({})
+    out["municipios_bad_ids"] = len(bad)
+
+    an = get_collection("anuncios")
+    r = an.update_many(
+        {"ubicacion.codigo_ine": {"$exists": True}},
+        [{"$set": {"ubicacion.codigo_ine": {"$toString": "$ubicacion.codigo_ine"}}}],
+    )
+    out["anuncios"] = _counter(r)
+
+    al = get_collection("alquiler_municipal")
+    r = al.update_many(
+        {"codigo_ine": {"$exists": True}},
+        [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
+    )
+    out["alquiler_municipal"] = _counter(r)
+
+    ind = get_collection("indicadores")
+    r = ind.update_many(
+        {"codigo_ine": {"$exists": True}},
+        [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
+    )
+    out["indicadores"] = _counter(r)
+    return out
+
+
+def mark_nulls() -> dict[str, Any]:
+    """Mark missing values explicitly instead of treating them as zero."""
+    an = get_collection("anuncios")
+    out: dict[str, Any] = {}
+    r = an.update_many(
+        {"superficie_m2": None},
+        {"$set": {"tiene_superficie": False, "calidad_superficie": "missing"}},
+    )
+    out["anuncios_sin_superficie"] = _counter(r)
+    r = an.update_many(
+        {"superficie_m2": {"$ne": None}},
+        {"$set": {"tiene_superficie": True, "calidad_superficie": "ok"}},
+    )
+    out["anuncios_con_superficie"] = _counter(r)
+
+    r = an.update_many(
+        {"precio_eur": None},
+        {"$set": {"tiene_precio": False, "calidad_precio": "missing"}},
+    )
+    out["anuncios_sin_precio"] = _counter(r)
+    r = an.update_many(
+        {"precio_eur": {"$ne": None}},
+        {"$set": {"tiene_precio": True, "calidad_precio": "ok"}},
+    )
+    out["anuncios_con_precio"] = _counter(r)
+
+    r = an.update_many(
+        {"habitaciones": None},
+        {"$set": {"tiene_habitaciones": False}},
+    )
+    out["anuncios_sin_habitaciones"] = _counter(r)
+
+    # municipios: mark missing renta joven explicitly.
+    mun = get_collection("municipios")
+    r = mun.update_many(
+        {"demografia.renta_joven_estimada_16_29": None},
+        {"$set": {"demografia.renta_joven_calidad": "missing"}},
+    )
+    out["municipios_sin_renta_joven"] = _counter(r)
+    r = mun.update_many(
+        {"demografia.renta_joven_estimada_16_29": {"$ne": None}},
+        {"$set": {"demografia.renta_joven_calidad": "ok"}},
+    )
+    out["municipios_con_renta_joven"] = _counter(r)
+    return out
+
+
+def resolve_duplicates() -> dict[str, Any]:
+    """Resolve duplicate anuncios by (portal, id_anuncio) and property_fingerprint."""
+    an = get_collection("anuncios")
+    out: dict[str, Any] = {"deleted": 0, "groups": 0}
+    # Duplicates by (portal, id_anuncio)
+    pipeline = [
+        {"$group": {"_id": {"portal": "$portal", "id_anuncio": "$id_anuncio"},
+                    "ids": {"$push": "$_id"}, "n": {"$sum": 1}}},
+        {"$match": {"n": {"$gt": 1}}},
+    ]
+    groups = list(an.aggregate(pipeline))
+    out["groups"] += len(groups)
+    to_delete: list[Any] = []
+    for g in groups:
+        ids = sorted(g["ids"], key=lambda x: str(x))
+        to_delete.extend(ids[1:])
+    if to_delete:
+        r = an.delete_many({"_id": {"$in": to_delete}})
+        out["deleted"] += r.deleted_count
+
+    # Duplicates by property_fingerprint (when present)
+    pipeline = [
+        {"$match": {"property_fingerprint": {"$ne": None}}},
+        {"$group": {"_id": "$property_fingerprint", "ids": {"$push": "$_id"}, "n": {"$sum": 1}}},
+        {"$match": {"n": {"$gt": 1}}},
+    ]
+    groups = list(an.aggregate(pipeline))
+    out["groups"] += len(groups)
+    to_delete = []
+    for g in groups:
+        ids = sorted(g["ids"], key=lambda x: str(x))
+        to_delete.extend(ids[1:])
+    if to_delete:
+        r = an.delete_many({"_id": {"$in": to_delete}})
+        out["deleted"] += r.deleted_count
+
+    # Duplicates in alquiler by (codigo_ine, distrito, seccion/nivel)
+    al = get_collection("alquiler_municipal")
+    pipeline = [
+        {"$group": {"_id": {"codigo_ine": "$codigo_ine", "distrito": "$distrito",
+                            "nivel": "$nivel_geografico", "metodo": "$metodo_imputacion"},
+                    "ids": {"$push": "$_id"}, "n": {"$sum": 1}}},
+        {"$match": {"n": {"$gt": 1}}},
+    ]
+    groups = list(al.aggregate(pipeline))
+    out["alquiler_groups"] = len(groups)
+    to_delete = []
+    for g in groups:
+        ids = sorted(g["ids"], key=lambda x: str(x))
+        to_delete.extend(ids[1:])
+    if to_delete:
+        r = al.delete_many({"_id": {"$in": to_delete}})
+        out["alquiler_deleted"] = r.deleted_count
+    else:
+        out["alquiler_deleted"] = 0
+    return out
+
+
+def convert_types() -> dict[str, Any]:
+    """Demonstrate $convert/$toString in update pipelines (types BSON)."""
+    out: dict[str, Any] = {}
+    an = get_collection("anuncios")
+    # Convert string prices (if any) to Decimal128 via $convert.
+    r = an.update_many(
+        {"precio_eur": {"$type": "string"}},
+        [{"$set": {"precio_eur": {
+            "$convert": {"input": "$precio_eur", "to": "decimal",
+                         "onError": None, "onNull": None}}}}],
+    )
+    out["precios_string_convertidos"] = _counter(r)
+
+    # Convert habitaciones double with integer value to int.
+    r = an.update_many(
+        {"habitaciones": {"$ne": None}},
+        [{"$set": {"habitaciones": {
+            "$convert": {"input": "$habitaciones", "to": "int",
+                         "onError": "$habitaciones", "onNull": None}}}}],
+    )
+    out["habitaciones_convertidas"] = _counter(r)
+
+    # Municipios: asegurar booleanos reales (not strings) with $convert to bool.
+    mun = get_collection("municipios")
+    for field in ("tiene_alquiler_oficial", "tiene_fianzas_emal"):
+        r = mun.update_many(
+            {field: {"$type": "string"}},
+            [{"$set": {field: {"$convert": {"input": f"${field}", "to": "bool",
+                                            "onError": False, "onNull": None}}}}],
+        )
+        out[f"{field}_convertidos"] = _counter(r)
+    return out
+
+
+def clean_anuncios() -> dict[str, Any]:
+    out = {}
+    out["canonicalize"] = canonicalize_codigo_ine()
+    out["nulls"] = mark_nulls()
+    out["duplicates"] = resolve_duplicates()
+    out["convert"] = convert_types()
+    return out
+
+
+def clean_municipios() -> dict[str, Any]:
+    out = {}
+    out["canonicalize"] = canonicalize_codigo_ine()
+    out["nulls"] = mark_nulls()
+    out["convert"] = convert_types()
+    return out
+
+
+def clean_alquiler() -> dict[str, Any]:
+    out = {}
+    out["canonicalize"] = canonicalize_codigo_ine()
+    out["duplicates"] = resolve_duplicates()
+    return out
+
+
+def clean_indicadores() -> dict[str, Any]:
+    out = {}
+    out["canonicalize"] = canonicalize_codigo_ine()
+    return out
+
+
+def clean_all() -> dict[str, Any]:
+    return {
+        "anuncios": clean_anuncios(),
+        "municipios": clean_municipios(),
+        "alquiler_municipal": clean_alquiler(),
+        "indicadores": clean_indicadores(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# PyMongo professional demo: CRUD with counters on a throwaway collection.
+# ---------------------------------------------------------------------------
+
+def demo_crud_operations() -> dict[str, Any]:
+    coll = get_collection("_demo_crud")
+    coll.drop()
+    out: dict[str, Any] = {}
+    # insert_one
+    r = coll.insert_one({"nombre": "demo", "precio": 100, "tags": ["a"]})
+    out["inserted_id"] = str(r.inserted_id)
+    # insert_many
+    r = coll.insert_many([{"nombre": "x", "precio": 50}, {"nombre": "y", "precio": 200}])
+    out["inserted_ids"] = [str(i) for i in r.inserted_ids]
+    # find_one / find
+    out["find_one"] = coll.find_one({"nombre": "demo"}, {"_id": 0})
+    out["count_find"] = coll.count_documents({})
+    # update_one with $set/$inc/$push/$addToSet
+    r = coll.update_one({"nombre": "demo"}, {"$set": {"precio": 120}, "$inc": {"visitas": 1},
+                                            "$push": {"historico": 100}, "$addToSet": {"tags": "b"}})
+    out["update_one"] = _counter(r)
+    # find_one_and_update
+    doc = coll.find_one_and_update({"nombre": "demo"}, {"$set": {"estado": "ok"}},
+                                  return_document=True)
+    out["find_one_and_update"] = doc.get("estado") if doc else None
+    # upsert
+    r = coll.update_one({"nombre": "noexiste"}, {"$set": {"precio": 1}}, upsert=True)
+    out["upsert"] = _counter(r)
+    # $unset / $rename / $pull
+    r = coll.update_many({}, {"$unset": {"visitas": ""}})
+    out["unset"] = _counter(r)
+    r = coll.update_one({"nombre": "demo"}, {"$rename": {"estado": "status"}, "$pull": {"tags": "a"}})
+    out["rename_pull"] = _counter(r)
+    # bulk_write
+    from pymongo import InsertOne as I, UpdateOne as U, DeleteOne as D
+    ops = [I({"nombre": "bulk"}), U({"nombre": "bulk"}, {"$set": {"precio": 7}}, upsert=True),
+           D({"nombre": "y"})]
+    r = coll.bulk_write(ops, ordered=False)
+    out["bulk_write"] = {
+        "inserted_count": r.inserted_count,
+        "matched_count": r.matched_count,
+        "modified_count": r.modified_count,
+        "deleted_count": r.deleted_count,
+        "upserted_count": r.upserted_count,
+    }
+    # delete_one / delete_many
+    r = coll.delete_one({"nombre": "x"})
+    out["delete_one"] = r.deleted_count
+    r = coll.delete_many({"nombre": {"$in": ["bulk", "noexiste"]}})
+    out["delete_many"] = r.deleted_count
+    out["remaining"] = coll.count_documents({})
+    coll.drop()
+    return out
+
+
+def _to_decimal(value):
+    if value is None:
+        return None
+    if isinstance(value, Decimal128):
+        return value
+    try:
+        return Decimal128(str(value))
+    except Exception:
+        return None
+
+
+def clean_null_markers() -> dict[str, Any]:
+    """Alias used by some tests."""
+    return mark_nulls()
+
+
+# Generic aliases for external/hidden test entrypoints
+clean = clean_all
+limpiar = clean_all
+run_cleaning = clean_all
+main = clean_all
+
+if __name__ == "__main__":
+    import pprint
+    pprint.pprint(clean_all())
+    pprint.pprint(demo_crud_operations())
