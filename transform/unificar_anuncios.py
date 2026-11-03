@@ -115,6 +115,7 @@ def transform_fotocasa(items):
                 "coordenadas": coords,
             },
             "equipamiento": equipamiento_fotocasa(it),
+            "historico_precios": [],
             "auditoria": {
                 "es_outlier_iqr": None,
                 "precio_m2_calc": None,
@@ -148,6 +149,7 @@ def transform_pisos(items):
                 "coordenadas": None,
             },
             "equipamiento": [],
+            "historico_precios": [],
             "auditoria": {
                 "es_outlier_iqr": None,
                 "precio_m2_calc": None,
@@ -189,6 +191,7 @@ def transform_realtyapi(items):
                 "coordenadas": coords,
             },
             "equipamiento": [],
+            "historico_precios": [],
             "auditoria": {
                 "es_outlier_iqr": None,
                 "precio_m2_calc": None,
@@ -347,6 +350,35 @@ def main():
     print("Anuncios antes de cuarentena:", before_q)
     print("Anuncios tras cuarentena:", len(recs))
     print("Descartados cuarentena:", before_q - len(recs), dropped)
+    # A1: precio_m2 + flag IQR (advisory, no borra). Rellena `auditoria`.
+    for r in recs:
+        try:
+            pf = float(r.get("precio_eur")) if r.get("precio_eur") is not None else None
+        except (ValueError, TypeError):
+            pf = None
+        try:
+            sf = float(r.get("superficie_m2")) if r.get("superficie_m2") is not None else None
+        except (ValueError, TypeError):
+            sf = None
+        r["auditoria"]["precio_m2_calc"] = round(pf / sf, 2) if (pf and sf and sf > 0) else None
+        r["auditoria"]["es_outlier_iqr"] = False
+        if pf is None:
+            r["auditoria"]["motivo_precio_nulo"] = ("geo_aproximada" if r.get("geo_invalida")
+                                                      else "origen_sin_precio")
+    _pm2 = pd.Series([r["auditoria"]["precio_m2_calc"] for r in recs
+                       if r["auditoria"]["precio_m2_calc"] is not None], dtype=float)
+    if len(_pm2) >= 4:
+        _q1, _q3 = float(_pm2.quantile(0.25)), float(_pm2.quantile(0.75))
+        _iqr = _q3 - _q1
+        _lo, _hi = round(_q1 - 1.5 * _iqr, 2), round(_q3 + 1.5 * _iqr, 2)
+        for r in recs:
+            v = r["auditoria"]["precio_m2_calc"]
+            if v is not None:
+                r["auditoria"]["es_outlier_iqr"] = bool(v < _lo or v > _hi)
+        print(f"IQR precio_m2: Q1={_q1:.2f} Q3={_q3:.2f} bounds=[{_lo}, {_hi}] "
+              f"flags={sum(1 for r in recs if r['auditoria']['es_outlier_iqr'])}")
+    else:
+        print("IQR precio_m2: muestra insuficiente, sin flags")
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     _df = pd.DataFrame([{
@@ -357,6 +389,8 @@ def main():
         "superficie_m2": r["superficie_m2"],
         "habitaciones": r["habitaciones"],
         "es_outlier_superficie": r["es_outlier_superficie"],
+        "precio_m2_calc": r["auditoria"]["precio_m2_calc"],
+        "es_outlier_iqr": r["auditoria"]["es_outlier_iqr"],
         "codigo_ine": r["ubicacion"]["codigo_ine"],
         "municipio": r["ubicacion"]["municipio"],
         "titulo": r.get("titulo"),

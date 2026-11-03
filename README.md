@@ -100,7 +100,7 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ⬜ Pendiente |
 | 10 | Informe, arquitectura y demo | ⬜ Pendiente |
 
-Tests del contrato: `66 passed, 0 xfail` (59 originales + 7 guardrails de inmutabilidad raw).
+Tests del contrato: `83 passed` (ver `pytest tests/ -q`; WP-19 incluido).
 
 ## 📁 Estructura
 
@@ -135,7 +135,7 @@ bigdata-vivienda-euskadi/
 | Municipios sin anuncios residenciales | 176 |
 | Municipios robustos (n≥30) | 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 66 passed |
+| Tests | 83 passed |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -214,7 +214,7 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (66 passed)
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (83 passed)
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`

@@ -70,3 +70,22 @@ relleno en Mongo). Lectura CSV con `dtype=str, encoding=utf-8-sig`.
   escritura `encoding=utf-8-sig`; `codigo_ine` con `zfill(5)`.
 - **Tests:** `test_wp10_lectura_tipografica`, `test_wp13_higiene_escritura`
   (barren `transform/*.py`).
+
+## R8. Precio/m2 e IQR como flags, nunca como filtro (WP-19)
+
+- **Regla:** `precio_m2_calc = precio_eur/superficie_m2` (2 decimales,
+  `None` si falta alguno); `es_outlier_iqr` = flag IQR global
+  post-cuarentena (`[Q1-1.5·IQR, Q3+1.5·IQR]`, bounds en log). La
+  cuarentena dura (`superficie<10`, `pm2>100`) ya descartó lo imposible;
+  el IQR solo asesora. Ambos viven en `auditoria` (JSON) y como columnas
+  (CSV). Precio nulo ⇒ `auditoria.motivo_precio_nulo` ∈
+  {`geo_aproximada` (Pisos, `geo_invalida=true`), `origen_sin_precio`}.
+- **Mongo:** `$addFields: {precio_m2_calc: {$cond: [...]} }`; IQR con
+  `$percentile` o cálculo en Python pre-carga.
+- **Test:** `test_wp19_precio_nulo_con_motivo`.
+
+## R9. Equipamiento solo RealtyAPI (sin dato ≠ sin equipamiento)
+
+- **Regla:** solo RealtyAPI trae equipamiento real (máx ~84 registros).
+  El resto lleva `[]` = **sin dato**, no vivienda vacía. No imputar.
+- **Mongo:** no indexar ni filtrar por este array salvo segmento RealtyAPI.

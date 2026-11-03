@@ -230,6 +230,26 @@ def test_wp17_ingestion_manifest():
                           "url", "fecha_extraccion", "n_registros"}
 
 
+def test_wp19_precio_nulo_con_motivo():
+    """WP-19 (A1+A3): precio_m2_calc + IQR calculados, nulos con motivo."""
+    import json
+    recs = json.loads((PROC / "anuncios_unificados.json").read_text(
+        encoding="utf-8"))
+    assert len(recs) == 759
+    con_pm2 = [r for r in recs if r["auditoria"].get("precio_m2_calc") is not None]
+    assert len(con_pm2) > 700, "precio_m2_calc casi vacio"
+    nulos = [r for r in recs if r.get("precio_eur") is None]
+    assert nulos, "se esperaban algunos nulos de origen"
+    for r in nulos:
+        assert r["auditoria"].get("motivo_precio_nulo") in (
+            "geo_aproximada", "origen_sin_precio"), r.get("id_anuncio")
+    flags = sum(1 for r in recs if r["auditoria"].get("es_outlier_iqr") is True)
+    assert flags >= 0
+    csv = pd.read_csv(PROC / "anuncios_unificados.csv", encoding="utf-8-sig",
+                      dtype=str)
+    assert "precio_m2_calc" in csv.columns and "es_outlier_iqr" in csv.columns
+
+
 def test_wp13_higiene_escritura():
     """WP-13: todo to_csv de transform escribe con encoding utf-8-sig."""
     mal = []

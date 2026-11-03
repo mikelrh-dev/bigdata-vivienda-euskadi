@@ -1,106 +1,113 @@
-import json, pandas as pd
+"""Chequeo rapido fase datos: raw inmutable, silver, cobertura, tipos.
 
-pd.set_option('display.width', 200)
+Uso: python framework_auditoria_completo2/diagnostico.py
+Solo lectura (no modifica data/). Codigo de salida 0 = OK, 1 = hay P1/P2.
+"""
+from __future__ import annotations
 
-# 1. Oferta muestral (Fotocasa y RealtyAPI son JSON)
-import json as _json
+import json
+import sys
+from pathlib import Path
 
-def load_json_df(path):
-    with open(path, encoding='utf-8') as f:
-        data = _json.load(f)
-    if isinstance(data, list):
-        return pd.DataFrame(data)
-    for key in ('anuncios', 'data', 'results'):
-        if key in data and isinstance(data[key], list):
-            return pd.DataFrame(data[key])
-    return pd.DataFrame(data)
+ROOT = Path(__file__).resolve().parent.parent
+RAW = ROOT / "data" / "raw"
+PROC = ROOT / "data" / "procesado"
 
-fot = load_json_df('data/raw/anuncios_fotocasa.json')
-real = load_json_df('data/raw/anuncios_realtyapi.json')
+fallos: list[str] = []
 
-print("=== 1. OFERTA MUESTRAL ===")
-print("Fotocasa anuncios:", len(fot), "municipios:", fot['municipio'].nunique() if 'municipio' in fot.columns else 'N/A')
-print("RealtyAPI anuncios:", len(real), "municipios:", real['municipio'].nunique() if 'municipio' in real.columns else 'N/A')
-if 'provincia' in fot.columns:
-    print("\nFotocasa por provincia:")
-    print(fot.groupby('provincia').agg(anuncios=('id_anuncio','count'), municipios=('municipio','nunique')))
-if 'superficie_m2' in fot.columns:
-    fot_sup = fot[fot['superficie_m2'].notna() & (fot['superficie_m2'] > 0)]
-    counts = fot_sup.groupby('municipio').size()
-    print("\nFotocasa municipios con n>=5 anuncios con superficie valida:", (counts >= 5).sum(), "de", fot['municipio'].nunique())
-    print("Municipios con <=3 anuncios (Fotocasa):", (fot.groupby('municipio').size() <= 3).sum(), "de", fot['municipio'].nunique())
-    print("Municipios con <=2 anuncios:", (fot.groupby('municipio').size() <= 2).sum())
-    print("\nTop 10 municipios Fotocasa:")
-    print(fot.groupby('municipio').size().sort_values(ascending=False).head(10).to_string())
 
-# 2. Entity resolution
-print("\n=== 2. ENTITY RESOLUTION (join por string normalizado) ===")
-try:
-    renta = pd.read_csv('data/raw/eustat_renta_municipal.csv')
-except FileNotFoundError:
-    renta = None
-def norm(s):
-    s = str(s).strip().lower()
-    for a,b in [('á','a'),('é','e'),('í','i'),('ó','o'),('ú','u')]:
-        s = s.replace(a,b)
-    return s
-if renta is not None and 'ámbitos territoriales__etiqueta' in renta.columns:
-    eustat_mun = set(norm(x) for x in renta['ámbitos territoriales__etiqueta'].dropna().unique())
-    print("Eustat renta ambitos unicos:", len(eustat_mun))
-    if 'municipio' in fot.columns:
-        fot_mun = set(norm(x) for x in fot['municipio'].unique())
-        print("Fotocasa municipios unicos:", len(fot_mun))
-        match_fot = fot_mun & eustat_mun
-        print("Fotocasa match exacto normalizado:", len(match_fot), "de", len(fot_mun), "-> no match:", len(fot_mun - match_fot))
-        print("No match Fotocasa:", sorted(fot_mun - eustat_mun)[:20])
-try:
-    alq = pd.read_csv('data/raw/alquiler_municipal.csv')
-    alq_mun = set(norm(x) for x in alq['municipio'].unique())
-    print("\nAlquiler municipal municipios:", len(alq_mun))
-    if renta is not None and 'ámbitos territoriales__etiqueta' in renta.columns:
-        eustat_mun = set(norm(x) for x in renta['ámbitos territoriales__etiqueta'].dropna().unique())
-        match_alq = alq_mun & eustat_mun
-        print("Alquiler match exacto:", len(match_alq), "de", len(alq_mun), "-> no match:", len(alq_mun - match_alq))
-        print("No match Alquiler:", sorted(alq_mun - eustat_mun)[:20])
-except FileNotFoundError:
-    print("alquiler_municipal.csv not found")
+def ok(msg: str) -> None:
+    print(f"  OK  {msg}")
 
-# 3. Geografia
-print("\n=== 3. GEOGRAFIA ===")
-dist = json.load(open('data/raw/distancias_municipios.json', encoding='utf-8'))
-dist_data = dist.get('datos', dist) if isinstance(dist, dict) else dist
-print("Distancias guardadas:", len(dist_data), "(total real ~63504)")
-try:
-    pol = json.load(open('data/raw/municipios_gipuzkoa.geojson', encoding='utf-8'))
-    print("Poligonos Gipuzkoa:", len(pol.get('features', [])))
-except FileNotFoundError:
-    print("municipios_gipuzkoa.geojson not found")
 
-# 4. Salario
-print("\n=== 4. SALARIO ===")
-try:
-    sal = pd.read_csv('data/raw/ine_salarios_edad.csv')
-    print("Salarios EPA ambito unico:", sal['ambito'].unique() if 'ambito' in sal.columns else 'N/A')
-    print("Grupos edad:", list(sal['grupo_edad_o_decil'].dropna().unique()[:10]) if 'grupo_edad_o_decil' in sal.columns else 'N/A')
-except FileNotFoundError:
-    print("ine_salarios_edad.csv not found")
-try:
-    renta_edad = pd.read_csv('data/raw/eustat_renta_edad.csv')
-    print("Renta por edad ambito (muestra):", list(renta_edad['sexo__etiqueta'].unique()) if 'sexo__etiqueta' in renta_edad.columns else 'N/A')
-except FileNotFoundError:
-    print("eustat_renta_edad.csv not found")
-if renta is not None and 'ámbitos territoriales__etiqueta' in renta.columns:
-    print("Renta municipal ambitos (muestra):", list(renta['ámbitos territoriales__etiqueta'].unique()[:5]))
+def mal(msg: str) -> None:
+    print(f"  MAL {msg}")
+    fallos.append(msg)
 
-# 5. Estado verificado
-print("\n=== 5. ESTADO VERIFICADO ===")
-print("- 05_fotocasa: GUARDA HTML crudo en data/raw/html_fotocasa/ (101 paginas). Cumple EXTRACCION-01.")
-print("- 09_realtyapi: NO tiene stray 'PY'. Cumple PYTHON-01.")
-print("- 08_pisos: SI extrae superficie_m2 y habitaciones. Cumple EXTRACCION-01.")
-print("- 04_b5m: Distancias completas (63504 pares), no truncadas. Cumple.")
-print("- Entity resolution: codigo_ine presente en raw CSV/JSON (corregido en transform).")
-print("- Raw inmutable: .FROZEN + manifest 316 + tests 66/66.")
-print("- BOM: 36/36 CSVs con BOM (corregido).")
-print("- SERPAVI: imputado por provincia mediana (89->0 nulls).")
-print("- Transporte: operadores vacio -> 'sin_servicio' (51->0 nulls).")
-print("- ECVI: precio_m2 usada capturado (13/29).")
+
+def main() -> int:
+    print("== RAW ==")
+    raw_manifest = ROOT / "docs" / "raw_manifest_sha256.txt"
+    if raw_manifest.exists():
+        lineas = [l for l in raw_manifest.read_text(encoding="utf-8").splitlines() if l.strip()]
+        print(f"  manifest docs/raw_manifest_sha256.txt: {len(lineas)} entradas")
+    else:
+        mal("falta docs/raw_manifest_sha256.txt")
+    ing = PROC / "_meta" / "ingestion_manifest.json"
+    if ing.exists():
+        try:
+            d = json.loads(ing.read_text(encoding="utf-8"))
+            items = d if isinstance(d, list) else d.get("files", d.get("ficheros", d.get("entries", [])))
+            print(f"  manifest _meta/ingestion_manifest.json: {len(items)} entradas")
+        except Exception as e:  # noqa: BLE001 - diagnostico rapido
+            mal(f"ingestion_manifest ilegible: {e}")
+    else:
+        print("  (sin _meta/ingestion_manifest.json — lo crea el pipeline)")
+    if (RAW / ".FROZEN").exists():
+        ok(".FROZEN presente")
+    else:
+        mal("falta data/raw/.FROZEN")
+    html = list((RAW / "html_fotocasa").glob("*.html")) if (RAW / "html_fotocasa").exists() else []
+    print(f"  html_fotocasa: {len(html)} paginas")
+
+    print("== SILVER ==")
+    if not PROC.exists():
+        mal("falta data/procesado/")
+        return 1
+    print(f"  ficheros silver: {len(list(PROC.iterdir()))}")
+    for clave in ["dim_municipios.csv", "anuncios_unificados.csv", "cobertura_anuncios.csv"]:
+        p = PROC / clave
+        print(f"  {'OK ' if p.exists() else 'FALTA'} {clave}")
+
+    try:
+        import pandas as pd
+
+        dim = pd.read_csv(PROC / "dim_municipios.csv", encoding="utf-8-sig", dtype=str)
+        print(f"  dim_municipios: {len(dim)} filas, {dim['codigo_ine'].nunique()} ine unicos")
+        if len(dim) != 252:
+            mal(f"dim_municipios={len(dim)}, esperado 252")
+        else:
+            ok("dim 252 municipios")
+        if (dim["codigo_ine"].str.len() != 5).any():
+            mal("codigo_ine no siempre 5 digitos en dim")
+        else:
+            ok("codigo_ine 5 digitos en dim")
+        uni_path = PROC / "anuncios_unificados.csv"
+        if uni_path.exists():
+            uni = pd.read_csv(uni_path, encoding="utf-8-sig", dtype=str)
+            print(f"  unificados: {len(uni)} anuncios, {uni['codigo_ine'].nunique()} municipios")
+    except Exception as e:  # noqa: BLE001
+        mal(f"pandas check: {e}")
+
+    print("== TIPOS / RUIDO ==")
+    sin_dtype = []
+    for py in (ROOT / "transform").glob("*.py"):
+        txt = py.read_text(encoding="utf-8", errors="replace")
+        if "pd.read_csv(" in txt and "dtype" not in txt:
+            sin_dtype.append(py.name)
+    if sin_dtype:
+        mal(f"read_csv sin dtype en: {', '.join(sin_dtype)}")
+    else:
+        ok("todo pd.read_csv de transform con dtype")
+    import subprocess
+
+    r = subprocess.run(
+        ["git", "ls-files"], capture_output=True, text=True, cwd=ROOT  # noqa: S603
+    )
+    tracked = r.stdout if r.returncode == 0 else ""
+    secretos = [l for l in tracked.splitlines() if l == ".env" or "api.txt" in l.lower()]
+    if secretos:
+        mal(f"secretos trackeados: {secretos}")
+    else:
+        ok("sin secretos trackeados (.env/api.txt)")
+
+    print()
+    if fallos:
+        print(f"RESULTADO: {len(fallos)} problema(s)")
+        return 1
+    print("RESULTADO: OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
