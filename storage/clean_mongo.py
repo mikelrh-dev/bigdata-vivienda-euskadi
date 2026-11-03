@@ -56,6 +56,14 @@ def canonicalize_codigo_ine() -> dict[str, Any]:
         [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
     )
     out["indicadores"] = _counter(r)
+
+    for coll_name in ("udalmap_indicadores", "udalmap_empleo", "osrm_tiempos"):
+        c = get_collection(coll_name)
+        r = c.update_many(
+            {"codigo_ine": {"$exists": True}},
+            [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
+        )
+        out[coll_name] = _counter(r)
     return out
 
 

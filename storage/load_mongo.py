@@ -40,7 +40,13 @@ def _money(value):
 def load_municipios() -> int:
     dim = _read_csv("dim_municipios_enriquecido.csv")
     trans = _read_csv("transporte_paradas_municipio_enriquecido.csv")
+    alq = _read_csv("alquiler_municipal_completo.csv")
     trans_by_code = {zfill_ine(r["codigo_ine"]): r for _, r in trans.iterrows()}
+    oficial_codes = set()
+    for _, r in alq.iterrows():
+        c = zfill_ine(r.get("codigo_ine"))
+        if c and (to_str(r.get("metodo_imputacion")) == "oficial" or to_str(r.get("nivel_geografico")) == "municipal"):
+            oficial_codes.add(c)
 
     coll = get_collection("municipios")
     n = 0
@@ -63,7 +69,7 @@ def load_municipios() -> int:
             "territorio": to_str(row.get("territorio")),
             "nombre_normalizado": to_str(row.get("nombre_normalizado")),
             "variantes": variantes,
-            "tiene_alquiler_oficial": to_bool(row.get("tiene_alquiler_oficial")),
+            "tiene_alquiler_oficial": code in oficial_codes,
             "tiene_fianzas_emal": to_bool(row.get("tiene_fianzas_emal")),
             "demografia": {
                 "renta_eustat": to_float(row.get("renta_eustat")),
@@ -170,17 +176,19 @@ def load_anuncios() -> int:
 def load_alquiler() -> int:
     df = _read_csv("alquiler_municipal_completo.csv")
     coll = get_collection("alquiler_municipal")
+    coll.drop()
     n = 0
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
         doc = {
+            "_id": code,
             "codigo_ine": code,
             "territorio": to_str(row.get("territorio")),
             "municipio": to_str(row.get("municipio")),
             "distrito": to_str(row.get("distrito")),
             "nivel_geografico": to_str(row.get("nivel_geografico")),
             "metodo_imputacion": to_str(row.get("metodo_imputacion")),
-            "idw_vecinos": to_int(row.get("idw_vecinos")),
+            "idw_vecinos": to_str(row.get("idw_vecinos")),
             "renta_media_eur_m2_media": to_float(row.get("renta_media_eur_m2_media")),
             "renta_media_eur_m2_mediana": to_float(row.get("renta_media_eur_m2_mediana")),
             "renta_media_eur_m2_p25": to_float(row.get("renta_media_eur_m2_p25")),
@@ -191,7 +199,7 @@ def load_alquiler() -> int:
             "superficie_media_m2_mediana": to_float(row.get("superficie_media_m2_mediana")),
             "fecha_carga": datetime.now(timezone.utc),
         }
-        coll.update_one({"codigo_ine": code}, {"$set": doc}, upsert=True)
+        coll.update_one({"_id": code}, {"$set": doc}, upsert=True)
         n += 1
     return n
 
@@ -199,10 +207,11 @@ def load_alquiler() -> int:
 def load_indicadores() -> int:
     df = _read_csv("analisis_variables_base.csv")
     coll = get_collection("indicadores")
+    coll.drop()
     n = 0
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
-        doc = {"codigo_ine": code}
+        doc = {"_id": code, "codigo_ine": code}
         for col in df.columns:
             if col == "codigo_ine":
                 continue
@@ -217,9 +226,107 @@ def load_indicadores() -> int:
                     # keep counts as int when clearly integer-valued
                     pass
                 doc[col] = f
-        coll.update_one({"codigo_ine": code}, {"$set": doc}, upsert=True)
+        coll.update_one({"_id": code}, {"$set": doc}, upsert=True)
         n += 1
     return n
+
+
+def _load_json(path: str):
+    with open(ROOT / "data" / "procesado" / path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_ecvi() -> int:
+    data = _load_json("ecvi_compraventa_limpio.json")
+    coll = get_collection("ecvi_compraventa")
+    coll.drop()
+    docs = []
+    for i, row in enumerate(data):
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        if code:
+            doc["_id"] = f"{code}_{row.get('trimestre', i)}"
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
+
+
+def load_udalmap_indicadores() -> int:
+    data = _load_json("udalmap_indicadores_adicionales_normalizado.json")
+    records = data.get("datos", [])
+    coll = get_collection("udalmap_indicadores")
+    coll.drop()
+    docs = []
+    for row in records:
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        if code:
+            doc["_id"] = code
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
+
+
+def load_udalmap_empleo() -> int:
+    data = _load_json("udalmap_empleo_corregido_normalizado.json")
+    records = data.get("datos", [])
+    coll = get_collection("udalmap_empleo")
+    coll.drop()
+    docs = []
+    for row in records:
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        if code:
+            doc["_id"] = code
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
+
+
+def load_osrm() -> int:
+    data = _load_json("osrm_tiempos_capitales_normalizado.json")
+    records = data.get("datos", [])
+    coll = get_collection("osrm_tiempos")
+    coll.drop()
+    docs = []
+    for row in records:
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        if code:
+            doc["_id"] = code
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
+
+
+def load_emancipacion() -> int:
+    data = _load_json("emancipacion_juventud_resumen_normalizado.json")
+    coll = get_collection("emancipacion_juventud")
+    coll.drop()
+    coll.insert_one({"_id": "resumen", **data})
+    return 1
+
+
+def load_etxebide_solicitudes() -> int:
+    data = _load_json("etxebide_solicitudes_normalizado.json")
+    records = data.get("datos", [])
+    coll = get_collection("etxebide_solicitudes")
+    coll.drop()
+    docs = []
+    for i, row in enumerate(records):
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        anio = row.get("anio")
+        if code and anio is not None:
+            doc["_id"] = f"{code}_{anio}"
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
 
 
 def load_all() -> dict[str, int]:
@@ -228,6 +335,12 @@ def load_all() -> dict[str, int]:
         "anuncios": load_anuncios(),
         "alquiler_municipal": load_alquiler(),
         "indicadores": load_indicadores(),
+        "ecvi_compraventa": load_ecvi(),
+        "udalmap_indicadores": load_udalmap_indicadores(),
+        "udalmap_empleo": load_udalmap_empleo(),
+        "osrm_tiempos": load_osrm(),
+        "emancipacion_juventud": load_emancipacion(),
+        "etxebide_solicitudes": load_etxebide_solicitudes(),
     }
 
 

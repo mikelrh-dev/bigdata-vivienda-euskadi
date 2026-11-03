@@ -33,22 +33,32 @@ def test_conteos():
     assert get_collection("anuncios").count_documents({}) == 759
     assert get_collection("alquiler_municipal").count_documents({}) == 252
     assert get_collection("indicadores").count_documents({}) == 252
+    assert get_collection("ecvi_compraventa").count_documents({}) == 29
+    assert get_collection("udalmap_indicadores").count_documents({}) == 252
+    assert get_collection("udalmap_empleo").count_documents({}) == 252
+    assert get_collection("osrm_tiempos").count_documents({}) == 252
+    assert get_collection("emancipacion_juventud").count_documents({}) == 1
+    assert get_collection("etxebide_solicitudes").count_documents({}) == 5040
 
 
 def test_codigo_ine_canonico():
     for coll_name, field in [("municipios", "_id"), ("anuncios", "ubicacion.codigo_ine"),
-                             ("alquiler_municipal", "codigo_ine"), ("indicadores", "codigo_ine")]:
+                             ("alquiler_municipal", "_id"), ("indicadores", "_id")]:
         coll = get_collection(coll_name)
-        if coll_name == "municipios":
+        if coll_name in ("municipios", "alquiler_municipal", "indicadores"):
             vals = [d["_id"] for d in coll.find({}, {"_id": 1})]
         elif coll_name == "anuncios":
             vals = [d["ubicacion"]["codigo_ine"] for d in coll.find({}, {"ubicacion.codigo_ine": 1})]
         else:
             vals = [d["codigo_ine"] for d in coll.find({}, {"codigo_ine": 1})]
         assert all(isinstance(v, str) and len(v) == 5 for v in vals if v is not None)
-        # municipios: no None
-        if coll_name == "municipios":
+        if coll_name in ("municipios", "alquiler_municipal", "indicadores"):
             assert all(v is not None for v in vals)
+
+
+def test_tiene_alquiler_oficial():
+    n = get_collection("municipios").count_documents({"tiene_alquiler_oficial": True})
+    assert n >= 150
 
 
 def test_query_por_municipio():

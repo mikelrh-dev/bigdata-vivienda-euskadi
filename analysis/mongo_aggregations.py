@@ -56,7 +56,7 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
         {"$lookup": {
             "from": "alquiler_municipal",
             "localField": "_id",
-            "foreignField": "codigo_ine",
+            "foreignField": "_id",
             "as": "alquiler_docs",
         }},
         {"$addFields": {
@@ -166,6 +166,29 @@ def run_all() -> dict[str, Any]:
     if docs:
         print(docs[0])
     return {"n": len(docs), "sample": docs[0] if docs else None}
+
+
+def pipeline_accesibilidad_extendida(limit: int | None = None) -> list[dict[str, Any]]:
+    """Accesibilidad por municipio combinando Udalmap + OSRM + municipios."""
+    pipeline: list[dict[str, Any]] = [
+        {"$lookup": {"from": "udalmap_indicadores", "localField": "_id", "foreignField": "_id", "as": "ud"}},
+        {"$addFields": {"ud": {"$arrayElemAt": ["$ud", 0]}}},
+        {"$lookup": {"from": "osrm_tiempos", "localField": "_id", "foreignField": "_id", "as": "osrm"}},
+        {"$addFields": {"osrm": {"$arrayElemAt": ["$osrm", 0]}}},
+        {"$project": {
+            "nombre": "$nombre_canonico",
+            "territorio": "$territorio",
+            "viviendas_mas_50_anios_pct": "$ud.viviendas_mas_50_anios_pct",
+            "indice_confort": "$ud.indice_confort",
+            "minutos_Bilbao": "$osrm.minutos_Bilbao",
+            "minutos_Donostia": "$osrm.minutos_Donostia-San Sebastian",
+            "minutos_Vitoria": "$osrm.minutos_Vitoria-Gasteiz",
+        }},
+        {"$sort": {"minutos_Bilbao": 1}},
+    ]
+    if limit:
+        pipeline.append({"$limit": limit})
+    return pipeline
 
 
 # Generic aliases
