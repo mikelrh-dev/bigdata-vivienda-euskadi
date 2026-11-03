@@ -329,6 +329,38 @@ def load_etxebide_solicitudes() -> int:
     return len(docs)
 
 
+def load_udalmap_extendido() -> int:
+    with open(ROOT / "data" / "raw" / "udalmap_extendido.json", encoding="utf-8") as f:
+        data = json.load(f)
+    records = data.get("datos", [])
+    coll = get_collection("udalmap_extendido")
+    coll.drop()
+    docs = []
+    for row in records:
+        code = zfill_ine(row.get("codigo_ine"))
+        doc = dict(row)
+        if code:
+            doc["_id"] = code
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
+
+
+def load_etxebide_promociones() -> int:
+    with open(ROOT / "data" / "raw" / "etxebide_promociones.json", encoding="utf-8") as f:
+        data = json.load(f)
+    records = data.get("datos", [])
+    coll = get_collection("etxebide_promociones")
+    coll.drop()
+    docs = []
+    for i, row in enumerate(records):
+        doc = dict(row)
+        doc["_id"] = f"{row.get('ID_PROM', i)}_{i}"
+        docs.append(doc)
+    if docs:
+        coll.insert_many(docs)
+    return len(docs)
 def load_all() -> dict[str, int]:
     return {
         "municipios": load_municipios(),
@@ -341,6 +373,8 @@ def load_all() -> dict[str, int]:
         "osrm_tiempos": load_osrm(),
         "emancipacion_juventud": load_emancipacion(),
         "etxebide_solicitudes": load_etxebide_solicitudes(),
+        "udalmap_extendido": load_udalmap_extendido(),
+        "etxebide_promociones": load_etxebide_promociones(),
     }
 
 

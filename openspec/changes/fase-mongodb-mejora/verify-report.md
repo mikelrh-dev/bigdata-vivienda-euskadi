@@ -15,3 +15,8 @@ Verificado:
 - Agregación extendida y tests.
 
 Resultado: PASS.
+
+Actualización 2026-11-03 (carga nuevas colecciones raw):
+- udalmap_extendido: 252
+- etxebide_promociones: 406
+- Recarga Mongo OK; tests/test_mongo.py: 18 passed.
