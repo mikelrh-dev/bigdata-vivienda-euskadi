@@ -159,6 +159,7 @@ bigdata-vivienda-euskadi/
 - `dashboard.html` / `dashboard_completo.html` — dashboards estáticos con conclusiones.
 - 13 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
 - `README.md` — índice de artefactos.
+- Demo KPI Hyperframes (8,5 s): ![Esfuerzo joven KPI](demo-kpi/kpi.gif)
 
 ## 🚀 Puesta en marcha
 
