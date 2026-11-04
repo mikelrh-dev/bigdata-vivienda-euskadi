@@ -19,8 +19,8 @@ flowchart LR
     accDescr: Flujo de fuentes a resultados: extraccion, HDFS, Kafka, MongoDB, limpieza, agregacion, visualizacion.
 
     src["Fuentes<br/>API + scraping + descarga directa"]
-    hdfs["HDFS<br/>originales y procesados"]
-    kafka["Kafka<br/>VM Ubuntu, KRaft"]
+    hdfs["HDFS<br/>clúster centro"]
+    kafka["Kafka<br/>VM ZooKeeper, KRaft"]
     mongo["MongoDB<br/>Docker"]
     clean["PyMongo<br/>limpieza y transformación"]
     agg["Aggregation Pipeline<br/>indicadores"]
@@ -34,12 +34,13 @@ flowchart LR
     classDef partial fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
     classDef todo fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
     class src done
-    class hdfs,kafka todo
+    class hdfs,kafka done
     class mongo,clean,agg done
     class viz partial
 ```
 
-> 🟢 Extracción, Silver y MongoDB completados. 🟡 HDFS y Kafka pendientes.
+> 🟢 Extracción, Silver, MongoDB, HDFS centro y Kafka VM completados.
+> 🟡 Pendiente solo el gate extremo a extremo y el informe/demo final.
 
 ### Modelo de datos (relaciones por `codigo_ine`)
 
@@ -96,15 +97,15 @@ erDiagram
 | 2 | Descargas directas Open Data Euskadi (EMAL, Etxebide, GTFS) | ✅ Hecha |
 | 3 | Transformaciones (entity resolution, dim_municipios, distancias, filtrado, enriquecimiento, geojson, metadata) | ✅ Hecha (parcial) |
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
-| 4 | Docker Compose HDFS + MongoDB | 🟡 Parcial: Mongo hecho, HDFS pendiente |
-| 5 | Subida HDFS + recuperación | ⬜ Pendiente |
+| 4 | Docker Compose HDFS + MongoDB | ✅ Hecha (HDFS centro + Mongo local) |
+| 5 | Subida HDFS + recuperación | ✅ Hecha (351 ficheros raw en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw, sin legacy) |
 | 6 | Modelado + operaciones PyMongo | ✅ Hecha (13 colecciones, PyMongo) |
 | 7 | Aggregation Pipeline | ✅ Hecha (8 pipelines) |
-| 8 | Kafka productor/consumidor | ⬜ Pendiente |
+| 8 | Kafka productor/consumidor | ✅ Hecha (broker 4.3.1 KRaft en 9094, topic 3 particiones, productor JSON y consumidor con upsert) |
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-Tests del contrato: `107 passed, 2 skipped` (109 collected, ver `pytest tests/ -q`; WP-19 incluido).
+Tests del contrato: `129 passed, 1 failed, 2 skipped` (132 collected, ver `pytest tests/ -q`; WP-19 incluido). El único fallo es el test P-08 preexistente por texto de contrato Operaciones PyMongo sin transcribir, ajeno a Kafka y HDFS.
 
 ## 📁 Estructura
 
@@ -115,7 +116,7 @@ bigdata-vivienda-euskadi/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
 ├── extract/           Extracción API, scraping y descargas directas
 ├── transform/         Limpieza y enriquecimiento (33 scripts)
-├── storage/           PyMongo (Mongo hecho; HDFS/Kafka pendiente)
+├── storage/           PyMongo + HDFS central + Kafka VM (listos)
 ├── analysis/          Aggregation Pipeline (hecho, 8 pipelines)
 ├── visualization/     Gráficos (hecho, CSV desde Mongo)
 ├── notebooks/         Informe de resultados (pendiente)
@@ -140,7 +141,7 @@ bigdata-vivienda-euskadi/
 | Municipios sin anuncios residenciales | 169 |
 | Municipios robustos (n≥30) | 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 107 passed, 2 skipped (109 collected) |
+| Tests | 129 passed, 1 failed, 2 skipped (132 collected) |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -166,6 +167,15 @@ bigdata-vivienda-euskadi/
 ```bash
 uv venv --python 3.12 .venv
 uv pip install --python .venv/Scripts/python.exe -r requirements.txt
+```
+
+Variables de infraestructura (clúster centro y VM ZooKeeper):
+
+```bash
+export HDFS_URL=http://10.22.87.215:50070
+export HDFS_USER=iabd-user15
+export VM_HOST=192.168.201.162
+export VM_KAFKA_PORT=9094
 ```
 
 ### 2. Descargar la cartografía municipal
@@ -221,11 +231,13 @@ completos.
 | RealtyAPI.io (Idealista, no oficial) | API | Opcional, 84 anuncios |
 | INE Atlas de la renta | Descarga directa | Rellena municipios faltantes de renta |
 | Udalmap (api.euskadi.eus) | API | Actividad, ocupación, paro Lanbide, VPO, renta... |
+| HDFS clúster centro | Infraestructura | `HDFS_URL=http://10.22.87.215:50070`, `HDFS_USER=iabd-user15` (351 ficheros raw sin legacy) |
+| Kafka VM ZooKeeper | Infraestructura | `VM_HOST=192.168.201.162`, `VM_KAFKA_PORT=9094` (broker 4.3.1 KRaft, topic 3 particiones) |
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (107 passed, 2 skipped)
-- MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (13 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (129 passed, 1 failed, 2 skipped)
+- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (13 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
@@ -234,8 +246,8 @@ completos.
 
 ## ⚠️ Cosas que faltan
 
-- **Infraestructura HDFS:** pendiente. Docker Desktop arrancado, `docker-compose.yml` por escribir.
-- **Infraestructura Kafka:** pendiente. Kafka en VM Ubuntu Server.
+- **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`. `storage/hdfs_utils.py` ahora lee `HDFS_URL` y `HDFS_USER` de entorno y sube el bronce sin legacy con estado en `data/_hdfs_state/hdfs_upload_raw.json`.
+- **Kafka:** listo en VM ZooKeeper `192.168.201.162:9094` con broker 4.3.1 KRaft, `log.dirs` en `~/kafka-logs` y topic `anuncios_inmobiliarios` de 3 particiones. Productor y consumidor Python en `storage/kafka_producer.py` y `storage/kafka_consumer.py` con upsert idempotente y test `tests/test_kafka.py` buscando `KafkaConsumer` y `KafkaProducer` en modo desde VM.
 - **Informe y demo:** pendiente. Aggregation Pipeline, indicadores y CSV desde Mongo hechos (`analysis/run_analisis_mongo.py`); falta informe/demo final.
 - **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal para los 93 faltantes.
@@ -255,6 +267,11 @@ completos.
 
 Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` para la copia de revisión externa.
 
+## 🔁 Flujo extremo a extremo
+
+El flujo actual es: fuente a silver a HDFS centro a Kafka VM a Mongo local a agregación a visualización. HDFS es la memoria de originales con recuperación SHA, Kafka es el grifo con mensajes JSON y Mongo es la base analítica.
+El gate de Integración pendiente es subir el bronce, publicar mensajes, consumir a Mongo con upsert y verificar código INE común sin intervención manual en Mongo.
+
 ## ⚠️ Puntos débiles (limitaciones defendibles)
 
 - Cobertura de anuncios: solo 83/252 municipios, 4 robustos (n≥30). Ranking municipal fino no defendible para la mayoría.
@@ -265,5 +282,5 @@ Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` 
 - VPO 83.73% ceros: sin stock real.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura pendiente: HDFS y Kafka no implementados. MongoDB implementado (13 colecciones, 8 pipelines).
+- Infraestructura: MongoDB hecho (13 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.

@@ -1,5 +1,6 @@
 # Dependencias del proyecto (venv dedicado, Python 3.12)
 pymongo==4.17.0
+hdfs==2.7.3
 kafka-python-ng==2.2.3
 
 pandas==2.2.3
