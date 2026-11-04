@@ -62,6 +62,58 @@ def _ratio_fiscal_desde_eustat() -> tuple[float, str]:
     return (out[0] + out[1] + out[2]) / 3 / out[3], "calculado"
 
 
+def _ratios_18_34_desde_eustat() -> tuple[dict[str, float], str]:
+    """Ratios 18-34/18-24/25-34 ponderados por anchura (Eustat CAE 2024).
+
+    18-34 = (2*18-19 + 5*20-24 + 5*25-29 + 5*30-34)/17/total
+    18-24 = (2*18-19 + 5*20-24)/7/total
+    25-34 = (5*25-29 + 5*30-34)/10/total
+    Retorna (dict ratio_18_34/ratio_18_24/ratio_25_34, flag calculado|fallback).
+    """
+    df = pd.read_csv(RAW / "eustat_renta_edad.csv", dtype=str, encoding="utf-8-sig")
+    d = df[(df["sexo__etiqueta"] == "Total") & (df["tipo de renta__etiqueta"] == "Renta total")]
+    d = d[d["periodo"].astype(str) == "2024"]
+    tramos: dict[str, str] = {}
+    for _, row in d.iterrows():
+        etiqueta = str(row["edad__etiqueta"]).strip()
+        valor = row["Renta personal media de la C.A. de Euskadi (euros)"]
+        tramos[etiqueta] = valor
+
+    def _get(*claves: str):
+        for k in claves:
+            if k in tramos and tramos[k] is not None and str(tramos[k]).strip() != "":
+                return tramos[k]
+        return None
+
+    r18_19 = _get("18 - 19 años", "De 18 a 19 años", "18 a 19 años")
+    r20_24 = _get("20 - 24 años", "De 20 a 24 años", "20 a 24 años")
+    r25_29 = _get("25 - 29 años", "De 25 a 29 años", "25 a 29 años")
+    r30_34 = _get("30 - 34 años", "De 30 a 34 años", "30 a 34 años")
+    rtotal = _get("Total", "Total (todas las edades)")
+    vals = (r18_19, r20_24, r25_29, r30_34, rtotal)
+    if any(v is None for v in vals):
+        v = (1599, 8156, 20109, 25609, 28170)
+        return {
+            "ratio_18_34": (2 * v[0] + 5 * v[1] + 5 * v[2] + 5 * v[3]) / 17 / v[4],
+            "ratio_18_24": (2 * v[0] + 5 * v[1]) / 7 / v[4],
+            "ratio_25_34": (5 * v[2] + 5 * v[3]) / 10 / v[4],
+        }, "fallback"
+    try:
+        n = [float(str(x).replace(".", "").replace(",", ".")) for x in vals]
+    except (TypeError, ValueError):
+        v = (1599, 8156, 20109, 25609, 28170)
+        return {
+            "ratio_18_34": (2 * v[0] + 5 * v[1] + 5 * v[2] + 5 * v[3]) / 17 / v[4],
+            "ratio_18_24": (2 * v[0] + 5 * v[1]) / 7 / v[4],
+            "ratio_25_34": (5 * v[2] + 5 * v[3]) / 10 / v[4],
+        }, "fallback"
+    return {
+        "ratio_18_34": (2 * n[0] + 5 * n[1] + 5 * n[2] + 5 * n[3]) / 17 / n[4],
+        "ratio_18_24": (2 * n[0] + 5 * n[1]) / 7 / n[4],
+        "ratio_25_34": (5 * n[2] + 5 * n[3]) / 10 / n[4],
+    }, "calculado"
+
+
 RENTA_TOTAL_CAE = 28170
 
 # Salario neto joven OVJ 2024
@@ -74,7 +126,9 @@ def main() -> int:
     # WP-10: lectura tipada como str (claves); medidas a numerico explicito.
     _med = ["cuantia_media_eur_mes_media", "renta_personal_total_eur",
             "renta_hogar", "renta_eustat", "renta_atlas",
-            "renta_joven_estimada_16_29", "alquiler_anual",
+            "renta_joven_estimada_16_29", "renta_joven_estimada_18_34",
+            "renta_joven_estimada_18_24", "renta_joven_estimada_25_34",
+            "alquiler_anual",
             "renta_familiar_eur", "renta_personal_disponible_eur"]
     for _c in _med:
         if _c in base.columns:
@@ -85,12 +139,22 @@ def main() -> int:
     ratio_fiscal, flag_fiscal = _ratio_fiscal_desde_eustat()
     out_flag_fiscal = flag_fiscal
 
+    # Ratios canonicos 18-34 ponderados por anchura (Eustat CAE 2024)
+    ratios_18_34, flag_18_34 = _ratios_18_34_desde_eustat()
+    ratio_18_34 = ratios_18_34["ratio_18_34"]
+    ratio_18_24 = ratios_18_34["ratio_18_24"]
+    ratio_25_34 = ratios_18_34["ratio_25_34"]
+
     # Proxy salarial
     ratio_sal_18_34 = (SALARIO_OVJ_18_34 * 12) / RENTA_TOTAL_CAE
     ratio_sal_18_29 = (SALARIO_OVJ_18_29 * 12) / RENTA_TOTAL_CAE
 
     out = base.copy()
     out["renta_joven_fiscal_proxy"] = out["renta_personal_total_eur"] * ratio_fiscal
+    # Canonico 18-34 ponderado por anchura (escalares CAE sobre renta municipal)
+    out["renta_joven_fiscal_proxy_18_34"] = out["renta_personal_total_eur"] * ratio_18_34
+    out["renta_joven_fiscal_proxy_18_24"] = out["renta_personal_total_eur"] * ratio_18_24
+    out["renta_joven_fiscal_proxy_25_34"] = out["renta_personal_total_eur"] * ratio_25_34
     out["renta_joven_salarial_18_34"] = out["renta_personal_total_eur"] * ratio_sal_18_34
     out["renta_joven_salarial_16_29"] = out["renta_personal_total_eur"] * ratio_sal_18_29
 
@@ -100,6 +164,10 @@ def main() -> int:
     # Esfuerzo: min (salarial, mayor renta -> menor esfuerzo), max (fiscal, menor renta -> mayor esfuerzo)
     out["esfuerzo_min_pct"] = out["alquiler_anual_calc"] / out["renta_joven_salarial_18_34"] * 100
     out["esfuerzo_max_pct"] = out["alquiler_anual_calc"] / out["renta_joven_fiscal_proxy"] * 100
+    # Canonico 18-34: esfuerzo fiscal sobre proxy 18-34 y subgrupos CAE
+    out["esfuerzo_joven_fiscal_18_34_pct"] = out["alquiler_anual_calc"] / out["renta_joven_fiscal_proxy_18_34"] * 100
+    out["esfuerzo_joven_fiscal_18_24_pct"] = out["alquiler_anual_calc"] / out["renta_joven_fiscal_proxy_18_24"] * 100
+    out["esfuerzo_joven_fiscal_25_34_pct"] = out["alquiler_anual_calc"] / out["renta_joven_fiscal_proxy_25_34"] * 100
 
     # Solucion 1+2 (aditivo): OVJ + Housing Wage
     out["salario_ovj_neto_mes"] = SALARIO_OVJ_18_29
@@ -133,6 +201,10 @@ def main() -> int:
     # Metadata
     out["ratio_fiscal"] = ratio_fiscal
     out["flag_ratio_fiscal"] = out_flag_fiscal  # WP-11: calculado|fallback
+    out["ratio_fiscal_18_34"] = ratio_18_34
+    out["ratio_fiscal_18_24"] = ratio_18_24
+    out["ratio_fiscal_25_34"] = ratio_25_34
+    out["flag_ratio_fiscal_18_34"] = flag_18_34  # WP-11: calculado|fallback
     out["ratio_salarial_18_34"] = ratio_sal_18_34
     out["ratio_salarial_16_29"] = ratio_sal_18_29
     out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024) ajustado por paro joven Lanbide"
@@ -154,6 +226,7 @@ def main() -> int:
     out.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(out)} filas, {len(out.columns)} cols)")
     print(f"ratio_fiscal={ratio_fiscal:.4f}, ratio_sal_18_34={ratio_sal_18_34:.4f}, ratio_sal_18_29={ratio_sal_18_29:.4f}")
+    print(f"ratio_18_34={ratio_18_34:.4f}, ratio_18_24={ratio_18_24:.4f}, ratio_25_34={ratio_25_34:.4f} (flag={flag_18_34})")
     print(f"esfuerzo_min mediana={out['esfuerzo_min_pct'].median():.1f}%, esfuerzo_max mediana={out['esfuerzo_max_pct'].median():.1f}%")
     print(f"esfuerzo_ovj_referencia mediana={out['esfuerzo_ovj_referencia_pct'].median():.1f}%, housing_wage mediana={out['housing_wage_mes'].median():.0f} EUR")
     print(f"salario_ajustado mediana={out['salario_joven_ajustado_local_eur'].median():.0f} EUR, esfuerzo_ajustado mediana={out['esfuerzo_ajustado_pct'].median():.1f}%")

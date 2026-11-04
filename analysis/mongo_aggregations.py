@@ -66,9 +66,13 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "nombre": "$nombre_canonico",
             "territorio": "$territorio",
             "renta_joven": "$demografia.renta_joven_estimada_16_29",
+            # JOVEN-18-34 canonico (+ fallback legacy si 18_34 ausente).
+            "renta_joven_18_34": {"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]},
+            "renta_joven_18_24": "$demografia.renta_joven_estimada_18_24",
+            "renta_joven_25_34": "$demografia.renta_joven_estimada_25_34",
             "cuantia_alquiler_mes": "$alquiler.cuantia_media_eur_mes_mediana",
             "renta_m2_alquiler": "$alquiler.renta_media_eur_m2_mediana",
-            "esfuerzo_alquiler_pct": {
+            "esfuerzo_joven_pct": {
                 "$cond": [
                     {"$and": [
                         {"$ne": ["$alquiler.cuantia_media_eur_mes_mediana", None]},
@@ -79,6 +83,57 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
                         {"$divide": [
                             {"$multiply": ["$alquiler.cuantia_media_eur_mes_mediana", 12]},
                             "$demografia.renta_joven_estimada_16_29",
+                        ]},
+                        100,
+                    ]},
+                    None,
+                ]
+            },
+            "esfuerzo_joven_pct_18_34": {
+                "$cond": [
+                    {"$and": [
+                        {"$ne": ["$alquiler.cuantia_media_eur_mes_mediana", None]},
+                        {"$ne": [{"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]}, None]},
+                        {"$gt": [{"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]}, 0]},
+                    ]},
+                    {"$multiply": [
+                        {"$divide": [
+                            {"$multiply": ["$alquiler.cuantia_media_eur_mes_mediana", 12]},
+                            {"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]},
+                        ]},
+                        100,
+                    ]},
+                    None,
+                ]
+            },
+            "esfuerzo_joven_pct_18_24": {
+                "$cond": [
+                    {"$and": [
+                        {"$ne": ["$alquiler.cuantia_media_eur_mes_mediana", None]},
+                        {"$ne": ["$demografia.renta_joven_estimada_18_24", None]},
+                        {"$gt": ["$demografia.renta_joven_estimada_18_24", 0]},
+                    ]},
+                    {"$multiply": [
+                        {"$divide": [
+                            {"$multiply": ["$alquiler.cuantia_media_eur_mes_mediana", 12]},
+                            "$demografia.renta_joven_estimada_18_24",
+                        ]},
+                        100,
+                    ]},
+                    None,
+                ]
+            },
+            "esfuerzo_joven_pct_25_34": {
+                "$cond": [
+                    {"$and": [
+                        {"$ne": ["$alquiler.cuantia_media_eur_mes_mediana", None]},
+                        {"$ne": ["$demografia.renta_joven_estimada_25_34", None]},
+                        {"$gt": ["$demografia.renta_joven_estimada_25_34", 0]},
+                    ]},
+                    {"$multiply": [
+                        {"$divide": [
+                            {"$multiply": ["$alquiler.cuantia_media_eur_mes_mediana", 12]},
+                            "$demografia.renta_joven_estimada_25_34",
                         ]},
                         100,
                     ]},
@@ -96,9 +151,17 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "n_larga_estancia": 1,
             "n_temporal": 1,
             "renta_joven": 1,
+            "renta_joven_18_34": 1,
+            "renta_joven_18_24": 1,
+            "renta_joven_25_34": 1,
             "cuantia_alquiler_mes": 1,
             "renta_m2_alquiler": 1,
-            "esfuerzo_alquiler_pct": 1,
+            "esfuerzo_joven_pct": 1,
+            "esfuerzo_joven_pct_16_29": "$esfuerzo_joven_pct",
+            "esfuerzo_joven_pct_18_34": 1,
+            "esfuerzo_joven_pct_18_24": 1,
+            "esfuerzo_joven_pct_25_34": 1,
+            "esfuerzo_alquiler_pct": "$esfuerzo_joven_pct",
             "tiene_alquiler_oficial": 1,
         }},
         {"$sort": {"n_anuncios": -1, "_id": 1}},
@@ -146,18 +209,88 @@ def pipeline_modalidades() -> list[dict[str, Any]]:
 
 
 def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]]:
-    docs = pipeline_indicadores_municipio()
-    docs = [d for d in docs if d.get("esfuerzo_alquiler_pct") is not None]
-    docs.sort(key=lambda d: d.get("esfuerzo_alquiler_pct", 0), reverse=True)
-    return docs[:limit]
+    # JOVEN-18-34: ranking por canonico 18-34 (fallback legacy 16-29 si el
+    # campo nuevo aun no esta cargado); se devuelve tambien el legacy.
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"$or": [
+            {"demografia.renta_joven_estimada_18_34": {"$gt": 0}},
+            {"demografia.renta_joven_estimada_16_29": {"$gt": 0}},
+        ]}},
+        {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
+        {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
+        {"$match": {"alq.cuantia_media_eur_mes_mediana": {"$ne": None}}},
+        {"$addFields": {
+            "renta_canonica": {"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]},
+        }},
+        {"$addFields": {
+            "esfuerzo_joven_pct_18_34": {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, "$renta_canonica"]}, 100]},
+            "esfuerzo_joven_pct_16_29": {"$cond": [
+                {"$and": [
+                    {"$ne": ["$demografia.renta_joven_estimada_16_29", None]},
+                    {"$gt": ["$demografia.renta_joven_estimada_16_29", 0]},
+                ]},
+                {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, "$demografia.renta_joven_estimada_16_29"]}, 100]},
+                None,
+            ]},
+        }},
+        {"$addFields": {"esfuerzo_joven_pct": "$esfuerzo_joven_pct_16_29"}},
+        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "esfuerzo_joven_pct": 1, "esfuerzo_joven_pct_16_29": 1, "esfuerzo_joven_pct_18_34": 1}},
+        {"$sort": {"esfuerzo_joven_pct_18_34": -1}},
+        {"$limit": limit},
+    ]
+    return list(get_collection("municipios").aggregate(pipeline))
 
 
 def indicador_por_municipio(codigo_ine: str) -> dict[str, Any] | None:
     code = zfill_ine(codigo_ine)
-    for d in pipeline_indicadores_municipio():
-        if d.get("_id") == code:
-            return d
-    return None
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"_id": code}},
+        {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
+        {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
+        {"$limit": 1},
+    ]
+    docs = list(get_collection("municipios").aggregate(pipeline))
+    if not docs:
+        return None
+    d = docs[0]
+    alq = d.get("alq") or {}
+    dem = d.get("demografia") or {}
+    renta = dem.get("renta_joven_estimada_16_29")
+    # JOVEN-18-34: canonico con fallback legacy; legacy se conserva.
+    renta_18_34 = dem.get("renta_joven_estimada_18_34") or renta
+    renta_18_24 = dem.get("renta_joven_estimada_18_24")
+    renta_25_34 = dem.get("renta_joven_estimada_25_34")
+    cuantia = alq.get("cuantia_media_eur_mes_mediana")
+    if renta and cuantia:
+        d["esfuerzo_joven_pct"] = cuantia * 12 / renta * 100
+        d["esfuerzo_joven_pct_16_29"] = d["esfuerzo_joven_pct"]
+        d["esfuerzo_alquiler_pct"] = d["esfuerzo_joven_pct"]
+    if renta_18_34 and cuantia:
+        d["esfuerzo_joven_pct_18_34"] = cuantia * 12 / renta_18_34 * 100
+    if renta_18_24 and cuantia:
+        d["esfuerzo_joven_pct_18_24"] = cuantia * 12 / renta_18_24 * 100
+    if renta_25_34 and cuantia:
+        d["esfuerzo_joven_pct_25_34"] = cuantia * 12 / renta_25_34 * 100
+    return d
+
+
+def pipeline_esfuerzo_por_sexo(limit: int | None = None) -> list[dict[str, Any]]:
+    """E4: esfuerzo alquiler por sexo calculado en Mongo ($match/$lookup/$addFields/$sort/$limit)."""
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"demografia.renta_personal_total_hombres_eur": {"$gt": 0}, "demografia.renta_personal_total_mujeres_eur": {"$gt": 0}}},
+        {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
+        {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
+        {"$match": {"alq.cuantia_media_eur_mes_mediana": {"$ne": None}}},
+        {"$addFields": {
+            "esfuerzo_alquiler_hombres_pct": {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, "$demografia.renta_personal_total_hombres_eur"]}, 100]},
+            "esfuerzo_alquiler_mujeres_pct": {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, "$demografia.renta_personal_total_mujeres_eur"]}, 100]},
+        }},
+        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "esfuerzo_alquiler_hombres_pct": 1, "esfuerzo_alquiler_mujeres_pct": 1}},
+        {"$sort": {"esfuerzo_alquiler_mujeres_pct": -1}},
+    ]
+    if limit:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("municipios").aggregate(pipeline))
 
 
 def run_all() -> dict[str, Any]:
@@ -171,24 +304,87 @@ def run_all() -> dict[str, Any]:
 def pipeline_accesibilidad_extendida(limit: int | None = None) -> list[dict[str, Any]]:
     """Accesibilidad por municipio combinando Udalmap + OSRM + municipios."""
     pipeline: list[dict[str, Any]] = [
+        {"$match": {}},
         {"$lookup": {"from": "udalmap_indicadores", "localField": "_id", "foreignField": "_id", "as": "ud"}},
         {"$addFields": {"ud": {"$arrayElemAt": ["$ud", 0]}}},
         {"$lookup": {"from": "osrm_tiempos", "localField": "_id", "foreignField": "_id", "as": "osrm"}},
         {"$addFields": {"osrm": {"$arrayElemAt": ["$osrm", 0]}}},
+        {"$lookup": {"from": "udalmap_extendido", "localField": "_id", "foreignField": "_id", "as": "udx"}},
+        {"$addFields": {"udx": {"$arrayElemAt": ["$udx", 0]}}},
+        {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
+        {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
+        {"$addFields": {
+            "esfuerzo_joven_pct": {
+                "$cond": [
+                    {"$and": [{"$ne": ["$alq.cuantia_media_eur_mes_mediana", None]}, {"$ne": ["$demografia.renta_joven_estimada_16_29", None]}, {"$gt": ["$demografia.renta_joven_estimada_16_29", 0]}]},
+                    {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, "$demografia.renta_joven_estimada_16_29"]}, 100]},
+                    None,
+                ]
+            },
+            # JOVEN-18-34 canonico (+ fallback legacy).
+            "esfuerzo_joven_pct_18_34": {
+                "$cond": [
+                    {"$and": [{"$ne": ["$alq.cuantia_media_eur_mes_mediana", None]}, {"$ne": [{"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]}, None]}, {"$gt": [{"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]}, 0]}]},
+                    {"$multiply": [{"$divide": [{"$multiply": ["$alq.cuantia_media_eur_mes_mediana", 12]}, {"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]}]}, 100]},
+                    None,
+                ]
+            },
+        }},
         {"$project": {
             "nombre": "$nombre_canonico",
             "territorio": "$territorio",
             "viviendas_mas_50_anios_pct": "$ud.viviendas_mas_50_anios_pct",
             "indice_confort": "$ud.indice_confort",
+            "accesibilidad_municipio": "$udx.accesibilidad_municipio",
+            "tiempo_acceso_capital_th": "$udx.tiempo_acceso_capital_th",
+            "esfuerzo_joven_pct": 1,
+            "esfuerzo_joven_pct_16_29": "$esfuerzo_joven_pct",
+            "esfuerzo_joven_pct_18_34": 1,
+            "esfuerzo_alquiler_pct": "$esfuerzo_joven_pct",
             "minutos_Bilbao": "$osrm.minutos_Bilbao",
-            "minutos_Donostia": "$osrm.minutos_Donostia-San Sebastian",
             "minutos_Vitoria": "$osrm.minutos_Vitoria-Gasteiz",
         }},
         {"$sort": {"minutos_Bilbao": 1}},
     ]
     if limit:
         pipeline.append({"$limit": limit})
-    return pipeline
+    return list(get_collection("municipios").aggregate(pipeline))
+
+
+def pipeline_udalmap_extendido_osrm(limit: int | None = None) -> list[dict[str, Any]]:
+    """Udalmap extendido + municipios + osrm: 6 etapas."""
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {}},
+        {"$lookup": {"from": "udalmap_extendido", "localField": "_id", "foreignField": "_id", "as": "udx"}},
+        {"$unwind": {"path": "$udx", "preserveNullAndEmptyArrays": True}},
+        {"$lookup": {"from": "osrm_tiempos", "localField": "_id", "foreignField": "_id", "as": "osrm"}},
+        {"$addFields": {"osrm": {"$arrayElemAt": ["$osrm", 0]}}},
+        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "udx": 1, "osrm": 1}},
+        {"$sort": {"_id": 1}},
+    ]
+    if limit:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("municipios").aggregate(pipeline))
+
+
+def pipeline_vpo_por_municipio(limit: int | None = None) -> list[dict[str, Any]]:
+    """Promociones Etxebide agregadas por municipio/estado/tipologia (en Mongo).
+
+    Stock historico no publico: solo promociones recientes -> documentar como sin dato.
+    """
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"codigo_ine": {"$ne": None}}},
+        {"$group": {"_id": {"codigo_ine": "$codigo_ine", "estado": "$estado_obra", "tipologia": "$tipologia"}, "n_promociones": {"$sum": 1}, "viviendas": {"$sum": {"$ifNull": ["$num_viviendas", 0]}}}},
+        {"$lookup": {"from": "municipios", "localField": "_id.codigo_ine", "foreignField": "_id", "as": "m"}},
+        {"$unwind": {"path": "$m", "preserveNullAndEmptyArrays": True}},
+        {"$lookup": {"from": "indicadores", "localField": "_id.codigo_ine", "foreignField": "_id", "as": "ind"}},
+        {"$unwind": {"path": "$ind", "preserveNullAndEmptyArrays": True}},
+        {"$project": {"codigo_ine": "$_id.codigo_ine", "estado": "$_id.estado", "tipologia": "$_id.tipologia", "n_promociones": 1, "viviendas": 1, "municipio": "$m.nombre_canonico", "esfuerzo_joven_pct": "$ind.esfuerzo_joven_pct", "esfuerzo_joven_pct_16_29": "$ind.esfuerzo_joven_pct_16_29", "esfuerzo_joven_pct_18_34": "$ind.esfuerzo_joven_pct_18_34", "_id": 0}},
+        {"$sort": {"n_promociones": -1}},
+    ]
+    if limit:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("etxebide_promociones").aggregate(pipeline))
 
 
 # Generic aliases

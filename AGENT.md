@@ -6,7 +6,7 @@
 
 ## Key facts
 - Objetivo: qué municipios de Euskadi ofrecen mejor emancipación juvenil, con datos reales.
-- Raw inmutable congelado (manifest 314), silver regenerado (manifest 115), 52 funciones de test en verde.
+- Raw inmutable congelado (manifest 353), silver regenerado (manifest 182), 109 tests colectados (107 passed, 2 skipped).
 - Estado pesado, fases, preferencias y descubrimientos: Engram proyecto "bigdata-vivienda-euskadi" (obs 2988).
 
 ## Conventions

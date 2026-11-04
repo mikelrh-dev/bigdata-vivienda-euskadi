@@ -1,0 +1,8 @@
+- [x] 1.1 `load_certificados()` + conteo 252 en `load_all()`
+- [x] 1.2 Refactor `load_etxebide_promociones()` con `codigo_ine` derivado
+- [x] 2.1 Extender `clean_mongo.canonicalize/mark_nulls` a colecciones nuevas
+- [x] 3.1 Fix `pipeline_accesibilidad_extendida` + nuevas agregaciones VPO/Udalmap-OSRM
+- [x] 4.1 Índices nuevas colecciones + `explain()` demo
+- [x] 5.1 Tests `test_mongo.py` para certificados/promociones/pipelines
+- [x] 6.1 Actualizar `modelo_mongodb.md` + `informe_capacidad_mongo.md`
+- [x] 7.1 Verify report + `pytest -q` verde

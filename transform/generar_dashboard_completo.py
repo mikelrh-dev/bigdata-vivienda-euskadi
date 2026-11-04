@@ -71,11 +71,11 @@ def g_B_paro_vs_precio():
         SELECT a.nombre_canonico AS municipio, a.tasa_paro_lanbide_pct, b.precio_medio, a.territorio
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN (
-            SELECT municipio, MEDIAN(precio_eur) AS precio_medio
+            SELECT codigo_ine, MEDIAN(precio_eur) AS precio_medio
             FROM read_csv('data/procesado/anuncios_vivienda_residencial_filtrado.csv')
             WHERE outlier = FALSE
-            GROUP BY municipio
-        ) b ON a.nombre_canonico = b.municipio
+            GROUP BY codigo_ine
+        ) b ON a.codigo_ine = b.codigo_ine
     """).df()
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.scatterplot(data=df, x="tasa_paro_lanbide_pct", y="precio_medio",
@@ -173,7 +173,7 @@ def g_F_comparativa_th():
 def g_G_gaps():
     gaps = [
         ("93 municipios sin alquiler oficial", "imputados por comarca"),
-        ("170 municipios sin anuncios", "solo 6 robustos (n>=30)"),
+        ("170 municipios sin anuncios", "solo 4 robustos (n>=30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria 01059 n 39"),
         ("VPO Etxebide", "83.73% ceros, sin stock real"),
         ("ECVI compraventa", "solo 7 municipios >40k"),
         ("Emancipacion juvenil", "solo nivel CAE, no municipal"),

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import logging
+import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,6 +14,7 @@ from bson.decimal128 import Decimal128
 
 from storage.mongo import (
     get_collection,
+    replace_collection,
     to_bool,
     to_float,
     to_int,
@@ -21,6 +24,8 @@ from storage.mongo import (
 
 ROOT = Path(__file__).resolve().parents[1]
 PROC = ROOT / "data" / "procesado"
+
+logger = logging.getLogger(__name__)
 
 
 def _read_csv(name: str) -> pd.DataFrame:
@@ -37,6 +42,51 @@ def _money(value):
         return None
 
 
+def _lookup_csv(name: str, key: str = "codigo_ine") -> dict[str, dict]:
+    """Lookup {codigo_z5: row} de un silver procesado; {} si no existe."""
+    path = PROC / name
+    if not path.exists():
+        return {}
+    try:
+        df = pd.read_csv(path, encoding="utf-8-sig", dtype=str)
+    except Exception:
+        return {}
+    out: dict[str, dict] = {}
+    for _, r in df.iterrows():
+        c = zfill_ine(r.get(key))
+        if c:
+            out[c] = r
+    return out
+
+
+def _geo_point(lat_raw, lon_raw) -> dict | None:
+    lat = to_float(lat_raw)
+    lon = to_float(lon_raw)
+    if lat is None or lon is None:
+        return None
+    if not (math.isfinite(lat) and math.isfinite(lon)):
+        return None
+    if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+        return None
+    return {"type": "Point", "coordinates": [lon, lat]}
+
+
+def _lookup_fotocasa_geo() -> dict[str, dict | None]:
+    path = PROC / "anuncios_fotocasa_enriquecido.csv"
+    if not path.exists():
+        return {}
+    try:
+        df = pd.read_csv(path, encoding="utf-8-sig", dtype=str)
+    except Exception:
+        return {}
+    out: dict[str, dict | None] = {}
+    for _, r in df.iterrows():
+        key = to_str(r.get("id_anuncio"))
+        if key:
+            out[key] = _geo_point(r.get("latitud"), r.get("longitud"))
+    return out
+
+
 def load_municipios() -> int:
     dim = _read_csv("dim_municipios_enriquecido.csv")
     trans = _read_csv("transporte_paradas_municipio_enriquecido.csv")
@@ -48,13 +98,25 @@ def load_municipios() -> int:
         if c and (to_str(r.get("metodo_imputacion")) == "oficial" or to_str(r.get("nivel_geografico")) == "municipal"):
             oficial_codes.add(c)
 
-    coll = get_collection("municipios")
-    n = 0
+    # JOVEN-18-34 (fase 3.1): renta/ratios/esfuerzo 18-34 y poblacion est.
+    # viven en silver (analisis_variables_base / poblacion_joven_municipal);
+    # dim_municipios_enriquecido solo trae legacy 16-29. Los campos nuevos
+    # coexisten con el legacy (sin renombrado destructivo).
+    base_by_code = _lookup_csv("analisis_variables_base.csv")
+    pob_by_code = _lookup_csv("poblacion_joven_municipal.csv")
+
+    docs: list[dict] = []
     for _, row in dim.iterrows():
         code = zfill_ine(row["codigo_ine"])
         if code is None:
             continue
         tr = trans_by_code.get(code)
+        base = base_by_code.get(code)
+        if base is None:
+            base = {}
+        pob = pob_by_code.get(code)
+        if pob is None:
+            pob = {}
         variantes = []
         raw_var = to_str(row.get("variantes"))
         if raw_var:
@@ -75,11 +137,38 @@ def load_municipios() -> int:
                 "renta_eustat": to_float(row.get("renta_eustat")),
                 "renta_hogar": to_float(row.get("renta_hogar")),
                 "renta_atlas": to_float(row.get("renta_atlas")),
+                # Legacy 16-29 (dim): se conserva como alias para comparabilidad.
                 "renta_joven_estimada_16_29": to_float(row.get("renta_joven_estimada_16_29")),
+                # JOVEN-18-34 canonico (silver analisis_variables_base).
+                "renta_joven_estimada_18_34": to_float(base.get("renta_joven_estimada_18_34")),
+                "renta_joven_estimada_18_24": to_float(base.get("renta_joven_estimada_18_24")),
+                "renta_joven_estimada_25_34": to_float(base.get("renta_joven_estimada_25_34")),
+                "ratio_fiscal_18_34": to_float(base.get("ratio_fiscal_18_34")),
+                "ratio_fiscal_18_24": to_float(base.get("ratio_fiscal_18_24")),
+                "ratio_fiscal_25_34": to_float(base.get("ratio_fiscal_25_34")),
+                "flag_ratio_fiscal_18_34": to_str(base.get("flag_ratio_fiscal_18_34")),
+                # Esfuerzo: canonico 18-34 + legacy 16-29 (alias, sin romper).
+                "esfuerzo_joven_pct": (
+                    to_float(base.get("esfuerzo_joven_pct_16_29"))
+                    if to_float(base.get("esfuerzo_joven_pct_16_29")) is not None
+                    else to_float(base.get("esfuerzo_joven_pct"))
+                ),
+                "esfuerzo_joven_pct_16_29": (
+                    to_float(base.get("esfuerzo_joven_pct_16_29"))
+                    if to_float(base.get("esfuerzo_joven_pct_16_29")) is not None
+                    else to_float(base.get("esfuerzo_joven_pct"))
+                ),
+                "esfuerzo_joven_pct_18_34": to_float(base.get("esfuerzo_joven_pct_18_34")),
+                "esfuerzo_joven_pct_18_24": to_float(base.get("esfuerzo_joven_pct_18_24")),
+                "esfuerzo_joven_pct_25_34": to_float(base.get("esfuerzo_joven_pct_25_34")),
                 "renta_familiar_eur": to_float(row.get("renta_familiar_eur")),
                 "renta_personal_total_eur": to_float(row.get("renta_personal_total_eur")),
                 "renta_personal_disponible_eur": to_float(row.get("renta_personal_disponible_eur")),
                 "poblacion_16_24_estimada": to_int(row.get("poblacion_16_24_estimada")),
+                # Poblacion 18-34 estimada (silver poblacion_joven_municipal, _est).
+                "poblacion_18_34_est": to_int(pob.get("poblacion_18_34_est")),
+                "poblacion_18_24_est": to_int(pob.get("poblacion_18_24_est")),
+                "poblacion_25_34_est": to_int(pob.get("poblacion_25_34_est")),
                 "renta_personal_total_hombres_eur": to_float(row.get("renta_personal_total_hombres_eur")),
                 "renta_personal_total_mujeres_eur": to_float(row.get("renta_personal_total_mujeres_eur")),
             },
@@ -123,21 +212,28 @@ def load_municipios() -> int:
                 "paradas_por_1000_hab": to_float(tr.get("paradas_por_1000_hab")) if tr is not None else None,
                 "operadores": [x.strip() for x in str(tr.get("operadores")).split(";") if x and str(x).strip() and str(x).strip().lower() != "nan"] if tr is not None else [],
             },
+            "fuente": "silver dim_municipios_enriquecido + transporte + alquiler + analisis_variables_base (18-34) + poblacion_joven_municipal (18-34 est)",
+            "anio_fuente": 2024,
             "fecha_carga": datetime.now(timezone.utc),
         }
-        coll.replace_one({"_id": code}, doc, upsert=True)
-        n += 1
-    return n
+        docs.append(doc)
+    if not docs:
+        return 0
+    return replace_collection("municipios", docs)
 
 
 def load_anuncios() -> int:
     df = _read_csv("anuncios_unificados.csv")
+    geo_by_id = _lookup_fotocasa_geo()
     coll = get_collection("anuncios")
     n = 0
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
         equip = to_str(row.get("equipamiento"))
         equip_list = [x.strip() for x in equip.split(",") if x.strip()] if equip else []
+        portal = to_str(row.get("portal"))
+        id_anuncio = to_str(row.get("id_anuncio"))
+        coordenadas = geo_by_id.get(id_anuncio) if portal == "fotocasa" and id_anuncio else None
         doc = {
             "portal": to_str(row.get("portal")),
             "id_anuncio": to_str(row.get("id_anuncio")),
@@ -152,7 +248,7 @@ def load_anuncios() -> int:
                 "municipio": to_str(row.get("municipio")),
                 "barrio": None,
                 "distrito": None,
-                "coordenadas": None,
+                "coordenadas": coordenadas,
             },
             "equipamiento": equip_list,
             "precio_m2_calc": to_float(row.get("precio_m2_calc")),
@@ -162,6 +258,8 @@ def load_anuncios() -> int:
                 "precio_m2_calc": to_float(row.get("precio_m2_calc")),
             },
             "historico_precios": [],
+            "fuente": "silver anuncios_unificados",
+            "anio_fuente": 2026,
             "fecha_carga": datetime.now(timezone.utc),
         }
         coll.update_one(
@@ -175,12 +273,12 @@ def load_anuncios() -> int:
 
 def load_alquiler() -> int:
     df = _read_csv("alquiler_municipal_completo.csv")
-    coll = get_collection("alquiler_municipal")
-    coll.drop()
-    n = 0
+    docs = []
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
-        doc = {
+        if code is None:
+            continue
+        docs.append({
             "_id": code,
             "codigo_ine": code,
             "territorio": to_str(row.get("territorio")),
@@ -197,26 +295,28 @@ def load_alquiler() -> int:
             "cuantia_media_eur_mes_mediana": to_float(row.get("cuantia_media_eur_mes_mediana")),
             "superficie_media_m2_media": to_float(row.get("superficie_media_m2_media")),
             "superficie_media_m2_mediana": to_float(row.get("superficie_media_m2_mediana")),
+            "fuente": "Eustat alquiler municipal + imputacion comarcal/IDW",
+            "anio_fuente": 2024,
             "fecha_carga": datetime.now(timezone.utc),
-        }
-        coll.update_one({"_id": code}, {"$set": doc}, upsert=True)
-        n += 1
-    return n
+        })
+    if not docs:
+        return 0
+    return replace_collection("alquiler_municipal", docs)
 
 
 def load_indicadores() -> int:
     df = _read_csv("analisis_variables_base.csv")
-    coll = get_collection("indicadores")
-    coll.drop()
-    n = 0
+    docs = []
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
-        doc = {"_id": code, "codigo_ine": code}
+        if code is None:
+            continue
+        doc = {"_id": code, "codigo_ine": code, "fuente": "silver analisis_variables_base", "anio_fuente": 2024, "fecha_carga": datetime.now(timezone.utc)}
         for col in df.columns:
             if col == "codigo_ine":
                 continue
             val = row.get(col)
-            if col in {"nombre_canonico", "territorio", "capital_mas_cercana", "tipologia_mercado"}:
+            if col in {"nombre_canonico", "territorio", "capital_mas_cercana", "tipologia_mercado", "flag_ratio_fiscal_18_34"}:
                 doc[col] = to_str(val)
             elif col in {"tiene_alquiler_oficial", "tasa_paro_valida"}:
                 doc[col] = to_bool(val)
@@ -226,9 +326,16 @@ def load_indicadores() -> int:
                     # keep counts as int when clearly integer-valued
                     pass
                 doc[col] = f
-        coll.update_one({"_id": code}, {"$set": doc}, upsert=True)
-        n += 1
-    return n
+        # JOVEN-18-34: alias legacy preservados sin romper (esfuerzo_joven_pct
+        # = legacy 16-29; el canonico nuevo es esfuerzo_joven_pct_18_34).
+        if doc.get("esfuerzo_joven_pct_16_29") is None and doc.get("esfuerzo_joven_pct") is not None:
+            doc["esfuerzo_joven_pct_16_29"] = doc["esfuerzo_joven_pct"]
+        if doc.get("esfuerzo_alquiler_pct") is None and doc.get("esfuerzo_joven_pct") is not None:
+            doc["esfuerzo_alquiler_pct"] = doc["esfuerzo_joven_pct"]
+        docs.append(doc)
+    if not docs:
+        return 0
+    return replace_collection("indicadores", docs)
 
 
 def _load_json(path: str):
@@ -236,86 +343,96 @@ def _load_json(path: str):
         return json.load(f)
 
 
+def _prov_from_loaded(data, default_fuente: str) -> tuple[dict, list]:
+    if isinstance(data, dict):
+        meta = data.get("metadata", {})
+        recs = data.get("datos", [])
+        if not isinstance(recs, list):
+            recs = []
+    else:
+        meta, recs = {}, (data if isinstance(data, list) else [])
+    return _provenance_from_raw_meta(meta, default_fuente), recs
+
+
 def load_ecvi() -> int:
     data = _load_json("ecvi_compraventa_limpio.json")
+    prov, records = _prov_from_loaded(data, "OVV ECVI compraventa")
     coll = get_collection("ecvi_compraventa")
-    coll.drop()
     docs = []
-    for i, row in enumerate(data):
+    for i, row in enumerate(records if records else (data if isinstance(data, list) else [])):
         code = zfill_ine(row.get("codigo_ine"))
         doc = dict(row)
         if code:
             doc["_id"] = f"{code}_{row.get('trimestre', i)}"
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    if not docs:
+        return 0
+    return replace_collection("ecvi_compraventa", docs)
 
 
 def load_udalmap_indicadores() -> int:
     data = _load_json("udalmap_indicadores_adicionales_normalizado.json")
-    records = data.get("datos", [])
-    coll = get_collection("udalmap_indicadores")
-    coll.drop()
+    prov, records = _prov_from_loaded(data, "Eustat Udalmap indicadores")
     docs = []
     for row in records:
         code = zfill_ine(row.get("codigo_ine"))
         doc = dict(row)
         if code:
             doc["_id"] = code
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    if not docs:
+        return 0
+    return replace_collection("udalmap_indicadores", docs)
 
 
 def load_udalmap_empleo() -> int:
     data = _load_json("udalmap_empleo_corregido_normalizado.json")
-    records = data.get("datos", [])
-    coll = get_collection("udalmap_empleo")
-    coll.drop()
+    prov, records = _prov_from_loaded(data, "Eustat Udalmap empleo")
     docs = []
     for row in records:
         code = zfill_ine(row.get("codigo_ine"))
         doc = dict(row)
         if code:
             doc["_id"] = code
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    return replace_collection("udalmap_empleo", docs)
 
 
 def load_osrm() -> int:
     data = _load_json("osrm_tiempos_capitales_normalizado.json")
-    records = data.get("datos", [])
-    coll = get_collection("osrm_tiempos")
-    coll.drop()
+    prov, records = _prov_from_loaded(data, "OSRM tiempos a capitales")
     docs = []
     for row in records:
         code = zfill_ine(row.get("codigo_ine"))
         doc = dict(row)
         if code:
             doc["_id"] = code
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    return replace_collection("osrm_tiempos", docs)
 
 
 def load_emancipacion() -> int:
     data = _load_json("emancipacion_juventud_resumen_normalizado.json")
-    coll = get_collection("emancipacion_juventud")
-    coll.drop()
-    coll.insert_one({"_id": "resumen", **data})
-    return 1
+    if isinstance(data, dict):
+        prov = _provenance_from_raw_meta(data.get("metadata", {}), "Observatorio Juventud emancipacion")
+        payload = {k: v for k, v in data.items() if k != "metadata"}
+    else:
+        prov, payload = _provenance_from_raw_meta({}, "Observatorio Juventud emancipacion"), {"datos": data}
+    doc = {"_id": "resumen", **payload, **prov, "fecha_carga": datetime.now(timezone.utc)}
+    return replace_collection("emancipacion_juventud", [doc])
 
 
 def load_etxebide_solicitudes() -> int:
     data = _load_json("etxebide_solicitudes_normalizado.json")
-    records = data.get("datos", [])
-    coll = get_collection("etxebide_solicitudes")
-    coll.drop()
+    prov, records = _prov_from_loaded(data, "Etxebide solicitudes")
     docs = []
     for i, row in enumerate(records):
         code = zfill_ine(row.get("codigo_ine"))
@@ -323,46 +440,106 @@ def load_etxebide_solicitudes() -> int:
         anio = row.get("anio")
         if code and anio is not None:
             doc["_id"] = f"{code}_{anio}"
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    return replace_collection("etxebide_solicitudes", docs)
+
+
+def _provenance_from_raw_meta(meta: dict, default_fuente: str, default_url: str | None = None) -> dict:
+    fuente = meta.get("fuente") or default_fuente
+    url = meta.get("url") or default_url
+    fecha_ext = meta.get("fecha_extraccion")
+    anio = None
+    if isinstance(fecha_ext, str) and len(fecha_ext) >= 4 and fecha_ext[:4].isdigit():
+        anio = int(fecha_ext[:4])
+    return {"fuente": fuente, "fuente_url": url, "anio_fuente": anio, "fecha_extraccion": fecha_ext}
 
 
 def load_udalmap_extendido() -> int:
     with open(ROOT / "data" / "raw" / "udalmap_extendido.json", encoding="utf-8") as f:
         data = json.load(f)
     records = data.get("datos", [])
-    coll = get_collection("udalmap_extendido")
-    coll.drop()
+    prov = _provenance_from_raw_meta(data.get("metadata", {}), "Eustat Udalmap (API)", "https://api.euskadi.eus/udalmap/indicators")
     docs = []
     for row in records:
         code = zfill_ine(row.get("codigo_ine"))
         doc = dict(row)
         if code:
             doc["_id"] = code
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    return replace_collection("udalmap_extendido", docs)
+
+
+def _codigo_ine_etxebide(row: dict) -> str | None:
+    prov = to_str(row.get("Cod_Prov"))
+    muni = to_str(row.get("CODMUNI"))
+    if prov is None or muni is None:
+        return None
+    digits_prov = "".join(ch for ch in prov if ch.isdigit())
+    digits_muni = "".join(ch for ch in muni if ch.isdigit())
+    if not digits_prov or not digits_muni:
+        return None
+    code = digits_prov.zfill(2) + digits_muni.zfill(3)
+    return zfill_ine(code)
 
 
 def load_etxebide_promociones() -> int:
     with open(ROOT / "data" / "raw" / "etxebide_promociones.json", encoding="utf-8") as f:
         data = json.load(f)
     records = data.get("datos", [])
-    coll = get_collection("etxebide_promociones")
-    coll.drop()
+    prov = _provenance_from_raw_meta(data.get("metadata", {}), "Open Data Euskadi - Promociones Etxebide")
     docs = []
     for i, row in enumerate(records):
         doc = dict(row)
         doc["_id"] = f"{row.get('ID_PROM', i)}_{i}"
+        doc["codigo_ine"] = _codigo_ine_etxebide(row)
+        # NumViviendas viene vacio en el CSV origen (406/406 vacios 2026-11-03): se guarda None y se documenta como sin dato.
+        doc["num_viviendas"] = to_int(row.get("NumViviendas"))
+        doc["estado_obra"] = to_str(row.get("EstadoObra"))
+        doc["tipologia"] = to_str(row.get("Tipologia"))
+        doc["reg_acceso"] = to_str(row.get("Reg Acceso"))
+        doc.update(prov)
+        doc["fecha_carga"] = datetime.now(timezone.utc)
         docs.append(doc)
-    if docs:
-        coll.insert_many(docs)
-    return len(docs)
+    return replace_collection("etxebide_promociones", docs)
+
+
+def load_certificados() -> int:
+    df = _read_csv("cert_energetico_municipal_252.csv")
+    docs = []
+    for _, row in df.iterrows():
+        code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
+        docs.append({
+            "_id": code,
+            "codigo_ine": code,
+            "municipio": to_str(row.get("municipio")),
+            "n_certificados": to_int(row.get("n_certificados")),
+            "cert_moda": to_str(row.get("cert_moda")),
+            "distribucion": {
+                "A": to_int(row.get("cert_A")),
+                "B": to_int(row.get("cert_B")),
+                "C": to_int(row.get("cert_C")),
+                "D": to_int(row.get("cert_D")),
+                "E": to_int(row.get("cert_E")),
+                "F": to_int(row.get("cert_F")),
+                "G": to_int(row.get("cert_G")),
+            },
+            "fuente": "Open Data Euskadi - Registro de Certificados de Eficiencia Energetica",
+            "fuente_url": "https://opendata.euskadi.eus/catalogo/-/registro-de-certificados-de-eficiencia-energetica-de-euskadi/",
+            "anio_fuente": 2026,
+            "fecha_extraccion": "2026-11-03",
+            "fecha_carga": datetime.now(timezone.utc),
+        })
+    return replace_collection("certificados_energeticos", docs)
+
+
 def load_all() -> dict[str, int]:
-    return {
+    result = {
         "municipios": load_municipios(),
         "anuncios": load_anuncios(),
         "alquiler_municipal": load_alquiler(),
@@ -375,7 +552,18 @@ def load_all() -> dict[str, int]:
         "etxebide_solicitudes": load_etxebide_solicitudes(),
         "udalmap_extendido": load_udalmap_extendido(),
         "etxebide_promociones": load_etxebide_promociones(),
+        "certificados_energeticos": load_certificados(),
     }
+    try:
+        from analysis.mongo_indexes import ensure_indexes
+
+        ensure_indexes()
+    except Exception as exc:
+        logger.exception("No se pudieron crear los índices de MongoDB tras la carga")
+        raise RuntimeError(
+            f"No se pudieron crear los índices de MongoDB tras la carga: {exc}"
+        ) from exc
+    return result
 
 
 if __name__ == "__main__":

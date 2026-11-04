@@ -37,33 +37,63 @@ def canonicalize_codigo_ine() -> dict[str, Any]:
     out["municipios_bad_ids"] = len(bad)
 
     an = get_collection("anuncios")
-    r = an.update_many(
-        {"ubicacion.codigo_ine": {"$exists": True}},
-        [{"$set": {"ubicacion.codigo_ine": {"$toString": "$ubicacion.codigo_ine"}}}],
-    )
-    out["anuncios"] = _counter(r)
+    fixed = 0
+    matched = 0
+    for d in an.find({"ubicacion.codigo_ine": {"$exists": True}}, {"ubicacion.codigo_ine": 1}):
+        matched += 1
+        cur = (d.get("ubicacion") or {}).get("codigo_ine")
+        canon = zfill_ine(cur)
+        if canon is not None and canon != cur:
+            an.update_one({"_id": d["_id"]}, {"$set": {"ubicacion.codigo_ine": canon}})
+            fixed += 1
+    out["anuncios"] = {"matched_count": matched, "modified_count": fixed, "deleted_count": 0, "upserted_count": 0}
 
     al = get_collection("alquiler_municipal")
-    r = al.update_many(
-        {"codigo_ine": {"$exists": True}},
-        [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
-    )
-    out["alquiler_municipal"] = _counter(r)
+    fixed = 0
+    matched = 0
+    for d in al.find({}, {"codigo_ine": 1}):
+        matched += 1
+        canon = zfill_ine(d.get("codigo_ine"))
+        if canon is not None and canon != d.get("codigo_ine"):
+            al.update_one({"_id": d["_id"]}, {"$set": {"codigo_ine": canon}})
+            fixed += 1
+    out["alquiler_municipal"] = {"matched_count": matched, "modified_count": fixed, "deleted_count": 0, "upserted_count": 0}
 
     ind = get_collection("indicadores")
-    r = ind.update_many(
-        {"codigo_ine": {"$exists": True}},
-        [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
-    )
-    out["indicadores"] = _counter(r)
+    fixed = 0
+    matched = 0
+    for d in ind.find({}, {"codigo_ine": 1}):
+        matched += 1
+        canon = zfill_ine(d.get("codigo_ine"))
+        if canon is not None and canon != d.get("codigo_ine"):
+            ind.update_one({"_id": d["_id"]}, {"$set": {"codigo_ine": canon}})
+            fixed += 1
+    out["indicadores"] = {"matched_count": matched, "modified_count": fixed, "deleted_count": 0, "upserted_count": 0}
 
-    for coll_name in ("udalmap_indicadores", "udalmap_empleo", "osrm_tiempos"):
+    for coll_name in ("udalmap_indicadores", "udalmap_empleo", "osrm_tiempos", "udalmap_extendido", "etxebide_solicitudes", "ecvi_compraventa", "certificados_energeticos"):
         c = get_collection(coll_name)
-        r = c.update_many(
-            {"codigo_ine": {"$exists": True}},
-            [{"$set": {"codigo_ine": {"$toString": "$codigo_ine"}}}],
-        )
-        out[coll_name] = _counter(r)
+        fixed = 0
+        matched = 0
+        for d in c.find({}, {"codigo_ine": 1}):
+            matched += 1
+            canon = zfill_ine(d.get("codigo_ine"))
+            if canon is not None and canon != d.get("codigo_ine"):
+                c.update_one({"_id": d["_id"]}, {"$set": {"codigo_ine": canon}})
+                fixed += 1
+        out[coll_name] = {"matched_count": matched, "modified_count": fixed, "deleted_count": 0, "upserted_count": 0}
+    # etxebide_promociones: zfill sin $toString para no perder cero de Alava
+    c = get_collection("etxebide_promociones")
+    fixed = 0
+    matched = 0
+    for d in c.find({}, {"codigo_ine": 1}):
+        matched += 1
+        canon = zfill_ine(d.get("codigo_ine"))
+        if canon is None:
+            continue
+        if canon != d.get("codigo_ine"):
+            c.update_one({"_id": d["_id"]}, {"$set": {"codigo_ine": canon}})
+            fixed += 1
+    out["etxebide_promociones"] = {"matched_count": matched, "modified_count": fixed, "deleted_count": 0, "upserted_count": 0}
     return out
 
 
@@ -111,6 +141,19 @@ def mark_nulls() -> dict[str, Any]:
         {"$set": {"demografia.renta_joven_calidad": "ok"}},
     )
     out["municipios_con_renta_joven"] = _counter(r)
+    # nuevas colecciones: marcado explicito sin interpretar como cero.
+    cert = get_collection("certificados_energeticos")
+    r = cert.update_many({"cert_moda": None}, {"$set": {"calidad_cert": "missing"}})
+    out["cert_sin_moda"] = _counter(r)
+    r = cert.update_many({"cert_moda": {"$ne": None}}, {"$set": {"calidad_cert": "ok"}})
+    out["cert_con_moda"] = _counter(r)
+    promo = get_collection("etxebide_promociones")
+    r = promo.update_many({"codigo_ine": None}, {"$set": {"tiene_codigo_ine": False}})
+    out["promo_sin_codigo_ine"] = _counter(r)
+    r = promo.update_many({"codigo_ine": {"$ne": None}}, {"$set": {"tiene_codigo_ine": True}})
+    out["promo_con_codigo_ine"] = _counter(r)
+    r = promo.update_many({"num_viviendas": None}, {"$set": {"calidad_viviendas": "missing"}})
+    out["promo_sin_viviendas"] = _counter(r)
     return out
 
 
@@ -236,13 +279,25 @@ def clean_indicadores() -> dict[str, Any]:
     return out
 
 
+def clean_nuevas() -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    out["canonicalize"] = canonicalize_codigo_ine()
+    out["nulls"] = mark_nulls()
+    return out
+
+
 def clean_all() -> dict[str, Any]:
-    return {
+    base = {
         "anuncios": clean_anuncios(),
         "municipios": clean_municipios(),
         "alquiler_municipal": clean_alquiler(),
         "indicadores": clean_indicadores(),
     }
+    nuevas = clean_nuevas()
+    for name in ["udalmap_indicadores", "udalmap_empleo", "osrm_tiempos", "udalmap_extendido", "etxebide_solicitudes", "ecvi_compraventa", "certificados_energeticos", "etxebide_promociones"]:
+        base[name] = {"canonicalize": nuevas["canonicalize"].get(name), "nulls": {k: v for k, v in nuevas["nulls"].items() if "promo" in k or "cert" in k} if name in ("etxebide_promociones", "certificados_energeticos") else {}}
+    base["emancipacion_juventud"] = {"count": get_collection("emancipacion_juventud").count_documents({})}
+    return base
 
 
 # ---------------------------------------------------------------------------

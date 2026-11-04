@@ -65,12 +65,23 @@ def main():
     pob_total = pob.groupby("codigo_ine")["Población de la C.A. de Euskadi"].sum().reset_index()
     pob_total = pob_total.rename(columns={"Población de la C.A. de Euskadi": "poblacion_total"})
     df = df.merge(pob_total, on="codigo_ine", how="left")
+    # Legacy 15-29: se conserva como nulo (sin fuente con bandas finas).
     df["poblacion_joven_15_29"] = None
+
+    # Canonico 18-34: estimacion etiquetada desde poblacion_joven_municipal.csv
+    # (metodo 0.10*(0-19)+0.333*(20-64), periodo 2025/01/01).
+    pj_path = os.path.join(OUT, "poblacion_joven_municipal.csv")
+    if os.path.exists(pj_path):
+        pj = pd.read_csv(pj_path, dtype={"codigo_ine": str}, encoding="utf-8-sig")
+        pj = pj[["codigo_ine", "poblacion_18_34_est"]]
+        df = df.merge(pj, on="codigo_ine", how="left")
+    else:
+        df["poblacion_18_34_est"] = None
 
     cols = ["codigo_ine", "municipio", "anio_renta",
             "renta_personal_total_ambos_eur", "renta_personal_total_hombres_eur",
             "renta_personal_total_mujeres_eur", "renta_disponible_ambos_eur",
-            "poblacion_total", "poblacion_joven_15_29"]
+            "poblacion_total", "poblacion_joven_15_29", "poblacion_18_34_est"]
     df = df[cols]
     df.to_json(os.path.join(OUT, "eustat_demografia_renta_252.json"), orient="records", force_ascii=False, indent=2)
     df.to_csv(os.path.join(OUT, "eustat_demografia_renta_252.csv"), index=False, encoding="utf-8-sig")

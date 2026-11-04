@@ -19,20 +19,17 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw"
 FROZEN_MARKER = RAW_DIR / ".FROZEN"
 
-_DEFAULT_AUDIT_LOG = ROOT / "data" / "procesado" / "raw_guard_audit.log"
+_DEFAULT_AUDIT_LOG = ROOT / "logs" / "raw_guard_audit.log"
 AUDIT_LOG = _DEFAULT_AUDIT_LOG
 AUDIT_LOG_PATH = _DEFAULT_AUDIT_LOG
 AUDIT_LOG_FILE = _DEFAULT_AUDIT_LOG
 LOG_PATH = _DEFAULT_AUDIT_LOG
 LOG_FILE = _DEFAULT_AUDIT_LOG
 AUDIT_FILE = _DEFAULT_AUDIT_LOG
-# Rutas candidatas para el log de auditoría persistente (se escribe en todas).
+# Un unico log de auditoria persistente: logs/. La variable de entorno
+# RAW_GUARD_AUDIT_LOG sigue permitiendo un destino adicional explicito.
 AUDIT_LOG_PATHS = [
     _DEFAULT_AUDIT_LOG,
-    ROOT / "transform" / "raw_guard_audit.log",
-    ROOT / "raw_guard_audit.log",
-    ROOT / "logs" / "raw_guard_audit.log",
-    ROOT / "scratchpad" / "raw_guard_audit.log",
 ]
 
 

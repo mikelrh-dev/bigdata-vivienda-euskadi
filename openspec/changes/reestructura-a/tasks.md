@@ -1,0 +1,4 @@
+- [x] Inventario raíz/docs/duplicados e imports afectados
+- [x] Mover scripts sueltos a scripts/ + brief/notebooks + fixes de ruta
+- [x] Archivar docs no vigentes + restos + dedup logs
+- [x] pytest -q verde + verify-report

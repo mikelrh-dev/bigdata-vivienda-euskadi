@@ -96,3 +96,21 @@ desde un venv dedicado.
 - WHEN se ejecuta con el Python del proyecto
 - THEN descarga y guarda los datos
 - AND puede repetirse sin romperse
+
+### Requirement: GATE-JOIN-01 — Nueva fuente con join previo
+
+El sistema MUST NOT crear un extractor nuevo sin antes ejecutar un join real contra dim_municipios 252. La validación SHALL contar municipios alcanzados, filas y códigos INE de 5 dígitos. Solo una cobertura documentada alta autoriza el extractor.
+
+#### Scenario: Fuente con cobertura insuficiente no entra
+
+- GIVEN una fuente candidata sin join
+- WHEN se evalúa su alta
+- THEN el sistema la marca baja
+- AND no se crea extractor ni carga en Mongo
+
+#### Scenario: Fuente con cobertura alta entra con provenance
+
+- GIVEN una fuente con municipios alcanzados documentados
+- WHEN se aprueba el extractor
+- THEN el raw guarda fuente, url, fecha, n_registros y sha256
+- AND el manifest se regenera
