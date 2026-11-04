@@ -18,8 +18,11 @@ universo:
   municipios_total: 252
 
 formulas:
-  esfuerzo_joven_pct: "alquiler_anual / renta_joven_estimada * 100"
-  renta_joven_estimada: "renta_municipal_18plus * (renta_media_18_34_CAE / renta_media_18plus_CAE)"
+  esfuerzo_joven_pct_18_34: "alquiler_anual / renta_joven_estimada_18_34 * 100 (canonico 18-34)"
+  esfuerzo_joven_pct_16_29_legacy: "alquiler_anual / renta_joven_estimada_16_29 * 100 (alias esfuerzo_joven_pct, 16-29 legacy)"
+  renta_joven_estimada_18_34: "renta_municipal_18plus * (2*1599+5*8156+5*20109+5*25609)/17/28170 (ponderada por anchura, Eustat CAE 2024)"
+  renta_joven_estimada_18_24: "renta_municipal_18plus * (2*1599+5*8156)/7/28170 (escalar CAE)"
+  renta_joven_estimada_25_34: "renta_municipal_18plus * (5*20109+5*25609)/10/28170 (escalar CAE)"
   paro_juvenil_ratio: "paro_joven_lanbide / poblacion_joven_15_29 * 100"
 
 umbrales:

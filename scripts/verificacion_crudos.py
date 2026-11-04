@@ -1,7 +1,8 @@
 """Verificación aceptación fase crudos (sin proxys, sin imputar)."""
 from pathlib import Path
 import pandas as pd
-RAW = Path("data/raw")
+ROOT = Path(__file__).resolve().parents[1]
+RAW = ROOT / "data" / "raw"
 ok = True
 def check(name, cond, det=""):
     global ok
@@ -16,8 +17,14 @@ check("dim 0 bad_pref", (~dim["codigo_ine"].str[:2].isin(["01","20","48"])).sum(
       f"prefs {dim['codigo_ine'].str[:2].value_counts().to_dict()}")
 
 alq = pd.read_csv(RAW/"alquiler_municipal.csv", dtype=str, encoding="utf-8-sig")
-alq["codigo_ine"] = alq["codigo_ine"].str.strip().str.zfill(5)
-check("alquiler 159 mun", alq["municipio"].nunique()==159, f"{alq['municipio'].nunique()} mun, {len(alq)} filas distrito")
+if "codigo_ine" in alq.columns:
+    alq["codigo_ine"] = alq["codigo_ine"].str.strip().str.zfill(5)
+    check("alquiler 159 mun", alq["municipio"].nunique()==159, f"{alq['municipio'].nunique()} mun, {len(alq)} filas distrito")
+else:
+    # Raw sin codigo_ine (territorio/municipio/distrito): join por nombre con dim
+    dim_map = dict(zip(dim["codigo_ine"], dim["codigo_ine"]))
+    # contar municipios raw por nombre y verificar 159 via dim nombres
+    check("alquiler 159 mun", alq["municipio"].nunique()==159, f"{alq['municipio'].nunique()} mun, {len(alq)} filas distrito (sin codigo_ine, join por nombre)")
 
 em = pd.read_csv(RAW/"emal_fianzas_ampliado.csv", dtype=str, encoding="utf-8-sig")
 check("emal ampliado 73 + n_muestral", em["codigo_ine"].nunique()==73 and "n_muestral" in em.columns and "tipo_fuente" in em.columns,

@@ -1,0 +1,8 @@
+- [x] 1.1 Fix to_float nan + auditoria NaN
+- [x] 1.2 canonicalize zfill real
+- [x] 1.3 loads sin ventana vacia
+- [x] 2.1 clean_all 13 + resolve/convert extendido
+- [x] 2.2 pipelines $sort/$limit en Mongo
+- [x] 2.3 provenance en base
+- [x] 3.1 tests 13/13 + docs + archivar
+- [x] 3.2 verify-report + pytest verde

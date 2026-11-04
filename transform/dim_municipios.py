@@ -174,15 +174,37 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001
             log.warning("No se pudo contar anuncios en %s: %s", ruta.name, exc)
 
-    # Alquiler oficial disponible
+    # Alquiler oficial disponible: raw sin codigo_ine (solo territorio/municipio/distrito),
+    # asi que se lee el silver alquiler_completo (codigo_ine + oficial/municipal) y,
+    # en su defecto, se resuelve el raw por nombre via nombre_canonico.
     tiene_oficial: set[str] = set()
+    ruta_alq_proc = PROC_DIR / "alquiler_municipal_completo.csv"
+    if ruta_alq_proc.exists():
+        try:
+            dfa = pd.read_csv(ruta_alq_proc, dtype=str, encoding="utf-8-sig")
+            if "codigo_ine" in dfa.columns:
+                met = dfa["metodo_imputacion"] if "metodo_imputacion" in dfa.columns else ""
+                niv = dfa["nivel_geografico"] if "nivel_geografico" in dfa.columns else ""
+                of = dfa[(met == "oficial") | (niv == "municipal")]
+                if of.empty:
+                    of = dfa
+                for c in of["codigo_ine"].dropna().astype(str):
+                    tiene_oficial.add(c.strip().zfill(5))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("No se pudo leer alquiler_completo para oficial: %s", exc)
     ruta_alq = RAW_DIR / "alquiler_municipal.csv"
-    if ruta_alq.exists():
+    if not tiene_oficial and ruta_alq.exists():
         try:
             dfa = pd.read_csv(ruta_alq, dtype=str, encoding="utf-8-sig")
             if "codigo_ine" in dfa.columns:
                 for c in dfa["codigo_ine"].dropna().astype(str):
                     tiene_oficial.add(c.strip().zfill(5))
+            elif "municipio" in dfa.columns:
+                nombre_a_codigo = {_norm(r["nombre_canonico"]): str(r["codigo_ine"]).strip().zfill(5) for r in registros}
+                for m in dfa["municipio"].dropna().astype(str):
+                    n = EQUIVALENCIAS.get(_norm(m), _norm(m))
+                    if n in nombre_a_codigo:
+                        tiene_oficial.add(nombre_a_codigo[n])
         except Exception as exc:  # noqa: BLE001
             log.warning("No se pudo leer alquiler_municipal: %s", exc)
 

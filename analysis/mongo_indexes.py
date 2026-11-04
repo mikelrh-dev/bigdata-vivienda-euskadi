@@ -78,6 +78,16 @@ def ensure_indexes() -> dict[str, Any]:
         [("codigo_ine", 1), ("distrito", 1), ("nivel_geografico", 1)],
         name="idx_alquiler_ine_distrito_nivel",
     ))
+    out["promociones_codigo_estado_tipo"] = str(get_collection("etxebide_promociones").create_index(
+        [("codigo_ine", 1), ("estado_obra", 1), ("tipologia", 1)],
+        name="idx_promo_ine_estado_tipo",
+    ))
+    out["certificados_moda"] = str(get_collection("certificados_energeticos").create_index(
+        [("cert_moda", 1)], name="idx_cert_moda",
+    ))
+    out["udalmap_extendido_id"] = str(get_collection("udalmap_extendido").create_index(
+        [("_id", 1)], name="idx_udx_id",
+    ))
     return out
 
 
@@ -117,11 +127,27 @@ def explain_before_after(codigo_ine: str = "48001", modalidad: str = "larga_esta
     return {"filtro": filtro, "before": before, "after": after}
 
 
+def explain_promo_before_after(codigo_ine: str = "48020") -> dict[str, Any]:
+    """Explain para etxebide_promociones por municipio."""
+    coll = get_collection("etxebide_promociones")
+    code = zfill_ine(codigo_ine)
+    filtro = {"codigo_ine": code}
+    try:
+        coll.drop_index("idx_promo_ine_estado_tipo")
+    except Exception:
+        pass
+    before = _explain(coll, filtro)
+    coll.create_index([("codigo_ine", 1), ("estado_obra", 1), ("tipologia", 1)], name="idx_promo_ine_estado_tipo")
+    after = _explain(coll, filtro)
+    return {"filtro": filtro, "before": before, "after": after}
+
+
 def index_report() -> dict[str, Any]:
     an = get_collection("anuncios")
     return {
         "indexes": [i["name"] for i in an.list_indexes()],
         "explain": explain_before_after(),
+        "explain_promo": explain_promo_before_after(),
     }
 
 

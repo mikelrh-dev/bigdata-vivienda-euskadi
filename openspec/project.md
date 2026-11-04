@@ -3,7 +3,7 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Raw inmutable congelado (manifest 314 = 316 ficheros recursivos − .FROZEN/.gitkeep; 195 en raíz + 121 en gtfs/html_fotocasa/shp_euskadi/legacy_obsoleto_no_usar), capa silver regenerada (manifest 115), 52 funciones de test en verde, features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka, MongoDB) y análisis pendientes.
+**Estado:** Raw inmutable congelado (manifest 353 = 355 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 182), 109 tests colectados (107 passed, 2 skipped), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka) pendiente; MongoDB y análisis hechos.
 **Fecha:** 2026-10-29
 
 ---
@@ -27,8 +27,8 @@ iniciado salvo la Fase 0).
 | Extracción | `requests`, `beautifulsoup4`, `lxml` | ✅ |
 | Almacenamiento | HDFS (Docker Desktop) | ⬜ |
 | Streaming | Apache Kafka (VM Ubuntu Server, KRaft) | ⬜ |
-| Base de datos | MongoDB (Docker Desktop) + PyMongo | ⬜ |
-| Análisis | Aggregation Pipeline de MongoDB | ⬜ |
+| Base de datos | MongoDB (Docker Desktop) + PyMongo | ✅ |
+| Análisis | Aggregation Pipeline de MongoDB | ✅ |
 | Visualización | matplotlib, seaborn | ⬜ |
 | Contrato | OpenSpec (`openspec/`) | ✅ |
 
@@ -76,7 +76,7 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | 0. Entorno y VM | ⚠️ venv y Docker Desktop OK; VM pendiente |
 | 1. Extracción | ✅ scripts 01–09, 314 archivos en `data/raw/` |
 | 2. Kafka | ⬜ |
-| 3. MongoDB (modelado, PyMongo, consultas) | ⬜ |
+| 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
 | 4. Limpieza y transformación | ✅ silver regenerado (96 archivos, byte-idénticos), transforms v2 |
 | 5. Aggregation Pipeline | ⚠️ parcial: comparativa compra/alquiler por AF (15), tensión social |
 | 6. Visualización e informe | ⚠️ dashboards HTML generados; informe pendiente |

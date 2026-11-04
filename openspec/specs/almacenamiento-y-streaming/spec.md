@@ -2,8 +2,9 @@
 
 **Capacidad:** `almacenamiento-y-streaming`
 **Estado:** Pendiente
-**Criterios cubiertos:** BDA-RA1 Almacenamiento HDFS (10), Kafka (10),
-Integración (10)
+**Criterios cubiertos:** rúbrica v2 BDA-RA1 (HDFS, Kafka, integración: flujo
+completo hasta MongoDB) con mapeo a SBD-RA1 Integración de fuentes (2 o más
+fuentes relacionadas por un campo común)
 **Contrato:** `../contrato-reto/spec.md`
 
 ---
@@ -12,7 +13,9 @@ Integración (10)
 
 Guardar los datos originales en HDFS organizados, simular la llegada de
 anuncios nuevos con un productor y un consumidor Kafka en Python, y demostrar
-el flujo completo hasta MongoDB.
+el flujo completo hasta MongoDB con al menos 2 fuentes diferentes
+relacionadas por un campo común (mapeo a rúbrica v2 SBD-RA1 Integración de
+fuentes).
 
 ---
 
@@ -66,7 +69,12 @@ funcionen y procesen mensajes reales.
 ### Requirement: INTEGRACION-01 — Flujo completo hasta MongoDB
 
 El sistema SHALL demostrar el recorrido completo desde el origen hasta
-MongoDB, con los componentes conectados entre sí.
+MongoDB, con los componentes conectados entre sí (flujo completo BDA-RA1).
+Además, para cumplir el criterio RA1 Integración de fuentes v2, SHALL cargar
+datos de 2 o más fuentes diferentes y SHALL relacionarlas mediante al menos 1
+campo común (nivel 10); para el nivel 7, SHALL cargar datos de 2 fuentes
+diferentes. El campo común SHALL ser el mismo en ambas fuentes y SHALL
+permitir relacionar los registros en MongoDB.
 
 #### Scenario: El flujo extremo a extremo
 
@@ -75,6 +83,19 @@ MongoDB, con los componentes conectados entre sí.
 - THEN un dato sale de la fuente
 - AND pasa por HDFS y por Kafka
 - AND termina consultable en MongoDB
+
+#### Scenario: Dos fuentes relacionadas por campo común — nivel 10
+
+- GIVEN 2 o más fuentes diferentes cargadas
+- WHEN se relacionan los datos en MongoDB
+- THEN al menos 1 campo común une los registros de ambas fuentes
+- AND el conjunto integrado es consultable en MongoDB
+
+#### Scenario: Dos fuentes diferentes — nivel 7
+
+- GIVEN 2 fuentes diferentes
+- WHEN se cargan los datos en MongoDB
+- THEN ambas fuentes quedan cargadas y distinguibles por origen
 
 #### Scenario: La caída de un componente se aísla
 

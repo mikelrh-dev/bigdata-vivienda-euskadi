@@ -1,8 +1,12 @@
 """Genera vistas analíticas segregadas a partir del dataset unificado.
 
 No modifica data/raw/. Produce:
-- data/procesado/anuncios_vivienda_residencial.csv  (modalidad != temporal)
+- data/procesado/anuncios_vivienda_residencial.csv  (modalidad != temporal, solo larga estancia)
+- data/procesado/anuncios_vivienda_temporal.csv  (modalidad == temporal, vista separada)
 - data/procesado/anuncios_habitaciones_unificados.csv (modalidad habitacion + raw habitaciones)
+
+Nota de mercado: temporal y larga estancia NO deben mezclarse en la misma media
+(27.65 vs 16.08 EUR/m2 en fotocasa). Cada vista se analiza por separado.
 """
 from __future__ import annotations
 
@@ -133,6 +137,42 @@ def generar_residencial() -> int:
     return len(filas)
 
 
+def generar_temporal() -> int:
+    src = PROC / "anuncios_unificados.csv"
+    valid = _valid_codes()
+    provincias = _dim_provincia()
+    filas = []
+    with src.open(encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            if (r.get("modalidad") or "").strip() != "temporal":
+                continue
+            code = _norm_code(r.get("codigo_ine"))
+            if code is None or (valid and code not in valid):
+                continue
+            filas.append({
+                "portal": r.get("portal"),
+                "modalidad": r.get("modalidad"),
+                "codigo_ine": code,
+                "municipio": r.get("municipio"),
+                "provincia": provincias.get(code, r.get("provincia")),
+                "precio_eur": r.get("precio_eur"),
+                "superficie_m2": r.get("superficie_m2"),
+                "habitaciones": r.get("habitaciones"),
+                "banos": r.get("banos"),
+                "alquiler_temporal": True,
+                "es_outlier_superficie": _to_bool(r.get("es_outlier_superficie")),
+                "url_detalle": r.get("url_detalle"),
+                "titulo": r.get("titulo"),
+                "subtitulo": r.get("subtitulo"),
+            })
+    out = PROC / "anuncios_vivienda_temporal.csv"
+    with out.open("w", newline="", encoding="utf-8-sig") as fh:
+        w = csv.DictWriter(fh, fieldnames=COLS_RESIDENCIAL, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(filas)
+    return len(filas)
+
+
 def _normalizar_habitacion_fotocasa(reg: dict) -> dict:
     return {
         "portal": "fotocasa",
@@ -203,8 +243,9 @@ def generar_habitaciones() -> int:
 
 def main() -> int:
     n_res = generar_residencial()
+    n_temp = generar_temporal()
     n_hab = generar_habitaciones()
-    print(f"Residencial: {n_res} | Habitaciones: {n_hab}")
+    print(f"Residencial: {n_res} | Temporal: {n_temp} | Habitaciones: {n_hab}")
     return 0
 
 

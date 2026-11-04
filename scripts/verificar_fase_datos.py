@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROC = ROOT / "data" / "procesado"
 
@@ -132,7 +132,7 @@ def main() -> int:
           and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
           f"{len(cob)} mun")
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(encoding="utf-8"))
-    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 314,
+    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 353,
           f"{man['n_ficheros']} ficheros")
     mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").read_text(encoding="utf-8"))
     import re as _re

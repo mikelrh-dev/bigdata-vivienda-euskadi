@@ -213,6 +213,7 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "group": "analisis",
         "in": ["proc:anuncios_unificados.csv"],
         "out": ["proc:anuncios_vivienda_residencial.csv",
+                "proc:anuncios_vivienda_temporal.csv",
                 "proc:anuncios_habitaciones_unificados.csv"], "out_glob": []},
     # resultados
     "generar_dashboard_visual.py": {

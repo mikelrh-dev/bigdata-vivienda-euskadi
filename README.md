@@ -26,16 +26,20 @@ flowchart LR
     agg["Aggregation Pipeline<br/>indicadores"]
     viz["Gráficos + informe<br/>conclusiones"]
 
-    src --> hdfs --> kafka --> mongo --> clean --> agg --> viz
+    src --> mongo --> clean --> agg --> viz
+    src -.-> hdfs
+    src -.-> kafka
 
     classDef done fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
     classDef partial fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
     classDef todo fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
     class src done
-    class hdfs,kafka,mongo,clean,agg,viz todo
+    class hdfs,kafka todo
+    class mongo,clean,agg done
+    class viz partial
 ```
 
-> 🟢 Extracción y Silver completados. 🟡 Infraestructura y análisis pendientes.
+> 🟢 Extracción, Silver y MongoDB completados. 🟡 HDFS y Kafka pendientes.
 
 ### Modelo de datos (relaciones por `codigo_ine`)
 
@@ -92,15 +96,15 @@ erDiagram
 | 2 | Descargas directas Open Data Euskadi (EMAL, Etxebide, GTFS) | ✅ Hecha |
 | 3 | Transformaciones (entity resolution, dim_municipios, distancias, filtrado, enriquecimiento, geojson, metadata) | ✅ Hecha (parcial) |
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
-| 4 | Docker Compose HDFS + MongoDB | ⬜ Pendiente |
+| 4 | Docker Compose HDFS + MongoDB | 🟡 Parcial: Mongo hecho, HDFS pendiente |
 | 5 | Subida HDFS + recuperación | ⬜ Pendiente |
-| 6 | Modelado + operaciones PyMongo | ⬜ Pendiente |
-| 7 | Aggregation Pipeline | ⬜ Pendiente |
+| 6 | Modelado + operaciones PyMongo | ✅ Hecha (13 colecciones, PyMongo) |
+| 7 | Aggregation Pipeline | ✅ Hecha (8 pipelines) |
 | 8 | Kafka productor/consumidor | ⬜ Pendiente |
-| 9 | Gráficos desde PyMongo | ⬜ Pendiente |
-| 10 | Informe, arquitectura y demo | ⬜ Pendiente |
+| 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
+| 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-Tests del contrato: `84 passed` (ver `pytest tests/ -q`; WP-19 incluido).
+Tests del contrato: `107 passed, 2 skipped` (109 collected, ver `pytest tests/ -q`; WP-19 incluido).
 
 ## 📁 Estructura
 
@@ -111,12 +115,12 @@ bigdata-vivienda-euskadi/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
 ├── extract/           Extracción API, scraping y descargas directas
 ├── transform/         Limpieza y enriquecimiento (33 scripts)
-├── storage/           HDFS, Kafka, MongoDB (pendiente)
-├── analysis/          Aggregation Pipeline (pendiente)
-├── visualization/     Gráficos (pendiente)
+├── storage/           PyMongo (Mongo hecho; HDFS/Kafka pendiente)
+├── analysis/          Aggregation Pipeline (hecho, 8 pipelines)
+├── visualization/     Gráficos (hecho, CSV desde Mongo)
 ├── notebooks/         Informe de resultados (pendiente)
-├── data/raw/          Datos generados (ignorados por git, 316 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 118 archivos)
+├── data/raw/          Datos generados (ignorados por git, 355 archivos)
+├── data/procesado/    Datos normalizados (ignorados por git, 185 archivos, manifest 182)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 ├── docs/              Documentación (índice en docs/README.md)
 └── plan/              Planificación y decisiones
@@ -127,21 +131,21 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 316 (314 con hash en `docs/raw_manifest_sha256.txt`) |
-| Archivos raw por tipo | CSV 126, JSON 59, HTML 101, ZIP 14, XLSX 6, geodata 7, legacy 4 |
-| Archivos silver | 118 |
+| Archivos raw (bronce) | 355 (353 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos raw por tipo | CSV 128, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
+| Archivos silver | 185 (manifest 182) |
 | Anuncios unificados | 759 (491 larga estancia + 268 temporal) en 83 municipios |
 | Anuncios residenciales | 491 en 75 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
 | Municipios sin anuncios residenciales | 169 |
-| Municipios robustos (n≥30) | 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) |
+| Municipios robustos (n≥30) | 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 84 passed |
+| Tests | 107 passed, 2 skipped (109 collected) |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
 - **O1 — ¿Puede un joven independizarse?** Esfuerzo joven mediano 43,5%; 100% de los 159 municipios con dato supera el 30%. Emancipación municipal no defendible (proxy renta). Puntuación 7/10.
-- **O2 — ¿Qué municipios son viables?** Solo 4 robustos (n≥30); resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 4. 8/10.
+- **O2 — ¿Qué municipios son viables?** Solo 4 robustos (n≥30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39; resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 4. 8/10.
 - **O3 — ¿Trabajo + vivienda barata?** r(paro juvenil, alquiler)=+0,385 (no hay trade-off simple); r(densidad, alquiler)=+0,456; r(distancia mín. a capital, alquiler)=-0,603. 8/10.
 - **O4 — ¿Limitaciones?** Proxy renta (falacia ecológica), 93 sin alquiler directo, solo 4 robustos, emancipación solo CAE, mezcla de años, ECVI solo territorial. 9/10.
 - **Media global (42 preguntas):** 8,2/10.
@@ -220,8 +224,9 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (101 passed)
-- MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (252 municipios, 759 anuncios, 252 alquiler, 252 indicadores); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q`
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (107 passed, 2 skipped)
+- MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (13 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
+- CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
@@ -229,8 +234,9 @@ completos.
 
 ## ⚠️ Cosas que faltan
 
-- **Infraestructura (HDFS + MongoDB + Kafka):** pendiente. Docker Desktop arrancado, `docker-compose.yml` por escribir. Kafka en VM Ubuntu Server.
-- **Análisis (Aggregation Pipeline + indicadores + gráficos + informe):** pendiente. Depende de MongoDB levantado.
+- **Infraestructura HDFS:** pendiente. Docker Desktop arrancado, `docker-compose.yml` por escribir.
+- **Infraestructura Kafka:** pendiente. Kafka en VM Ubuntu Server.
+- **Informe y demo:** pendiente. Aggregation Pipeline, indicadores y CSV desde Mongo hechos (`analysis/run_analisis_mongo.py`); falta informe/demo final.
 - **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal para los 93 faltantes.
 - **Paro: `tasa_paro_aprox_pct` invalidado** → usar `tasa_paro_lanbide_pct` del Udalmap/Lanbide.
@@ -259,5 +265,5 @@ Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` 
 - VPO 83.73% ceros: sin stock real.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura pendiente: HDFS, MongoDB, Kafka no implementados.
+- Infraestructura pendiente: HDFS y Kafka no implementados. MongoDB implementado (13 colecciones, 8 pipelines).
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.
