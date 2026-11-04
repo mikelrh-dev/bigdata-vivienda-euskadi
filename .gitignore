@@ -68,7 +68,7 @@ api.txt
 # Vault de aprendizaje (fuera del repo, pero por si se copia dentro)
 vaultVivienda/
 
-# Hyperframes demos (solo se suben los GIF procesados para el README)
+# Hyperframes demos (solo se suben los GIF/WebP procesados para el README)
 demo-*/.hyperframes/
 demo-*/renders/
 demo-*/out.mp4
@@ -81,3 +81,5 @@ demo-*/snap.err
 demo-*/snap.json
 !demo-kpi/kpi.gif
 !demo-mapa/*.gif
+!demo-kpi/kpi.webp
+!demo-mapa/*.webp

@@ -163,14 +163,14 @@ bigdata-vivienda-euskadi/
 #### Demo KPI (8,5 s)
 
 <p align="center">
-  <img src="demo-kpi/kpi.gif" width="900" alt="Demo KPI: contador animado de esfuerzo joven en Euskadi" style="border-radius:8px; border:1px solid #30363d;"/>
+  <img src="demo-kpi/kpi.webp" width="900" alt="Demo KPI: contador animado de esfuerzo joven en Euskadi" style="border-radius:8px; border:1px solid #30363d;"/>
 </p>
 <p align="center"><em>Demo KPI (8,5 s) — esfuerzo joven y ranking municipal (Bilbao 173 · Donostia 113 · Getxo 40 · Vitoria 39)</em></p>
 
 #### Demo mapa Euskadi (8,5 s)
 
 <p align="center">
-  <img src="demo-mapa/mapa.gif" width="900" alt="Demo mapa Euskadi: choropleth de esfuerzo joven por municipio y top robustos por anuncios" style="border-radius:8px; border:1px solid #30363d;"/>
+  <img src="demo-mapa/mapa.webp" width="900" alt="Demo mapa Euskadi: choropleth de esfuerzo joven por municipio y top robustos por anuncios" style="border-radius:8px; border:1px solid #30363d;"/>
 </p>
 <p align="center"><em>Demo mapa Euskadi (8,5 s) — pipeline HDFS→Kafka→Mongo + choropleth de 252 municipios y top robustos (Bilbao 173 · Donostia 113 · Getxo 40 · Vitoria 39)</em></p>
 
