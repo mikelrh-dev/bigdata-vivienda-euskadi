@@ -16,7 +16,7 @@
 - Tests: 130 passed (`pytest tests -q`).
 - Municipios robustos (n≥30): 4 canónicos (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
-- Tensión social (Etxebide): 73 municipios alta / 102 media / 77 baja.
+- Tensión social (Etxebide): 76 municipios alta / 103 media / 73 baja.
 
 ## Fórmula canónica de esfuerzo
 ```

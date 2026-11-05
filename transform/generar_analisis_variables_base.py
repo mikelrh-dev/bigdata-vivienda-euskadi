@@ -118,7 +118,9 @@ base = base.merge(popm, on="codigo_ine", how="left")
 base = base.merge(paro_j, on="codigo_ine", how="left")
 alq1 = alq.drop_duplicates("codigo_ine", keep="first")
 base = base.merge(alq1[["codigo_ine", "renta_media_eur_m2_media",
-                        "cuantia_media_eur_mes_media", "superficie_media_m2_media"]],
+                        "cuantia_media_eur_mes_media",
+                        "cuantia_media_eur_mes_mediana",
+                        "superficie_media_m2_media"]],
                   on="codigo_ine", how="left", suffixes=("", "_alq"))
 
 # numeric
@@ -129,7 +131,8 @@ num_cols = ["renta_eustat", "renta_hogar", "renta_atlas", "renta_joven_estimada_
             "renta_personal_disponible_eur", "superficie_media_m2", "antiguedad_media_anyos",
             "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km",
             "dist_centroide_comarca_km", "renta_media_eur_m2_media",
-            "cuantia_media_eur_mes_media", "superficie_media_m2_media",
+            "cuantia_media_eur_mes_media", "cuantia_media_eur_mes_mediana",
+            "superficie_media_m2_media",
             "poblacion_16_24_estimada", "paro_joven_menores_25"]
 for c in num_cols:
     if c in base.columns:
@@ -138,7 +141,12 @@ for c in num_cols:
 # alquiler anual y esfuerzo (WP-06: todo en % de la renta anual; el canonico
 # 18-34 es esfuerzo_joven_pct_18_34, de base municipal. El legacy 16-29
 # esfuerzo_joven_pct se conserva. El salario OVJ es referencia, no ranking.)
-base["alquiler_anual"] = base["cuantia_media_eur_mes_media"] * 12
+# D2 (2026-11-05): el numerador canonico es la cuantia MEDIANA, la misma que
+# usa pipeline_indicadores_municipio desde alquiler_municipal. La media se
+# conserva como columna de contraste, no como base del esfuerzo.
+base["alquiler_anual"] = base["cuantia_media_eur_mes_mediana"].fillna(
+    base["cuantia_media_eur_mes_media"]
+) * 12
 base["esfuerzo_hogar_pct"] = (base["alquiler_anual"] / base["renta_hogar"] * 100).round(1)
 base["esfuerzo_eustat_pct"] = (base["alquiler_anual"] / base["renta_eustat"] * 100).round(1)
 base["esfuerzo_joven_pct"] = (base["alquiler_anual"] / base["renta_joven_estimada_16_29"] * 100).round(1)
@@ -184,6 +192,7 @@ cols = ["codigo_ine", "nombre_canonico", "territorio", "tipologia_mercado", "n_a
         "renta_personal_disponible_eur", "superficie_media_m2", "antiguedad_media_anyos",
         "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km", "capital_mas_cercana",
         "dist_centroide_comarca_km", "renta_media_eur_m2_media", "cuantia_media_eur_mes_media",
+        "cuantia_media_eur_mes_mediana",
         "superficie_media_m2_media", "alquiler_anual", "esfuerzo_hogar_pct",
         "esfuerzo_eustat_pct", "esfuerzo_joven_pct", "esfuerzo_joven_pct_16_29",
         "esfuerzo_joven_pct_18_34", "esfuerzo_joven_pct_18_24", "esfuerzo_joven_pct_25_34",

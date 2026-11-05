@@ -42,4 +42,4 @@ El esfuerzo 18-34 SHALL calcularse con `cuantia_media_eur_mes_mediana` en silver
 #### Scenario: Coincidencia entre artefactos
 - GIVEN un municipio con promociones VPO
 - WHEN se comparan `mongo_vpo_por_municipio.csv` y `mongo_esfuerzo_por_municipio.csv`
-- THEN `esfuerzo_joven_pct_18_34` coincide en ambos
+- THEN `esfuerzo_joven_pct_18_34` coincide en ambos con tolerancia de redondeo (≤0,05 pp)
