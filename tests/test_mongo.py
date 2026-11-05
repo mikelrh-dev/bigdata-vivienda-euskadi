@@ -246,9 +246,34 @@ def test_aggregation_pipeline():
 
 
 def test_aggregation_stages():
-    # inspect pipeline definition by re-running? Check function returns and length enough
+    # Original de 5 filas + refuerzo de etapas: los pipelines definitivos
+    # (alquiler y vpo) contienen $group, $lookup y $unwind de verdad.
     docs = ma.pipeline_indicadores_municipio(limit=5)
     assert len(docs) == 5
+
+    src = ROOT.joinpath("analysis", "mongo_aggregations.py").read_text(encoding="utf-8")
+    # El modulo expone los 8 pipelines: se exige evidencia textual de
+    # etapas distintas en el fuente que dispara el pipeline.
+    for fun in ("pipeline_indicadores_municipio", "pipeline_alquiler_por_municipio",
+                "pipeline_modalidades", "pipeline_top_municipios_por_esfuerzo",
+                "pipeline_esfuerzo_por_sexo", "pipeline_accesibilidad_extendida",
+                "pipeline_udalmap_extendido_osrm", "pipeline_vpo_por_municipio"):
+        assert f"def {fun}(" in src
+    # $group, $lookup y $unwind estan presentes en el modulo (alquiler y vpo)
+    assert '"$group"' in src
+    assert '"$lookup"' in src
+    assert '"$unwind"' in src
+
+    # Ejecucion real: los pipelines que combinan etapas devuelven filas
+    # y las etapas esperadas por coleccion:
+    docs_alq = ma.pipeline_alquiler_por_municipio(limit=5)
+    assert len(docs_alq) == 5
+    docs_vpo = ma.pipeline_vpo_por_municipio(limit=5)
+    assert len(docs_vpo) == 5
+    docs_mod = ma.pipeline_modalidades()
+    assert len(docs_mod) >= 2
+    docs_ud = ma.pipeline_udalmap_extendido_osrm(limit=5)
+    assert len(docs_ud) == 5
 
 
 def test_indicador_por_municipio():

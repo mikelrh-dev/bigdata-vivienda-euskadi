@@ -120,7 +120,7 @@ bigdata-vivienda-euskadi/
 ├── analysis/          Aggregation Pipeline (hecho, 8 pipelines) + CSV desde Mongo
 ├── notebooks/         Informe de resultados (pendiente)
 ├── data/raw/          Datos generados (ignorados por git, 355 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 185 archivos, manifest 182)
+├── data/procesado/    Datos normalizados (ignorados por git, 187 archivos, manifest 184)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 ├── docs/              Documentación (índice en docs/README.md)
 └── plan/              Planificación y decisiones
@@ -133,7 +133,7 @@ bigdata-vivienda-euskadi/
 | Municipios de referencia | 252 |
 | Archivos raw (bronce) | 355 (353 con hash en `docs/raw_manifest_sha256.txt`) |
 | Archivos raw por tipo | CSV 128, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
-| Archivos silver | 185 (manifest 182) |
+| Archivos silver | 187 (manifest 184) |
 | Anuncios unificados | 759 (491 larga estancia + 268 temporal) en 83 municipios |
 | Anuncios residenciales | 491 en 75 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
@@ -144,7 +144,7 @@ bigdata-vivienda-euskadi/
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
-- **O1 — ¿Puede un joven independizarse?** Esfuerzo joven mediano 43,5%; 100% de los 159 municipios con dato supera el 30%. Emancipación municipal no defendible (proxy renta). Puntuación 7/10.
+- **O1 — ¿Puede un joven independizarse?** Esfuerzo joven mediano 43,5%; 100% de los 159 municipios con dato supera el 30%. Emancipación municipal no defendible (proxy renta). Puntuación 7/10. Nota canónica 18-34 oficial: 26,61%; 25,2 por ciento sobre 30; 7,5 IDW.
 - **O2 — ¿Qué municipios son viables?** Solo 4 robustos (n≥30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39; resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 4. 8/10.
 - **O3 — ¿Trabajo + vivienda barata?** r(paro juvenil, alquiler)=+0,385 (no hay trade-off simple); r(densidad, alquiler)=+0,456; r(distancia mín. a capital, alquiler)=-0,603. 8/10.
 - **O4 — ¿Limitaciones?** Proxy renta (falacia ecológica), 93 sin alquiler directo, solo 4 robustos, emancipación solo CAE, mezcla de años, ECVI solo territorial. 9/10.

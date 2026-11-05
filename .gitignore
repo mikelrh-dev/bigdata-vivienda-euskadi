@@ -23,6 +23,7 @@ data/resultados/*
 data_regen/
 data/procesado_pre_silver/
 scratchpad/*.py
+scratchpad/mapa_norm.json
 *.zip
 auditoria_avanzada/
 # Graphify output
