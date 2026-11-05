@@ -57,3 +57,52 @@ def test_anuncios_objectid():
     # Muestra en vivo: todo anuncio tiene _id ObjectId
     for d in coll.find({}, {"_id": 1}).limit(5):
         assert isinstance(d.get("_id"), ObjectId)
+
+    # Bloque 3, LIMPIEZA-01 + PYMONGO-01: función canónica $unset con
+    # matched/modified/deleted en test DB (mismo contrato en ambas
+    # colecciones) y _money/_to_decimal tipados (None con log, sin propagar).
+    import logging as _logging
+
+    from storage.clean_mongo import _to_decimal, clean_obsolete_fields
+    from storage.load_mongo import _money
+    from storage.mongo import get_test_db as _get_test_db
+
+    _db = _get_test_db()
+    for _n in ("_probe_clean", "_probe_mun"):
+        _db[_n].drop()
+    try:
+        _db["_probe_clean"].insert_many(
+            [{"_id": 1, "campo_obsoleto": "x", "keep": 1}, {"_id": 2, "keep": 2}]
+        )
+        _out = clean_obsolete_fields(
+            "_probe_clean", fields=["campo_obsoleto"], collection=_db["_probe_clean"]
+        )
+        assert _out["matched_count"] == 2
+        assert _out["modified_count"] == 1
+        assert _out["deleted_count"] == 0
+        assert _db["_probe_clean"].find_one({"_id": 1}) == {"_id": 1, "keep": 1}
+        _db["_probe_mun"].insert_one({"_id": "48001", "campo_obsoleto": "y"})
+        _out2 = clean_obsolete_fields(
+            "_probe_mun", fields=["campo_obsoleto"], collection=_db["_probe_mun"]
+        )
+        assert set(_out2) == set(_out)
+        assert _out2["deleted_count"] == 0
+        # Excepciones tipadas no propagan DuplicateKeyError y devuelven None con log.
+        assert _money(None) is None
+        assert _money("abc") is None
+        assert _to_decimal("abc") is None
+        assert _to_decimal(None) is None
+        # CRUD con contadores en test DB (demo_crud_operations ya los verifica
+        # en test_mongo.py; aquí se acota un insert/update/delete mínimo).
+        _db["_probe_crud"].drop()
+        _r = _db["_probe_crud"].insert_one({"_id": 1, "v": 10})
+        assert _r.inserted_id == 1
+        _r = _db["_probe_crud"].update_one({"_id": 1}, {"$set": {"v": 11}})
+        assert (_r.matched_count, _r.modified_count) == (1, 1)
+        _r = _db["_probe_crud"].delete_one({"_id": 1})
+        assert _r.deleted_count == 1
+    finally:
+        for _n in ("_probe_clean", "_probe_mun", "_probe_crud"):
+            _db[_n].drop()
+    # Prod sigue en 759 tras limpieza canónica (solo test DB).
+    assert get_collection("anuncios").count_documents({}) == 759

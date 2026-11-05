@@ -24,72 +24,39 @@ obtener indicadores con Aggregation Pipeline.
 
 ### Requirement: MODELO-01 — Modelo justificado y relaciones
 
-El sistema SHALL crear al menos 2 colecciones con tipos de datos BSON
-adecuados (nivel 7 de la rúbrica v2) y SHALL justificar el modelo y las
-relaciones entre los datos. Para el nivel 10, además, SHALL utilizar y
-demostrar al menos 1 decisión de embedding o de referencing y SHALL explicar
-por qué la ha utilizado. La relación concreta entre entidades (p. ej.
-anuncio ↔ municipio ↔ alquiler ↔ renta) es una decisión del equipo según
-sus fuentes y patrones de acceso, no un requisito universal del reto.
+El sistema SHALL responder en `docs/modelo_mongodb.md`, literalmente, las 7
+preguntas docx §5: ¿qué información se consulta normalmente junta?; ¿qué
+información cambia con frecuencia?; ¿qué arrays podrían crecer sin límite?;
+¿hay información que se repite pero interesa conservar como fotografía
+histórica?; ¿qué relaciones son 1:1, 1:N o N:M?; ¿qué campos se usarán para
+relacionar información procedente de fuentes distintas?; ¿qué tipos BSON son
+adecuados para fechas, importes, identificadores, booleanos o arrays?
+(Previously: las 7 preguntas en SHOULD.)
 
-#### Scenario: El modelo se justifica por escrito
+#### Scenario: Preguntas literales en el doc
 
-- GIVEN las fuentes del contrato
-- WHEN se diseña la base de datos
-- THEN cada colección tiene un propósito y sus campos están justificados
-- AND la relación entre las entidades del equipo está descrita como decisión
-  propia, no como esquema único
+- GIVEN `docs/modelo_mongodb.md`
+- WHEN se revisa el modelado
+- THEN las 7 preguntas aparecen literales con su respuesta
+- AND ≥1 decisión embedding/referencing queda justificada
 
-#### Scenario: Se justifica embedding vs referencing
 
-- GIVEN el modelo documental diseñado
-- WHEN se documenta
-- THEN se justifica al menos una decisión de embedding o de referencing
-- AND se indican los tipos BSON adecuados (fechas, importes, ids, booleanos,
-  arrays)
-- AND se describen los patrones de acceso previstos que motivan la decisión
+### Requirement: PYMONGO-01 — CRUD con excepciones tipadas
 
-#### Scenario: Los nombres de campo son coherentes
+El sistema SHALL sustituir `except Exception` por `except (TypeError,
+ValueError)` con log en `_money` (`storage/load_mongo.py`) y en los
+`except Exception: pass` de `ensure_indexes`/`explain_*`
+(`analysis/mongo_indexes.py`), y SHALL comprobar `matched_count`,
+`modified_count` y `deleted_count` en test.
+(Previously: excepciones genéricas con `pass` silencioso.)
 
-- GIVEN dos colecciones que comparten municipio
-- WHEN se comparan
-- THEN el campo de municipio usa el mismo nombre y formato en ambas
+#### Scenario: Errores no silenciados y CRUD con contadores
 
-#### Scenario: Al menos 2 colecciones con tipos adecuados — nivel 7
+- GIVEN un precio no numérico o un CRUD en `vivienda_euskadi_test`
+- WHEN se procesa `_money` o se insertan/actualizan/borran documentos
+- THEN `_money` devuelve `None` con log y el test comprueba los 3 contadores
+- AND `pytest tests` sigue en 130 passed
 
-- GIVEN las fuentes del contrato
-- WHEN se crea la base de datos
-- THEN existen al menos 2 colecciones con tipos BSON adecuados
-- AND al menos 1 relación, embedding o referencia entre datos es demostrable
-
-#### Scenario: Las 7 preguntas de modelado como SHOULD — Tema 8 §5
-<!-- Trazabilidad docx Tema 8 §5 Modelado documental (P021-P028, tabla evidencias bloque 2): SHOULD, no SHALL; el SHALL de MODELO-01 se mantiene -->
-- GIVEN las fuentes reales y las consultas que el equipo necesita realizar
-- WHEN antes de programar se diseña el modelo
-- THEN el sistema SHOULD documentar respuestas a las 7 preguntas: ¿qué información se consulta normalmente junta?; ¿qué información cambia con frecuencia?; ¿qué arrays podrían crecer sin límite?; ¿hay información que se repite pero interesa conservar como fotografía histórica?; ¿qué relaciones son 1:1, 1:N o N:M?; ¿qué campos se usarán para relacionar información procedente de fuentes distintas?; ¿qué tipos BSON son adecuados para fechas, importes, identificadores, booleanos o arrays?
-- AND el sistema SHOULD justificar al menos 1 decisión de embedding o referencing, o explicar por qué el modelo no utiliza uno de los enfoques (docx §5, nota final)
-
-### Requirement: PYMONGO-01 — Inserta, actualiza, elimina y comprueba
-
-El sistema SHALL implementar inserción, actualización y borrado con PyMongo,
-de forma automatizada, y SHALL comprobar los resultados. Los loaders con drop SHALL usar el patrón staging + backup + rename de CARGA-SEGURA-01; los loaders idempotentes con upsert (municipios, anuncios) SHALL mantener replace_one/update_one con upsert. Los tests que borran o modifican datos (clean, demo CRUD) MUST NOT ejecutarse por defecto contra la base productiva; requieren MONGO_ALLOW_DESTRUCTIVE=1 explícito. Deberá demostrar,
-cuando sean aplicables: insert_one/insert_many, find_one/find, update_one/
-update_many con $set/$unset/$inc/$rename/$push/$pull/$addToSet, delete_one/
-delete_many, matched_count/modified_count/deleted_count/inserted_id, ObjectId,
-fechas y tipos BSON, upsert, find_one_and_update y bulk_write.
-
-#### Scenario: Los tests no mutan prod por defecto
-
-- GIVEN una sesión de tests estándar
-- WHEN se ejecuta pytest sin MONGO_ALLOW_DESTRUCTIVE=1
-- THEN test_clean_mongo y test_crud_demo se marcan skipped
-- AND la base productiva conserva su recuento
-
-#### Scenario: zfill canoniza floats de Fotocasa
-
-- GIVEN un código como 20069.0 o "1001.0" desde una fuente float
-- WHEN se normaliza con zfill_ine
-- THEN se devuelve el código de 5 dígitos con int(float(x)) y zfill(5)
 
 ### Requirement: CARGA-SEGURA-01 — Carga sin ventana vacía ni borrado irreversible
 
@@ -208,72 +175,37 @@ operadores sin sentido para los datos.
 - AND al menos 1 consulta usa campos anidados o arrays
 - AND al menos 1 consulta combina 2 o más condiciones
 
-### Requirement: AGREGACION-01 — Tres pipelines y cinco etapas, indicadores complejos
+### Requirement: AGREGACION-01 — Pipelines a CSV canónico
 
-El sistema SHALL encadenar al menos cuatro etapas distintas del Aggregation
-Pipeline para obtener indicadores complejos (nivel 7: al menos 2 pipelines
-y 4 etapas diferentes en total). Para el nivel 10, SHALL crear al menos 3
-pipelines que respondan preguntas del reto y SHALL utilizar 5 etapas
-diferentes, incluyendo $group obligatorio y al menos una entre $lookup,
-$unwind o $facet. Entre las etapas disponibles
-están $match, $project, $set/$addFields, $unset, $group, $sort, $limit,
-$skip, $count, $unwind, $lookup y $facet.
+El sistema SHALL emitir CSV canónicos en `data/resultados/` desde
+`pipeline_indicadores_municipio` (252 filas),
+`pipeline_alquiler_por_municipio` (252), `pipeline_modalidades` (2),
+`pipeline_accesibilidad_extendida` y `pipeline_vpo_por_municipio`, con
+`$group`/`$lookup`/`$unwind` donde los datos lo permitan.
+(Previously: solo 3 CSV canónicos medidos.)
 
-#### Scenario: Cuatro etapas encadenadas
+#### Scenario: Cinco CSV canónicos
 
-- GIVEN los datos cargados
-- WHEN se ejecuta la agregación
-- THEN usa al menos cuatro etapas distintas (`$match`, `$group`, `$sort`,
-  `$project`, `$lookup`, `$facet`, `$set`/`$addFields`, `$unset`,
-  `$unwind`, `$count`, `$skip`, `$limit`)
-- AND produce un indicador por municipio
+- GIVEN las 8 pipelines de `analysis/mongo_aggregations.py`
+- WHEN se ejecutan las 5 citadas
+- THEN cada una escribe su CSV canónico en `data/resultados/`
+- AND los recuentos medidos son 252, 252 y 2
 
-#### Scenario: El indicador combina fuentes
-
-- GIVEN alquiler y renta por municipio
-- WHEN se calcula el indicador
-- THEN combina ambas fuentes
-- AND expresa el esfuerzo como porcentaje
-
-#### Scenario: Tres pipelines, 5 etapas con $group — nivel 10
-
-- GIVEN los datos cargados
-- WHEN se revisan los pipelines de agregación
-- THEN existen al menos 3 pipelines que responden preguntas del reto
-- AND entre todos se utilizan al menos 5 etapas diferentes
-- AND al menos 1 pipeline incluye $group
-- AND al menos 1 pipeline incluye $lookup, $unwind o $facet
 
 ### Requirement: LIMPIEZA-01 — Incompletos, duplicados, incorrectos
 
-El sistema SHALL detectar y corregir datos incompletos, duplicados o
-incorrectos, realizando al menos 3 operaciones diferentes de limpieza o
-transformación (nivel 7) y al menos 4 operaciones diferentes para el nivel
-10. Las 4 operaciones del nivel 10 SHALL incluir tratamiento de
-nulos/ausentes, tratamiento de duplicados y tratamiento de tipos/formato de
-datos. El recuento de operaciones SHALL ser demostrable en código PyMongo.
+El sistema SHALL limpiar con `$unset` explícito y SHALL retornar
+`deleted_count`, SHALL exponer una única función canónica
+anuncio-por-municipio y SHALL mantener los 759 anuncios tras limpio.
+(Previously: `$unset`/`deleted_count` sin función canónica única.)
 
-#### Scenario: Los duplicados reales se resuelven
+#### Scenario: Limpieza con contadores
 
-- GIVEN el mismo anuncio publicado dos veces
-- WHEN se limpia
-- THEN queda una sola copia
-- AND el recuento de únicos es menor que el de brutos
+- GIVEN anuncios con campos obsoletos
+- WHEN se ejecuta `clean_mongo`
+- THEN aplica `$unset` y el resultado incluye `deleted_count`
+- AND el recuento sigue en 759
 
-#### Scenario: Los nulos se tratan de forma explícita
-
-- GIVEN un anuncio sin superficie
-- WHEN se limpia
-- THEN el valor nulo se marca o se descarta, nunca se interpreta como cero
-
-#### Scenario: Al menos 4 operaciones, con nulos, duplicados y tipos — nivel 10
-
-- GIVEN los datos brutos cargados
-- WHEN se revisan las operaciones de limpieza con PyMongo
-- THEN existen al menos 4 operaciones diferentes
-- AND al menos 1 trata nulos/ausentes
-- AND al menos 1 trata duplicados
-- AND al menos 1 normaliza tipos o formato de datos
 
 ### Requirement: TRANSFORM-01 — Transformaciones en MongoDB
 
@@ -302,41 +234,44 @@ datos, de forma conjunta con LIMPIEZA-01 y demostrable en código PyMongo.
 
 ### Requirement: INDICES-01 — Índices y explain()
 
-El sistema SHALL diseñar al menos un índice justificado por una consulta real
-y SHALL demostrar su efecto con explain() antes y después, identificando
-COLLSCAN/IXSCAN y totalDocsExamined (rúbrica v2 SBD-RA3).
+El sistema SHALL demostrar con `explain("executionStats")`, para
+`ubicacion.codigo_ine=48001` + `modalidad=larga_estancia` + `precio_eur $lte
+Decimal128(1000)`, la transición COLLSCAN → IXSCAN con `nReturned` y
+`totalDocsExamined=1` tras el índice ESR
+`{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}`, y SHALL documentarlo en
+`docs/modelo_mongodb.md` junto a geo 2dsphere sparse, multikey
+(`equipamiento`) y parcial.
+(Previously: ESR/geo/multikey/parcial en SHOULD sin evidencia.)
 
-#### Scenario: Análisis before/after
-- GIVEN una consulta real del proyecto
-- WHEN se ejecuta explain("executionStats") antes y después de crear el índice
-- THEN se comparan COLLSCAN/IXSCAN, nReturned, totalDocsExamined y
-  totalKeysExamined
-- AND se explica la mejora y el coste en almacenamiento y escrituras
+#### Scenario: Before/after con totalDocsExamined=1
 
-#### Scenario: Criterio ESR y tipos de índice como SHOULD — Tema 8 §9
-<!-- Trazabilidad docx Tema 8 §9 Índices, explain() y rendimiento (P057-P064, pasos 1-6): SHALL actual sin cambios; ESR/multikey/unique/sparse/partial/TTL como SHOULD junto a explain executionStats -->
-- GIVEN una consulta real con filtros, ordenaciones o rangos
-- WHEN se diseña un índice simple o compuesto
-- THEN el sistema SHOULD justificar índices compound siguiendo el criterio ESR (Equality, Sort, Range) y SHOULD reconocer cuándo aplican índices multikey, unique, sparse, partial o TTL
-- AND el sistema SHOULD repetir explain("executionStats") y comparar COLLSCAN/IXSCAN, nReturned, totalDocsExamined y totalKeysExamined, sin valorar índices sin consulta que los justifique
+- GIVEN el índice ESR eliminado
+- WHEN se ejecutan `explain_before_after()` y `_explain()`
+- THEN `before.stage` es `COLLSCAN` y `after.stage` es `IXSCAN`
+- AND `after.totalDocsExamined` es 1 con `nReturned` documentado
+
+#### Scenario: Geo, multikey y parcial documentados
+
+- GIVEN `docs/modelo_mongodb.md`
+- WHEN se revisan los índices
+- THEN constan geo 2dsphere sparse, multikey `equipamiento` y parcial
+- AND cada uno cita su consulta real justificativa
+
 
 ### Requirement: TRANSACCIONES-01 — Atomicidad multidocumento
 
-El sistema SHALL determinar si existe una operación que requiera atomicidad
-multidocumento y SHALL implementarla con sesiones/transacciones si procede, o
-SHALL demostrar mediante código una operación atómica (vía atómica justificada,
-p. ej. actualización atómica de un único documento) y justificar técnicamente
-por qué una transacción sería innecesaria si el modelo no la necesita
-(rúbrica v2 SBD-RA3, consistencia).
+El sistema SHALL demostrar commit/abort multidocumento en
+`vivienda_euskadi_test` o SHALL justificar por READ (docx §11), y MUST NOT
+tocar prod por defecto (solo `MONGO_ALLOW_DESTRUCTIVE=1`).
+(Previously: solo atomicidad de un documento.)
 
-#### Scenario: Decisión razonada
+#### Scenario: Commit/abort en test o READ
 
-- GIVEN el modelo documental
-- WHEN se revisa la necesidad de atomicidad
-- THEN o bien se implementa una transacción (commit/abort, manejo de errores)
-- OR se demuestra mediante código una operación atómica y se justifica
-  técnicamente por qué una transacción sería innecesaria, proponiendo un ejemplo
-  plausible
+- GIVEN `vivienda_euskadi_test` o la decisión documentada
+- WHEN se ejecuta la transacción o se revisa la justificación
+- THEN el commit persiste, el abort revierte y prod conserva su recuento
+- AND si no aplica, la justificación cita docx §11 y el ejemplo plausible
+
 
 ### Requirement: DISTRIBUIDA-01 — Arquitectura distribuida (conceptual)
 
@@ -388,6 +323,34 @@ la decisión.
 - WHEN se diseña la validación
 - THEN o bien se aplica validación y se demuestra
 - OR se justifica por qué no procede
+
+### Requirement: RESPALDO-01 — Backups y geo en lectura pura
+
+El sistema SHALL garantizar backups de `municipios` e `indicadores` vía
+`replace_collection` (staging + `<name>__backup` + rename), SHALL documentar
+los 424 Point GeoJSON de 759 anuncios desde silver, y SHALL verificarlo con
+el listing de 15 colecciones, sin escrituras en prod.
+
+#### Scenario: Backups, geo y listing
+
+- GIVEN `vivienda_euskadi` con 759 anuncios y 252 municipios
+- WHEN se listan las colecciones y se cuentan los Point
+- THEN hay 15 colecciones, incluidos `municipios__backup` (252 previos) e `indicadores__backup`
+- AND hay 424 Point reales, el resto `None` por falta de silver
+### Requirement: RENTA-01 — `validar_renta` o justificación firmada
+
+El sistema SHALL incluir `validar_renta.py` como paso de
+`transform/run_all.py` o SHALL firmar su exclusión, y `pytest tests` SHALL
+pasar con 130 tests.
+
+#### Scenario: Integración o justificación
+
+- GIVEN `validar_renta.py` en `EXCLUIDOS` de `run_all.py`
+- WHEN se revisa el orquestador
+- THEN es paso del pipeline o existe justificación firmada
+- AND `pytest tests -q` reporta 130 passed
+
+## MODIFIED Requirements
 
 ### Mapa de integración Tema 1–8 → requisito (docx §15)
 <!-- Trazabilidad docx Tema 8 §15 Mapa de integración (tabla 13), §16 pesos y §17 checklist: se añade el mapa sin cambiar pesos; SHALL/SHOULD existentes se mantienen -->

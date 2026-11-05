@@ -11,6 +11,10 @@ from pathlib import Path
 
 import pandas as pd
 from bson.decimal128 import Decimal128
+try:
+    from decimal import InvalidOperation
+except ImportError:  # pragma: no cover
+    InvalidOperation = ValueError  # type: ignore[assignment]
 
 from storage.mongo import (
     get_collection,
@@ -33,12 +37,15 @@ def _read_csv(name: str) -> pd.DataFrame:
 
 
 def _money(value):
-    text = (value if value is None else str(value)).strip()
+    if value is None:
+        return None
+    text = str(value).strip()
     if text == "" or text.lower() == "nan":
         return None
     try:
         return Decimal128(text)
-    except Exception:
+    except (TypeError, ValueError, InvalidOperation) as exc:
+        logger.warning("precio no numérico %r (%s)", value, exc)
         return None
 
 

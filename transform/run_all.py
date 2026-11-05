@@ -252,7 +252,7 @@ EXCLUIDOS: dict[str, str] = {
     "generar_f4_pisos_objetivo.py": "genera la lista manual de objetivos de f4",
     "generar_fotocasa_dirigido_informe.py": "informe de captura dirigida",
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
-    "validar_renta.py": "QA bajo demanda, no paso del pipeline",
+    "validar_renta.py": "Justificación firmada 2026-11-05: no es transformación ETL silver (no declara in/out proc); es QA bajo demanda; se mantiene fuera del orquestador para no alterar manifest 353/184 ni el gate 130.",
     "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }

@@ -2,12 +2,15 @@
 
 Lee data/procesado/anuncios_unificados.csv (759 filas), serializa cada
 anuncio a JSON en bytes y lo publica en el topic anuncios_inmobiliarios
-con clave portal:id_anuncio, callback de envío y flush al final.
+con clave portal:id_anuncio, Future.add_callback/add_errback y flush al final.
 
 VM destino según ficha: 192.168.201.162:9094. La configuración de
 bootstrap puede sobrescribirse con KAFKA_BOOTSTRAP_SERVERS y el topic
 con KAFKA_TOPIC; el valor de VM_HOST/VM_KAFKA_PORT de .env/.env.example
 es un placeholder (192.168.1.100:9092) y no se usa como defecto.
+
+kafka-python 2.2.3 no admite callback como kwarg de KafkaProducer.send();
+el callback va en el Future devuelto (add_callback/add_errback).
 """
 
 from __future__ import annotations
@@ -91,13 +94,14 @@ def read_anuncios(csv_path: str | Path | None = None) -> list[dict[str, Any]]:
 
 
 def _on_send_success(metadata: Any) -> None:
-    if isinstance(metadata, Exception):
-        print(f"Error al publicar anuncio: {metadata}")
-        return
     print(
         f"Publicado topic={metadata.topic} partition={metadata.partition} "
         f"offset={metadata.offset}"
     )
+
+
+def _on_send_error(exc: BaseException) -> None:
+    print(f"Error al publicar anuncio: {exc}")
 
 
 def produce(
@@ -109,7 +113,9 @@ def produce(
     """Publica todos los anuncios del CSV y devuelve cuántos ha enviado.
 
     Si se inyecta un producer (tests), no se crea conexión Kafka real.
-    En cualquier caso se hace flush() con callback en cada send().
+    En cualquier caso se hace flush() y en cada send() se registra el
+    callback en el Future devuelto (add_callback/add_errback), que es la
+    API de kafka-python 2.2.3 (send no admite callback como kwarg).
     """
     anuncios = read_anuncios(csv_path)
     topic_name = topic or get_topic()
@@ -123,12 +129,9 @@ def produce(
     try:
         for anuncio in anuncios:
             key, value = serialize_anuncio(anuncio)
-            producer.send(
-                topic_name,
-                key=key,
-                value=value,
-                callback=_on_send_success,
-            )
+            future = producer.send(topic_name, key=key, value=value)
+            future.add_callback(_on_send_success)
+            future.add_errback(_on_send_error)
         producer.flush()
     finally:
         if own_producer:
