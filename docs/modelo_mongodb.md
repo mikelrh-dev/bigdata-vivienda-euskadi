@@ -108,7 +108,7 @@ marcado explícito de nulos y resolución de duplicados, con contadores
 
 ## Pipelines y reproducibilidad (Tema 8, secciones 14 y 16)
 
-MongoDB hecho: 16 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 8 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`). La coleccion `vpo_municipal` (252) guarda el flujo oficial de VPO terminada del indicador 73; no es stock.
+MongoDB hecho: 16 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 9 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`, `pipeline_vpo_terminadas`). La coleccion `vpo_municipal` (252) guarda el flujo oficial de VPO terminada del indicador 73; no es stock.
 
 Comandos: `.venv/Scripts/python.exe storage/load_mongo.py`, `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py`, `.venv/Scripts/python.exe analysis/run_analisis_mongo.py`, `.venv/Scripts/python.exe -m pytest tests/test_mongo*.py -q` (en particular `tests/test_mongo_geo.py` y `tests/test_mongo_comparativa.py`).
 
@@ -177,7 +177,7 @@ Función canónica única `clean_obsolete_fields` en `storage/clean_mongo.py`: `
 
 ## Agregación a CSV canónico (AGREGACION-01)
 
-5 pipelines a CSV canónico en `data/resultados/` reutilizando los 8 pipelines de `analysis/mongo_aggregations.py` con `$group`/`$lookup`/`$unwind` donde los datos lo permiten, sin reimplementar agregaciones en el exportador:
+5 pipelines a CSV canónico en `data/resultados/` reutilizando los 9 pipelines de `analysis/mongo_aggregations.py` con `$group`/`$lookup`/`$unwind` donde los datos lo permiten, sin reimplementar agregaciones en el exportador:
 
 - `mongo_esfuerzo_por_municipio.csv` desde `pipeline_indicadores_municipio` (252 filas).
 - `mongo_alquiler_por_municipio.csv` desde `pipeline_alquiler_por_municipio` (252).

@@ -1,7 +1,7 @@
 # Datos finales y conclusiones defendibles — 2026-11-05
 
 Fuente: `pipeline_indicadores_municipio` (252 filas), `pipeline_vpo_por_municipio` (322),
-`etxebide_solicitudes` (5040 docs). Verificado en Mongo el 2026-11-05.
+`pipeline_vpo_terminadas` (251), `etxebide_solicitudes` (5040 docs). Verificado en Mongo el 2026-11-05.
 
 ## Cobertura real
 
@@ -12,8 +12,9 @@ Fuente: `pipeline_indicadores_municipio` (252 filas), `pipeline_vpo_por_municipi
   Municipios con >=5: 28; >=10: 20; >=30: 4.
 - Precio medio observado: 80 municipios, mediana 1.382 EUR.
   El resto del esfuerzo usa cuantia oficial Eustat, no precio observado.
-- Paro Lanbide: 249/252, mediana 5,94%. VPO: 322 filas de promociones,
-  sin stock historico real. Etxebide: 5040 solicitudes.
+- Paro Lanbide: 249/252, mediana 5,94%. VPO: flujo oficial 251/252
+  (Usansolo sin dato), 322 filas de promociones Etxebide; stock historico
+  sin fuente, no se infiere. Etxebide: 5040 solicitudes.
 
 ## Conclusiones que se sostienen
 
@@ -26,7 +27,7 @@ Fuente: `pipeline_indicadores_municipio` (252 filas), `pipeline_vpo_por_municipi
 
 ## Suficiente o corto
 
-Suficiente para el reto (5+ indicadores, 8 pipelines, 4 robustos, limitaciones
+Suficiente para el reto (5+ indicadores, 9 pipelines, 4 robustos, limitaciones
 declaradas). Corto para estudio academico: sin precios en 169 municipios, sin
 stock VPO real, renta estimada como proxy de salario, anuncios 2026 vs
 rentas/paro 2024. Declarar estos 4 huecos es lo que lo hace defendible.

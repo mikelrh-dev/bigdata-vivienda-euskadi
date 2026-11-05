@@ -415,6 +415,32 @@ def pipeline_vpo_por_municipio(limit: int | None = None) -> list[dict[str, Any]]
     return list(get_collection("etxebide_promociones").aggregate(pipeline))
 
 
+def pipeline_vpo_terminadas(limit: int | None = None) -> list[dict[str, Any]]:
+    """VPO terminada en el ultimo quinquenio (Udalmap 73), flujo por mil.
+
+    No es stock: es el flujo 2020-2024 por mil habitantes. `$match` descarta
+    el unico municipio sin dato (Usansolo, 48916) y `$lookup` aporta nombre y
+    territorio desde `municipios`. Devuelve 251 filas.
+    """
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"vpo_terminadas_por_mil": {"$ne": None}}},
+        {"$lookup": {"from": "municipios", "localField": "_id", "foreignField": "_id", "as": "m"}},
+        {"$unwind": {"path": "$m", "preserveNullAndEmptyArrays": True}},
+        {"$project": {
+            "codigo_ine": "$_id",
+            "municipio": {"$ifNull": ["$m.nombre_canonico", "$municipio"]},
+            "territorio": "$m.territorio",
+            "vpo_terminadas_por_mil": 1,
+            "anio_fuente": 1,
+            "_id": 0,
+        }},
+        {"$sort": {"vpo_terminadas_por_mil": -1, "codigo_ine": 1}},
+    ]
+    if limit:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("vpo_municipal").aggregate(pipeline))
+
+
 # Generic aliases
 agregar = run_all
 run_aggregation = run_all

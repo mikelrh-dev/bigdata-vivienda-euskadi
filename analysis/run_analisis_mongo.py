@@ -1,9 +1,9 @@
-"""Orquestador de analisis MongoDB: ejecuta los 8 pipelines y exporta 5 CSV.
+"""Orquestador de analisis MongoDB: ejecuta los 9 pipelines y exporta 5 CSV.
 
 Nivel 10 de Automatizacion del analisis (RETO 1Evaluacion SBD-BDAv2):
 un script ejecuta todos los analisis principales y devuelve resultados
 preparados para representacion, generados desde PyMongo sin valores
-tecleados. Reutiliza los 8 pipelines de `mongo_aggregations` (con
+tecleados. Reutiliza los 9 pipelines de `mongo_aggregations` (con
 `$group`/`$lookup`/`$unwind` donde los datos lo permiten) y demuestra
 con `explain()` la transicion COLLSCAN -> IXSCAN.
 
@@ -25,6 +25,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import io
+
 from bson.decimal128 import Decimal128
 
 from analysis.mongo_aggregations import (
@@ -36,11 +38,12 @@ from analysis.mongo_aggregations import (
     pipeline_top_municipios_por_esfuerzo,
     pipeline_udalmap_extendido_osrm,
     pipeline_vpo_por_municipio,
+    pipeline_vpo_terminadas,
 )
 
 RESULTADOS_DIR = ROOT / "data" / "resultados"
 
-# Orden fijo de ejecucion de los 8 pipelines principales.
+# Orden fijo de ejecucion de los 9 pipelines principales.
 PIPELINE_ORDER: tuple[str, ...] = (
     "pipeline_indicadores_municipio",
     "pipeline_alquiler_por_municipio",
@@ -50,6 +53,7 @@ PIPELINE_ORDER: tuple[str, ...] = (
     "pipeline_accesibilidad_extendida",
     "pipeline_udalmap_extendido_osrm",
     "pipeline_vpo_por_municipio",
+    "pipeline_vpo_terminadas",
 )
 
 # Los 3 conjuntos preparados para visualizacion: fichero -> pipeline origen.
@@ -59,7 +63,7 @@ EXPORTS_3: tuple[tuple[str, str], ...] = (
     ("mongo_modalidades.csv", "pipeline_modalidades"),
 )
 
-# Los 5 CSV canonicos (Bloque 3, AGREGACION-01): reutilizan los 8 pipelines
+# Los 5 CSV canonicos (Bloque 3, AGREGACION-01): reutilizan los 9 pipelines
 # sin reimplementar agregaciones. Fichero -> pipeline origen.
 EXPORTS_5: tuple[tuple[str, str], ...] = (
     ("mongo_esfuerzo_por_municipio.csv", "pipeline_indicadores_municipio"),
@@ -97,7 +101,7 @@ def _orden_canonico(filas: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def run_all_estandar() -> dict[str, list[dict[str, Any]]]:
-    """Ejecuta en orden fijo los 8 pipelines de `mongo_aggregations`.
+    """Ejecuta en orden fijo los 9 pipelines de `mongo_aggregations`.
 
     Devuelve un dict con las 8 claves en el orden de `PIPELINE_ORDER` y
     filas en orden canonico (ver `_orden_canonico`), para que la huella y
@@ -203,7 +207,7 @@ def exportar_cinco_csv(
 ) -> dict[str, Path]:
     """Escribe los 5 CSV canonicos (Bloque 3, AGREGACION-01).
 
-    Reutiliza los 8 pipelines sin reimplementar agregaciones; los 3
+    Reutiliza los 9 pipelines sin reimplementar agregaciones; los 3
     historicos mas `pipeline_accesibilidad_extendida` y
     `pipeline_vpo_por_municipio` (con `$group`/`$lookup`/`$unwind` donde
     los datos lo permiten).
@@ -236,7 +240,7 @@ def exportar_png_desde_mongo(
 ) -> dict[str, Path]:
     """Genera los 13 PNG canonicos solo desde PyMongo (sin DuckDB ni CSV).
 
-    Fuente unica: los 8 pipelines en memoria (`resultados`). Cada grafico
+    Fuente unica: los 9 pipelines en memoria (`resultados`). Cada grafico
     deriva de campos ya agregados en Mongo; `_fnum` solo normaliza tipos
     BSON para matplotlib, sin valores tecleados. Sobrescribe los mismos
     nombres que generaba DuckDB para dejar atras esa dependencia.
@@ -252,10 +256,14 @@ def exportar_png_desde_mongo(
     rutas: dict[str, Path] = {}
 
     def _save(fig, nombre: str) -> None:
+        # PIL falla con EINVAL al abrir la ruta relativa en Windows; se guarda
+        # en memoria y se escribe con la API de Python.
         ruta = destino / nombre
         fig.tight_layout()
-        fig.savefig(ruta, dpi=110)
+        buffer = io.BytesIO()
+        fig.savefig(buffer, format="png", dpi=110)
         plt.close(fig)
+        ruta.write_bytes(buffer.getvalue())
         rutas[nombre] = ruta
 
     ind = resultados.get("pipeline_indicadores_municipio", [])
@@ -423,7 +431,7 @@ def exportar_png_desde_mongo(
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Orquestador de analisis MongoDB: 8 pipelines + 5 CSV"
+        description="Orquestador de analisis MongoDB: 9 pipelines + 5 CSV"
     )
     parser.add_argument(
         "--salida",

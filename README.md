@@ -100,7 +100,7 @@ erDiagram
 | 4 | Docker Compose HDFS + MongoDB | ✅ Hecha (HDFS centro + Mongo local) |
 | 5 | Subida HDFS + recuperación | ✅ Hecha (351 ficheros raw en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw, sin legacy) |
 | 6 | Modelado + operaciones PyMongo | ✅ Hecha (16 colecciones, PyMongo) |
-| 7 | Aggregation Pipeline | ✅ Hecha (8 pipelines) |
+| 7 | Aggregation Pipeline | ✅ Hecha (9 pipelines) |
 | 8 | Kafka productor/consumidor | ✅ Hecha (broker 4.3.1 KRaft en 9094, topic 3 particiones, productor JSON y consumidor con upsert) |
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
@@ -117,7 +117,7 @@ bigdata-vivienda-euskadi/
 ├── extract/           Extracción API, scraping y descargas directas
 ├── transform/         Limpieza y enriquecimiento (43 scripts)
 ├── storage/           PyMongo + HDFS central + Kafka VM (listos)
-├── analysis/          Aggregation Pipeline (hecho, 8 pipelines) + CSV desde Mongo
+├── analysis/          Aggregation Pipeline (hecho, 9 pipelines) + CSV desde Mongo
 ├── notebooks/         Informe de resultados (pendiente)
 ├── data/raw/          Datos generados (ignorados por git, 356 archivos)
 ├── data/procesado/    Datos normalizados (ignorados por git, 188 archivos, manifest 185)
@@ -251,7 +251,7 @@ completos.
 ## ✅ Verificación
 
 - Tests: `.venv/Scripts/python.exe -m pytest tests -q` (136 passed)
-- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (16 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
+- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (16 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (9 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
@@ -296,5 +296,5 @@ El gate de Integración pendiente es subir el bronce, publicar mensajes, consumi
 - VPO: 406 promociones en 77 municipios con `NumViviendas` vacío (stock no público); el flujo oficial municipal se integra aparte.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura: MongoDB hecho (16 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
+- Infraestructura: MongoDB hecho (16 colecciones, 9 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.

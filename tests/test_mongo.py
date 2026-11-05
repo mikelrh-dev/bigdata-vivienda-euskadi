@@ -252,12 +252,13 @@ def test_aggregation_stages():
     assert len(docs) == 5
 
     src = ROOT.joinpath("analysis", "mongo_aggregations.py").read_text(encoding="utf-8")
-    # El modulo expone los 8 pipelines: se exige evidencia textual de
+    # El modulo expone los 9 pipelines: se exige evidencia textual de
     # etapas distintas en el fuente que dispara el pipeline.
     for fun in ("pipeline_indicadores_municipio", "pipeline_alquiler_por_municipio",
                 "pipeline_modalidades", "pipeline_top_municipios_por_esfuerzo",
                 "pipeline_esfuerzo_por_sexo", "pipeline_accesibilidad_extendida",
-                "pipeline_udalmap_extendido_osrm", "pipeline_vpo_por_municipio"):
+                "pipeline_udalmap_extendido_osrm", "pipeline_vpo_por_municipio",
+                "pipeline_vpo_terminadas"):
         assert f"def {fun}(" in src
     # $group, $lookup y $unwind estan presentes en el modulo (alquiler y vpo)
     assert '"$group"' in src
@@ -270,6 +271,8 @@ def test_aggregation_stages():
     assert len(docs_alq) == 5
     docs_vpo = ma.pipeline_vpo_por_municipio(limit=5)
     assert len(docs_vpo) == 5
+    docs_vpo_ter = ma.pipeline_vpo_terminadas()
+    assert len(docs_vpo_ter) == 251
     docs_mod = ma.pipeline_modalidades()
     assert len(docs_mod) >= 2
     docs_ud = ma.pipeline_udalmap_extendido_osrm(limit=5)
