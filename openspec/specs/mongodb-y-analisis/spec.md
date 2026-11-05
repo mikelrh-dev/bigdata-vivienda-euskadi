@@ -186,7 +186,7 @@ El sistema SHALL emitir CSV canónicos en `data/resultados/` desde
 
 #### Scenario: Cinco CSV canónicos
 
-- GIVEN las 8 pipelines de `analysis/mongo_aggregations.py`
+- GIVEN las 9 pipelines de `analysis/mongo_aggregations.py`
 - WHEN se ejecutan las 5 citadas
 - THEN cada una escribe su CSV canónico en `data/resultados/`
 - AND los recuentos medidos son 252, 252 y 2

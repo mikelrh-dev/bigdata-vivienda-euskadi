@@ -1,7 +1,7 @@
 # AGENT.md — bigdata-vivienda-euskadi
 
 ## Stack
-- Python 3.12 (`.venv`); extracción `requests`/`beautifulsoup4`/`lxml`; almacenamiento HDFS centro `http://10.22.87.215:50070` `iabd-user15`, streaming Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft topic 3 particiones, BD MongoDB (Docker) + PyMongo; análisis Aggregation Pipeline (8 pipelines); viz matplotlib/seaborn; contrato `pdf v2` más `docx Tema 8` como evaluación separada según `brief/RETO 1Evaluacion SBD-BDAv2.pdf` y `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`.
+- Python 3.12 (`.venv`); extracción `requests`/`beautifulsoup4`/`lxml`; almacenamiento HDFS centro `http://10.22.87.215:50070` `iabd-user15`, streaming Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft topic 3 particiones, BD MongoDB (Docker) + PyMongo; análisis Aggregation Pipeline (9 pipelines); viz matplotlib/seaborn; contrato `pdf v2` más `docx Tema 8` como evaluación separada según `brief/RETO 1Evaluacion SBD-BDAv2.pdf` y `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`.
 - Detalle, layout, fuentes y estado por fase: `openspec/project.md`.
 
 ## Key facts

@@ -32,7 +32,7 @@ auditoría queda cerrada o declarada:
 - Mongo local con 252 municipios, 759 anuncios, 5040 solicitudes Etxebide,
   406 promociones y 252 documentos de VPO municipal.
 - Huella agregada de los pipelines:
-  `d7e673240f9290422d0eb3801592da542d4a8db7bacb48510e641b519f8845ca`
+  `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a`
   (dos ejecuciones consecutivas, misma huella).
 
 ## 3. Base de datos
@@ -135,7 +135,7 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 .venv/Scripts/python.exe -m pytest tests -q                    # 136 passed
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py       # OK 18/18
 .venv/Scripts/python.exe -m storage.load_mongo                 # 16 colecciones
-.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 8 pipelines + huella
+.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 9 pipelines + huella
 .venv/Scripts/python.exe analysis/sensibilidad.py              # IDW + bootstrap
 ```
 

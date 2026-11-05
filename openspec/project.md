@@ -77,7 +77,7 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | 2. Kafka | ✅ implementado con tests offline; gate extremo a extremo pendiente |
 | 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
 | 4. Limpieza y transformación | ✅ silver regenerado (187 archivos, manifest 184), transforms v2 |
-| 5. Aggregation Pipeline | ✅ 8 pipelines a CSV desde Mongo |
+| 5. Aggregation Pipeline | ✅ 9 pipelines desde Mongo (5 CSV canónicos) |
 | 6. Visualización e informe | ✅ PNG desde silver y CSV desde Mongo; HTML manual; informe pendiente |
 
 ## Reglas del contrato

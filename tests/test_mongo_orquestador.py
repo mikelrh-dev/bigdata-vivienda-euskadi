@@ -33,7 +33,7 @@ def _leer_csv(ruta: Path) -> tuple[list[str], list[dict[str, str]]]:
 def test_orquestador_analisis_exporta_tres_conjuntos(tmp_path: Path) -> None:
     primera = run_all_estandar()
     assert list(primera) == list(PIPELINE_ORDER)
-    assert len(primera) == 8
+    assert len(primera) == 9
     rutas = exportar_tres_csv(primera, tmp_path)
     assert len(rutas) == 3
     assert sorted(rutas) == sorted(fichero for fichero, _ in EXPORTS_3)
@@ -49,6 +49,7 @@ def test_orquestador_analisis_exporta_tres_conjuntos(tmp_path: Path) -> None:
     assert n["pipeline_indicadores_municipio"] == 252
     assert n["pipeline_alquiler_por_municipio"] == 252
     assert n["pipeline_modalidades"] == 2
+    assert n["pipeline_vpo_terminadas"] == 251
     # Exportar la segunda ejecucion en otro directorio reproduce los conteos.
     tmp2 = tmp_path / "segunda"
     rutas2 = exportar_tres_csv(segunda, tmp2)
