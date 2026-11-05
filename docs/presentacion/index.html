@@ -73,8 +73,90 @@
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
 </style>
+<style id="tinta">
+  :root{
+    --paper:#0b1220; --ink:#e9e4da; --navy:#f6f1e7; --muted:#9aa7bd;
+    --accent:#f59e0b; --teal:#2dd4bf; --line:rgba(246,241,231,.14);
+  }
+  html,body{background:#070b12}
+  body{color:var(--ink)}
+  .deck{box-shadow:0 40px 120px rgba(0,0,0,.65)}
+  .slide{
+    padding:44px 64px 38px;
+    background:
+      radial-gradient(760px 480px at 92% -12%, rgba(245,158,11,.13), transparent 62%),
+      radial-gradient(620px 420px at -8% 112%, rgba(45,212,191,.10), transparent 60%),
+      linear-gradient(165deg,#0e1626 0%,#0b1220 52%,#070c15 100%);
+  }
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(246,241,231,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(246,241,231,.045) 1px,transparent 1px);
+    background-size:104px 104px;opacity:.55;
+  }
+  .slide::after{
+    content:attr(data-n);
+    position:absolute;right:22px;bottom:-10px;
+    font-family:"Segoe UI",system-ui,sans-serif;font-weight:800;
+    font-size:156px;line-height:1;letter-spacing:-.05em;
+    color:transparent;-webkit-text-stroke:1px rgba(246,241,231,.12);
+    pointer-events:none;
+  }
+  .slide.active{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  h1{font-family:Georgia,"Palatino Linotype","Times New Roman",serif;font-weight:400;
+    font-size:62px;line-height:1.02;letter-spacing:-.015em;color:var(--navy);margin-bottom:16px}
+  h2{font-family:"Segoe UI",system-ui,sans-serif;font-weight:750;font-size:40px;
+    line-height:1.1;letter-spacing:-.025em;color:var(--navy)}
+  h3{font-family:Consolas,monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--teal);font-weight:600}
+  p{font-size:20px;line-height:1.45}
+  .lead{font-size:23px;color:#d9d3c7}
+  .accent{color:var(--accent)}
+  .muted{color:var(--muted)}
+  .kicker{display:flex;align-items:center;gap:10px;font-family:Consolas,monospace;
+    font-size:12px;letter-spacing:.26em;color:var(--accent);font-weight:600;margin-bottom:16px}
+  .kicker::before{content:"";width:8px;height:8px;background:var(--accent);flex:none}
+  .rule{height:2px;width:128px;margin:12px 0 20px;
+    background:linear-gradient(90deg,var(--accent) 0%,rgba(245,158,11,0) 100%)}
+  .card{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:4px;
+    box-shadow:none;padding:18px 20px}
+  .big{font-family:"Segoe UI",system-ui,sans-serif;font-weight:800;font-size:64px;
+    letter-spacing:-.045em;font-variant-numeric:tabular-nums;color:var(--navy)}
+  .big.accent{color:var(--accent)}
+  .label{font-family:Consolas,monospace;font-size:11px;letter-spacing:.14em;color:var(--muted)}
+  .note{background:rgba(245,158,11,.09);border-left:3px solid var(--accent);
+    border-radius:0 4px 4px 0;color:#f0e8d8;font-size:18px}
+  .stat{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:4px}
+  .stat b{color:var(--navy);font-variant-numeric:tabular-nums}
+  .stat span{color:var(--muted);font-size:12px;letter-spacing:.02em}
+  .step{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:4px}
+  .step b{color:var(--navy);font-weight:800}
+  .step span{font-family:Consolas,monospace;font-size:10px;letter-spacing:.10em;color:var(--muted)}
+  .arrow{color:var(--accent);font-weight:400}
+  pre{background:#080e1a;border:1px solid var(--line);color:#dfe8f6;border-radius:6px;font-size:13.5px}
+  pre .c{color:#788aa6}
+  p code,.footer-q code,.card code{color:#fcd34d;background:rgba(245,158,11,.12);
+    padding:1px 5px;border-radius:3px;font-size:.92em;font-family:Consolas,monospace}
+  .footer-q{color:#f2ebdd;font-weight:600;font-size:18px}
+  .brand{font-family:Consolas,monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:rgba(246,241,231,.42)}
+  .num{display:none}
+  .nav{color:rgba(246,241,231,.38);font-family:Consolas,monospace}
+  .progress{position:fixed;top:0;left:0;height:3px;width:10%;z-index:60;
+    background:linear-gradient(90deg,var(--accent),var(--teal));transition:width .35s ease}
+  @media (prefers-reduced-motion: reduce){.slide.active{animation:none}}
+  .no-anim .slide.active{animation:none}
+  @media print{
+    html,body{background:#0b1220!important}
+    .progress{display:none!important}
+    .slide{animation:none!important}
+  }
+</style>
 </head>
 <body>
+<div class="progress" id="progress"></div>
 <div class="deck" id="deck">
 
   <!-- 1 -->
@@ -87,7 +169,7 @@
       se supera el 30 %, y en Bilbao y Donostia roza el 38 %.</p>
     <p class="lead muted">En <b>169</b> municipios no hay anuncios (sin precio observado);
       en <b>93</b> no hay cuantía oficial y solo tenemos una estimación IDW.</p>
-    <div class="footer-q">Datos reales · 252 municipios · 759 anuncios · conclusiones con perímetro declarado</div>
+    <div class="footer-q" style="margin-top:26px">Datos reales · 252 municipios · 759 anuncios · conclusiones con perímetro declarado</div>
     <div class="brand">bigdata-vivienda-euskadi</div>
     <div class="num">01 / 09</div>
   </section>
@@ -224,14 +306,14 @@
       <div class="step"><b>5 + 13</b><span>CSV + PNG</span></div>
     </div>
     <div class="grid g2">
-      <div class="card">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
         <h3>Modelo</h3>
         <p style="font-size:18px"><b>Embedding</b> en <code>municipios</code>: demografía, empleo,
           demanda social (se leen juntos, cambian poco).</p>
         <p style="font-size:18px"><b>Referencing</b> por <code>codigo_ine</code>: anuncios y
           promociones (arrays que crecen sin límite).</p>
       </div>
-      <div class="card">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
         <h3>Tres pipelines que sostienen la respuesta</h3>
         <p style="font-size:17px;margin-bottom:6px"><code>indicadores_municipio</code> → 252 filas: esfuerzo, tensión, paro.</p>
         <p style="font-size:17px;margin-bottom:6px"><code>vpo_terminadas</code> → 251 filas: flujo oficial.</p>
@@ -303,13 +385,18 @@
   const deck = document.getElementById('deck');
   const slides = [...document.querySelectorAll('.slide')];
   let i = 0;
+  if(location.search.indexOf('static')>-1) document.documentElement.classList.add('no-anim');
+
   function show(n){
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach((s, k) => {
-    s.classList.toggle('active', k === i);
-    const n = s.querySelector('.num');
-    if (n) n.textContent = String(k + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
-  });
+      s.setAttribute('data-n', String(k + 1).padStart(2, '0'));
+      s.classList.toggle('active', k === i);
+      const n = s.querySelector('.num');
+      if (n) n.textContent = String(k + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    });
+    const bar = document.getElementById('progress');
+    if (bar) bar.style.width = (((i + 1) / slides.length) * 100).toFixed(2) + '%';
     history.replaceState(null, '', '#' + (i + 1));
   }
   function fit(){
