@@ -390,7 +390,7 @@ def load_udalmap_indicadores() -> int:
 
 
 def load_udalmap_empleo() -> int:
-    data = _load_json("udalmap_empleo_corregido_normalizado.json")
+    data = _load_json("udalmap_empleo_corregido.json")
     prov, records = _prov_from_loaded(data, "Eustat Udalmap empleo")
     docs = []
     for row in records:

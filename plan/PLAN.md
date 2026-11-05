@@ -394,12 +394,12 @@ BigDataReto/
 │   └── mongo_crud.py        (insert/update/delete con PyMongo)
 ├── transform/
 │   ├── limpieza.py          (duplicados, nulos, tipos, €/m²)
-│   └── enrich.py            (join anuncio↔municipio↔renta↔alquiler ref.)
+│   ├── enrich.py            (join anuncio↔municipio↔renta↔alquiler ref.)
+│   └── graficos.py          (gráficos: barras, dispersión, mapa, boxplot)
 ├── analysis/
 │   ├── pipeline_agregaciones.py ($match/$group/$sort/$project/$lookup/$facet)
-│   └── indicadores.py       (esfuerzo %, ranking, accesibilidad)
-├── visualization/
-│   └── graficos.py          (barras, dispersión, mapa, boxplot)
+│   ├── indicadores.py       (esfuerzo %, ranking, accesibilidad)
+│   └── graficos.py          (gráficos desde CSV de Mongo: barras, dispersión, mapa)
 ├── notebooks/
 │   └── informe.ipynb
 └── data/
