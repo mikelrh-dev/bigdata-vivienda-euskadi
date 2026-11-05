@@ -1,6 +1,6 @@
 """F1: blinda renta_municipal_completa (252/252) con escala explícita.
 
-Genera data/procesado/renta_municipal_referencia.csv:
+Genera data/procesado/renta_municipal_referencia.csv (procesado, no raw):
   codigo_ine, nombre_canonico,
   renta_hogar_atlas_eur (hogar, INE Atlas ADRH - usar para esfuerzo),
   renta_personal_eustat_eur (personal, Eustat - secundaria),

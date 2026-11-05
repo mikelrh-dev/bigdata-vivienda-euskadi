@@ -4,9 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
+import logging
+from decimal import InvalidOperation
+
 from bson.decimal128 import Decimal128
+from pymongo.errors import OperationFailure
 
 from storage.mongo import get_collection, zfill_ine
+
+logger = logging.getLogger(__name__)
 
 
 def _winning_stage(plan: Any) -> str:
@@ -95,8 +101,10 @@ def drop_demo_index() -> None:
     an = get_collection("anuncios")
     try:
         an.drop_index("idx_anuncios_ine_modalidad_precio")
-    except Exception:
-        pass
+    except OperationFailure as exc:
+        logger.warning("drop_demo_index: índice no presente (%s)", exc)
+    except (TypeError, ValueError) as exc:
+        logger.warning("drop_demo_index: valor inválido (%s)", exc)
 
 
 def explain_before_after(codigo_ine: str = "48001", modalidad: str = "larga_estancia",
@@ -108,8 +116,8 @@ def explain_before_after(codigo_ine: str = "48001", modalidad: str = "larga_esta
     if not isinstance(precio, Decimal128):
         try:
             precio = Decimal128(str(precio))
-        except Exception:
-            pass
+        except (TypeError, ValueError, InvalidOperation) as exc:
+            logger.warning("explain_before_after: precio no numérico %r (%s)", precio, exc)
     filtro = {
         "ubicacion.codigo_ine": code,
         "modalidad": modalidad,
@@ -134,8 +142,10 @@ def explain_promo_before_after(codigo_ine: str = "48020") -> dict[str, Any]:
     filtro = {"codigo_ine": code}
     try:
         coll.drop_index("idx_promo_ine_estado_tipo")
-    except Exception:
-        pass
+    except OperationFailure as exc:
+        logger.warning("explain_promo_before_after: índice no presente (%s)", exc)
+    except (TypeError, ValueError) as exc:
+        logger.warning("explain_promo_before_after: valor inválido (%s)", exc)
     before = _explain(coll, filtro)
     coll.create_index([("codigo_ine", 1), ("estado_obra", 1), ("tipologia", 1)], name="idx_promo_ine_estado_tipo")
     after = _explain(coll, filtro)

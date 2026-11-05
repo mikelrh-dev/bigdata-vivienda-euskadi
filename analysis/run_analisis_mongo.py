@@ -1,9 +1,11 @@
-"""Orquestador de analisis MongoDB: ejecuta los 8 pipelines y exporta 3 CSV.
+"""Orquestador de analisis MongoDB: ejecuta los 8 pipelines y exporta 5 CSV.
 
 Nivel 10 de Automatizacion del analisis (RETO 1Evaluacion SBD-BDAv2):
 un script ejecuta todos los analisis principales y devuelve resultados
 preparados para representacion, generados desde PyMongo sin valores
-tecleados.
+tecleados. Reutiliza los 8 pipelines de `mongo_aggregations` (con
+`$group`/`$lookup`/`$unwind` donde los datos lo permiten) y demuestra
+con `explain()` la transicion COLLSCAN -> IXSCAN.
 
 Uso:
   python analysis/run_analisis_mongo.py [--salida data/resultados]
@@ -55,6 +57,16 @@ EXPORTS_3: tuple[tuple[str, str], ...] = (
     ("mongo_esfuerzo_por_municipio.csv", "pipeline_indicadores_municipio"),
     ("mongo_alquiler_por_municipio.csv", "pipeline_alquiler_por_municipio"),
     ("mongo_modalidades.csv", "pipeline_modalidades"),
+)
+
+# Los 5 CSV canonicos (Bloque 3, AGREGACION-01): reutilizan los 8 pipelines
+# sin reimplementar agregaciones. Fichero -> pipeline origen.
+EXPORTS_5: tuple[tuple[str, str], ...] = (
+    ("mongo_esfuerzo_por_municipio.csv", "pipeline_indicadores_municipio"),
+    ("mongo_alquiler_por_municipio.csv", "pipeline_alquiler_por_municipio"),
+    ("mongo_modalidades.csv", "pipeline_modalidades"),
+    ("mongo_accesibilidad_extendida.csv", "pipeline_accesibilidad_extendida"),
+    ("mongo_vpo_por_municipio.csv", "pipeline_vpo_por_municipio"),
 )
 
 
@@ -143,11 +155,12 @@ def _cabecera(filas: list[dict[str, Any]]) -> list[str]:
     return cabecera
 
 
-def exportar_tres_csv(
+def exportar_csv(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
+    exports: tuple[tuple[str, str], ...] = EXPORTS_5,
 ) -> dict[str, Path]:
-    """Escribe los 3 CSV preparados para visualizacion en `out_dir`.
+    """Escribe los CSV canonicos de `exports` en `out_dir`.
 
     Sin valores tecleados: cada fila procede de los pipelines en memoria.
     Encoding `utf-8-sig`, cabecera = union de claves en orden de aparicion.
@@ -156,7 +169,7 @@ def exportar_tres_csv(
     destino = Path(out_dir)
     destino.mkdir(parents=True, exist_ok=True)
     rutas: dict[str, Path] = {}
-    for fichero, nombre_pipeline in EXPORTS_3:
+    for fichero, nombre_pipeline in exports:
         filas = resultados[nombre_pipeline]
         ruta = destino / fichero
         cabecera = _cabecera(filas)
@@ -176,20 +189,53 @@ def exportar_tres_csv(
     return rutas
 
 
+def exportar_tres_csv(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Compatibilidad: escribe los 3 CSV historicos (ver `EXPORTS_3`)."""
+    return exportar_csv(resultados, out_dir, EXPORTS_3)
+
+
+def exportar_cinco_csv(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Escribe los 5 CSV canonicos (Bloque 3, AGREGACION-01).
+
+    Reutiliza los 8 pipelines sin reimplementar agregaciones; los 3
+    historicos mas `pipeline_accesibilidad_extendida` y
+    `pipeline_vpo_por_municipio` (con `$group`/`$lookup`/`$unwind` donde
+    los datos lo permiten).
+    """
+    return exportar_csv(resultados, out_dir, EXPORTS_5)
+
+
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Orquestador de analisis MongoDB: 8 pipelines + 3 CSV"
+        description="Orquestador de analisis MongoDB: 8 pipelines + 5 CSV"
     )
     parser.add_argument(
         "--salida",
         default=str(RESULTADOS_DIR),
-        help="Directorio de salida de los 3 CSV (defecto: data/resultados)",
+        help="Directorio de salida de los 5 CSV (defecto: data/resultados)",
     )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
+    # INDICES-01: demostrar COLLSCAN -> IXSCAN con explain_before_after().
+    # (Se ejecuta antes de los pipelines; el indice ESR queda creado.)
+    try:
+        from analysis.mongo_indexes import explain_before_after
+
+        _exp = explain_before_after()
+        print(f"explain before: stage={_exp['before']['stage']} nReturned={_exp['before']['nReturned']} totalDocsExamined={_exp['before']['totalDocsExamined']} totalKeysExamined={_exp['before']['totalKeysExamined']}")
+        print(f"explain after: stage={_exp['after']['stage']} nReturned={_exp['after']['nReturned']} totalDocsExamined={_exp['after']['totalDocsExamined']} totalKeysExamined={_exp['after']['totalKeysExamined']}")
+        print(f"explain filtro: {_exp['filtro']}")
+    except Exception as exc:  # pragma: no cover
+        print(f"explain: NO REALIZADO ({exc!r})")
     primera = run_all_estandar()
     huella1 = huella_resultados(primera)
     segunda = run_all_estandar()
@@ -201,9 +247,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"n1={n1}")
         print(f"n2={n2}")
         return 1
-    rutas = exportar_tres_csv(primera, Path(args.salida))
+    rutas = exportar_cinco_csv(primera, Path(args.salida))
     for fichero, ruta in rutas.items():
-        nombre_pipeline = dict(EXPORTS_3)[fichero]
+        nombre_pipeline = dict(EXPORTS_5)[fichero]
         print(f"{fichero}: {len(primera[nombre_pipeline])} filas -> {ruta}")
     print(f"pipelines: {list(primera)}")
     print(f"n={n1}")

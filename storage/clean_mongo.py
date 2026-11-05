@@ -7,6 +7,8 @@ update_many / delete_many / bulk_write and persisted in the database.
 
 from __future__ import annotations
 
+import logging
+from decimal import InvalidOperation
 from typing import Any, Iterable
 
 from bson.decimal128 import Decimal128
@@ -14,6 +16,8 @@ from pymongo import UpdateOne, InsertOne, DeleteOne
 from pymongo.collection import Collection
 
 from storage.mongo import get_collection, to_str, zfill_ine
+
+logger = logging.getLogger(__name__)
 
 
 def _counter(result) -> dict[str, int]:
@@ -362,8 +366,47 @@ def _to_decimal(value):
         return value
     try:
         return Decimal128(str(value))
-    except Exception:
+    except (TypeError, ValueError, InvalidOperation) as exc:
+        logger.warning("valor no decimal %r (%s)", value, exc)
         return None
+
+
+def clean_obsolete_fields(
+    collection_name: str = "anuncios",
+    fields: Iterable[str] | None = None,
+    filter: dict[str, Any] | None = None,
+    *,
+    collection: Collection | None = None,
+) -> dict[str, int]:
+    """Función canónica única de limpieza: ``update_many`` + ``$unset``.
+
+    Mismo contrato en ambas colecciones (``anuncios`` y ``municipios``):
+    retorna ``matched_count`` / ``modified_count`` / ``deleted_count``
+    (``deleted_count=0`` porque ``$unset`` no borra documentos; el
+    conteo de documentos queda invariante, p. ej. 759 en prod sin
+    ``MONGO_ALLOW_DESTRUCTIVE=1``).
+
+    ``collection`` permite inyectar otra colección (p. ej. la base de
+    test ``vivienda_euskadi_test``); por defecto usa la productiva vía
+    ``get_collection`` (patcheable en tests, como el resto de módulos).
+    """
+    coll = collection if collection is not None else get_collection(collection_name)
+    obs = list(fields) if fields is not None else ["campo_obsoleto"]
+    unset = {f: "" for f in obs}
+    f: dict[str, Any] = dict(filter) if filter is not None else {}
+    r = coll.update_many(f, {"$unset": unset})
+    c = _counter(r)
+    return {
+        "matched_count": c["matched_count"],
+        "modified_count": c["modified_count"],
+        "deleted_count": c["deleted_count"],
+        "upserted_count": c["upserted_count"],
+    }
+
+
+# Aliases canónicos (misma implementación, mismo contrato).
+clean_mongo_canonical = clean_obsolete_fields
+limpiar_obsoletos = clean_obsolete_fields
 
 
 def clean_null_markers() -> dict[str, Any]:

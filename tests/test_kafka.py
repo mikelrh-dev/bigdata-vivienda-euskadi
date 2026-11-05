@@ -1,9 +1,14 @@
 """Tests de productor/consumidor Kafka (KAFKA-01).
 
 Sin Kafka real: el productor se prueba con un double que registra
-send/flush y el consumidor con upsert real en la base de test
+send/flush/Future y el consumidor con upsert real en la base de test
 vivienda_euskadi_test (colección anuncios). La serialización JSON se
 comprueba en bytes con precio y municipio, y la subida es idempotente.
+
+kafka-python 2.2.3 no admite callback como kwarg de send: el callback
+va en el Future devuelto (add_callback/add_errback). Estos tests lo
+detectan: send debe llamarse sin 'callback' y el Future devuelto debe
+recibir add_callback(_on_send_success) y add_errback(_on_send_error).
 """
 
 from __future__ import annotations
@@ -15,6 +20,8 @@ from storage.kafka_consumer import decode_message, process_value, upsert_anuncio
 from storage.kafka_producer import (
     DEFAULT_BOOTSTRAP_SERVERS,
     DEFAULT_TOPIC,
+    _on_send_error,
+    _on_send_success,
     build_message,
     produce,
 )
@@ -46,7 +53,7 @@ def test_serializacion_json_con_precio_y_municipio():
     assert payload["municipio"] == "Vitoria-Gasteiz"
 
 
-def test_producer_publica_759_con_flush_y_callback():
+def test_producer_publica_759_con_flush_y_future():
     fake = MagicMock()
     n = produce(producer=fake)
     assert n == 759
@@ -56,7 +63,16 @@ def test_producer_publica_759_con_flush_y_callback():
     assert topic == "anuncios_inmobiliarios"
     assert kwargs["key"] == b"fotocasa:131393829"
     assert isinstance(kwargs["value"], bytes)
-    assert "callback" in kwargs
+    # kafka-python 2.2.3: send no admite callback como kwarg; va en el Future.
+    assert "callback" not in kwargs
+    assert "errback" not in kwargs
+    future = fake.send.return_value
+    assert future.add_callback.call_count == 759
+    assert future.add_errback.call_count == 759
+    for call in future.add_callback.call_args_list:
+        assert call.args == (_on_send_success,)
+    for call in future.add_errback.call_args_list:
+        assert call.args == (_on_send_error,)
     payload = json.loads(kwargs["value"].decode("utf-8"))
     assert "precio_eur" in payload
     assert payload["municipio"] == "Vitoria-Gasteiz"
