@@ -31,6 +31,6 @@ Documentación vigente (docs/). Los archivos en argon/ son una copia para revisi
 - archive/ — planes y versiones antiguas (legacy).
 
 ## Artefactos visuales y evidencia RA4 (P-05)
-- NOTA: `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` es tabla literal en `transform/generar_dashboard_completo.py:174-185` (93, 170, 83,73%...), no auto (P-05 prohíbe gráficos tecleados a mano). La única evidencia válida son los 4 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 4).
+- NOTA: `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` es tabla literal en `transform/generar_dashboard_completo.py` (cifras corregidas 2026-11-05: 169, 406/406, 86), no auto (P-05 prohíbe gráficos tecleados a mano). La única evidencia válida son los 4 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 4).
 
 HTMLEOF

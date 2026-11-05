@@ -545,6 +545,29 @@ def load_certificados() -> int:
     return replace_collection("certificados_energeticos", docs)
 
 
+def load_vpo_municipal() -> int:
+    """VPO terminada en el ultimo quinquenio (Udalmap 73), flujo en por mil."""
+    df = _read_csv("vpo_municipal.csv")
+    docs = []
+    for _, row in df.iterrows():
+        code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
+        docs.append({
+            "_id": code,
+            "codigo_ine": code,
+            "municipio": to_str(row.get("municipio")),
+            "vpo_terminadas_por_mil": to_float(row.get("vpo_terminadas_por_mil")),
+            "anio_fuente": to_int(row.get("anio_fuente")),
+            "fuente": to_str(row.get("fuente")),
+            "fuente_url": to_str(row.get("fuente_url")),
+            "fecha_carga": datetime.now(timezone.utc),
+        })
+    if not docs:
+        return 0
+    return replace_collection("vpo_municipal", docs)
+
+
 def load_all() -> dict[str, int]:
     result = {
         "municipios": load_municipios(),
@@ -560,6 +583,7 @@ def load_all() -> dict[str, int]:
         "udalmap_extendido": load_udalmap_extendido(),
         "etxebide_promociones": load_etxebide_promociones(),
         "certificados_energeticos": load_certificados(),
+        "vpo_municipal": load_vpo_municipal(),
     }
     try:
         from analysis.mongo_indexes import ensure_indexes

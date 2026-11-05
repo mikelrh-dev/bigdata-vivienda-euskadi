@@ -99,13 +99,13 @@ erDiagram
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
 | 4 | Docker Compose HDFS + MongoDB | ✅ Hecha (HDFS centro + Mongo local) |
 | 5 | Subida HDFS + recuperación | ✅ Hecha (351 ficheros raw en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw, sin legacy) |
-| 6 | Modelado + operaciones PyMongo | ✅ Hecha (15 colecciones, PyMongo) |
+| 6 | Modelado + operaciones PyMongo | ✅ Hecha (16 colecciones, PyMongo) |
 | 7 | Aggregation Pipeline | ✅ Hecha (8 pipelines) |
 | 8 | Kafka productor/consumidor | ✅ Hecha (broker 4.3.1 KRaft en 9094, topic 3 particiones, productor JSON y consumidor con upsert) |
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-Tests del contrato: `130 passed` (130 collected, ver `pytest tests/ -q`; WP-19 incluido). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md.
+Tests del contrato: `136 passed` (136 collected, ver `pytest tests/ -q`; WP-19 incluido). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md.
 
 ## 📁 Estructura
 
@@ -119,8 +119,8 @@ bigdata-vivienda-euskadi/
 ├── storage/           PyMongo + HDFS central + Kafka VM (listos)
 ├── analysis/          Aggregation Pipeline (hecho, 8 pipelines) + CSV desde Mongo
 ├── notebooks/         Informe de resultados (pendiente)
-├── data/raw/          Datos generados (ignorados por git, 355 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 187 archivos, manifest 184)
+├── data/raw/          Datos generados (ignorados por git, 356 archivos)
+├── data/procesado/    Datos normalizados (ignorados por git, 188 archivos, manifest 185)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 ├── docs/              Documentación (índice en docs/README.md)
 └── plan/              Planificación y decisiones
@@ -131,16 +131,16 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 355 (353 con hash en `docs/raw_manifest_sha256.txt`) |
-| Archivos raw por tipo | CSV 128, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
-| Archivos silver | 187 (manifest 184) |
+| Archivos raw (bronce) | 356 (354 con hash en `docs/raw_manifest_sha256.txt`) |
+| Archivos raw por tipo | CSV 129, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
+| Archivos silver | 188 (manifest 185) |
 | Anuncios unificados | 759 (491 larga estancia + 268 temporal) en 83 municipios |
 | Anuncios residenciales | 491 en 75 municipios |
 | Anuncios de habitaciones | 201 en 11 municipios |
 | Municipios sin anuncios residenciales | 169 |
 | Municipios robustos (n≥30) | 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 130 passed (130 collected) |
+| Tests | 136 passed (136 collected) |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -156,7 +156,7 @@ bigdata-vivienda-euskadi/
 - `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; generado 2026-11-01, verificar tras regeneracion).
 - `auditoria_lagunas_silver.csv` — profiling de 40 CSVs (filas, nulos, cobertura/252 muns).
 - `dashboard.html` / `dashboard_completo.html` — dashboards estaticos manuales con conclusiones (los generadores `transform/generar_dashboard_*.py` solo producen PNG, no HTML).
-- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` es tabla literal en `transform/generar_dashboard_completo.py:174-185` (93, 170, 83,73%...), no auto. La única evidencia válida son los 4 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 4).
+- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` es tabla literal en `transform/generar_dashboard_completo.py`, no auto. La única evidencia válida son los 4 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 4).
 - 13 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
 - `README.md` — índice de artefactos.
 
@@ -250,8 +250,8 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (130 passed)
-- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (13 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (136 passed)
+- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (16 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
@@ -296,5 +296,5 @@ El gate de Integración pendiente es subir el bronce, publicar mensajes, consumi
 - VPO: 406 promociones en 77 municipios con `NumViviendas` vacío (stock no público); el flujo oficial municipal se integra aparte.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura: MongoDB hecho (15 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
+- Infraestructura: MongoDB hecho (16 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.

@@ -17,7 +17,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 5. **Pipeline reproducible**: 8 pipelines + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`): dos ejecuciones dan la misma huella y los mismos CSV 253/253/3 (ver `docs/matriz_indicadores.md`).
 6. **Los 10 criterios** (detalle abajo): raw inmutable, silver utf-8-sig, esfuerzo 18-34, robustos n>=30, pipelines con huella, performance explain, tests, trazabilidad, cobertura 159+IDW, cadena HDFS+Kafka.
 7. **Integridad**: `generar_manifest.py --verify` (353 raw + 184 silver) y `transform/run_all.py --check` (exit 0).
-8. **Tests**: `pytest tests -q` = 130 passed, sin `data/raw` en `git status`.
+8. **Tests**: `pytest tests -q` = 136 passed, sin `data/raw` en `git status`.
 
 ## Los 10 criterios y su laguna
 
@@ -29,7 +29,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 | 4 | Robustos n>=30 y sensibles | Bilbao 173, Donostia 113, Getxo 40, Vitoria 39 (1 anuncio de diferencia) | Rankear a Barakaldo 38,49% sin n es el error que visa O2. |
 | 5 | Pipelines y huella reproducible | 8 pipelines + orden canonico + SHA-256 en `run_analisis` | Sin orden canonico, empates de `$sort` dan huellas distintas. |
 | 6 | Performance Mongo (índices/explain) | COLLSCAN 759 -> IXSCAN 1 en `test_indexes_explain` | Sin indice compuesto el lookup es full scan. |
-| 7 | Tests y gate | 130 passed en `.venv`, `run_all --check` exit 0 | Gate rojo = no cierre; no hay cierre parcial. |
+| 7 | Tests y gate | 136 passed en `.venv`, `run_all --check` exit 0 | Gate rojo = no cierre; no hay cierre parcial. |
 | 8 | Trazabilidad de fuentes | 5 indicadores con fuente + pipeline en `matriz_indicadores` | Tasa paro aprox (NaN) o renta como salario real destruye la defensa. |
 | 9 | Cobertura 159 + sensibilidad IDW | Oficial 159 mediana 26,61; IDW 93 mediana 23,38 | Usar los 252 como si fueran 159 oficiales exagera cobertura. |
 | 10 | Cadena HDFS centro + Kafka pid 1832 | HDFS solo lectura + Kafka pid 1832 re-verificado en trazabilidad | Si se promete cadena sin verificarla, la defensa cae por sobreventa. |

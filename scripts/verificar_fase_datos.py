@@ -132,7 +132,7 @@ def main() -> int:
           and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
           f"{len(cob)} mun")
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(encoding="utf-8"))
-    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 353,
+    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 354,
           f"{man['n_ficheros']} ficheros")
     mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").read_text(encoding="utf-8"))
     import re as _re
