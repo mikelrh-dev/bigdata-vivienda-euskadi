@@ -27,7 +27,7 @@ timelines GSAP pausados en `window.__timelines`, todo elemento timed con
   (351 ficheros raw en
   `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`),
   Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft, topic
-  `anuncios_inmobiliarios` con 3 particiones, MongoDB 13 colecciones y
+  `anuncios_inmobiliarios` con 3 particiones, MongoDB 15 colecciones y
   8 pipelines de agregación.
 
 ### Cifras verificadas desde el CSV (Python, 2026-11-04)
@@ -55,7 +55,7 @@ timelines GSAP pausados en `window.__timelines`, todo elemento timed con
 | Escena | Tiempo | Contenido |
 |---|---|---|
 | 1 — Fuentes → HDFS centro | 0–8 s | Eustat · INE · Fotocasa · Pisos.com → HDFS `10.22.87.215:50070` (`iabd-user15`, 351 ficheros) |
-| 2 — Kafka VM → Mongo | 8–16 s | Kafka `192.168.201.162:9094` 4.3.1 KRaft · topic `anuncios_inmobiliarios` 3 particiones → Mongo 13 colecciones · 8 pipelines |
+| 2 — Kafka VM → Mongo | 8–16 s | Kafka `192.168.201.162:9094` 4.3.1 KRaft · topic `anuncios_inmobiliarios` 3 particiones → Mongo 15 colecciones · 8 pipelines |
 | 3 — Agregación → CSV | 16–24 s | 8 pipelines → `mongo_esfuerzo_por_municipio.csv` (252 filas · mediana 40,9 % · 249 > 30 %) |
 | 4 — Choropleth de puntos | 24–34 s | Puntos por esfuerzo real (> 30 % naranja vs ≤ 30 % verde) + barras top robustos (n_anuncios) |
 

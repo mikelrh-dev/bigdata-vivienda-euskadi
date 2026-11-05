@@ -215,26 +215,7 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "out": ["proc:anuncios_vivienda_residencial.csv",
                 "proc:anuncios_vivienda_temporal.csv",
                 "proc:anuncios_habitaciones_unificados.csv"], "out_glob": []},
-    # resultados
-    "generar_dashboard_visual.py": {
-        "group": "resultados",
-        "in": ["proc:analisis_variables_base.csv"],
-        "out": ["res:g1_esfuerzo_territorio.png",
-                "res:g2_renta_vs_alquiler.png",
-                "res:g3_top10_precio.png",
-                "res:g4_distribucion_anuncios.png",
-                "res:g5_esfuerzo_robustos.png"], "out_glob": []},
-    "generar_dashboard_completo.py": {
-        "group": "resultados",
-        "in": ["proc:dim_municipios_enriquecido.csv"],
-        "out": ["res:A1_esfuerzo_territorio.png",
-                "res:A2_municipios_inasequibles.png",
-                "res:B_paro_vs_precio.png",
-                "res:C_vpo_antiguedad.png",
-                "res:D_distancia_precio.png",
-                "res:E_demografia.png",
-                "res:F_comparativa_th.png",
-                "res:G_gaps_limitaciones.png"], "out_glob": []},
+    # resultados (Mongo, canonicos: analysis/run_analisis_mongo.py)
     "generar_mapa_esquema.py": {
         "group": "resultados",
         "in": [],
@@ -254,6 +235,8 @@ EXCLUIDOS: dict[str, str] = {
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
     "validar_renta.py": "Justificación firmada 2026-11-05: no es transformación ETL silver (no declara in/out proc); es QA bajo demanda; se mantiene fuera del orquestador para no alterar manifest 353/184 ni el gate 130.",
     "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
+    "generar_dashboard_visual.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo en analysis/run_analisis_mongo.py)",
+    "generar_dashboard_completo.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo; G literal->conteos Mongo)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }
 

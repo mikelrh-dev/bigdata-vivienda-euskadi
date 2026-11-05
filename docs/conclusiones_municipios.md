@@ -9,7 +9,7 @@ Fuente de verdad: Mongo pipeline `pipeline_indicadores_municipio` (n y `precio_m
 | Getxo | 48044 | 40 | 28,60 | 46,06 | 1527,50 | 887,00 | 11,1 | 6,40 |
 | Vitoria-Gasteiz | 01059 | 39 | 33,37 | 53,75 | 1406,13 | 700,00 | 9,6 | 8,89 |
 
-Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite las tres filas primeras con `esfuerzo_joven_pct_18_34`, `precio_medio_eur` y `tasa_paro_lanbide_pct` identicos. Paro: silver `analisis_variables_base.csv` columna `tasa_paro_lanbide_pct` (Lanbide, nunca `tasa_paro_aprox_pct` que es NaN en 252). Precio m2: `alquiler_municipal_completo.csv` columna `renta_media_eur_m2_mediana` (Eustat oficial 2024) y Mongo `renta_m2_alquiler`.
+Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite las cuatro filas (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, `codigo_ine` a 5 digitos) con `esfuerzo_joven_pct_18_34`, `precio_medio_eur` y `tasa_paro_lanbide_pct` no nulo identicos a la tabla. Paro: Mongo `municipios.empleo.tasa_paro_lanbide_pct` via `pipeline_indicadores_municipio` (silver `analisis_variables_base.csv` col. `tasa_paro_lanbide_pct` como respaldo coherente, nunca `tasa_paro_aprox_pct` que es NaN en 252). Precio m2: `alquiler_municipal_completo.csv` columna `renta_media_eur_m2_mediana` (Eustat oficial 2024) y Mongo `renta_m2_alquiler`.
 
 ## Una frase por municipio
 
@@ -20,7 +20,7 @@ Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite
 
 ## Advertencia metodologica
 
-- **Getxo (40) contra Vitoria (39) difieren en 1 anuncio**: el umbral robusto n>=30 es una linea de decision, no una diferencia economica; el ranking fino Getxo > Vitoria puede invertirse con un solo anuncio nuevo. Por eso el esfuerzo 18-34 (28,60% frente a 33,37%) se cita con su n y con la cuantia, no como victoria.
+- **Getxo 40 vs Vitoria-Gasteiz 39 (1 anuncio de diferencia)**: el umbral robusto n>=30 es una linea de decision, no una diferencia economica; el ranking fino Getxo > Vitoria puede invertirse con un solo anuncio nuevo. Por eso el esfuerzo 18-34 (28,60% frente a 33,37%) se cita con su n y con la cuantia, no como victoria; Getxo 40 vs Vitoria no es ranking firme.
 - **Barakaldo (48013, n=13, esfuerzo 18-34 38,49%) supera a Donostia (38,17%)**: el ejemplo de Barakaldo (Mongo `pipeline_indicadores_municipio`, esfuerzo 18-34 = 38,4959%) demuestra que el esfuerzo alto aparece tambien fuera de los robustos; no se puede convertir el ranking de esfuerzo en ranking de municipios sin aplicar el filtro n>=30.
 
 ## O1 canonico (ver `README.md`)
@@ -41,4 +41,4 @@ Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite
 
 - Esfuerzo 18-34 = `cuantia_media_eur_mes_mediana` x12 / `renta_joven_estimada_18_34` x100; esfuerzo 16-29 legacy usa `renta_joven_estimada_16_29` con el mismo numerador. El pipeline principal es `pipeline_indicadores_municipio` en `analysis/mongo_aggregations.py`.
 - `n_anuncios` y `precio_medio_eur` vienen del `$lookup` a `anuncios` por `ubicacion.codigo_ine`; son foto 2026 (Fotocasa + Pisos + RealtyAPI), no stock oficial.
-- Paro y cuello de botella: sin HDFS ni Kafka por no estar en clase, solo offline; todas las cifras anteriores salen de CSV silver y de Mongo en local.
+- Paro y cuello de botella: cadena offline actual — HDFS centro solo lectura (raw intacto, procesado sin subir) + Kafka VM pid 1832 verificado en `docs/trazabilidad_vm.md`; todas las cifras anteriores salen de CSV regenerados y de Mongo en local (Docker).

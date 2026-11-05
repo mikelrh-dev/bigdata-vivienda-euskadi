@@ -99,7 +99,7 @@ erDiagram
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
 | 4 | Docker Compose HDFS + MongoDB | ✅ Hecha (HDFS centro + Mongo local) |
 | 5 | Subida HDFS + recuperación | ✅ Hecha (351 ficheros raw en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw, sin legacy) |
-| 6 | Modelado + operaciones PyMongo | ✅ Hecha (13 colecciones, PyMongo) |
+| 6 | Modelado + operaciones PyMongo | ✅ Hecha (15 colecciones, PyMongo) |
 | 7 | Aggregation Pipeline | ✅ Hecha (8 pipelines) |
 | 8 | Kafka productor/consumidor | ✅ Hecha (broker 4.3.1 KRaft en 9094, topic 3 particiones, productor JSON y consumidor con upsert) |
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
@@ -293,8 +293,8 @@ El gate de Integración pendiente es subir el bronce, publicar mensajes, consumi
 - Proxy renta (falacia ecológica): renta municipal aplicada homogéneamente, no captura precariedad juvenil.
 - Emancipación solo a nivel CAE, no municipal.
 - Mezcla de años: anuncios 2026 vs alquiler/renta 2024.
-- VPO 83.73% ceros: sin stock real.
+- VPO: 406 promociones en 77 municipios con `NumViviendas` vacío (stock no público); el flujo oficial municipal se integra aparte.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura: MongoDB hecho (13 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
+- Infraestructura: MongoDB hecho (15 colecciones, 8 pipelines), HDFS centro y Kafka VM listos y documentados, falta solo el gate extremo a extremo y la demo final.
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.

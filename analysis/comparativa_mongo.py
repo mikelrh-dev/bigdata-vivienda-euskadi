@@ -91,6 +91,19 @@ def comparativa_tres_robustos(
     return filas
 
 
+def comparativa_cuatro_robustos(
+    min_n: int = 30,
+    output_path: str | Path | None = None,
+) -> list[dict[str, Any]]:
+    """Bloque 4 (PLAN_10 17): los 4 robustos n>=30 con paro Lanbide no nulo.
+
+    Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, con el mismo
+    pipeline que los otros tres. `comparativa_tres_robustos(top_n=3)` se
+    conserva para compatibilidad con tests existentes.
+    """
+    return comparativa_tres_robustos(min_n=min_n, top_n=4, output_path=output_path)
+
+
 def escribir_csv(filas: list[dict[str, Any]], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as fh:
@@ -110,7 +123,7 @@ def escribir_csv(filas: list[dict[str, Any]], path: Path) -> None:
 
 
 def main() -> int:
-    filas = comparativa_tres_robustos(output_path=DEFAULT_CSV)
+    filas = comparativa_cuatro_robustos(output_path=DEFAULT_CSV)
     for fila in filas:
         print(fila)
     print(f"csv: {DEFAULT_CSV} ({len(filas)} filas)")

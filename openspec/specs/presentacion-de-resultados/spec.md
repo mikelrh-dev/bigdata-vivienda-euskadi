@@ -111,37 +111,30 @@ ejecute consultas y agregaciones.
 - AND los resultados devueltos quedan preparados para su representación
 - AND repetir la ejecución reproduce los mismos resultados
 
-### Requirement: INDICADORES-01 — Cinco indicadores con 2 o más fuentes
+### Requirement: INDICADORES-01 — Cinco indicadores con pipeline Mongo verdadero o silver justificado
 
-El sistema SHALL calcular al menos 3 indicadores relacionados con
-vivienda/emancipación (nivel 7 de la rúbrica v2) y, para el nivel 10, SHALL
-calcular al menos 5 indicadores combinando información procedente de 2 o más
-fuentes.
+El sistema SHALL calcular 5 indicadores con pipeline Mongo verdadero para
+tensión social y paro Lanbide, o SHALL declararlos silver con justificación
+documentada y sin inventar valores. SHALL preservar `metodo_imputacion` y
+MUST NOT aplicar `fillna` mediana sin flag `is_imputed`. Los CSV canónicos
+con huella SHALL ser 253 y 253 filas y 3 automáticos (regenerables).
+(Previously: 5 indicadores con 2+ fuentes y reproducibilidad desde MongoDB,
+y tensión/paro en SHOULD por silver según `auditoria_lagunas_silver.csv`.)
 
-> Cotejo PDF (2026-11-05): PDF línea 121, columna *10 puntos* literal:
-> «Calcula al menos 5 indicadores, combinando información procedente de 2
-> o más fuentes». Sin diferencias literales.
+#### Scenario: Pipeline verdadero o silver justificado
 
-#### Scenario: Al menos 3 indicadores — nivel 7
+- GIVEN los 5 indicadores con tensión social y paro Lanbide
+- WHEN se ejecutan las pipelines sobre MongoDB
+- THEN existen pipelines Mongo reales o justificación silver documentada
+- AND `metodo_imputacion` se preserva en la salida
+- AND todo `fillna` mediana lleva flag `is_imputed`
 
-- GIVEN los datos de vivienda y emancipación cargados
-- WHEN se calculan los indicadores
-- THEN existen al menos 3 indicadores definidos y calculados
+#### Scenario: CSV canónicos con huella
 
-#### Scenario: Al menos 5 indicadores con 2 o más fuentes — nivel 10
-
-- GIVEN al menos 2 fuentes de datos diferentes
-- WHEN se calculan los indicadores
-- THEN existen al menos 5 indicadores
-- AND cada indicador combina información de al menos 2 fuentes
-- AND cada indicador es reproducible desde MongoDB
-
-> Extensión propia más estricta que el PDF: «cada indicador es reproducible
-> desde MongoDB». El PDF (línea 121) solo dice «combinando información
-> procedente de 2 o más fuentes»; no exige reproducibilidad explícita. Se
-> conserva sin borrar como endurecimiento propio, verificado por
-> `tests/test_mongo_orquestador.py` (huella `huella_resultados` y conteos
-> `conteos` idénticos entre dos ejecuciones). No es requisito v2.
+- GIVEN los 5 indicadores calculados
+- WHEN se resumen los resultados en `docs/matriz_indicadores.md`
+- THEN constan los CSV 253 y 253 filas y 3 automáticos con huella
+- AND regenerar reproduce los mismos resultados
 
 ### Requirement: PREPARACION-VISUALIZACION-01 — Tres conjuntos automáticos para representar
 
@@ -180,39 +173,58 @@ consultas PyMongo, nunca de números tecleados a mano.
 - AND ningún valor procede de un número escrito a mano
 - AND regenerar los conjuntos reproduce los mismos resultados
 
-### Requirement: CONCLUSION-01 — Respuesta al reto: 3 municipios vinculados a indicadores
+### Requirement: CONCLUSION-01 — Guion Tema 8 de 1 página con 10 criterios y lagunas
 
-El sistema SHALL obtener conclusiones para al menos 2 municipios o zonas
-(nivel 7 de la rúbrica v2) y, para el nivel 10, SHALL comparar al menos 3
-municipios o zonas, con cada conclusión vinculada a un indicador calculado con
-MongoDB. SHALL explicar por qué cada municipio ofrece mejores o peores
-posibilidades de emancipación para una persona joven, respaldándose en los
-datos analizados.
+El sistema SHALL redactar en `docs/guion_defensa.md` un guion Tema 8 de 1
+página centrado en embedding, índices y atomicidad, con la cadena offline
+HDFS centro + Kafka pid 1832. SHALL documentar los 10 criterios y las lagunas,
+y MUST NOT dejar 16-29 sin marcar: 16-29 SHALL marcarse legacy y el canónico
+es 18-34. La cadena offline SHALL limitarse a lectura de HDFS centro y MUST
+NOT tocar `data/raw` ni raw HDFS, ni crear carpeta nueva, ni subir procesado;
+prod intacta por defecto (solo lectura o test con
+`MONGO_ALLOW_DESTRUCTIVE=1`).
+(Previously: comparación de 3 municipios vinculada a indicadores, con
+advertencia de muestra pequeña.)
 
-> Cotejo PDF (2026-11-05): PDF línea 122, columna *10 puntos* literal:
-> «Compara al menos 3 municipios/zonas y cada conclusión está vinculada a
-> un indicador calculado con MongoDB». Sin diferencias literales.
+#### Scenario: Guion de 1 página con cadena actual
 
-#### Scenario: Conclusiones para 2 municipios — nivel 7
+- GIVEN `docs/guion_defensa.md`
+- WHEN se revisa el guion Tema 8
+- THEN tiene 1 página con embedding, índices, atomicidad y HDFS centro + Kafka pid 1832
+- AND constan los 10 criterios y las lagunas documentadas
 
-- GIVEN los indicadores calculados
-- WHEN se redacta la conclusión
-- THEN se obtienen conclusiones para al menos 2 municipios o zonas
+#### Scenario: 16-29 marcado legacy
 
-#### Scenario: Comparación de 3 municipios vinculada a indicadores — nivel 10
+- GIVEN el guion Tema 8 y la matriz O1-O4
+- WHEN aparece el rango 16-29
+- THEN está marcado legacy y el canónico es 18-34
+- AND ninguna conclusión usa 16-29 como rango canónico
 
-- GIVEN los indicadores calculados con MongoDB
-- WHEN se redacta la conclusión
-- THEN se comparan al menos 3 municipios o zonas
-- AND cada conclusión está vinculada a un indicador calculado con MongoDB
-- AND cada afirmación cita el indicador y su valor
-- AND se explica el porqué
+### Requirement: RESPUESTA-01 — Respuesta comparativa de 4 robustos con matriz O1-O4
 
-#### Scenario: La conclusión no exagera
+El sistema SHALL compare 4 municipios robustos —Bilbao 173, Donostia 113,
+Getxo 40, Vitoria-Gasteiz 39 anuncios— con paro Lanbide no nulo o silver
+justificado, y SHALL documentar la matriz O1-O4 en
+`docs/conclusiones_municipios.md` con mediana 26,61 (oficial 18-34) y 25,2%
+sobre 30. La matriz SHALL advertir que Getxo 40 vs Vitoria-Gasteiz 39 difiere
+en 1 anuncio y MUST NOT leerse como ranking firme entre esos dos. La
+comparativa SHALL registrarse en `docs/trazabilidad_vm.md` (Fecha/Objetivo/
+Máquina/Comando/Salida/Conclusión) y MUST NOT tocar `data/raw` ni raw HDFS,
+ni crear carpeta nueva, ni subir procesado.
 
-- GIVEN un municipio con pocos anuncios
-- WHEN aparece en la comparación
-- THEN se advierte la limitación del tamaño de muestra
+#### Scenario: Cuatro robustos con paro no nulo
+
+- GIVEN los 4 robustos Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39
+- WHEN se genera la comparativa en `docs/conclusiones_municipios.md`
+- THEN el paro Lanbide no es nulo o consta justificación silver
+- AND la salida está trazada en `docs/trazabilidad_vm.md`
+
+#### Scenario: Matriz O1-O4 con advertencia Getxo/Vitoria
+
+- GIVEN la matriz O1-O4 con mediana 26,61 y 25,2% sobre 30
+- WHEN se lee la comparación Getxo 40 vs Vitoria-Gasteiz 39
+- THEN figura la advertencia de 1 anuncio de diferencia
+- AND NO se presenta como ranking firme
 
 ## Mapa trazable docx §13–§14 (Tema 8, evaluación separada)
 

@@ -40,11 +40,13 @@ def main() -> int:
         if _c in dim.columns:
             dim[_c] = pd.to_numeric(dim[_c], errors="coerce")
 
-    # imputar nulo con mediana (si hubiera)
+    # imputar nulo con mediana con flag explícito (INDICADORES-01: sin fillna silencioso)
     med = etx24["etxebide_solicitudes_por_mil_2024"].median()
+    etx24["etx_imputado"] = etx24["etxebide_solicitudes_por_mil_2024"].isna()
     etx24["etxebide_solicitudes_por_mil_2024"] = etx24["etxebide_solicitudes_por_mil_2024"].fillna(med)
 
     dim = dim.merge(etx24, on="codigo_ine", how="left")
+    dim["etx_imputado"] = dim["etxebide_solicitudes_por_mil_2024"].isna()
     dim["etxebide_solicitudes_por_mil_2024"] = dim["etxebide_solicitudes_por_mil_2024"].fillna(med)
 
     # percentiles
@@ -52,8 +54,9 @@ def main() -> int:
     # esfuerzo_ovj_referencia_pct usa un denominador autonomico constante y
     # solo refleja diferencias de alquiler, no de renta: no se usa aqui.
     # Fallback fiscal (mismo numerador, ratio CAE) donde el municipal falta.
+    dim["esf_fallback"] = dim["esfuerzo_joven_pct"].isna()
     esf = dim["esfuerzo_joven_pct"].fillna(dim["esfuerzo_max_pct"])
-    n_fb = int(dim["esfuerzo_joven_pct"].isna().sum())
+    n_fb = int(dim["esf_fallback"].sum())
     print(f"esfuerzo canonico: {int(esf.notna().sum())} mun., fallback fiscal: {n_fb}")
     p_sol = _percentil(dim["etxebide_solicitudes_por_mil_2024"])
     p_esf = _percentil(esf)
@@ -70,7 +73,8 @@ def main() -> int:
 
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     tension = dim[["codigo_ine", "etxebide_solicitudes_por_mil_2024",
-                   "tension_demanda_social", "tension_categoria"]].copy()
+                   "tension_demanda_social", "tension_categoria",
+                   "etx_imputado", "esf_fallback"]].copy()
     out_path = PROC / "dim_municipios_tension.csv"
     tension.to_csv(out_path, index=False, encoding="utf-8-sig")
     print(f"OK: {out_path} ({len(dim)} filas, {len(dim.columns)} cols)")

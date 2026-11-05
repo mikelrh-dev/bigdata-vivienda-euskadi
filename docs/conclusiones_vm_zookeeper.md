@@ -13,7 +13,7 @@
 - HDFS en clúster central de Hadoop, no en Windows ni en la VM local. En la VM no hay Hadoop ni Docker, pero eso no es bloqueante: el runtime, las rutas `/raw` y `/procesado` y la prueba de recuperación se hacen contra el clúster del centro vía WebHDFS. Decisión previa al siguiente loop: conectar `storage/hdfs_utils.py` al endpoint del centro con su host, puerto y credenciales según `.env`.
 - Repo: `storage` solo tiene `mongo.py`, `load_mongo.py` y `clean_mongo.py`. Faltan `hdfs_utils.py`, `kafka_producer.py` y `kafka_consumer.py`
 - `.env` desactualizado: apunta a `192.168.1.100:9092` y `HDFS_URL localhost:9870`, no a `192.168.201.162:9094`
-- Mongo hecho: 13 colecciones productivas y datos listos (raw 199 ficheros, procesado 118)
+- Mongo hecho: 15 colecciones y datos listos (raw 355 ficheros, procesado 187)
 
 ## Lo que falta para la rúbrica BDA
 
