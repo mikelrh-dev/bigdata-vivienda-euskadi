@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="es" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #0b1220;
+        --panel: #111b30;
+        --panel-2: #16213a;
+        --ink: #f4f6fb;
+        --muted: #9aa7c2;
+        --accent: #4f8cff;
+        --accent-2: #37d399;
+        --warn: #ffb454;
+        --hot: #ff6b4a;
+        --line: rgba(255,255,255,0.16);
+        --font: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root { position: relative; width: 100%; height: 100%; font-family: var(--font); color: var(--ink); }
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 36px 80px 110px;
+      }
+      .kicker {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.30em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .title {
+        margin-top: 8px;
+        font-size: 46px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+      .title em { font-style: normal; color: var(--accent); }
+      .subtitle {
+        margin-top: 8px;
+        font-size: 23px;
+        color: var(--muted);
+        line-height: 1.35;
+        max-width: 1500px;
+      }
+      .flow {
+        margin-top: 24px;
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+      }
+      .cards { display: flex; flex-direction: column; gap: 14px; width: 420px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px 22px;
+      }
+      .card .tag {
+        display: inline-block;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #0b1220;
+        background: var(--accent);
+        border-radius: 999px;
+        padding: 6px 14px;
+      }
+      .card .tag.teal { background: var(--accent-2); }
+      .card .tag.amber { background: var(--warn); }
+      .card .tag.coral { background: var(--hot); color: #0b1220; }
+      .card h3 { margin-top: 10px; font-size: 28px; font-weight: 800; line-height: 1.1; }
+      .card p { margin-top: 6px; font-size: 20px; color: var(--muted); line-height: 1.4; }
+      .card code { font-size: 20px; color: var(--ink); word-break: break-all; }
+      .arrow-col {
+        width: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .arrow-line {
+        width: 100%;
+        height: 6px;
+        background: transparent;
+        border-top: 4px dashed rgba(79,140,255,0.75);
+        position: relative;
+      }
+      .arrow-head {
+        position: absolute;
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 16px solid transparent;
+        border-bottom: 16px solid transparent;
+        border-left: 26px solid var(--accent);
+      }
+      .arrow-sat {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 17px;
+        color: var(--muted);
+        white-space: nowrap;
+        background: var(--ground);
+        padding: 4px 10px;
+        border-radius: 8px;
+      }
+      .big-card {
+        flex: 1;
+        background: linear-gradient(160deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 26px 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .big-card h3 { font-size: 38px; font-weight: 800; line-height: 1.05; }
+      .big-card h3 .accent { color: var(--accent); }
+      .big-card h3 .teal { color: var(--accent-2); }
+      .spec {
+        margin-top: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .spec-row { display: flex; justify-content: space-between; align-items: baseline; gap: 32px; }
+      .spec-row .k { font-size: 19px; color: var(--muted); }
+      .spec-row .v { font-size: 22px; font-weight: 700; text-align: right; }
+      .spec-row .v small { display: block; font-size: 17px; font-weight: 500; color: var(--muted); }
+      .counters { display: flex; gap: 22px; margin-top: 16px; }
+      .counter {
+        flex: 1;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px 16px;
+        text-align: center;
+      }
+      .counter .n { font-size: 50px; font-weight: 800; line-height: 1; }
+      .counter .n span { font-size: 24px; color: var(--muted); }
+      .counter .l { margin-top: 6px; font-size: 18px; color: var(--muted); line-height: 1.3; }
+      .partitions { display: flex; gap: 14px; margin-top: 16px; }
+      .part {
+        flex: 1;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        padding: 18px 14px;
+        text-align: center;
+        background: rgba(255,255,255,0.04);
+      }
+      .part .pn { font-size: 19px; font-weight: 700; color: var(--muted); }
+      .part .pv { font-size: 32px; font-weight: 800; margin-top: 4px; }
+      .stage-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+      .chip {
+        font-size: 19px;
+        font-weight: 600;
+        padding: 7px 13px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.06);
+      }
+      .csv-box {
+        margin-top: 16px;
+        background: #0a0f1e;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px 18px;
+      }
+      .csv-box .file { font-size: 24px; font-weight: 700; color: var(--accent-2); }
+      .csv-box .cols { margin-top: 6px; font-size: 19px; color: var(--muted); }
+      .kpi-row { display: flex; gap: 22px; margin-top: 16px; }
+      .caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 22px 48px;
+        background: rgba(5, 9, 18, 0.86);
+        border-top: 1px solid rgba(255,255,255,0.12);
+        font-size: 26px;
+        color: var(--muted);
+        text-align: center;
+      }
+      .caption b { color: var(--ink); font-weight: 600; }
+      .progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 10px;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      }
+      /* Mapa */
+      .map-layout {
+        margin-top: 20px;
+        display: flex;
+        gap: 32px;
+        flex: 1;
+        min-height: 0;
+      }
+      .map-panel {
+        width: 920px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .map-panel svg { width: 100%; height: 100%; display: block; }
+      .pt-hot { fill: var(--hot); stroke: #0b1220; stroke-width: 2; }
+      .pt-cold { fill: var(--accent-2); stroke: #0b1220; stroke-width: 2; }
+      .pt-cold-halo { fill: none; stroke: rgba(55,211,153,0.55); stroke-width: 3; }
+      .map-labels text {
+        fill: #f4f6fb;
+        font-size: 38px;
+        font-weight: 700;
+        font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+        paint-order: stroke;
+        stroke: rgba(5,9,18,0.85);
+        stroke-width: 8px;
+        stroke-linejoin: round;
+      }
+      .map-legend {
+        position: absolute;
+        left: 28px;
+        bottom: 28px;
+        background: rgba(5,9,18,0.88);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .legend-row { display: flex; align-items: center; gap: 12px; font-size: 19px; }
+      .dot { width: 20px; height: 20px; border-radius: 50%; border: 3px solid #0b1220; }
+      .dot.hot { background: var(--hot); }
+      .dot.cold { background: var(--accent-2); }
+      .side-panel { flex: 1; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+      .side-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 20px 24px;
+      }
+      .side-card h4 { font-size: 23px; font-weight: 700; letter-spacing: 0.02em; }
+      .side-card h4 span { color: var(--muted); font-weight: 500; font-size: 19px; }
+      .stat-grid { display: flex; gap: 14px; margin-top: 12px; }
+      .stat { flex: 1; border-top: 3px solid var(--accent); padding-top: 10px; }
+      .stat.teal { border-color: var(--accent-2); }
+      .stat.coral { border-color: var(--hot); }
+      .stat .sv { font-size: 38px; font-weight: 800; line-height: 1; }
+      .stat .sl { margin-top: 5px; font-size: 18px; color: var(--muted); line-height: 1.3; }
+      .bar-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+      .bar-row { display: flex; align-items: center; gap: 14px; }
+      .bar-name { width: 270px; font-size: 22px; font-weight: 600; text-align: right; }
+      .bar-track { flex: 1; height: 38px; background: rgba(255,255,255,0.10); border-radius: 19px; overflow: hidden; }
+      .bar-fill { height: 100%; border-radius: 19px; background: var(--accent); }
+      .bar-fill.alt { background: var(--hot); }
+      .bar-num { width: 120px; font-size: 26px; font-weight: 800; }
+      .bar-sub { font-size: 17px; color: var(--muted); width: 120px; }
+      .bar-note { margin-top: 8px; font-size: 18px; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="pipeline-mapa" data-start="0" data-duration="34" data-width="1920" data-height="1080">
+
+      <!-- Barra de progreso 0–34 s -->
+      <div class="progress clip" id="progress" data-start="0" data-duration="34" data-track-index="9"></div>
+
+      <!-- Escena 1 (0–8 s): Fuentes -> HDFS centro -->
+      <section class="scene clip" id="scene-1" data-start="0" data-duration="8" data-track-index="0">
+        <div class="kicker">Escena 1 · Fuentes</div>
+        <h2 class="title">Cuatro fuentes <em>→ HDFS centro</em></h2>
+        <p class="subtitle">Eustat, INE, Fotocasa y Pisos.com alimentan el lago central. 351 ficheros raw en HDFS.</p>
+        <div class="flow">
+          <div class="cards">
+            <div class="card">
+              <span class="tag">Eustat</span>
+              <h3>Población y renta</h3>
+              <p>Demografía, renta y alquiler municipal</p>
+            </div>
+            <div class="card">
+              <span class="tag teal">INE</span>
+              <h3>Salarios y atlas</h3>
+              <p>Tablas 693xx y Atlas de distribución de renta</p>
+            </div>
+            <div class="card">
+              <span class="tag amber">Fotocasa</span>
+              <h3>Anuncios alquiler</h3>
+              <p>Portal Fotocasa — precios y superficies</p>
+            </div>
+            <div class="card">
+              <span class="tag coral">Pisos.com</span>
+              <h3>Anuncios alquiler</h3>
+              <p>Portal Pisos.com — precios y superficies</p>
+            </div>
+          </div>
+          <div class="arrow-col">
+            <div class="arrow-line" id="arrow-1"><div class="arrow-head"></div></div>
+            <div class="arrow-sat">ingesta raw</div>
+          </div>
+          <div class="big-card">
+            <h3>HDFS <span class="accent">centro</span></h3>
+            <div class="spec">
+              <div class="spec-row"><span class="k">Nodo HDFS</span><span class="v">10.22.87.215:50070</span></div>
+              <div class="spec-row"><span class="k">Usuario</span><span class="v">iabd-user15</span></div>
+              <div class="spec-row"><span class="k">Ruta bigdata</span><span class="v">/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw</span></div>
+              <div class="spec-row"><span class="k">Volumen raw</span><span class="v">351 <small>ficheros subidos sin legacy</small></span></div>
+            </div>
+            <div class="counters">
+              <div class="counter"><div class="n"><span id="c-files">0</span></div><div class="l">ficheros raw en HDFS</div></div>
+              <div class="counter"><div class="n"><span id="c-src">0</span></div><div class="l">fuentes primarias</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Escena 2 (8–16 s): Kafka VM -> Mongo -->
+      <section class="scene clip" id="scene-2" data-start="8" data-duration="8" data-track-index="1">
+        <div class="kicker">Escena 2 · Streaming</div>
+        <h2 class="title">Kafka VM <em>→ MongoDB</em></h2>
+        <p class="subtitle">Un topic con 3 particiones llega a 13 colecciones. Productor JSON y consumidor con upsert.</p>
+        <div class="flow">
+          <div class="big-card" style="flex: 1.1;">
+            <h3>Kafka <span class="teal">VM</span> · 4.3.1 KRaft</h3>
+            <div class="spec">
+              <div class="spec-row"><span class="k">Broker</span><span class="v">192.168.201.162:9094</span></div>
+              <div class="spec-row"><span class="k">Topic</span><span class="v">anuncios_inmobiliarios <small>3 particiones · JSON</small></span></div>
+              <div class="spec-row"><span class="k">Modo</span><span class="v">KRaft <small>sin ZooKeeper</small></span></div>
+            </div>
+            <div class="partitions">
+              <div class="part" id="part-0"><div class="pn">P0</div><div class="pv">0</div></div>
+              <div class="part" id="part-1"><div class="pn">P1</div><div class="pv">0</div></div>
+              <div class="part" id="part-2"><div class="pn">P2</div><div class="pv">0</div></div>
+            </div>
+          </div>
+          <div class="arrow-col">
+            <div class="arrow-line" id="arrow-2"><div class="arrow-head"></div></div>
+            <div class="arrow-sat">eventos</div>
+          </div>
+          <div class="big-card" style="flex: 1;">
+            <h3>MongoDB <span class="accent">local</span></h3>
+            <div class="spec">
+              <div class="spec-row"><span class="k">Motor</span><span class="v">PyMongo <small>Docker</small></span></div>
+              <div class="spec-row"><span class="k">Modelo</span><span class="v">codigo_ine <small>clave de unión</small></span></div>
+            </div>
+            <div class="counters">
+              <div class="counter"><div class="n"><span id="c-cols">0</span></div><div class="l">colecciones</div></div>
+              <div class="counter"><div class="n"><span id="c-pipes">0</span></div><div class="l">pipelines</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Escena 3 (16–24 s): Agregación -> CSV -->
+      <section class="scene clip" id="scene-3" data-start="16" data-duration="8" data-track-index="2">
+        <div class="kicker">Escena 3 · Agregación</div>
+        <h2 class="title">8 pipelines <em>→ CSV</em></h2>
+        <p class="subtitle">Esfuerzo joven por municipio: alquiler medio frente a renta joven. Resultado reproducible desde Mongo.</p>
+        <div class="flow">
+          <div class="big-card" style="flex: 1.35;">
+            <h3>Aggregation Pipeline <span class="accent">×8</span></h3>
+            <p style="margin-top: 14px; font-size: 26px; color: var(--muted); line-height: 1.4;">Agregación — 8 pipelines en MongoDB · cálculo de <b>esfuerzo_joven_pct</b> por municipio</p>
+            <div class="stage-chips">
+              <span class="chip">Pipeline 1</span><span class="chip">Pipeline 2</span><span class="chip">Pipeline 3</span><span class="chip">Pipeline 4</span>
+              <span class="chip">Pipeline 5</span><span class="chip">Pipeline 6</span><span class="chip">Pipeline 7</span><span class="chip">Pipeline 8</span>
+            </div>
+            <div class="kpi-row">
+              <div class="counter"><div class="n"><span id="c-rows">0</span></div><div class="l">filas = municipios</div></div>
+              <div class="counter"><div class="n"><span id="c-median">0</span><span> %</span></div><div class="l">mediana esfuerzo (252)</div></div>
+              <div class="counter"><div class="n"><span id="c-over30">0</span></div><div class="l">municipios &gt; 30 %</div></div>
+            </div>
+          </div>
+          <div class="arrow-col">
+            <div class="arrow-line" id="arrow-3"><div class="arrow-head"></div></div>
+            <div class="arrow-sat">export</div>
+          </div>
+          <div class="big-card" style="flex: 1;">
+            <h3>Resultado <span class="teal">CSV</span></h3>
+            <div class="csv-box">
+              <div class="file">mongo_esfuerzo_por_municipio.csv</div>
+              <div class="cols">252 filas × columnas reales: codigo_ine · nombre · territorio · n_anuncios · esfuerzo_joven_pct …</div>
+            </div>
+            <div class="spec">
+              <div class="spec-row"><span class="k">Con dato oficial</span><span class="v">159 <small>tiene_alquiler_oficial = True</small></span></div>
+              <div class="spec-row"><span class="k">Máx / Mín esfuerzo</span><span class="v">62,0 % / 22,3 % <small>Barakaldo / Gabiria</small></span></div>
+              <div class="spec-row"><span class="k">Umbral 30 %</span><span class="v">249 de 252 <small>98,8 % superan el 30 %</small></span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Escena 4 (24–34 s): mapa choropleth de puntos + barras -->
+      <section class="scene clip" id="scene-4" data-start="24" data-duration="10" data-track-index="3">
+        <div class="kicker">Escena 4 · Mapa — esfuerzo joven</div>
+        <h2 class="title">Cada punto es <em>un municipio real</em></h2>
+        <p class="subtitle">252 municipios coloreados por <b>esfuerzo_joven_pct</b> del CSV: &gt; 30 % (naranja) frente a ≤ 30 % (verde). Coordenadas desde el GeoJSON.</p>
+        <div class="map-layout">
+          <div class="map-panel">
+            <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-label="Mapa de puntos de Euskadi coloreados por esfuerzo">
+              <g id="map-points">
+      <circle class="pt pt-hot" cx="277" cy="491" r="7" data-esf="42.3" data-code="01002" />
+      <circle class="pt pt-hot" cx="190" cy="318" r="7" data-esf="40.8" data-code="01004" />
+      <circle class="pt pt-hot" cx="233" cy="358" r="7" data-esf="33.9" data-code="01010" />
+      <circle class="pt pt-hot" cx="270" cy="345" r="7" data-esf="47.4" data-code="01036" />
+      <circle class="pt pt-hot" cx="239" cy="298" r="7" data-esf="37.8" data-code="01042" />
+      <circle class="pt pt-hot" cx="471" cy="490" r="7" data-esf="40.3" data-code="01058" />
+      <circle class="pt pt-hot" cx="304" cy="490" r="7" data-esf="39.9" data-code="01054" />
+      <circle class="pt pt-hot" cx="431" cy="475" r="7" data-esf="32.5" data-code="01018" />
+      <circle class="pt pt-hot" cx="333" cy="483" r="7" data-esf="36.8" data-code="01063" />
+      <circle class="pt pt-hot" cx="482" cy="454" r="7" data-esf="33.0" data-code="01003" />
+      <circle class="pt pt-hot" cx="606" cy="601" r="7" data-esf="45.2" data-code="01051" />
+      <circle class="pt pt-hot" cx="543" cy="650" r="7" data-esf="41.3" data-code="01001" />
+      <circle class="pt pt-hot" cx="475" cy="523" r="7" data-esf="31.8" data-code="01008" />
+      <circle class="pt pt-hot" cx="653" cy="563" r="7" data-esf="36.5" data-code="01009" />
+      <circle class="pt pt-hot" cx="552" cy="528" r="7" data-esf="37.7" data-code="01013" />
+      <circle class="pt pt-hot" cx="522" cy="575" r="7" data-esf="34.9" data-code="01021" />
+      <circle class="pt pt-hot" cx="357" cy="651" r="7" data-esf="35.5" data-code="01901" />
+      <circle class="pt pt-hot" cx="551" cy="648" r="7" data-esf="37.2" data-code="01027" />
+      <circle class="pt pt-hot" cx="602" cy="555" r="7" data-esf="35.2" data-code="01053" />
+      <circle class="pt pt-hot" cx="454" cy="595" r="7" data-esf="53.7" data-code="01059" />
+      <circle class="pt pt-hot" cx="648" cy="553" r="7" data-esf="32.3" data-code="01061" />
+      <circle class="pt pt-hot" cx="579" cy="728" r="7" data-esf="36.5" data-code="01037" />
+      <circle class="pt pt-hot" cx="537" cy="772" r="7" data-esf="40.8" data-code="01016" />
+      <circle class="pt pt-hot" cx="632" cy="768" r="7" data-esf="38.1" data-code="01017" />
+      <circle class="pt pt-hot" cx="652" cy="715" r="7" data-esf="43.5" data-code="01056" />
+      <circle class="pt pt-hot" cx="478" cy="847" r="7" data-esf="39.3" data-code="01030" />
+      <circle class="pt pt-hot" cx="449" cy="839" r="7" data-esf="36.0" data-code="01044" />
+      <circle class="pt pt-hot" cx="449" cy="955" r="7" data-esf="46.1" data-code="01011" />
+      <circle class="pt pt-hot" cx="483" cy="977" r="7" data-esf="35.7" data-code="01022" />
+      <circle class="pt pt-hot" cx="528" cy="921" r="7" data-esf="47.7" data-code="01023" />
+      <circle class="pt pt-hot" cx="542" cy="874" r="7" data-esf="44.0" data-code="01019" />
+      <circle class="pt pt-hot" cx="363" cy="872" r="7" data-esf="37.9" data-code="01028" />
+      <circle class="pt pt-hot" cx="521" cy="940" r="7" data-esf="42.7" data-code="01031" />
+      <circle class="pt pt-hot" cx="552" cy="931" r="7" data-esf="47.4" data-code="01032" />
+      <circle class="pt pt-hot" cx="512" cy="982" r="7" data-esf="40.9" data-code="01033" />
+      <circle class="pt pt-hot" cx="476" cy="914" r="7" data-esf="44.4" data-code="01034" />
+      <circle class="pt pt-hot" cx="593" cy="942" r="7" data-esf="42.7" data-code="01039" />
+      <circle class="pt pt-hot" cx="478" cy="919" r="7" data-esf="52.8" data-code="01041" />
+      <circle class="pt pt-hot" cx="585" cy="928" r="7" data-esf="38.0" data-code="01043" />
+      <circle class="pt pt-hot" cx="451" cy="903" r="7" data-esf="42.0" data-code="01052" />
+      <circle class="pt pt-hot" cx="459" cy="928" r="7" data-esf="49.6" data-code="01057" />
+      <circle class="pt pt-hot" cx="572" cy="909" r="7" data-esf="37.9" data-code="01060" />
+      <circle class="pt pt-hot" cx="274" cy="637" r="7" data-esf="48.9" data-code="01049" />
+      <circle class="pt pt-hot" cx="332" cy="763" r="7" data-esf="38.1" data-code="01006" />
+      <circle class="pt pt-hot" cx="350" cy="789" r="7" data-esf="35.7" data-code="01014" />
+      <circle class="pt pt-hot" cx="306" cy="667" r="7" data-esf="38.3" data-code="01046" />
+      <circle class="pt pt-hot" cx="319" cy="578" r="7" data-esf="52.2" data-code="01020" />
+      <circle class="pt pt-hot" cx="240" cy="712" r="7" data-esf="37.7" data-code="01902" />
+      <circle class="pt pt-hot" cx="325" cy="741" r="7" data-esf="32.9" data-code="01047" />
+      <circle class="pt pt-hot" cx="189" cy="620" r="7" data-esf="47.1" data-code="01055" />
+      <circle class="pt pt-hot" cx="356" cy="809" r="7" data-esf="35.4" data-code="01062" />
+      <circle class="pt pt-hot" cx="463" cy="415" r="7" data-esf="40.8" data-code="48072" />
+      <circle class="pt pt-hot" cx="441" cy="431" r="7" data-esf="47.7" data-code="48088" />
+      <circle class="pt pt-hot" cx="299" cy="279" r="7" data-esf="40.6" data-code="48009" />
+      <circle class="pt pt-hot" cx="318" cy="277" r="7" data-esf="48.8" data-code="48065" />
+      <circle class="pt pt-hot" cx="342" cy="302" r="7" data-esf="42.2" data-code="48025" />
+      <circle class="pt pt-hot" cx="388" cy="317" r="7" data-esf="37.2" data-code="48006" />
+      <circle class="pt pt-hot" cx="386" cy="357" r="7" data-esf="40.5" data-code="48093" />
+      <circle class="pt pt-hot" cx="381" cy="342" r="7" data-esf="33.1" data-code="48023" />
+      <circle class="pt pt-hot" cx="417" cy="357" r="7" data-esf="39.3" data-code="48026" />
+      <circle class="pt pt-hot" cx="387" cy="283" r="7" data-esf="42.4" data-code="48094" />
+      <circle class="pt pt-hot" cx="408" cy="373" r="7" data-esf="36.6" data-code="48024" />
+      <circle class="pt pt-hot" cx="302" cy="307" r="7" data-esf="35.5" data-code="48005" />
+      <circle class="pt pt-hot" cx="333" cy="373" r="7" data-esf="38.5" data-code="48075" />
+      <circle class="pt pt-hot" cx="241" cy="456" r="7" data-esf="41.9" data-code="48074" />
+      <circle class="pt pt-hot" cx="479" cy="345" r="7" data-esf="43.4" data-code="48001" />
+      <circle class="pt pt-hot" cx="428" cy="236" r="7" data-esf="47.0" data-code="48003" />
+      <circle class="pt pt-hot" cx="502" cy="351" r="7" data-esf="36.5" data-code="48091" />
+      <circle class="pt pt-hot" cx="497" cy="267" r="7" data-esf="43.2" data-code="48019" />
+      <circle class="pt pt-hot" cx="467" cy="301" r="7" data-esf="44.4" data-code="48027" />
+      <circle class="pt pt-hot" cx="536" cy="343" r="7" data-esf="39.7" data-code="48032" />
+      <circle class="pt pt-cold" cx="484" cy="263" r="11" data-esf="24.5" data-code="48039" />
+      <circle class="pt pt-hot" cx="460" cy="258" r="7" data-esf="49.0" data-code="48910" />
+      <circle class="pt pt-hot" cx="464" cy="312" r="7" data-esf="36.2" data-code="48050" />
+      <circle class="pt pt-hot" cx="454" cy="327" r="7" data-esf="37.5" data-code="48059" />
+      <circle class="pt pt-hot" cx="536" cy="290" r="7" data-esf="40.3" data-code="48095" />
+      <circle class="pt pt-hot" cx="548" cy="278" r="7" data-esf="46.5" data-code="48034" />
+      <circle class="pt pt-hot" cx="535" cy="260" r="7" data-esf="35.8" data-code="48058" />
+      <circle class="pt pt-hot" cx="363" cy="259" r="7" data-esf="47.0" data-code="48092" />
+      <circle class="pt pt-hot" cx="394" cy="269" r="7" data-esf="46.4" data-code="48055" />
+      <circle class="pt pt-hot" cx="110" cy="242" r="7" data-esf="43.7" data-code="48008" />
+      <circle class="pt pt-hot" cx="140" cy="275" r="7" data-esf="48.5" data-code="48090" />
+      <circle class="pt pt-hot" cx="216" cy="200" r="7" data-esf="50.3" data-code="48037" />
+      <circle class="pt pt-hot" cx="195" cy="306" r="7" data-esf="36.0" data-code="48042" />
+      <circle class="pt pt-hot" cx="229" cy="230" r="7" data-esf="49.4" data-code="48045" />
+      <circle class="pt pt-hot" cx="40" cy="264" r="7" data-esf="38.7" data-code="48022" />
+      <circle class="pt pt-hot" cx="6" cy="245" r="7" data-esf="43.0" data-code="48051" />
+      <circle class="pt pt-hot" cx="170" cy="197" r="7" data-esf="42.9" data-code="48086" />
+      <circle class="pt pt-hot" cx="86" cy="171" r="7" data-esf="43.1" data-code="48087" />
+      <circle class="pt pt-hot" cx="173" cy="253" r="7" data-esf="45.5" data-code="48096" />
+      <circle class="pt pt-hot" cx="454" cy="161" r="7" data-esf="36.3" data-code="48911" />
+      <circle class="pt pt-hot" cx="472" cy="145" r="7" data-esf="31.6" data-code="48914" />
+      <circle class="pt pt-hot" cx="407" cy="30" r="7" data-esf="40.9" data-code="48017" />
+      <circle class="pt pt-hot" cx="427" cy="89" r="7" data-esf="38.6" data-code="48021" />
+      <circle class="pt pt-hot" cx="501" cy="79" r="7" data-esf="33.0" data-code="48028" />
+      <circle class="pt pt-hot" cx="470" cy="49" r="7" data-esf="46.5" data-code="48031" />
+      <circle class="pt pt-hot" cx="490" cy="96" r="7" data-esf="31.8" data-code="48033" />
+      <circle class="pt pt-hot" cx="415" cy="123" r="7" data-esf="38.2" data-code="48079" />
+      <circle class="pt pt-hot" cx="452" cy="121" r="7" data-esf="35.0" data-code="48906" />
+      <circle class="pt pt-hot" cx="457" cy="98" r="7" data-esf="32.8" data-code="48041" />
+      <circle class="pt pt-hot" cx="447" cy="149" r="7" data-esf="46.7" data-code="48046" />
+      <circle class="pt pt-hot" cx="462" cy="57" r="7" data-esf="36.9" data-code="48048" />
+      <circle class="pt pt-hot" cx="464" cy="123" r="7" data-esf="34.6" data-code="48907" />
+      <circle class="pt pt-hot" cx="467" cy="170" r="7" data-esf="36.8" data-code="48062" />
+      <circle class="pt pt-hot" cx="398" cy="152" r="7" data-esf="43.6" data-code="48066" />
+      <circle class="pt pt-hot" cx="434" cy="50" r="7" data-esf="42.2" data-code="48068" />
+      <circle class="pt pt-hot" cx="448" cy="100" r="7" data-esf="31.1" data-code="48908" />
+      <circle class="pt pt-hot" cx="462" cy="222" r="7" data-esf="40.8" data-code="48067" />
+      <circle class="pt pt-hot" cx="502" cy="136" r="7" data-esf="37.9" data-code="48909" />
+      <circle class="pt pt-hot" cx="436" cy="63" r="7" data-esf="37.0" data-code="48076" />
+      <circle class="pt pt-hot" cx="212" cy="136" r="7" data-esf="48.0" data-code="48002" />
+      <circle class="pt pt-hot" cx="263" cy="217" r="7" data-esf="55.3" data-code="48912" />
+      <circle class="pt pt-hot" cx="314" cy="258" r="7" data-esf="52.6" data-code="48011" />
+      <circle class="pt pt-hot" cx="258" cy="198" r="7" data-esf="62.0" data-code="48013" />
+      <circle class="pt pt-hot" cx="326" cy="230" r="7" data-esf="58.1" data-code="48015" />
+      <circle class="pt pt-hot" cx="273" cy="100" r="7" data-esf="51.6" data-code="48016" />
+      <circle class="pt pt-hot" cx="300" cy="197" r="7" data-esf="60.7" data-code="48020" />
+      <circle class="pt pt-hot" cx="332" cy="159" r="7" data-esf="50.2" data-code="48901" />
+      <circle class="pt pt-hot" cx="288" cy="148" r="7" data-esf="60.6" data-code="48902" />
+      <circle class="pt pt-hot" cx="329" cy="207" r="7" data-esf="55.9" data-code="48029" />
+      <circle class="pt pt-hot" cx="250" cy="98" r="7" data-esf="46.1" data-code="48044" />
+      <circle class="pt pt-hot" cx="391" cy="190" r="7" data-esf="41.6" data-code="48052" />
+      <circle class="pt pt-hot" cx="275" cy="125" r="7" data-esf="52.3" data-code="48054" />
+      <circle class="pt pt-hot" cx="361" cy="186" r="7" data-esf="42.8" data-code="48081" />
+      <circle class="pt pt-hot" cx="306" cy="149" r="7" data-esf="44.3" data-code="48903" />
+      <circle class="pt pt-hot" cx="188" cy="126" r="7" data-esf="45.0" data-code="48071" />
+      <circle class="pt pt-hot" cx="233" cy="144" r="7" data-esf="52.2" data-code="48083" />
+      <circle class="pt pt-hot" cx="246" cy="142" r="7" data-esf="57.4" data-code="48078" />
+      <circle class="pt pt-hot" cx="235" cy="123" r="7" data-esf="58.0" data-code="48082" />
+      <circle class="pt pt-hot" cx="265" cy="154" r="7" data-esf="61.4" data-code="48084" />
+      <circle class="pt pt-hot" cx="302" cy="163" r="7" data-esf="45.2" data-code="48904" />
+      <circle class="pt pt-hot" cx="247" cy="165" r="7" data-esf="53.9" data-code="48080" />
+      <circle class="pt pt-hot" cx="333" cy="170" r="7" data-esf="50.2" data-code="48905" />
+      <circle class="pt pt-hot" cx="335" cy="247" r="7" data-esf="45.6" data-code="48097" />
+      <circle class="pt pt-hot" cx="212" cy="106" r="7" data-esf="39.8" data-code="48913" />
+      <circle class="pt pt-hot" cx="547" cy="135" r="7" data-esf="33.8" data-code="48004" />
+      <circle class="pt pt-hot" cx="518" cy="159" r="7" data-esf="34.9" data-code="48070" />
+      <circle class="pt pt-hot" cx="581" cy="135" r="7" data-esf="34.7" data-code="48018" />
+      <circle class="pt pt-hot" cx="581" cy="197" r="7" data-esf="32.9" data-code="48030" />
+      <circle class="pt pt-hot" cx="530" cy="136" r="7" data-esf="33.0" data-code="48047" />
+      <circle class="pt pt-hot" cx="530" cy="91" r="7" data-esf="33.6" data-code="48049" />
+      <circle class="pt pt-hot" cx="549" cy="91" r="7" data-esf="42.4" data-code="48057" />
+      <circle class="pt pt-hot" cx="573" cy="199" r="7" data-esf="38.9" data-code="48060" />
+      <circle class="pt pt-hot" cx="561" cy="107" r="7" data-esf="33.5" data-code="48063" />
+      <circle class="pt pt-hot" cx="504" cy="198" r="7" data-esf="49.8" data-code="48007" />
+      <circle class="pt pt-hot" cx="596" cy="132" r="7" data-esf="43.3" data-code="48073" />
+      <circle class="pt pt-hot" cx="528" cy="209" r="7" data-esf="36.6" data-code="48915" />
+      <circle class="pt pt-hot" cx="284" cy="51" r="7" data-esf="35.2" data-code="48014" />
+      <circle class="pt pt-hot" cx="296" cy="37" r="7" data-esf="49.6" data-code="48043" />
+      <circle class="pt pt-hot" cx="326" cy="28" r="7" data-esf="43.8" data-code="48056" />
+      <circle class="pt pt-hot" cx="301" cy="62" r="7" data-esf="47.9" data-code="48077" />
+      <circle class="pt pt-hot" cx="274" cy="75" r="7" data-esf="51.0" data-code="48085" />
+      <circle class="pt pt-hot" cx="296" cy="88" r="7" data-esf="56.3" data-code="48089" />
+      <circle class="pt pt-hot" cx="404" cy="109" r="7" data-esf="35.0" data-code="48010" />
+      <circle class="pt pt-hot" cx="374" cy="30" r="7" data-esf="46.7" data-code="48012" />
+      <circle class="pt pt-hot" cx="382" cy="134" r="7" data-esf="38.8" data-code="48035" />
+      <circle class="pt pt-hot" cx="374" cy="143" r="7" data-esf="30.2" data-code="48038" />
+      <circle class="pt pt-hot" cx="318" cy="94" r="7" data-esf="39.4" data-code="48040" />
+      <circle class="pt pt-cold" cx="316" cy="105" r="11" data-esf="26.2" data-code="48053" />
+      <circle class="pt pt-hot" cx="341" cy="69" r="7" data-esf="32.3" data-code="48061" />
+      <circle class="pt pt-hot" cx="386" cy="100" r="7" data-esf="37.6" data-code="48064" />
+      <circle class="pt pt-hot" cx="366" cy="92" r="7" data-esf="43.0" data-code="48069" />
+      <circle class="pt pt-hot" cx="621" cy="359" r="7" data-esf="33.8" data-code="20011" />
+      <circle class="pt pt-hot" cx="558" cy="424" r="7" data-esf="40.7" data-code="20013" />
+      <circle class="pt pt-hot" cx="558" cy="383" r="7" data-esf="47.8" data-code="20055" />
+      <circle class="pt pt-hot" cx="604" cy="343" r="7" data-esf="40.2" data-code="20074" />
+      <circle class="pt pt-hot" cx="558" cy="306" r="7" data-esf="35.1" data-code="20033" />
+      <circle class="pt pt-hot" cx="532" cy="473" r="7" data-esf="40.5" data-code="20034" />
+      <circle class="pt pt-hot" cx="502" cy="482" r="7" data-esf="37.9" data-code="20068" />
+      <circle class="pt pt-hot" cx="607" cy="463" r="7" data-esf="35.7" data-code="20059" />
+      <circle class="pt pt-hot" cx="948" cy="74" r="7" data-esf="49.3" data-code="20036" />
+      <circle class="pt pt-hot" cx="974" cy="152" r="7" data-esf="57.1" data-code="20045" />
+      <circle class="pt pt-hot" cx="660" cy="190" r="7" data-esf="46.5" data-code="20029" />
+      <circle class="pt pt-hot" cx="579" cy="257" r="7" data-esf="44.9" data-code="20030" />
+      <circle class="pt pt-hot" cx="602" cy="251" r="7" data-esf="40.2" data-code="20032" />
+      <circle class="pt pt-hot" cx="618" cy="223" r="7" data-esf="39.1" data-code="20901" />
+      <circle class="pt pt-hot" cx="619" cy="153" r="7" data-esf="38.5" data-code="20056" />
+      <circle class="pt pt-hot" cx="606" cy="283" r="7" data-esf="39.6" data-code="20065" />
+      <circle class="pt pt-hot" cx="830" cy="238" r="7" data-esf="51.9" data-code="20009" />
+      <circle class="pt pt-hot" cx="880" cy="187" r="7" data-esf="58.6" data-code="20903" />
+      <circle class="pt pt-hot" cx="837" cy="146" r="7" data-esf="61.5" data-code="20069" />
+      <circle class="pt pt-hot" cx="904" cy="203" r="7" data-esf="58.6" data-code="20067" />
+      <circle class="pt pt-hot" cx="870" cy="215" r="7" data-esf="55.7" data-code="20040" />
+      <circle class="pt pt-hot" cx="835" cy="200" r="7" data-esf="58.7" data-code="20902" />
+      <circle class="pt pt-hot" cx="907" cy="128" r="7" data-esf="57.4" data-code="20053" />
+      <circle class="pt pt-hot" cx="937" cy="196" r="7" data-esf="45.3" data-code="20063" />
+      <circle class="pt pt-hot" cx="896" cy="123" r="7" data-esf="59.4" data-code="20064" />
+      <circle class="pt pt-hot" cx="862" cy="232" r="7" data-esf="49.5" data-code="20072" />
+      <circle class="pt pt-hot" cx="799" cy="189" r="7" data-esf="50.8" data-code="20073" />
+      <circle class="pt pt-hot" cx="754" cy="398" r="7" data-esf="37.5" data-code="20906" />
+      <circle class="pt pt-hot" cx="745" cy="404" r="7" data-esf="33.2" data-code="20012" />
+      <circle class="pt pt-hot" cx="756" cy="485" r="7" data-esf="32.6" data-code="20015" />
+      <circle class="pt pt-hot" cx="711" cy="384" r="7" data-esf="44.2" data-code="20019" />
+      <circle class="pt pt-hot" cx="691" cy="382" r="7" data-esf="38.5" data-code="20035" />
+      <circle class="pt pt-cold" cx="677" cy="406" r="11" data-esf="22.3" data-code="20038" />
+      <circle class="pt pt-hot" cx="769" cy="410" r="7" data-esf="32.5" data-code="20037" />
+      <circle class="pt pt-hot" cx="706" cy="467" r="7" data-esf="36.3" data-code="20043" />
+      <circle class="pt pt-hot" cx="741" cy="376" r="7" data-esf="40.5" data-code="20047" />
+      <circle class="pt pt-hot" cx="743" cy="449" r="7" data-esf="40.2" data-code="20049" />
+      <circle class="pt pt-hot" cx="638" cy="428" r="7" data-esf="40.5" data-code="20051" />
+      <circle class="pt pt-hot" cx="689" cy="436" r="7" data-esf="33.3" data-code="20057" />
+      <circle class="pt pt-hot" cx="724" cy="442" r="7" data-esf="38.5" data-code="20058" />
+      <circle class="pt pt-hot" cx="736" cy="401" r="7" data-esf="42.0" data-code="20076" />
+      <circle class="pt pt-hot" cx="698" cy="418" r="7" data-esf="35.0" data-code="20062" />
+      <circle class="pt pt-hot" cx="697" cy="458" r="7" data-esf="35.9" data-code="20070" />
+      <circle class="pt pt-hot" cx="654" cy="366" r="7" data-esf="38.6" data-code="20077" />
+      <circle class="pt pt-hot" cx="765" cy="446" r="7" data-esf="35.3" data-code="20078" />
+      <circle class="pt pt-hot" cx="681" cy="492" r="7" data-esf="34.4" data-code="20025" />
+      <circle class="pt pt-hot" cx="677" cy="454" r="7" data-esf="35.0" data-code="20026" />
+      <circle class="pt pt-hot" cx="661" cy="367" r="7" data-esf="45.8" data-code="20080" />
+      <circle class="pt pt-hot" cx="749" cy="368" r="7" data-esf="42.9" data-code="20052" />
+      <circle class="pt pt-hot" cx="775" cy="411" r="7" data-esf="31.5" data-code="20001" />
+      <circle class="pt pt-hot" cx="810" cy="249" r="7" data-esf="42.2" data-code="20002" />
+      <circle class="pt pt-hot" cx="764" cy="339" r="7" data-esf="34.5" data-code="20004" />
+      <circle class="pt pt-hot" cx="789" cy="371" r="7" data-esf="43.5" data-code="20005" />
+      <circle class="pt pt-hot" cx="780" cy="281" r="7" data-esf="44.3" data-code="20006" />
+      <circle class="pt pt-hot" cx="806" cy="368" r="7" data-esf="35.6" data-code="20007" />
+      <circle class="pt pt-hot" cx="804" cy="402" r="7" data-esf="35.0" data-code="20008" />
+      <circle class="pt pt-hot" cx="803" cy="287" r="7" data-esf="45.8" data-code="20010" />
+      <circle class="pt pt-hot" cx="783" cy="254" r="7" data-esf="39.1" data-code="20014" />
+      <circle class="pt pt-hot" cx="768" cy="393" r="7" data-esf="31.9" data-code="20904" />
+      <circle class="pt pt-hot" cx="818" cy="323" r="7" data-esf="41.8" data-code="20021" />
+      <circle class="pt pt-hot" cx="859" cy="309" r="7" data-esf="37.3" data-code="20022" />
+      <circle class="pt pt-hot" cx="832" cy="312" r="7" data-esf="37.6" data-code="20023" />
+      <circle class="pt pt-hot" cx="739" cy="355" r="7" data-esf="40.1" data-code="20024" />
+      <circle class="pt pt-hot" cx="866" cy="303" r="7" data-esf="39.0" data-code="20031" />
+      <circle class="pt pt-hot" cx="822" cy="352" r="7" data-esf="41.0" data-code="20907" />
+      <circle class="pt pt-hot" cx="784" cy="312" r="7" data-esf="41.8" data-code="20041" />
+      <circle class="pt pt-hot" cx="819" cy="319" r="7" data-esf="47.7" data-code="20042" />
+      <circle class="pt pt-hot" cx="775" cy="369" r="7" data-esf="42.6" data-code="20044" />
+      <circle class="pt pt-hot" cx="807" cy="291" r="7" data-esf="47.8" data-code="20046" />
+      <circle class="pt pt-hot" cx="776" cy="276" r="7" data-esf="40.3" data-code="20048" />
+      <circle class="pt pt-hot" cx="811" cy="343" r="7" data-esf="43.3" data-code="20050" />
+      <circle class="pt pt-hot" cx="824" cy="365" r="7" data-esf="39.9" data-code="20054" />
+      <circle class="pt pt-hot" cx="781" cy="390" r="7" data-esf="32.9" data-code="20905" />
+      <circle class="pt pt-hot" cx="848" cy="377" r="7" data-esf="41.9" data-code="20060" />
+      <circle class="pt pt-hot" cx="790" cy="365" r="7" data-esf="42.7" data-code="20071" />
+      <circle class="pt pt-hot" cx="824" cy="276" r="7" data-esf="45.0" data-code="20075" />
+      <circle class="pt pt-hot" cx="800" cy="239" r="7" data-esf="43.9" data-code="20028" />
+      <circle class="pt pt-hot" cx="767" cy="202" r="7" data-esf="41.1" data-code="20016" />
+      <circle class="pt pt-hot" cx="709" cy="192" r="7" data-esf="43.2" data-code="20003" />
+      <circle class="pt pt-hot" cx="648" cy="286" r="7" data-esf="38.3" data-code="20017" />
+      <circle class="pt pt-hot" cx="704" cy="297" r="7" data-esf="40.5" data-code="20018" />
+      <circle class="pt pt-hot" cx="716" cy="331" r="7" data-esf="53.8" data-code="20020" />
+      <circle class="pt pt-hot" cx="723" cy="284" r="7" data-esf="42.0" data-code="20066" />
+      <circle class="pt pt-hot" cx="721" cy="158" r="7" data-esf="44.6" data-code="20039" />
+      <circle class="pt pt-hot" cx="784" cy="180" r="7" data-esf="51.8" data-code="20061" />
+      <circle class="pt pt-hot" cx="739" cy="191" r="7" data-esf="50.8" data-code="20079" />
+      <circle class="pt pt-hot" cx="709" cy="218" r="7" data-esf="44.6" data-code="20027" />
+      <circle class="pt pt-hot" cx="702" cy="176" r="7" data-esf="49.0" data-code="20081" />
+      <circle class="pt pt-hot" cx="358" cy="226" r="7" data-esf="51.0" data-code="48036" />
+      <circle class="pt pt-hot" cx="359" cy="253" r="7" data-esf="46.8" data-code="48916" />
+        <circle class="pt pt-cold-halo" cx="484" cy="263" r="18" />
+        <circle class="pt pt-cold-halo" cx="316" cy="105" r="18" />
+        <circle class="pt pt-cold-halo" cx="677" cy="406" r="18" />
+              </g>
+      <g class="map-labels">
+        <text x="318" y="188" text-anchor="start">Bilbao · 60,7 %</text>
+        <text x="820" y="138" text-anchor="end">Donostia · 61,5 %</text>
+        <text x="270" y="90" text-anchor="start">Getxo · 46,1 %</text>
+        <text x="472" y="610" text-anchor="start">Vitoria-Gasteiz · 53,7 %</text>
+        <text x="258" y="238" text-anchor="middle">Barakaldo · 62,0 %</text>
+        <text x="695" y="392" text-anchor="start">Gabiria · 22,3 %</text>
+      </g>
+            </svg>
+            <div class="map-legend">
+              <div class="legend-row"><span class="dot hot"></span><span>&gt; 30 % — 249 municipios</span></div>
+              <div class="legend-row"><span class="dot cold"></span><span>≤ 30 % — 3 (Garai 24,5 · Laukiz 26,2 · Gabiria 22,3)</span></div>
+            </div>
+          </div>
+          <div class="side-panel">
+            <div class="side-card">
+              <h4>Resumen binario <span>· umbral 30 %</span></h4>
+              <div class="stat-grid">
+                <div class="stat coral"><div class="sv"><span id="c-hot">0</span></div><div class="sl">municipios con esfuerzo &gt; 30 % (98,8 %)</div></div>
+                <div class="stat teal"><div class="sv"><span id="c-cold">0</span></div><div class="sl">municipios ≤ 30 % — Garai, Laukiz, Gabiria</div></div>
+                <div class="stat"><div class="sv"><span id="c-max">0</span><span style="font-size:28px;color:var(--muted)"> %</span></div><div class="sl">máx. Barakaldo 62,0 %</div></div>
+              </div>
+            </div>
+            <div class="side-card">
+              <h4>Top robustos por anuncios <span>(n ≥ 30 · n_anuncios del CSV)</span></h4>
+              <div class="bar-list">
+                <div class="bar-row"><div class="bar-name">Bilbao</div><div class="bar-track"><div class="bar-fill" id="bar-1"></div></div><div class="bar-num">173</div><div class="bar-sub">60,7 %</div></div>
+                <div class="bar-row"><div class="bar-name">Donostia / San Sebastián</div><div class="bar-track"><div class="bar-fill" id="bar-2"></div></div><div class="bar-num">113</div><div class="bar-sub">61,5 %</div></div>
+                <div class="bar-row"><div class="bar-name">Getxo</div><div class="bar-track"><div class="bar-fill alt" id="bar-3"></div></div><div class="bar-num">40</div><div class="bar-sub">46,1 %</div></div>
+                <div class="bar-row"><div class="bar-name">Vitoria-Gasteiz</div><div class="bar-track"><div class="bar-fill alt" id="bar-4"></div></div><div class="bar-num">39</div><div class="bar-sub">53,7 %</div></div>
+              </div>
+              <div class="bar-note">Barras = n_anuncios · número gris = esfuerzo_joven_pct · solo 4 de 252 alcanzan n ≥ 30</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Caption permanente -->
+      <div class="caption clip" id="caption" data-start="0" data-duration="34" data-track-index="8">
+        <b>Fuente: mongo_esfuerzo_por_municipio.csv + municipios_euskadi_252.geojson</b> · pipeline real HDFS → Kafka VM → MongoDB · 252 municipios · esfuerzo_joven_pct
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      function fmtInt(v) { return Math.round(v).toString(); }
+      function fmtEs(v) { return (Math.round(v * 10) / 10).toFixed(1).replace(".", ","); }
+
+      var cFiles = { v: 0 }, cSrc = { v: 0 }, cCols = { v: 0 }, cPipes = { v: 0 };
+      var cRows = { v: 0 }, cMed = { v: 0 }, cOver = { v: 0 };
+      var cHot = { v: 0 }, cCold = { v: 0 }, cMax = { v: 0 };
+
+      var tl = gsap.timeline({ paused: true });
+
+      // Escena 1 (0–8 s)
+      tl.to("#scene-1", { opacity: 1, duration: 0.4 }, 0);
+      tl.fromTo("#scene-1 .card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.18, ease: "power3.out" }, 0.2);
+      tl.fromTo("#arrow-1", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out", transformOrigin: "left center" }, 0.9);
+      tl.fromTo("#scene-1 .big-card", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 1.1);
+      tl.to(cFiles, { v: 351, duration: 2.2, ease: "power2.out", onUpdate: function () { document.getElementById("c-files").textContent = fmtInt(cFiles.v); } }, 1.3);
+      tl.to(cSrc, { v: 4, duration: 1.4, ease: "power2.out", onUpdate: function () { document.getElementById("c-src").textContent = fmtInt(cSrc.v); } }, 1.3);
+      tl.set("#scene-1", { opacity: 0 }, 7.6);
+
+      // Escena 2 (8–16 s)
+      tl.to("#scene-2", { opacity: 1, duration: 0.4 }, 8);
+      tl.fromTo("#scene-2 .big-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out" }, 8.2);
+      tl.fromTo("#arrow-2", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out", transformOrigin: "left center" }, 8.8);
+      tl.fromTo("#part-0", { opacity: 0.3 }, { opacity: 1, duration: 0.5 }, 9.2);
+      tl.fromTo("#part-1", { opacity: 0.3 }, { opacity: 1, duration: 0.5 }, 9.7);
+      tl.fromTo("#part-2", { opacity: 0.3 }, { opacity: 1, duration: 0.5 }, 10.2);
+      tl.to(cCols, { v: 13, duration: 1.8, ease: "power2.out", onUpdate: function () { document.getElementById("c-cols").textContent = fmtInt(cCols.v); } }, 9.4);
+      tl.to(cPipes, { v: 8, duration: 1.8, ease: "power2.out", onUpdate: function () { document.getElementById("c-pipes").textContent = fmtInt(cPipes.v); } }, 9.6);
+      tl.set("#scene-2", { opacity: 0 }, 15.6);
+
+      // Escena 3 (16–24 s)
+      tl.to("#scene-3", { opacity: 1, duration: 0.4 }, 16);
+      tl.fromTo("#scene-3 .big-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out" }, 16.2);
+      tl.fromTo("#arrow-3", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out", transformOrigin: "left center" }, 16.9);
+      tl.fromTo("#scene-3 .chip", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power2.out" }, 17.1);
+      tl.to(cRows, { v: 252, duration: 2.0, ease: "power2.out", onUpdate: function () { document.getElementById("c-rows").textContent = fmtInt(cRows.v); } }, 17.3);
+      tl.to(cMed, { v: 40.9, duration: 2.0, ease: "power2.out", onUpdate: function () { document.getElementById("c-median").textContent = fmtEs(cMed.v); } }, 17.5);
+      tl.to(cOver, { v: 249, duration: 2.0, ease: "power2.out", onUpdate: function () { document.getElementById("c-over30").textContent = fmtInt(cOver.v); } }, 17.7);
+      tl.set("#scene-3", { opacity: 0 }, 23.6);
+
+      // Escena 4 (24–34 s): puntos + barras
+      tl.to("#scene-4", { opacity: 1, duration: 0.4 }, 24);
+      tl.fromTo("#scene-4 .map-panel", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }, 24.1);
+      tl.fromTo("#map-points .pt", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.006, ease: "power2.out", transformOrigin: "50% 50%" }, 24.3);
+      tl.fromTo("#scene-4 .map-labels", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 26.2);
+      tl.to(cHot, { v: 249, duration: 1.8, ease: "power2.out", onUpdate: function () { document.getElementById("c-hot").textContent = fmtInt(cHot.v); } }, 25.0);
+      tl.to(cCold, { v: 3, duration: 1.2, ease: "power2.out", onUpdate: function () { document.getElementById("c-cold").textContent = fmtInt(cCold.v); } }, 25.2);
+      tl.to(cMax, { v: 62.0, duration: 1.8, ease: "power2.out", onUpdate: function () { document.getElementById("c-max").textContent = fmtEs(cMax.v); } }, 25.4);
+      tl.fromTo("#bar-1", { width: "0%" }, { width: "100%", duration: 1.4, ease: "power3.out" }, 25.3);
+      tl.fromTo("#bar-2", { width: "0%" }, { width: "65.3%", duration: 1.4, ease: "power3.out" }, 25.5);
+      tl.fromTo("#bar-3", { width: "0%" }, { width: "23.1%", duration: 1.4, ease: "power3.out" }, 25.7);
+      tl.fromTo("#bar-4", { width: "0%" }, { width: "22.5%", duration: 1.4, ease: "power3.out" }, 25.9);
+      tl.to("#scene-4", { opacity: 1, duration: 0.2 }, 33.8);
+
+      tl.set("#caption", { opacity: 1 }, 0);
+      tl.fromTo("#progress", { width: "0%" }, { width: "100%", duration: 34, ease: "none" }, 0);
+      window.__timelines["pipeline-mapa"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
