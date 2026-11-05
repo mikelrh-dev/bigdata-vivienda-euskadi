@@ -1,146 +1,145 @@
-# Guion de defensa — 12 minutos
+# Presentación de defensa — 12 minutos
 
-> Sustituye `P1`, `P2`, `P3` por los nombres del equipo. Si defendéis entre
-> dos, fusiona P2 y P3 y reparte los minutos 3:30–10:30. Si defiendes solo,
-> mantén los tres sombreros y cambia de pie/cursor en cada bloque: la rúbrica
-> premia que **cada integrante** explique lo suyo, no que uno lo lea todo.
+> **La pregunta manda.** Esto no es una demo de MongoDB: es la respuesta a
+> "¿puede una persona joven independizarse en Euskadi con su salario?", con
+> MongoDB como evidencia. Regla de reparto: **7 minutos responden**, **4
+> demuestran cómo se calculó**, **1 cierra con límites**.
+>
+> Sustituye P1/P2/P3 por los nombres del equipo. Si defendéis entre dos,
+> fusiona P2 y P3. Si defiendes solo, cambia de sombrero en cada bloque.
 
-## Ficha
+## Por qué este orden
 
-| Campo | Valor |
-|---|---|
-| Duración | 12:00 duros (11:15 si hay preguntas) |
-| Objetivo | Responder al reto y demostrar las evidencias del Tema 8 |
-| Material | `docs/guion_defensa_12min.md`, `docs/matriz_indicadores.md`, `docs/informe_final.md` |
-| Terminal | `.venv/Scripts/python.exe`, Mongo local arrancado |
-| Regla | Ninguna cifra se dice de memoria si está en un CSV |
+| Fuente | Qué premia | Dónde se gana |
+|---|---|---|
+| RA4 (40 %) | Respuesta al reto, ≥3 municipios, cada conclusión atada a un indicador de Mongo | 0:00–7:30 y 11:30 |
+| SBD RA1 (46,7 %) | Integración de fuentes, limpieza, automatización | 1:00–3:00 y 7:30–9:30 |
+| SBD RA3 (13,3 %) | Modelo, consultas, aggregation, índices, consistencia | 7:30–10:30 |
+| Tema 8 | Aggregation 20 %, índices 15 %, modelado 15 %, defensa 10 % | 7:30–10:30 |
+
+Si la presentación empieza por colecciones e índices, el tribunal oye "otro
+proyecto de MongoDB" y la pregunta queda para el final. Al revés, cada detalle
+técnico cae sobre una conclusión que ya está en pie.
+
+## Diapositivas (9)
+
+1. **La pregunta** y la respuesta en una frase.
+2. **Cómo se mide**: esfuerzo = cuantía × 12 / renta joven 18-34; umbral 30 %.
+3. **Mapa de Euskadi** por municipios (159 oficiales, color por esfuerzo).
+4. **Los 4 robustos** con n y esfuerzo; Getxo/Vitoria a un anuncio.
+5. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
+6. **Quién queda fuera**: 169 sin anuncios, 93 IDW, falacia ecológica.
+7. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 9 pipelines.
+8. **Pruebas**: explain 759→1, 136 tests, gate 18/18, huella.
+9. **Límites y qué haríamos con más datos**.
 
 ## Reparto y tiempos
 
-| Inicio | Fin | Quién | Bloque | Evidencia |
+| Inicio | Fin | Quién | Qué cuenta | Diapo |
 |---|---|---|---|---|
-| 0:00 | 0:45 | P1 | Tesis y alcance | `informe_final.md` |
-| 0:45 | 2:00 | P1 | Problema, fuentes y universo | `matriz_indicadores.md` |
-| 2:00 | 3:30 | P2 | Arquitectura y cadena | `arquitectura_datos.md` |
-| 3:30 | 5:00 | P2 | Modelo: embedding vs referencing | `modelo_mongodb.md` |
-| 5:00 | 6:30 | P2 | Carga, limpieza y CRUD | `storage/clean_mongo.py`, `load_mongo.py` |
-| 6:30 | 8:00 | P3 | Consultas y aggregation | `mongo_aggregations.py` |
-| 8:00 | 9:30 | P3 | Terminal: demo y huella | `run_analisis_mongo.py` |
-| 9:30 | 10:30 | P3 | Índices y explain | `mongo_indexes.py` |
-| 10:30 | 11:15 | P1 | Consistencia y transacción | `modelo_mongodb.md` §Transacciones |
-| 11:15 | 12:00 | P1 | Límites y cierre | `informe_final.md` |
+| 0:00 | 0:50 | P1 | Pregunta + respuesta en 30 segundos | 1 |
+| 0:50 | 2:30 | P1 | Cómo se mide y qué universo hay | 2 |
+| 2:30 | 4:30 | P1 | El mapa: 26,61 %, 40/159, territorios | 3 |
+| 4:30 | 6:00 | P1 | Los 4 robustos y qué se puede afirmar | 4 |
+| 6:00 | 7:00 | P2 | Sensibilidad: el titular aguanta | 5 |
+| 7:00 | 7:40 | P2 | Quién queda fuera y por qué importa | 6 |
+| 7:40 | 9:10 | P2 | Arquitectura, modelo y pipelines | 7 |
+| 9:10 | 10:20 | P3 | Pruebas en terminal: explain, tests, gate | 8 |
+| 10:20 | 11:20 | P3 | Consistencia y decisiones técnicas | 8 |
+| 11:20 | 12:00 | P1 | Límites + cierre | 9 |
 
-## 0:00–0:45 · P1 · Tesis y alcance
+## 0:00–0:50 · P1 · Pregunta y respuesta
 
-> "La pregunta es si una persona joven puede independizarse en Euskadi con su
-> salario. La respuesta corta: **con el alquiler oficial, 4 de cada 10
-> municipios exigen más del 30 % del salario joven; en Bilbao y Donostia
-> ronda el 38 %**. Lo defendemos con 252 municipios, 159 con alquiler oficial
-> y 93 imputados solo para sensibilidad. Lo que no tenemos es stock histórico
-> de VPO: tenemos flujo oficial 2020–2024, 251 de 252 municipios."
+> "Nos preguntaron si una persona joven puede independizarse en Euskadi con su
+> salario. **Con el alquiler oficial, la mediana se lleva el 26,6 % del salario
+> joven; en 40 de los 159 municipios con dato se supera el 30 %, y en Bilbao y
+> Donostia se roza el 38 %.** La respuesta es: en la mayoría del territorio,
+> justo; en las dos capitales grandes, no; y en 169 municipios no podemos
+> afirmarlo porque no hay anuncios."
 
-**Alcance dicho en voz alta:** HDFS guarda originales; `procesado/` no se
-subió (decisión firmada). Kafka funciona en VM. Así nadie te pilla
-sobrevendiendo.
+No empieces por la arquitectura. Esa frase es la presentación.
 
-## 0:45–2:00 · P1 · Problema, fuentes y universo
+## 0:50–2:30 · P1 · Cómo se mide
 
-- Fuentes: Fotocasa/Pisos/RealtyAPI (anuncios), Eustat (renta y alquiler),
-  Lanbide (paro), Etxebide (solicitudes y promociones), Udalmap (VPO y
-  vivienda), OSRM (tiempos), INE (apoyo).
-- **759 anuncios en 83 municipios**; **169 municipios sin anuncios** (67 %).
-- Esfuerzo: `cuantía mediana × 12 / renta joven 18–34`.
-- Titular: **26,61 % de mediana en los 159 oficiales**; **40 de 159 (25,2 %)**
-  por encima del 30 %. Con IDW: **25,37 % (47/252, 18,7 %)**.
-- Tensión social: **76 alta / 103 media / 73 baja**.
+- Esfuerzo = **cuantía mediana del alquiler × 12 / renta joven 18-34**.
+- Se usa **mediana**, no media: los alquileres tienen outliers.
+- Universo: **252 municipios**; **159 con alquiler oficial Eustat** y **93
+  imputados por IDW** que solo valen para sensibilidad.
+- Umbral: **30 %** del salario, el que usa la literatura de emancipación.
+- Datos de apoyo: paro Lanbide 249/252, Etxebide 5.040 solicitudes, VPO flujo
+  251/252.
 
-Frase de cierre del bloque: "La muestra no permite ranking fino; permite
-comparar 4 municipios con n≥30 y decir dónde no se puede concluir".
+Frase: "El indicador no es nuestro: es el estándar; lo que aportamos es
+calcularlo municipal y decir dónde no se puede calcular."
 
-## 2:00–3:30 · P2 · Arquitectura y cadena
+## 2:30–4:30 · P1 · El mapa
 
-> "Todo entra por `extract/`, se congela en `data/raw` con manifest SHA-256
-> (**354 ficheros, 0 errores**), se transforma a silver (**185**), se carga
-> en Mongo (**16 colecciones**) y se analiza con **9 pipelines** que escriben
-> 5 CSV y 13 PNG. Kafka alimenta `anuncios` por upsert; el análisis solo lee."
+- **Mediana 26,61 %** en los 159 oficiales; **40 municipios (25,2 %) por
+  encima del 30 %**.
+- **Álava, Bizkaia y Gipuzkoa** no se comportan igual: la mediana sube donde
+  hay mercado de alquiler tensionado.
+- Con IDW el titular no cambia: **25,37 % (47/252, 18,7 %)**.
+- Tensión social (Etxebide + esfuerzo): **76 alta / 103 media / 73 baja**.
+- Paro y alquiler: **r ≈ 0,385**, relación débil; no hay trade-off simple.
 
-Enseñar el diagrama y decir el campo común: **`codigo_ine` de 5 dígitos**.
-Mencionar la decisión: `procesado/` se queda en local, no sube a HDFS.
+> "El mapa no dice 'Euskadi es caro'. Dice dónde el alquiler se come el
+> salario y dónde ni siquiera tenemos precio para decirlo."
 
-## 3:30–5:00 · P2 · Modelo: embedding vs referencing
+## 4:30–6:00 · P1 · Los 4 robustos
 
-Responder a las preguntas del docx §5, no a teoría genérica:
+| Municipio | n anuncios | Esfuerzo | Lectura |
+|---|---|---|---|
+| Bilbao | 173 | 37,69 % | peor: precio alto + esfuerzo máximo |
+| Donostia | 113 | 38,17 % | peor: misma pauta |
+| Getxo | 40 | 28,60 % | bajo el umbral por 1,4 puntos |
+| Vitoria-Gasteiz | 39 | 33,37 % | esfuerzo por renta, m² más barato |
 
-- **Se lee junto y cambia poco** → embebido: demografía, empleo, demanda
-  social y transporte dentro de `municipios`.
-- **Crece sin límite** → colección propia: `anuncios` (759), `etxebide_solicitudes`
-  (5.040).
-- **Patrón de acceso** → la ficha municipal se abre entera; los anuncios se
-  filtran por municipio, modalidad y precio.
-- **Referencia** por `codigo_ine`: `anuncios.ubicacion.codigo_ine`,
-  `alquiler_municipal._id`, `etxebide_promociones.codigo_ine`.
-- **No denormalizamos** indicadores calculados: `n_anuncios` y `esfuerzo_*`
-  salen de aggregation, no se guardan a mano.
+- **Getxo 40 vs Vitoria 39: un anuncio de diferencia.** No hay ranking firme.
+- Barakaldo (n=13) queda fuera por muestra, aunque su esfuerzo sea alto.
+- Bilbao + Donostia = **38 % de los anuncios**; el top-4, el 48 %.
 
-> "Elegimos referencing donde el array podría crecer sin límite y embedding
-> donde el documento se lee como una ficha. Esa es la decisión que la rúbrica
-> pide justificar."
+Frase: "Podemos comparar cuatro; podemos rankear dos. La diferencia es la que
+la rúbrica llama conclusión defendible."
 
-## 5:00–6:30 · P2 · Carga, limpieza y CRUD
+## 6:00–7:00 · P2 · Sensibilidad: ¿aguanta el titular?
 
-- Carga: `insert_many` para colecciones municipales, `update_one(upsert=True)`
-  para lo que llega por Kafka.
-- Limpieza real: **845 → 759 anuncios**; **86 duplicados (10,18 %)** por
-  `(portal, id_anuncio)`.
-- Nulos: Usansolo (48916) sin VPO **no se imputa a 0**; queda nulo y el
-  pipeline lo excluye (251).
-- Tipos: dinero en `Decimal128`, `codigo_ine` string de 5, geo como GeoJSON
-  Point.
-- Comprobaciones: `matched_count` / `modified_count` en las actualizaciones.
+- **Oficial 159**: 26,61 % de mediana, 40 > 30.
+- **IDW 252**: 25,37 %, 47 > 30 → el signo no cambia.
+- **Bootstrap 10.000**: Bilbao 32,3–42,4; Donostia 32,4–45,8; **se solapan**.
+  Getxo 28,6–33,0; Vitoria 30,8–39,4.
 
-Enseñar una línea: `storage/mongo.py:replace_collection` usa
-staging + backup + rename, nunca `drop()` sobre producción.
+> "El titular aguanta, el orden entre Bilbao y Donostia no. Eso lo decimos
+> nosotros antes de que lo pregunte el tribunal."
 
-## 6:30–8:00 · P3 · Consultas y aggregation
+## 7:00–7:40 · P2 · Quién queda fuera
 
-Tres pipelines, cada uno con **qué entra y qué sale**:
+- **169 municipios (67 %) sin anuncios** → sin precio observado.
+- **93 IDW** → sensibilidad, nunca titular.
+- Renta municipal como **proxy**: falacia ecológica, no es renta individual.
+- Años mezclados: anuncios 2026, renta/paro 2024.
+- **VPO**: flujo 2020–2024, no stock histórico (Usansolo sin dato).
 
-1. `pipeline_indicadores_municipio`: 252 filas; `$lookup` anuncios +
-   alquiler + indicadores; expone tensión, paro y esfuerzo.
-2. `pipeline_vpo_terminadas`: 251 filas; `$match` excluye el nulo, `$lookup`
-   trae nombre y territorio; **Berango 62,55 ‰**.
-3. `pipeline_esfuerzo_por_sexo`: 252 filas; `$addFields` calcula el esfuerzo
-   de hombres y mujeres en Mongo, no en Python.
+Frase: "Estos cuatro huecos no son un fallo del proyecto: son el perímetro de
+lo que se puede afirmar."
 
-Regla de oro al explicar: "`$lookup` antes de `$unwind` para no multiplicar
-filas; `$group` para el agregado; `$project` para dejar solo lo que se
-defiende".
+## 7:40–9:10 · P2 · Cómo se calculó (técnico, comprimido)
 
-### Consultas que puedes enseñar (verificadas)
+- Cadena: `extract/` → **raw 354 con manifest SHA-256** → silver **185** →
+  Mongo **16 colecciones** → **9 pipelines** → 5 CSV + 13 PNG.
+- Modelo: **embedding** de demografía/empleo/demanda social en `municipios`
+  (se leen juntos, cambian poco); **referencing** por `codigo_ine` para
+  `anuncios` y `etxebide_promociones` (crecen sin límite).
+- Limpieza: **845 → 759** anuncios, **86 duplicados (10,18 %)**; Usansolo no se
+  imputa.
+- Pipelines que sostienen la respuesta:
+  1. `pipeline_indicadores_municipio` → 252 filas, esfuerzo, tensión, paro.
+  2. `pipeline_vpo_terminadas` → 251 filas, VPO de flujo.
+  3. `pipeline_esfuerzo_por_sexo` → 252 filas, esfuerzo calculado en Mongo.
+- **Huella reproducible** `08665d03…c30a`: dos ejecuciones, mismos CSV.
 
-```python
-from storage.mongo import get_collection
+No expliques las 9: tres bastan si cada una responde a una pregunta del reto.
 
-# 1) Dot notation + proyección: ficha de Bilbao.
-get_collection("municipios").find_one(
-    {"_id": "48020"},
-    {"nombre_canonico": 1, "demanda_social.tension_categoria": 1,
-     "demanda_social.tension_demanda_social": 1},
-)
-# -> Bilbao, tension_categoria 'alta', tension_demanda_social 94.8
-
-# 2) Comparación + igualdad + proyección anidada.
-q = {"precio_eur": {"$lte": 1000}, "modalidad": "larga_estancia"}
-get_collection("anuncios").count_documents(q)   # -> 74
-get_collection("anuncios").find_one(q, {"precio_eur": 1, "ubicacion.codigo_ine": 1, "_id": 0})
-# -> 995.0 EUR en el municipio 20055
-```
-
-Si preguntan por arrays: `anuncios.equipamiento` y `historico_precios` son
-arrays; el índice multikey existe precisamente por `equipamiento`. No fuerces
-un `$elemMatch` en vivo si no lo has ensayado.
-
-## 8:00–9:30 · P3 · Terminal
+## 9:10–10:20 · P3 · Pruebas en terminal
 
 ```bash
 .venv/Scripts/python.exe extract/generar_manifest.py --verify
@@ -149,96 +148,89 @@ un `$elemMatch` en vivo si no lo has ensayado.
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py
 ```
 
-Salidas que hay que saber leer:
-
-| Comando | Salida esperada |
+| Comando | Salida que se lee en voz alta |
 |---|---|
-| manifest | `354 entradas, 0 errores` + `185 entradas, 0 errores` |
-| pytest | `136 passed` |
-| run_analisis | `9 pipelines`, 5 CSV (252/252/2/252/322), `13 PNG`, huella `08665d03…c30a`, `reproducibilidad: ok` |
-| gate | `RESULTADO: OK 18/18` |
+| manifest | `354` y `185` entradas, **0 errores** |
+| pytest | **136 passed** |
+| run_analisis | **9 pipelines**, 5 CSV, **13 PNG**, huella `08665d03…`, reproducible |
+| gate | **OK 18/18** |
 
-Si Mongo no responde: enseñar los CSV y PNG ya generados y decir "la huella
-es reproducible; la última ejecución está en `data/resultados`". **No
-improvisar una demo en vivo sin Mongo.**
+Índices: la consulta municipio + modalidad + precio ≤1000 pasa de
+**COLLSCAN 759 examinados** a **IXSCAN 1**. Índice ESR
+`(codigo_ine, modalidad, precio_eur)`; coste: escrituras y espacio.
 
-## 9:30–10:30 · P3 · Índices y explain
+Consulta que puedes enseñar (verificada):
 
-> "La consulta es municipio + modalidad + precio ≤ 1000. Antes:
-> **COLLSCAN, 759 documentos examinados**. Después del índice ESR
-> `(codigo_ine, modalidad, precio_eur)`: **IXSCAN, 1 examinado, 1 clave**.
-> El coste es escritura y espacio; por eso solo creamos índices con consulta
-> detrás."
+```python
+from storage.mongo import get_collection
+get_collection("municipios").find_one(
+    {"_id": "48020"},
+    {"nombre_canonico": 1, "demanda_social.tension_categoria": 1,
+     "demanda_social.tension_demanda_social": 1},
+)
+# -> Bilbao, 'alta', 94.8
+```
 
-Mencionar 2dsphere sparse para geo (424 de 759 con punto real) y el multikey
-de `equipamiento`.
+## 10:20–11:20 · P3 · Consistencia y decisiones
 
-## 10:30–11:15 · P1 · Consistencia y transacción
+- **Sin transacción**: cada cambio cabe en un documento;
+  `marcar_calidad_municipio` usa `find_one_and_update` +
+  `ReturnDocument.AFTER`, con test.
+- Carga con **staging + backup + rename**, nunca `drop()` sobre producción.
+- Si se denormalizara el conteo de anuncios en `municipios` y hubiera que
+  borrarlos a la vez, **sí** haría falta sesión con commit/abort.
+- Shard key si preguntan: `codigo_ine` hashed evita hotspots pero provoca
+  scatter-gather; a esta escala no shardearía.
 
-> "No usamos transacción porque cada cambio cabe en un documento. La prueba
-> es `marcar_calidad_municipio`: `find_one_and_update` con
-> `ReturnDocument.AFTER` devuelve el valor nuevo en una sola operación; hay
-> test contra la base de test. La carga usa staging + backup + rename. Si
-> denormalizáramos el conteo de anuncios en `municipios` y hubiera que
-> borrarlos a la vez, sí necesitaríamos sesión con commit/abort."
+## 11:20–12:00 · P1 · Límites y cierre
 
-Shard key si preguntan: `codigo_ine` hashed reduce hotspots pero provoca
-scatter-gather; ranged concentra Bilbao/Donostia. "A esta escala no shardearía".
+1. **169 sin anuncios**: no hay precio que comparar.
+2. **93 IDW**: solo sensibilidad.
+3. **4 robustos**: Getxo y Vitoria a un anuncio.
+4. **Años y VPO**: 2026 vs 2024; flujo no es stock.
 
-## 11:15–12:00 · P1 · Límites y cierre
-
-Cuatro límites, uno por frase:
-
-1. **169 municipios sin anuncios** → sin precio observado; se usa cuantía oficial.
-2. **93 IDW** → solo sensibilidad, nunca titular.
-3. **4 robustos** → Getxo 40 y Vitoria 39 se diferencian en 1 anuncio.
-4. **Años mezclados** (anuncios 2026, renta/paro 2024) y **VPO flujo ≠ stock**.
-
-Cierre: "Con esos límites, la conclusión defendible es que Bilbao y Donostia
-son los peores para emanciparse, Getxo y Vitoria quedan cerca del umbral, y
-el resto no se puede rankear con esta muestra. Eso es lo que los datos
-sostienen, ni más ni menos."
+> "La conclusión que sostenemos es esta: Bilbao y Donostia son las peores
+> plazas para emanciparse con el salario joven; Getxo y Vitoria quedan cerca
+> del umbral; y en dos tercios de los municipios no hay datos para afirmarlo.
+> Con más anuncios y stock de VPO podríamos ampliar el mapa, no cambiar el
+> signo del titular."
 
 ## Preguntas por persona
 
-**P1 (reto y conclusiones)**
-- ¿Por qué mediana y no media? → outliers de alquiler; canónico declarado.
-- ¿Getxo es más asequible que Vitoria? → 28,60 vs 33,37 con 1 anuncio de
-  diferencia; no hay ranking firme.
-- ¿Qué cambiaría con datos individuales? → falacia ecológica: la renta es
-  municipal, no personal.
+**P1 (la pregunta)**
+- ¿Por qué mediana? → outliers; canónico declarado.
+- ¿Getxo es más asequible? → 1 anuncio; no hay ranking.
+- ¿Y una persona concreta? → renta municipal ≠ individual; falacia ecológica.
 
-**P2 (modelo y CRUD)**
+**P2 (método y modelo)**
 - ¿Por qué 16 colecciones? → una por fuente/frecuencia; backups aparte.
-- ¿Dónde crecería un array sin límite? → `anuncios` y `etxebide_solicitudes`;
-  por eso son colecciones.
-- ¿Qué operador no usaste? → los que no tenían necesidad; forzarlos sería
-  empeorar el modelo.
+- ¿Qué va embebido y qué referenciado? → ficha municipal vs arrays que crecen.
+- ¿Por qué IDW y no imputar todo? → no inventar precio donde no lo hay.
 
-**P3 (rendimiento y demo)**
-- ¿Qué etapa hace qué? → entra/sale por etapa, no recitar el JSON.
+**P3 (pruebas)**
+- ¿Qué etapa hace qué? → entra/sale por etapa, sin recitar JSON.
 - ¿Por qué ESR? → igualdad, orden, rango.
-- ¿Qué pasa si el índice no se usa? → `explain` lo delata; se revisa el orden
-  de campos.
+- ¿Qué pasa si el índice no se usa? → `explain` lo delata y se revisa el orden.
 
 ## Frases prohibidas
 
-- "HDFS tiene originales **y procesados**" → solo originales (rúbrica: 7, no 10).
+- "HDFS tiene originales y procesados" → solo originales (rúbrica: 7, no 10).
 - "Tenemos stock de VPO" → flujo 2020–2024; stock sin fuente.
 - "Getxo es el más asequible" → 1 anuncio de diferencia.
-- "Los 252 municipios son oficiales" → 159 oficiales + 93 IDW.
+- "Los 252 son oficiales" → 159 + 93 IDW.
 - "La huella es `f1e78870`" → la vigente es `08665d03…c30a`.
-- "16-29 es el esfuerzo canónico" → legacy; el canónico es 18–34.
+- "16-29 es el canónico" → legacy; el canónico es 18–34.
 
 ## Si vas justo de tiempo
 
-Recorta en este orden: consultas (6:30–8:00) a 45 s; consistencia
-(10:30–11:15) a 20 s; nunca recortes la demo ni los límites.
+Recorta en este orden: pruebas a 30 s (manifest + pytest), consistencia a 20 s,
+modelo a 40 s. **Nunca** recortes la respuesta, los 4 robustos ni los límites.
 
 ## Checklist 10 minutos antes
 
-- [ ] Mongo local responde (`pipeline_vpo_terminadas` devuelve 251).
+- [ ] Mongo responde (`pipeline_vpo_terminadas` → 251).
 - [ ] `.venv` activo y `pytest -q` verde.
-- [ ] CSV y 13 PNG ya generados en `data/resultados`.
-- [ ] Huella `08665d03…c30a` copiada a mano.
-- [ ] `git status` limpio (no enseñar cambios sin commitear).
+- [ ] CSV y 13 PNG generados en `data/resultados`.
+- [ ] Huella `08665d03…c30a` copiada.
+- [ ] Mapa y tabla de robustos abiertos, no buscados en vivo.
+- [ ] `git status` limpio.
