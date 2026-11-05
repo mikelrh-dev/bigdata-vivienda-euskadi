@@ -23,17 +23,18 @@ Si la presentación empieza por colecciones e índices, el tribunal oye "otro
 proyecto de MongoDB" y la pregunta queda para el final. Al revés, cada detalle
 técnico cae sobre una conclusión que ya está en pie.
 
-## Diapositivas (9)
+## Diapositivas (10)
 
 1. **La pregunta** y la respuesta en una frase.
 2. **Cómo se mide**: esfuerzo = cuantía × 12 / renta joven 18-34; umbral 30 %.
 3. **Mapa de Euskadi** por municipios (159 oficiales, color por esfuerzo).
-4. **Los 4 robustos** con n y esfuerzo; Getxo/Vitoria a un anuncio.
-5. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
-6. **Quién queda fuera**: 169 sin anuncios, 93 IDW, falacia ecológica.
-7. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 9 pipelines.
-8. **Pruebas**: explain 759→1, 136 tests, gate 18/18, huella.
-9. **Límites y qué haríamos con más datos**.
+4. **La respuesta en cuatro cifras**: 54 con margen / 65 justos / 40 no / 93 solo IDW.
+5. **Los 4 robustos** con n y esfuerzo; Getxo/Vitoria a un anuncio.
+6. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
+7. **Quién queda fuera**: 169 sin anuncios, 93 IDW, falacia ecológica.
+8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 9 pipelines.
+9. **Pruebas**: explain 759→1, 136 tests, gate 18/18, huella.
+10. **Límites y qué haríamos con más datos**.
 
 ## Reparto y tiempos
 
@@ -41,9 +42,10 @@ técnico cae sobre una conclusión que ya está en pie.
 |---|---|---|---|---|
 | 0:00 | 0:50 | P1 | Pregunta + respuesta en 30 segundos | 1 |
 | 0:50 | 2:30 | P1 | Cómo se mide y qué universo hay | 2 |
-| 2:30 | 4:30 | P1 | El mapa: 26,61 %, 40/159, territorios | 3 |
-| 4:30 | 6:00 | P1 | Los 4 robustos y qué se puede afirmar | 4 |
-| 6:00 | 7:00 | P2 | Sensibilidad: el titular aguanta | 5 |
+| 2:30 | 4:00 | P1 | El mapa: 26,61 %, 40/159, territorios | 3 |
+| 4:00 | 4:50 | P1 | La respuesta en cuatro cifras: 54/65/40/93 | 4 |
+| 4:50 | 6:10 | P1 | Los 4 robustos y qué se puede afirmar | 5 |
+| 6:10 | 7:00 | P2 | Sensibilidad: el titular aguanta | 6 |
 | 7:00 | 7:40 | P2 | Quién queda fuera y por qué importa | 6 |
 | 7:40 | 9:10 | P2 | Arquitectura, modelo y pipelines | 7 |
 | 9:10 | 10:20 | P3 | Pruebas en terminal: explain, tests, gate | 8 |
@@ -74,7 +76,7 @@ No empieces por la arquitectura. Esa frase es la presentación.
 Frase: "El indicador no es nuestro: es el estándar; lo que aportamos es
 calcularlo municipal y decir dónde no se puede calcular."
 
-## 2:30–4:30 · P1 · El mapa
+## 2:30–4:00 · P1 · El mapa
 
 - **Mediana 26,61 %** en los 159 oficiales; **40 municipios (25,2 %) por
   encima del 30 %**.
@@ -87,7 +89,17 @@ calcularlo municipal y decir dónde no se puede calcular."
 > "El mapa no dice 'Euskadi es caro'. Dice dónde el alquiler se come el
 > salario y dónde ni siquiera tenemos precio para decirlo."
 
-## 4:30–6:00 · P1 · Los 4 robustos
+## 4:00–4:50 · P1 · La respuesta en cuatro cifras
+
+> "Si el tribunal quiere un sí o un no, esta es la tabla: **54 municipios**
+> pueden con margen, **65** pueden pero justo, **40** no llegan y **93** solo
+> tienen una estimación, no un dato. Tres de cada cuatro con dato oficial
+> están en el umbral o por debajo; el problema se concentra en Bilbao,
+> Donostia y una decena más por encima del 35 %."
+
+Los 93 IDW van en barra aparte: no se suman a los 159 oficiales.
+
+## 4:50–6:10 · P1 · Los 4 robustos
 
 | Municipio | n anuncios | Esfuerzo | Lectura |
 |---|---|---|---|
@@ -103,7 +115,7 @@ calcularlo municipal y decir dónde no se puede calcular."
 Frase: "Podemos comparar cuatro; podemos rankear dos. La diferencia es la que
 la rúbrica llama conclusión defendible."
 
-## 6:00–7:00 · P2 · Sensibilidad: ¿aguanta el titular?
+## 6:10–7:00 · P2 · Sensibilidad: ¿aguanta el titular?
 
 - **Oficial 159**: 26,61 % de mediana, 40 > 30.
 - **IDW 252**: 25,37 %, 47 > 30 → el signo no cambia.

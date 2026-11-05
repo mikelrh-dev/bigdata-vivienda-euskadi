@@ -1,6 +1,6 @@
 # Presentación de defensa
 
-9 diapositivas 16:9, sin dependencias externas y sin conexión.
+10 diapositivas 16:9, sin dependencias externas y sin conexión.
 
 ## Ficheros
 
@@ -10,7 +10,7 @@
 | `presentacion.pdf` | Export para entregar o imprimir |
 | `index.template.html` | Plantilla editable (texto y layout) |
 | `build_presentacion.py` | Genera HTML y los 4 SVG desde los CSV |
-| `assets/*.svg` | Histograma, territorios, robustos y sensibilidad |
+| `assets/*.svg` | Histograma, territorios, tramos, robustos y sensibilidad |
 
 ## Regenerar
 
@@ -42,6 +42,6 @@ diapositiva por página.
 
 ## Criterio de diseño
 
-La diapositiva 1 responde a la pregunta; las 2–6 la sostienen; las 7–8 enseñan
-cómo se calculó y cómo se prueba; la 9 declara el perímetro. Ningún gráfico
+La diapositiva 1 responde a la pregunta; las 2–7 la sostienen; la 8 enseña
+cómo se calculó y la 9 cómo se prueba; la 10 declara el perímetro. Ningún gráfico
 lleva cifras escritas a mano: salen de los CSV.

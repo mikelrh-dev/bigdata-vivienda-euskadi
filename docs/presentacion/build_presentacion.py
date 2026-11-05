@@ -126,6 +126,33 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
     return ruta
 
 
+def chart_tramos(tramos: dict[str, int], n_idw: int) -> Path:
+    fig, ax = plt.subplots(figsize=(8.6, 2.9))
+    colores = [TEAL, "#f59e0b", ACCENT]
+    izquierda = 0
+    for (nombre, valor), color in zip(tramos.items(), colores):
+        ax.barh(0, valor, left=izquierda, color=color, edgecolor="white", height=0.55)
+        ax.text(izquierda + valor / 2, 0, f"{valor}\n{nombre}", ha="center", va="center",
+                color="white" if color != "#f59e0b" else NAVY, fontsize=10, fontweight="bold")
+        izquierda += valor
+    ax.barh(1, n_idw, color="#e2e8f0", edgecolor=MUTED, hatch="//", height=0.55)
+    ax.text(n_idw / 2, 1, f"{n_idw}\nsolo estimacion", ha="center", va="center",
+            color=INK, fontsize=10, fontweight="bold")
+    ax.set_yticks([0, 1], [f"Dato oficial ({izquierda})", f"Sin cuantia oficial ({n_idw})"])
+    ax.set_xlim(0, 160)
+    ax.set_ylim(1.7, -0.7)
+    ax.set_xlabel("municipios")
+    ax.grid(axis="x", color=GRID, linewidth=0.8)
+    ax.set_axisbelow(True)
+    for lado in ("top", "right"):
+        ax.spines[lado].set_visible(False)
+    fig.tight_layout()
+    ruta = ASSETS / "tramos.svg"
+    fig.savefig(ruta, format="svg", transparent=True)
+    plt.close(fig)
+    return ruta
+
+
 def chart_sensibilidad(sens: pd.DataFrame) -> Path:
     d = sens.set_index("escenario")
     oficial, idw = d.loc["oficial_159"], d.loc["idw_252"]
@@ -180,8 +207,19 @@ def main() -> int:
     tension = df["tension_categoria"].value_counts()
     vpo = pd.read_csv(ROOT / "data" / "procesado" / "vpo_municipal.csv", encoding="utf-8-sig")
 
+    tramos = {
+        "< 25 %": int((esf_of < 25).sum()),
+        "25-30 %": int(((esf_of >= 25) & (esf_of <= 30)).sum()),
+        "> 30 %": int((esf_of > 30).sum()),
+    }
+    assert sum(tramos.values()) == len(esf_of), tramos
+    n_idw = int((df["is_imputed"].astype(str).str.lower() == "true").sum())
+    assert n_idw == len(df) - len(esf_of), (n_idw, len(df), len(esf_of))
+    print("tramos:", tramos, "| idw:", n_idw)
+
     chart_histograma(esf_of, mediana_of, n30_of, len(esf_of))
     chart_territorios(medias_terr, ns_terr)
+    chart_tramos(tramos, n_idw)
     chart_robustos(boot, totales)
     chart_sensibilidad(sens)
 
@@ -191,10 +229,15 @@ def main() -> int:
         "n30_oficial": n30_of,
         "pct_oficial": _es(100 * n30_of / len(esf_of), 1),
         "n_oficial": len(esf_of),
+        "n_oficial_menos_no": len(esf_of) - n30_of,
         "mediana_global": _es(mediana_all),
         "n30_global": n30_all,
         "pct_global": _es(100 * n30_all / len(esf_all), 1),
         "n_global": len(esf_all),
+        "tramo_margen": tramos["< 25 %"],
+        "tramo_justo": tramos["25-30 %"],
+        "tramo_no": tramos["> 30 %"],
+        "n_idw": n_idw,
         "tension_alta": int(tension.get("alta", 0)),
         "tension_media": int(tension.get("media", 0)),
         "tension_baja": int(tension.get("baja", 0)),
