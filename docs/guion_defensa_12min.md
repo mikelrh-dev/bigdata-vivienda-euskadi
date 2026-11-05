@@ -1,5 +1,7 @@
 # Presentación de defensa — 12 minutos
 
+> Presentación generada: `docs/presentacion/index.html` (PDF en la misma carpeta).
+>
 > **La pregunta manda.** Esto no es una demo de MongoDB: es la respuesta a
 > "¿puede una persona joven independizarse en Euskadi con su salario?", con
 > MongoDB como evidencia. Regla de reparto: **7 minutos responden**, **4
