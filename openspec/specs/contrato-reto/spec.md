@@ -7,6 +7,12 @@
 **Specs detalladas:** `../extraccion-datos`, `../almacenamiento-y-streaming`,
 `../mongodb-y-analisis`, `../presentacion-de-resultados`
 
+## Trazabilidad de fuentes (revisiones 2026-11-05)
+
+- Fuente primaria PDF (rúbrica v2): `brief/RETO 1Evaluacion SBD-BDAv2.pdf`, revisado el 2026-11-05. Cubre BDA RA1, SBD RA1, SBD RA3 y SBD RA4 con pesos 46,7 % / 13,3 % / 40 % en la 1.ª evaluación. Las tablas de este contrato son transcripción literal del PDF, con referencia de línea tras cada tabla.
+- Fuente primaria docx (Tema 8, evaluación separada): `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`, revisado el 2026-11-05. Sección 16 con pesos Tema 8 (no son pesos v2 y no se suman a 46,7 % / 13,3 % / 40 %). Las secciones 5, 9, 10, 12, 4, 14, 15 y 17 se mapean en la sección "Mapa trazable docx" a requisitos existentes.
+- Extensiones propias: las prohibiciones P-01 a P-08, el canónico 18-34 y `CARGA-SEGURA` siguen vigentes como extensión propia del proyecto. No son requisito v2 ni pesos Tema 8 (ver párrafo `CARGA-SEGURA` en Notas de mapeo, líneas 180-182 sin borrar).
+
 ---
 
 ## Purpose
@@ -31,6 +37,8 @@ contrato antes de cambiar el código).
 | Kafka | No funciona | Crea un tópico | Envía mensajes con productor Python | **Productor y consumidor Python funcionan y procesan mensajes** |
 | Integración | No hay integración | Los componentes funcionan por separado | Integra dos o más componentes | **Demuestra el flujo completo hasta MongoDB** |
 
+> Trazabilidad PDF (cotejo 2026-11-05): BDA RA1 literal en PDF líneas 72-79. Kafka, PDF línea 78 en extracto: «Productor y consumidor Python funcionan y procesan mensajes». Sin diferencias literales.
+
 ### SBD — RA1. Adquisición, integración y tratamiento de datos
 
 **Peso en la 1.ª evaluación (v2): 46,7 %**
@@ -41,6 +49,8 @@ contrato antes de cambiar el código).
 | Construcción del conjunto de datos | No existe una estructura de datos funcional | Guarda todos los datos en una colección sin tratamiento | Utiliza 2 o más colecciones o documentos anidados/arrays | **Utiliza 2 o más colecciones y demuestra al menos 1 relación, embedding o referencia entre datos** |
 | Limpieza y transformación con PyMongo | No realiza limpieza | Realiza 1 operación de limpieza o transformación | Realiza al menos 3 operaciones diferentes | **Realiza al menos 4 operaciones diferentes, incluyendo tratamiento de nulos/ausentes, duplicados y tipos/formato de datos** |
 | Automatización | El tratamiento se realiza manualmente | Existe algún script Python parcial | Los datos se cargan y transforman mediante scripts Python | **Un script o conjunto de scripts permite ejecutar carga + limpieza + transformación, sin modificar manualmente los datos en MongoDB** |
+
+> Trazabilidad PDF (cotejo 2026-11-05): SBD RA1 literal en PDF líneas 85-94, peso 46,7 % en PDF línea 87. Sin diferencias literales.
 
 ### SBD — RA3. Gestión y almacenamiento en MongoDB
 
@@ -55,6 +65,8 @@ contrato antes de cambiar el código).
 | Índices y rendimiento | No crea índices | Crea 1 índice | Crea un índice relacionado con una consulta y ejecuta explain() | **Compara mediante explain() la consulta antes/después o con/sin índice e identifica COLLSCAN/IXSCAN y totalDocsExamined** |
 | Consistencia | No aplica lo trabajado | Solo describe el concepto | Identifica en su proyecto una operación atómica o un caso donde podría necesitarse una transacción | **Implementa una transacción real si su modelo la necesita; si no la necesita, demuestra mediante código una operación atómica y justifica técnicamente por qué una transacción sería innecesaria** |
 
+> Trazabilidad PDF (cotejo 2026-11-05): SBD RA3 literal en PDF líneas 98-109, peso 13,3 % en PDF línea 100. Sin diferencias literales.
+
 ### SBD — RA4. Procesamiento, análisis y preparación de resultados
 
 **Peso en la 1.ª evaluación (v2): 40 %**
@@ -66,6 +78,8 @@ contrato antes de cambiar el código).
 | Indicadores | No calcula indicadores | Calcula 1 indicador | Calcula al menos 3 indicadores relacionados con vivienda/emancipación | **Calcula al menos 5 indicadores, combinando información procedente de 2 o más fuentes** |
 | Respuesta al reto | No responde a la pregunta | Presenta datos sin conclusión | Obtiene conclusiones para al menos 2 municipios o zonas | **Compara al menos 3 municipios/zonas y cada conclusión está vinculada a un indicador calculado con MongoDB** |
 | Preparación para visualización | No prepara resultados | Copia resultados manualmente | Genera mediante PyMongo datos utilizables para gráficos | **Genera automáticamente mediante PyMongo al menos 3 conjuntos de resultados diferentes preparados para representar** |
+
+> Trazabilidad PDF (cotejo 2026-11-05): SBD RA4 literal en PDF líneas 113-123, peso 40 % en PDF línea 115. Sin diferencias literales.
 
 ### Evaluación separada — Tema 8 MongoDB (`Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`, sección 16)
 
@@ -80,6 +94,8 @@ Los pesos siguientes NO son pesos v2: son la evaluación separada de la parte Mo
 | Transacciones y consistencia | 10 % | Decisión razonada y, cuando proceda, implementación correcta |
 | PyMongo profesional | 15 % | Organización, conexión, errores, resultados y reproducibilidad |
 | Defensa técnica | 10 % | Capacidad individual para explicar decisiones y comportamiento del sistema |
+
+> Trazabilidad docx (cotejo 2026-11-05): Tema 8 sección 16 literal en docx líneas 228-252. Pesos 15/15/20/15/10/15/10. Sin diferencias literales.
 
 
 ### Requisitos adicionales del PDF
@@ -180,6 +196,79 @@ y se satisfacen con los mismos `MODELO-01`, `PYMONGO-01`,
 `CARGA-SEGURA` y los endurecimientos propios de este proyecto (p. ej.
 canónico 18–34) son **extensión propia**: no forman parte de los
 descriptores v2 ni de los pesos Tema 8 y no les sustituyen.
+## Mapa trazable docx (Tema 8) a requisitos existentes
+
+Sin requisitos nuevos. Cada elemento del docx se mapea a un requisito ya
+existente. SHALL solo donde el proyecto ya cumple. SHOULD donde hoy no
+cumple según revisión (HDFS procesado, Kafka Python vivo, integración
+extremo a extremo, tensión/paro en silver).
+
+- Sección 5, 7 preguntas de modelado (docx líneas 67-73): qué se consulta
+  junta, qué cambia, arrays sin límite, fotografía histórica, relaciones
+  1:1/1:N/N:M, campos de relación entre fuentes, tipos BSON. Mapea a
+  MODELO-01. MODELO-01 SHALL documentar las respuestas y SHALL
+  justificar al menos una decisión de embedding/referencing.
+- Sección 9, índices, explain() y rendimiento (docx líneas 121-128):
+  ESR, compuesto, multikey, unique, sparse, partial, TTL.
+  Mapea a INDICES-01. INDICES-01 SHALL justificar índices con consulta
+  real y SHALL demostrar con explain() antes/después COLLSCAN/IXSCAN y
+  totalDocsExamined. Tipos específicos (ESR/multikey/unique/sparse/partial/
+  TTL) SHALL justificarse solo si hay consulta que los necesite.
+- Sección 10, replica sets y sharding (docx líneas 130-150): PRIMARY,
+  SECONDARY, oplog, elección/failover, readPreference, readConcern,
+  writeConcern (majority), ARBITER, mongos, config servers, shards,
+  shard key ranged vs hashed. Mapea a DISTRIBUIDA-01. DISTRIBUIDA-01
+  SHALL permitir explicar estos conceptos y SHALL identificar candidato
+  a shard key y riesgos, sin despliegue obligatorio en local.
+- Sección 12, cursores (docx líneas 172-173): find() no devuelve lista,
+  iteración de Cursor. Mapea a PYMONGO-PRO-01. PYMONGO-PRO-01 SHALL
+  iterar cursores correctamente y SHALL reutilizar MongoClient con URI
+  configurable.
+- Secciones 4, 14, 15 y 17, evidencias y checklist (docx líneas 42-64,
+  189-208, 210-227, 254-264). Mapea a ENTREGABLES-01. ENTREGABLES-01
+  SHALL aportar evidencias 1-10, entregables de la sección 14,
+  integración de temas de la sección 15 y checklist de la sección 17.
+- BDA HDFS y procesados: HDFS-01 SHALL organizar originales y
+  SHOULD subir también procesados a HDFS con recuperación demostrable,
+  porque hoy solo está acreditado el almacenamiento y la recuperación
+  en local.
+- BDA Kafka Python: KAFKA-01 SHOULD tener productor/consumidor Python
+  vivos sobre broker real, porque hoy solo hay tests offline y gate
+  pendiente según almacenamiento-y-streaming.
+- Integración flujo completo: INTEGRACION-01 SHOULD demostrar el flujo
+  completo hasta MongoDB en vivo, porque hoy el gate extremo a extremo
+  está pendiente.
+- Tensión/paro en silver: INDICADORES-01 y COMPLEMENTARIOS-01
+  SHOULD completar avión de tensión/paro en silver, porque la revisión
+  señala tensión/paro en silver como no cerrado. El canónico 18-34
+  sigue siendo extensión propia.
+
+## Trazabilidad requisito a línea de fuente
+
+| Requisito | Fuente (PDF/docx) | Estado |
+|---|---|---|
+| EXTRACCION-01, EXTRACCION-02 | PDF líneas 19-21, 76 | v2 |
+| HDFS-01 | PDF líneas 23, 77 | v2; procesados SHOULD |
+| KAFKA-01 | PDF líneas 24, 33-35, 78 | v2; vivo SHOULD |
+| INTEGRACION-01 | PDF líneas 79, 91 | v2; extremo a extremo SHOULD |
+| MODELO-01 | PDF líneas 92, 104; docx líneas 66-74 | v2 + Tema 8 sección 5 |
+| PYMONGO-01 | PDF líneas 105, 93 | v2 |
+| CONSULTAS-01 | PDF línea 106 | v2 |
+| AGREGACION-01 | PDF línea 107 | v2 |
+| INDICES-01 | PDF línea 108; docx líneas 121-128 | v2 + Tema 8 sección 9 |
+| TRANSACCIONES-01 | PDF línea 109; docx líneas 152-157 | v2 + Tema 8 sección 11 |
+| DISTRIBUIDA-01 | docx líneas 130-150 | Tema 8 sección 10 |
+| PYMONGO-PRO-01 | docx líneas 159-177, 172-173 cursores | Tema 8 sección 12 |
+| ENTREGABLES-01 | PDF líneas 53-57; docx líneas 42-64, 189-208, 210-227, 254-264 | v2 + Tema 8 secciones 4/14/15/17 |
+| COMPLEMENTARIOS-01 | PDF línea 22 | v2 |
+| FORMATO-01 | PDF línea 36 | v2 |
+| LIMPIEZA-01 | PDF líneas 44, 93 | v2 |
+| TRANSFORM-01 | PDF líneas 45, 93 | v2 |
+| PYTHON-01 | PDF líneas 19, 47 | v2 |
+| INDICADORES-01, AUTOMATIZACION-ANALISIS-01, DATOS-HETEROGENEOS-01, PREPARACION-VISUALIZACION-01, CONCLUSION-01 | PDF líneas 119-123 | v2 RA4 |
+| P-01 a P-08, canónico 18-34, CARGA-SEGURA | Extensión propia, líneas 180-182 | Extensión, no v2 |
+
+
 
 ---
 
