@@ -7,6 +7,7 @@ transformación, automatización) y SBD-RA3 (modelado, CRUD, consultas,
 aggregation, índices, consistencia). Respaldo Tema 8 (extensión propia, no
 criterio v2 directo): DISTRIBUIDA-01, PYMONGO-PRO-01 y VALIDACION-01
 **Contrato:** `../contrato-reto/spec.md`
+**Trazabilidad docx:** `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx` §5→MODELO-01, §6→PYMONGO-01/LIMPIEZA-01/TRANSFORM-01, §7→CONSULTAS-01, §8→AGREGACION-01, §9→INDICES-01, §10→DISTRIBUIDA-01, §11→TRANSACCIONES-01, §12→PYMONGO-PRO-01, §15/§16/§17→mapa y pesos (sin cambiar pesos)
 
 ---
 
@@ -60,6 +61,13 @@ sus fuentes y patrones de acceso, no un requisito universal del reto.
 - WHEN se crea la base de datos
 - THEN existen al menos 2 colecciones con tipos BSON adecuados
 - AND al menos 1 relación, embedding o referencia entre datos es demostrable
+
+#### Scenario: Las 7 preguntas de modelado como SHOULD — Tema 8 §5
+<!-- Trazabilidad docx Tema 8 §5 Modelado documental (P021-P028, tabla evidencias bloque 2): SHOULD, no SHALL; el SHALL de MODELO-01 se mantiene -->
+- GIVEN las fuentes reales y las consultas que el equipo necesita realizar
+- WHEN antes de programar se diseña el modelo
+- THEN el sistema SHOULD documentar respuestas a las 7 preguntas: ¿qué información se consulta normalmente junta?; ¿qué información cambia con frecuencia?; ¿qué arrays podrían crecer sin límite?; ¿hay información que se repite pero interesa conservar como fotografía histórica?; ¿qué relaciones son 1:1, 1:N o N:M?; ¿qué campos se usarán para relacionar información procedente de fuentes distintas?; ¿qué tipos BSON son adecuados para fechas, importes, identificadores, booleanos o arrays?
+- AND el sistema SHOULD justificar al menos 1 decisión de embedding o referencing, o explicar por qué el modelo no utiliza uno de los enfoques (docx §5, nota final)
 
 ### Requirement: PYMONGO-01 — Inserta, actualiza, elimina y comprueba
 
@@ -305,6 +313,13 @@ COLLSCAN/IXSCAN y totalDocsExamined (rúbrica v2 SBD-RA3).
   totalKeysExamined
 - AND se explica la mejora y el coste en almacenamiento y escrituras
 
+#### Scenario: Criterio ESR y tipos de índice como SHOULD — Tema 8 §9
+<!-- Trazabilidad docx Tema 8 §9 Índices, explain() y rendimiento (P057-P064, pasos 1-6): SHALL actual sin cambios; ESR/multikey/unique/sparse/partial/TTL como SHOULD junto a explain executionStats -->
+- GIVEN una consulta real con filtros, ordenaciones o rangos
+- WHEN se diseña un índice simple o compuesto
+- THEN el sistema SHOULD justificar índices compound siguiendo el criterio ESR (Equality, Sort, Range) y SHOULD reconocer cuándo aplican índices multikey, unique, sparse, partial o TTL
+- AND el sistema SHOULD repetir explain("executionStats") y comparar COLLSCAN/IXSCAN, nReturned, totalDocsExamined y totalKeysExamined, sin valorar índices sin consulta que los justifique
+
 ### Requirement: TRANSACCIONES-01 — Atomicidad multidocumento
 
 El sistema SHALL determinar si existe una operación que requiera atomicidad
@@ -330,10 +345,17 @@ poder explicar replica sets y sharding y su relación con disponibilidad y
 escalabilidad, aunque se ejecute en local.
 
 #### Scenario: Conceptos explicables
+<!-- Trazabilidad docx Tema 8 §10 Replica sets y sharding (P065-P066, tabla 8): concerns por separado y ARBITER; conceptual, sin exigir clúster -->
 - GIVEN la solución en local
 - WHEN se defiende
-- THEN se explican PRIMARY/SECONDARY, oplog, elección/failover, concerns,
+- THEN se explican PRIMARY/SECONDARY, oplog, elección/failover,
+  readPreference, readConcern, writeConcern (incl. majority), ARBITER,
   mongos, config servers, shards y shard key (ranged vs hashed)
+- AND se distinguen readPreference (de qué tipo de nodo se prefieren las
+  lecturas), readConcern (qué garantía de lectura se solicita), writeConcern
+  (cuándo se considera confirmada una escritura y qué implica majority) y
+  ARBITER (participa en elecciones pero no almacena datos) como conceptos
+  separados
 - AND se identifica un candidato a shard key y sus riesgos
 
 ### Requirement: PYMONGO-PRO-01 — PyMongo profesional
@@ -344,9 +366,14 @@ configurable, estructura separada, manejo de errores, ObjectId, cursores,
 upsert, find_one_and_update, bulk_write y README.
 
 #### Scenario: Proyecto reproducible
+<!-- Trazabilidad docx Tema 8 §12 Desarrollo profesional con PyMongo (P075, tabla 11): cursor find no es lista y MongoClient reutilizable sin repetir cadena en la línea de conexión -->
 - GIVEN el código del proyecto
 - WHEN se revisa
 - THEN la conexión es reutilizable y la URI configurable
+- AND el MongoClient es reutilizable sin repetir credenciales ni cadenas de
+  conexión por el código
+- AND find() se itera como cursor, no como lista, distinguiendo documento de
+  cursor
 - AND hay manejo de errores y comprobación de resultados
 - AND el README permite reproducir la ejecución
 
@@ -361,3 +388,19 @@ la decisión.
 - WHEN se diseña la validación
 - THEN o bien se aplica validación y se demuestra
 - OR se justifica por qué no procede
+
+### Mapa de integración Tema 1–8 → requisito (docx §15)
+<!-- Trazabilidad docx Tema 8 §15 Mapa de integración (tabla 13), §16 pesos y §17 checklist: se añade el mapa sin cambiar pesos; SHALL/SHOULD existentes se mantienen -->
+| Tema (docx §15) | Contenido docx | Requisitos en este spec |
+|---|---|---|
+| 1. Fundamentos y CRUD | BSON, ObjectId, colecciones, documentos, CRUD, cursores y resultados PyMongo | PYMONGO-01, CARGA-SEGURA-01, CONSULTAS-01 (parcial), PYMONGO-PRO-01 (parcial) |
+| 2. Consultas y modelado | Arrays, documentos embebidos, dot notation, embedding/referencing, validación si procede | MODELO-01, CONSULTAS-01, VALIDACION-01 (si procede) |
+| 3. Aggregation | Pipelines con etapas encadenadas y acumuladores para obtener indicadores | AGREGACION-01 |
+| 4. Índices y rendimiento | Índices simples/compuestos, explain(), COLLSCAN/IXSCAN y coste de los índices | INDICES-01 |
+| 5. Arquitectura distribuida | Replica sets, failover, concerns, sharding y shard key | DISTRIBUIDA-01 |
+| 6. Transacciones | Atomicidad, sesiones, commit/abort y decisión de cuándo una transacción es necesaria | TRANSACCIONES-01 |
+| 7. PyMongo profesional | Conexión, estructura del proyecto, errores, ObjectId, cursores, resultados y operaciones avanzadas | PYMONGO-PRO-01 |
+| 8. Proyecto integrador | Unir todas las decisiones anteriores en una solución propia y defendible | MODELO-01 + PYMONGO-01 + CARGA-SEGURA-01 + CONSULTAS-01 + AGREGACION-01 + LIMPIEZA-01 + TRANSFORM-01 + INDICES-01 + TRANSACCIONES-01 + DISTRIBUIDA-01 + PYMONGO-PRO-01 + VALIDACION-01 |
+
+Pesos docx §16 (sin cambios en este spec): Modelado 15 %, CRUD/limpieza/consultas 15 %, Aggregation 20 %, Índices 15 %, Transacciones 10 %, PyMongo profesional 15 %, Defensa 10 %.
+Checklist docx §17: verificado por los escenarios existentes (datos reales, modelo justificado, carga/limpieza PyMongo, consultas reales, pipelines, explain+índice, transacción razonada, replica sets/sharding, código reproducible, defensa).
