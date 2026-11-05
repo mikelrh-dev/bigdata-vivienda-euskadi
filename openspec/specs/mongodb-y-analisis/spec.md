@@ -55,7 +55,7 @@ ValueError)` con log en `_money` (`storage/load_mongo.py`) y en los
 - GIVEN un precio no numérico o un CRUD en `vivienda_euskadi_test`
 - WHEN se procesa `_money` o se insertan/actualizan/borran documentos
 - THEN `_money` devuelve `None` con log y el test comprueba los 3 contadores
-- AND `pytest tests` sigue en 130 passed
+- AND `pytest tests` sigue en 136 passed
 
 
 ### Requirement: CARGA-SEGURA-01 — Carga sin ventana vacía ni borrado irreversible
@@ -329,13 +329,13 @@ la decisión.
 El sistema SHALL garantizar backups de `municipios` e `indicadores` vía
 `replace_collection` (staging + `<name>__backup` + rename), SHALL documentar
 los 424 Point GeoJSON de 759 anuncios desde silver, y SHALL verificarlo con
-el listing de 15 colecciones, sin escrituras en prod.
+el listing de 16 colecciones, sin escrituras en prod.
 
 #### Scenario: Backups, geo y listing
 
 - GIVEN `vivienda_euskadi` con 759 anuncios y 252 municipios
 - WHEN se listan las colecciones y se cuentan los Point
-- THEN hay 15 colecciones, incluidos `municipios__backup` (252 previos) e `indicadores__backup`
+- THEN hay 16 colecciones, incluidos `municipios__backup` (252 previos) e `indicadores__backup`
 - AND hay 424 Point reales, el resto `None` por falta de silver
 ### Requirement: RENTA-01 — `validar_renta` o justificación firmada
 
@@ -348,7 +348,7 @@ pasar con 130 tests.
 - GIVEN `validar_renta.py` en `EXCLUIDOS` de `run_all.py`
 - WHEN se revisa el orquestador
 - THEN es paso del pipeline o existe justificación firmada
-- AND `pytest tests -q` reporta 130 passed
+- AND `pytest tests -q` reporta 136 passed
 
 ## MODIFIED Requirements
 

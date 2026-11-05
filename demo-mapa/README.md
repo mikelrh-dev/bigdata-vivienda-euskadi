@@ -27,7 +27,7 @@ timelines GSAP pausados en `window.__timelines`, todo elemento timed con
   (351 ficheros raw en
   `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`),
   Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft, topic
-  `anuncios_inmobiliarios` con 3 particiones, MongoDB 15 colecciones y
+  `anuncios_inmobiliarios` con 3 particiones, MongoDB 16 colecciones y
   9 pipelines de agregación.
 
 ### Cifras verificadas desde el CSV (Python, 2026-11-04)
