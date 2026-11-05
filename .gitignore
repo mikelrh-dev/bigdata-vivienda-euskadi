@@ -86,3 +86,5 @@ demo-*/snap.json
 !demo-mapa/*.webp
 
 data/staging/
+
+docs/presentacion/preview_*.png
