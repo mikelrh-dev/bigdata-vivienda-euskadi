@@ -85,7 +85,8 @@
     <p class="lead">Con el alquiler oficial, la mediana se lleva <span class="accent">{{mediana_oficial}} %</span>
       del salario joven. En <span class="accent">{{n30_oficial}} de {{n_oficial}}</span> municipios con dato
       se supera el 30 %, y en Bilbao y Donostia roza el 38 %.</p>
-    <p class="lead muted">En 169 municipios no hay anuncios: ahí no afirmamos.</p>
+    <p class="lead muted">En <b>169</b> municipios no hay anuncios (sin precio observado);
+      en <b>93</b> no hay cuantía oficial y solo tenemos una estimación IDW.</p>
     <div class="footer-q">Datos reales · 252 municipios · 759 anuncios · conclusiones con perímetro declarado</div>
     <div class="brand">bigdata-vivienda-euskadi</div>
     <div class="num">01 / 09</div>
@@ -114,7 +115,7 @@
 
   <!-- 3 -->
   <section class="slide">
-    <div class="kicker">La respuesta · 1 de 3</div>
+    <div class="kicker">La respuesta · 1 de 4</div>
     <h2>El mapa: 4 de cada 10 municipios pasan del 30 %</h2>
     <div class="rule"></div>
     <div class="grid g2" style="grid-template-columns:1.45fr 1fr">
@@ -130,7 +131,27 @@
 
   <!-- 4 -->
   <section class="slide">
-    <div class="kicker">La respuesta · 2 de 3</div>
+    <div class="kicker">La respuesta · 2 de 4</div>
+    <h2>La respuesta en cuatro cifras</h2>
+    <div class="rule"></div>
+    <div class="grid g2" style="grid-template-columns:1.55fr 1fr">
+      <div class="chart"><img src="assets/tramos.svg" alt="Tramos de esfuerzo"></div>
+      <div>
+        <p style="margin-bottom:12px"><b class="accent" style="font-size:28px">{{tramo_margen}}</b> pueden con margen: menos del 25 %.</p>
+        <p style="margin-bottom:12px"><b style="font-size:28px">{{tramo_justo}}</b> pueden, pero justo: 25-30 %.</p>
+        <p style="margin-bottom:12px"><b style="font-size:28px">{{tramo_no}}</b> no llegan: mas del 30 %.</p>
+        <p class="muted" style="margin:0"><b>{{n_idw}}</b> solo tienen estimacion IDW: no son dato.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">De los {{n_oficial}} con cuantia oficial, <b>{{tramo_margen}} + {{tramo_justo}} = {{n_oficial_menos_no}}</b> estan en el umbral o por debajo y <b>{{tramo_no}}</b> lo superan. Los {{n_idw}} IDW no se suman a los {{n_oficial}}.</div>
+    <p class="muted" style="font-size:15px;margin:10px 0 0">169 sin anuncios = sin precio observado, no sin dato de esfuerzo.</p>
+    <div class="brand">bigdata-vivienda-euskadi</div>
+    <div class="num">04 / 10</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">La respuesta · 3 de 4</div>
     <h2>Cuatro municipios resisten el escrutinio</h2>
     <div class="rule"></div>
     <div class="grid g2" style="grid-template-columns:1.35fr 1fr">
@@ -148,9 +169,9 @@
     <div class="num">04 / 09</div>
   </section>
 
-  <!-- 5 -->
+  <!-- 6 -->
   <section class="slide">
-    <div class="kicker">La respuesta · 3 de 3</div>
+    <div class="kicker">La respuesta · 4 de 4</div>
     <h2>El titular aguanta; el orden fino, no</h2>
     <div class="rule"></div>
     <div class="grid g2" style="grid-template-columns:1.3fr 1fr">
@@ -167,7 +188,7 @@
     <div class="num">05 / 09</div>
   </section>
 
-  <!-- 6 -->
+  <!-- 7 -->
   <section class="slide">
     <div class="kicker">El perímetro</div>
     <h2>Lo que no podemos afirmar</h2>
@@ -189,7 +210,7 @@
     <div class="num">06 / 09</div>
   </section>
 
-  <!-- 7 -->
+  <!-- 8 -->
   <section class="slide">
     <div class="kicker">Cómo se calculó</div>
     <h2>De la fuente al indicador, sin tocar a mano</h2>
@@ -221,7 +242,7 @@
     <div class="num">07 / 09</div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="slide">
     <div class="kicker">Las pruebas</div>
     <h2>Lo que se puede ejecutar delante de vosotros</h2>
@@ -249,7 +270,7 @@
     <div class="num">08 / 09</div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="slide">
     <div class="kicker">Cierre</div>
     <h2>Lo que sostenemos y lo que no</h2>
@@ -273,7 +294,7 @@
     <p class="lead" style="margin-top:22px">Con más anuncios y stock de VPO ampliaríamos el mapa,
       no cambiaríamos el signo del titular.</p>
     <div class="brand">bigdata-vivienda-euskadi</div>
-    <div class="num">09 / 09</div>
+    <div class="num">10 / 10</div>
   </section>
 
 </div>
@@ -284,7 +305,11 @@
   let i = 0;
   function show(n){
     i = Math.max(0, Math.min(slides.length - 1, n));
-    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    slides.forEach((s, k) => {
+    s.classList.toggle('active', k === i);
+    const n = s.querySelector('.num');
+    if (n) n.textContent = String(k + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+  });
     history.replaceState(null, '', '#' + (i + 1));
   }
   function fit(){
