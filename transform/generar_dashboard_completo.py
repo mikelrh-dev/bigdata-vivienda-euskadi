@@ -71,11 +71,11 @@ def g_B_paro_vs_precio():
         SELECT a.nombre_canonico AS municipio, a.tasa_paro_lanbide_pct, b.precio_medio, a.territorio
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN (
-            SELECT codigo_ine, MEDIAN(precio_eur) AS precio_medio
+            SELECT CAST(codigo_ine AS VARCHAR) AS codigo_ine, MEDIAN(precio_eur) AS precio_medio
             FROM read_csv('data/procesado/anuncios_vivienda_residencial_filtrado.csv')
             WHERE outlier = FALSE
             GROUP BY codigo_ine
-        ) b ON a.codigo_ine = b.codigo_ine
+        ) b ON LPAD(CAST(a.codigo_ine AS VARCHAR), 5, '0') = LPAD(CAST(b.codigo_ine AS VARCHAR), 5, '0')
     """).df()
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.scatterplot(data=df, x="tasa_paro_lanbide_pct", y="precio_medio",
@@ -93,7 +93,7 @@ def g_C_vpo_antiguedad():
                AVG(a.antiguedad_media_anyos) AS antiguedad_media
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN read_csv('data/procesado/udalmap_empleo_corregido.csv') b
-          ON a.codigo_ine = b.codigo_ine
+          ON LPAD(CAST(a.codigo_ine AS VARCHAR), 5, '0') = LPAD(CAST(b.codigo_ine AS VARCHAR), 5, '0')
         GROUP BY a.territorio
     """).df()
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
@@ -130,7 +130,7 @@ def g_E_demografia():
                AVG(CAST(b.poblacion_total AS DOUBLE)) AS pob_total
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN read_csv('data/procesado/eustat_demografia_renta_252.csv') b
-          ON a.codigo_ine = b.codigo_ine
+          ON LPAD(CAST(a.codigo_ine AS VARCHAR), 5, '0') = LPAD(CAST(b.codigo_ine AS VARCHAR), 5, '0')
         GROUP BY a.territorio
     """).df()
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
@@ -172,13 +172,13 @@ def g_F_comparativa_th():
 
 def g_G_gaps():
     gaps = [
-        ("93 municipios sin alquiler oficial", "imputados por comarca"),
-        ("170 municipios sin anuncios", "solo 4 robustos (n>=30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria 01059 n 39"),
-        ("VPO Etxebide", "83.73% ceros, sin stock real"),
+        ("93 municipios sin alquiler oficial", "imputados IDW_5_vecinos"),
+        ("169 municipios sin anuncios", "solo 4 robustos (n>=30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria 01059 n 39"),
+        ("VPO Etxebide", "406 promociones en 77 municipios, NumViviendas vacio 406/406"),
         ("ECVI compraventa", "solo 7 municipios >40k"),
         ("Emancipacion juvenil", "solo nivel CAE, no municipal"),
         ("Pisos sin geo", "235/235 sin coordenadas"),
-        ("Duplicados anuncios", "13.45% sin fingerprint"),
+        ("Duplicados anuncios", "86/845 (10,18%), 0 por fingerprint"),
         ("Transporte paradas", "252 nulos en paradas_por_1000_hab"),
         ("Cert. energetico", "467/470 en Fotocasa detalle"),
         ("Mezcla de anos", "anuncios 2026 vs alquiler/renta 2024"),

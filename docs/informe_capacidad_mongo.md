@@ -1,6 +1,6 @@
 # Informe de capacidad de respuesta con MongoDB — bigdata-vivienda-euskadi
 
-> Actualización 2026-11-03 (mongo-consolidacion): 13 colecciones (`municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promociones/certificados_energeticos`).  
+> Actualización 2026-11-05 (cierre-auditoria): 15 colecciones (13 principales + `indicadores__backup` y `municipios__backup`): `municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promociones/certificados_energeticos`.  
 > Lista de preguntas tomada de `docs/preguntas_analisis_profesional.md` (4 obligatorias + bloques A–G = 42 preguntas).
 
 ## Alcance y método
@@ -42,7 +42,7 @@
 | B4 | Trade-off paro vs alquiler barato | Responde directamente | `indicadores.tasa_paro_lanbide_pct` + `alquiler_municipal.renta_media_eur_m2_*` | No hay trade-off simple (r≈+0,385) |
 | B5 | Paro larga duración | Responde directamente | `udalmap_indicadores.paro_larga_duracion_pct` (252) | Definición Lanbide, no EPA |
 | B6 | Tasa desempleo juvenil real | Parcial | `indicadores.tasa_desempleo_juvenil_real_pct` (199/252), `activos_16_24`/`ocupados_16_24` | 53 municipios sin dato real |
-| C1 | VPO Etxebide y accesibilidad | Responde directamente | `etxebide_solicitudes` (5040) + `etxebide_promociones` agregadas por municipio/estado/tipología (`pipeline_vpo_por_municipio`) | Stock histórico no público → "sin dato" |
+| C1 | VPO Etxebide y accesibilidad | Parcial | `etxebide_solicitudes` (5040) + `etxebide_promociones` agregadas por municipio/estado/tipología (`pipeline_vpo_por_municipio`) | Stock histórico no público → "sin dato" |
 | C2 | Antigüedad >50 años vs alquiler | Responde directamente | `udalmap_indicadores.viviendas_mas_50_anios_pct` (252) + antigüedad media | Proxy calidad, no causalidad |
 | C3 | Confort y sin ascensor | Responde directamente | `udalmap_indicadores.indice_confort`, `edificios_sin_ascensor_pct` (252) | Solo parque residencial |
 | C4 | Superficie media adecuada | Parcial | `anuncios.superficie_m2`/`habitaciones`; `alquiler_municipal.superficie_media_m2_*` | Solo 83 municipios con anuncios; 737/759 con habitaciones |

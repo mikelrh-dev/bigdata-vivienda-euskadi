@@ -108,11 +108,11 @@ marcado explícito de nulos y resolución de duplicados, con contadores
 
 ## Pipelines y reproducibilidad (Tema 8, secciones 14 y 16)
 
-MongoDB hecho: 13 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 8 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`).
+MongoDB hecho: 15 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 8 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`).
 
 Comandos: `.venv/Scripts/python.exe storage/load_mongo.py`, `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py`, `.venv/Scripts/python.exe analysis/run_analisis_mongo.py`, `.venv/Scripts/python.exe -m pytest tests/test_mongo*.py -q` (en particular `tests/test_mongo_geo.py` y `tests/test_mongo_comparativa.py`).
 
-CSVs en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3: Bilbao 173, Donostia 113, Getxo 40). Robustos reales con n mayor o igual a 30: 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz). GeoJSON: 424 Point en `anuncios.ubicacion.coordenadas` con índice 2dsphere.
+CSVs en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4: Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39). Robustos reales con n mayor o igual a 30: 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz). GeoJSON: 424 Point en `anuncios.ubicacion.coordenadas` con índice 2dsphere.
 
 ## Evidencia explain antes/después (INDICES-01, Bloque 3)
 

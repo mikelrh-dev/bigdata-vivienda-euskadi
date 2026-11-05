@@ -5,6 +5,8 @@ Windows. Broker Apache Kafka 4.3.1 KRaft (combined) en ~/kafka, Java 17.
 Puertos: PLAINTEXT 9094 para clientes, CONTROLLER 9093 solo dentro de la VM.
 Fecha: 2026-11-04. No se toca HDFS, MongoDB, storage/* ni .env.
 
+> AVISO 2026-11-05: no ejecutar `python -m storage.kafka_producer` directo: kafka-python 2.2.3 no admite `callback` como kwarg de `send()` y falla con `TypeError`. Usar siempre `scripts/gate_bloque2.py` o `scripts/publish_adapter.py` (inyectan productor con `Future.add_callback/add_errback`, mismo patrón que los tests con `MagicMock`).
+
 ## Base SSH
 
 Desde Git Bash en Windows:

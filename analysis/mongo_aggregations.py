@@ -25,6 +25,14 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
 
     Stages: $match, $lookup, $addFields, $lookup, $addFields, $project, $sort
     (optionally $limit).
+
+    Bloque 4 (PLAN_10 16): pipeline verdadero — expone tambien paro Lanbide
+    (`empleo.tasa_paro_lanbide_pct`) y tension social (`demanda_social.*`)
+    desde el documento `municipios` en Mongo (fuente auditada solo lectura:
+    colecciones `empleo`/`demanda_social` en `municipios`, `etxebide_solicitudes`
+    5040 docs, `alquiler_municipal.metodo_imputacion` 159 oficial / 93 IDW).
+    Preserva `metodo_imputacion` y deriva `is_imputed` sin rellenar valores
+    en silencio (la imputacion queda explicita, nunca oculta).
     """
     pipeline: list[dict[str, Any]] = [
         {"$match": {}},
@@ -72,6 +80,20 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "renta_joven_25_34": "$demografia.renta_joven_estimada_25_34",
             "cuantia_alquiler_mes": "$alquiler.cuantia_media_eur_mes_mediana",
             "renta_m2_alquiler": "$alquiler.renta_media_eur_m2_mediana",
+            # Paro Lanbide y tension social desde municipios (Mongo verdadero).
+            "tasa_paro_lanbide_pct": "$empleo.tasa_paro_lanbide_pct",
+            "tension_demanda_social": "$demanda_social.tension_demanda_social",
+            "tension_categoria": "$demanda_social.tension_categoria",
+            "etxebide_solicitudes_por_mil": "$demanda_social.etxebide_solicitudes_por_mil_2024",
+            # Imputacion explicita: oficial -> False; IDW -> True; sin doc -> False.
+            "metodo_imputacion": "$alquiler.metodo_imputacion",
+            "is_imputed": {
+                "$cond": [
+                    {"$eq": ["$alquiler.metodo_imputacion", "oficial"]},
+                    False,
+                    {"$ne": ["$alquiler.metodo_imputacion", None]},
+                ]
+            },
             "esfuerzo_joven_pct": {
                 "$cond": [
                     {"$and": [
@@ -163,6 +185,12 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "esfuerzo_joven_pct_25_34": 1,
             "esfuerzo_alquiler_pct": "$esfuerzo_joven_pct",
             "tiene_alquiler_oficial": 1,
+            "tasa_paro_lanbide_pct": 1,
+            "tension_demanda_social": 1,
+            "tension_categoria": 1,
+            "etxebide_solicitudes_por_mil": 1,
+            "metodo_imputacion": 1,
+            "is_imputed": 1,
         }},
         {"$sort": {"n_anuncios": -1, "_id": 1}},
     ]

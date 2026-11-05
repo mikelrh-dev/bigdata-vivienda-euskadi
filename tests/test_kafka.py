@@ -95,7 +95,8 @@ def test_upsert_idempotente_en_base_test():
         assert coll.count_documents({"portal": "kafka-test", "id_anuncio": "999001"}) == 1
         doc = coll.find_one({"portal": "kafka-test", "id_anuncio": "999001"})
         assert doc is not None
-        assert doc["precio_eur"] == 1200.0
+        # precio preservado como Decimal128 (tipos BSON del loader); comparar numérico.
+        assert float(str(doc["precio_eur"])) == 1200.0 if not isinstance(doc["precio_eur"], float) else doc["precio_eur"] == 1200.0
         assert doc["municipio"] == "Bilbao"
         # Ida y vuelta: mensaje del productor -> decode -> upsert sin duplicar.
         fila = dict(FILA_EJEMPLO, portal="kafka-test", id_anuncio="999002")

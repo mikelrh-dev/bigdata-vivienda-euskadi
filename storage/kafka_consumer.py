@@ -14,7 +14,9 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from storage.mongo import get_collection
+from bson.decimal128 import Decimal128
+
+from storage.mongo import get_collection, zfill_ine
 
 load_dotenv()
 
@@ -48,9 +50,22 @@ def upsert_anuncio(collection: Any, anuncio: dict[str, Any]) -> bool:
     if portal is None or id_anuncio is None:
         print(f"Mensaje sin portal/id_anuncio, se descarta: {anuncio!r}")
         return False
+    doc = dict(anuncio)
+    # Preservar tipos BSON del loader (Decimal128 para precio, codigo_ine 5 dígitos).
+    # Sin esto, el upsert degradaba precio_eur de Decimal128 a float y rompía
+    # tests/test_mongo.py::test_query_exists_type (precio_decimal vs non_null).
+    precio = doc.get("precio_eur")
+    if isinstance(precio, (int, float)):
+        try:
+            doc["precio_eur"] = Decimal128(str(precio))
+        except Exception:
+            pass
+    code = zfill_ine(doc.get("codigo_ine"))
+    if code is not None:
+        doc["codigo_ine"] = code
     collection.update_one(
         {"portal": portal, "id_anuncio": id_anuncio},
-        {"$set": dict(anuncio)},
+        {"$set": doc},
         upsert=True,
     )
     return True
