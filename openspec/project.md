@@ -3,7 +3,7 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Raw inmutable congelado (manifest 353 = 355 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 182), 109 tests colectados (107 passed, 2 skipped), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS, Kafka) pendiente; MongoDB y análisis hechos.
+**Estado:** Raw inmutable congelado (manifest 353 = 355 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 182), 130 tests colectados (130 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro, Kafka VM) implementada con tests offline; MongoDB y análisis hechos. Gate extremo a extremo pendiente.
 **Fecha:** 2026-10-29
 
 ---
@@ -25,11 +25,11 @@ iniciado salvo la Fase 0).
 |---|---|---|
 | Lenguaje | Python 3.12 (`.venv`) | ✅ |
 | Extracción | `requests`, `beautifulsoup4`, `lxml` | ✅ |
-| Almacenamiento | HDFS (Docker Desktop) | ⬜ |
-| Streaming | Apache Kafka (VM Ubuntu Server, KRaft) | ⬜ |
+| Almacenamiento | HDFS (centro) | ✅ |
+| Streaming | Apache Kafka (VM Ubuntu Server, KRaft) | ✅ |
 | Base de datos | MongoDB (Docker Desktop) + PyMongo | ✅ |
 | Análisis | Aggregation Pipeline de MongoDB | ✅ |
-| Visualización | matplotlib, seaborn | ⬜ |
+| Visualización | matplotlib, seaborn (desde silver y Mongo) | ✅ |
 | Contrato | OpenSpec (`openspec/`) | ✅ |
 
 ## Recorrido de los datos
@@ -49,15 +49,14 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 ├── extract/                              extracción (API + scraping)
 ├── storage/                              HDFS, Kafka, MongoDB
 ├── transform/                            limpieza y enriquecimiento
-├── analysis/                             agregación e indicadores
-├── visualization/                        gráficos
+├── analysis/                             agregación e indicadores + CSV desde Mongo
 ├── notebooks/                            informe
 ├── tests/                                verificación del contrato
 ├── data/{raw,procesado,resultados}       datos generados
 └── plan/PLAN.md                          planificación
 ```
 
-## Fuentes (verificadas 2026-10-23)
+## Fuentes (verificadas 2026-11-05, 25 extractores)
 
 | Fuente | Tipo | Registro | Cobertura |
 |---|---|---|---|
@@ -66,7 +65,7 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | INE wstempus | API JSON | No | 5 tablas; alquiler a `null` en Euskadi |
 | euskadi.eus | CSV | No | Emancipación juvenil, 867 filas |
 | b5m Gipuzkoa | API JSON | No | Límites municipales y distancias |
-| Fotocasa | Scraping | No | 480 anuncios únicos, 57 municipios |
+| Fotocasa | Scraping | No | 759 anuncios unificados, 83 municipios |
 | Idealista Search API | API oficial | **Sí** | Opcional, pendiente de aprobación |
 
 ## Estado por fase
@@ -74,12 +73,12 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | Fase | Estado |
 |---|---|
 | 0. Entorno y VM | ⚠️ venv y Docker Desktop OK; VM pendiente |
-| 1. Extracción | ✅ scripts 01–09, 314 archivos en `data/raw/` |
-| 2. Kafka | ⬜ |
+| 1. Extracción | ✅ scripts 01–25, 355 archivos en `data/raw/` |
+| 2. Kafka | ✅ implementado con tests offline; gate extremo a extremo pendiente |
 | 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
-| 4. Limpieza y transformación | ✅ silver regenerado (96 archivos, byte-idénticos), transforms v2 |
-| 5. Aggregation Pipeline | ⚠️ parcial: comparativa compra/alquiler por AF (15), tensión social |
-| 6. Visualización e informe | ⚠️ dashboards HTML generados; informe pendiente |
+| 4. Limpieza y transformación | ✅ silver regenerado (185 archivos, manifest 182), transforms v2 |
+| 5. Aggregation Pipeline | ✅ 8 pipelines a CSV desde Mongo |
+| 6. Visualización e informe | ✅ PNG desde silver y CSV desde Mongo; HTML manual; informe pendiente |
 
 ## Reglas del contrato
 

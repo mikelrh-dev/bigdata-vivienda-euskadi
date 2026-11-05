@@ -53,8 +53,7 @@ Referencia OpenSpec: `openspec/changes/raw-immutability-hardening/`
   - `manifest_sha256.txt` (copia legacy dentro de `data/raw/`; el manifiesto
     autoritativo es `docs/raw_manifest_sha256.txt` y no puede contener su propio
     hash)
-- `data/raw/ingestion_manifest.json`: inventario de la última ejecución
-  (nombre, timestamp UTC, SHA-256, nº de registros, estado).
+- `data/procesado/_meta/ingestion_manifest.json`: inventario de la última ejecución (nombre, timestamp UTC, SHA-256, nº de registros, estado).
 - `tests/test_raw_inmutable.py` verifica en ambos sentidos:
   - todo fichero listado en el manifest existe y su hash coincide;
   - todo fichero de `data/raw/` (salvo excepciones) está listado en el manifest.

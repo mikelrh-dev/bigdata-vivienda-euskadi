@@ -93,7 +93,7 @@ cartografia_euskadi:
   url_territorios: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/TERRITORIOS_5000_ETRS89.zip
   url_areas_funcionales: https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/AREAS_FUNCIONALES_5000_ETRS89.zip
   formato: "SHP (ETRS89, UTM 30)"
-  cobertura: "CAPV completa (251 municipios: Alava 51 + Bizkaia 112 + Gipuzkoa 88)"
+  cobertura: "CAPV completa (252 municipios: Alava 51 + Bizkaia 113 + Gipuzkoa 88)"
   granularidad: "Poligono municipal (mapa maestro)"
   fecha_actualizacion: "07/05/2025"
   alternativa_ign_cnig: "https://centrodedescargas.cnig.es/CentroDescargas/limites-municipales-provinciales-autonomicos"
@@ -173,7 +173,7 @@ distancias_municipios:
   alava_bizkaia:
     estado: "NO EXISTE fuente abierta equivalente para Alava ni Bizkaia"
     opciones:
-      - "Calcular matriz con OSRM (router OpenStreetMap) para los 251 municipios de Euskadi (reproducible)"
+      - "Calcular matriz con OSRM (router OpenStreetMap) para los 252 municipios de Euskadi (reproducible)"
       - "Aproximar con centroides de poligonos municipales (geo.euskadi SHP) y distancia Haversine (menos preciso, sin red viaria)"
       - "Usar indicador Euskadi 'distancia a capital del Territorio Historico' para accesibilidad basica"
   nota: >
