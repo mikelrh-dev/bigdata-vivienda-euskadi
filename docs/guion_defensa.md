@@ -1,5 +1,7 @@
 # Guion Tema 8 (1 página)
 
+> Para la defensa completa de 12 minutos con reparto por persona: `docs/guion_defensa_12min.md`.
+
 Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline actual: HDFS centro `http://10.22.87.215:50070` solo lectura + Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft pid 1832 (re-verificado en `docs/trazabilidad_vm.md`).
 
 ## Tema 8: embedding, índices, atomicidad
