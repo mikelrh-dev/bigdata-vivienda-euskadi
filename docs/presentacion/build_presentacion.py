@@ -24,12 +24,13 @@ OUT = Path(__file__).resolve().parent
 ASSETS = OUT / "assets"
 ASSETS.mkdir(exist_ok=True)
 
-NAVY = "#0f172a"
-INK = "#1f2937"
-MUTED = "#64748b"
-ACCENT = "#c2410c"
-TEAL = "#0f766e"
-GRID = "#e2e8f0"
+NAVY = "#f6f1e7"
+INK = "#e9e4da"
+MUTED = "#9aa7bd"
+ACCENT = "#f59e0b"
+TEAL = "#2dd4bf"
+RED = "#ef4444"
+GRID = "#2a3446"
 
 plt.rcParams.update({
     "font.family": "DejaVu Sans",
@@ -38,6 +39,8 @@ plt.rcParams.update({
     "axes.labelcolor": INK,
     "xtick.color": MUTED,
     "ytick.color": MUTED,
+    "figure.facecolor": "none",
+    "axes.facecolor": "none",
     "svg.fonttype": "none",
 })
 
@@ -56,12 +59,13 @@ def _clean(ax) -> None:
 def chart_histograma(esf: pd.Series, mediana: float, n30: int, total: int) -> Path:
     fig, ax = plt.subplots(figsize=(6.2, 3.3))
     bins = np.arange(10, 50, 2.5)
-    ax.hist(esf, bins=bins, color="#93c5fd", edgecolor="white", linewidth=0.8)
-    ax.axvline(30, color=ACCENT, linewidth=2, linestyle="--")
+    ax.hist(esf, bins=bins, color=ACCENT, alpha=0.85, edgecolor="#0b1220", linewidth=0.8)
+    ax.axvline(30, color=RED, linewidth=2, linestyle="--")
     ax.axvline(mediana, color=NAVY, linewidth=2)
-    ax.text(29.3, ax.get_ylim()[1] * 0.95, "umbral 30 %", color=ACCENT, fontsize=10, ha="right")
+    placa = dict(facecolor="#0b1220", edgecolor="none", pad=2.5)
+    ax.text(29.3, ax.get_ylim()[1] * 0.95, "umbral 30 %", color=RED, fontsize=10, ha="right", bbox=placa)
     ax.text(mediana - 0.6, ax.get_ylim()[1] * 0.62, f"mediana {_es(mediana)} %",
-            color=NAVY, fontsize=10, ha="right")
+            color=NAVY, fontsize=10, ha="right", bbox=placa)
     ax.set_xlabel("esfuerzo alquiler joven 18-34 (%)")
     ax.set_ylabel("municipios")
     ax.set_xlim(10, 50)
@@ -79,9 +83,10 @@ def chart_territorios(medias: pd.Series, ns: pd.Series) -> Path:
     etiquetas = [f"{n} (n={int(ns[t])})" for n, t in zip(nombres, medias.index)]
     ax.barh(etiquetas, medias.values, color=TEAL, height=0.55)
     for y, v in enumerate(medias.values):
-        ax.text(v + 0.4, y, f"{_es(v)} %", va="center", color=INK, fontsize=11)
-    ax.axvline(30, color=ACCENT, linewidth=2, linestyle="--")
-    ax.set_xlim(0, max(38, float(medias.max()) + 5))
+        ax.text(v - 1.2, y, f"{_es(v)} %", va="center", ha="right", color="#06211e",
+                fontsize=11, fontweight="bold")
+    ax.axvline(30, color=RED, linewidth=2, linestyle="--")
+    ax.set_xlim(0, 33)
     ax.set_xlabel("mediana del esfuerzo (%)")
     ax.grid(axis="x", color=GRID, linewidth=0.8)
     ax.set_axisbelow(True)
@@ -103,7 +108,7 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
     ]
     fig, ax = plt.subplots(figsize=(6.6, 3.4))
     y = np.arange(len(d))
-    ax.barh(y, d["esfuerzo_canonico_pct"], color="#fdba74", edgecolor=ACCENT, height=0.55)
+    ax.barh(y, d["esfuerzo_canonico_pct"], color=ACCENT, alpha=0.55, edgecolor=ACCENT, height=0.55)
     ax.errorbar(
         d["esfuerzo_canonico_pct"], y,
         xerr=[d["esfuerzo_canonico_pct"] - d["ic95_inf"], d["ic95_sup"] - d["esfuerzo_canonico_pct"]],
@@ -112,7 +117,7 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
     for yi, v, sup in zip(y, d["esfuerzo_canonico_pct"], d["ic95_sup"]):
         ax.text(sup + 0.9, yi, f"{_es(v)} %", va="center", color=INK, fontsize=10, fontweight="bold")
     ax.set_yticks(y, etiquetas)
-    ax.axvline(30, color=ACCENT, linewidth=2, linestyle="--")
+    ax.axvline(30, color=RED, linewidth=2, linestyle="--")
     ax.set_xlim(20, 52)
     ax.set_xlabel("esfuerzo canonico (%) e IC 95 % (bootstrap)")
     ax.grid(axis="x", color=GRID, linewidth=0.8)
@@ -128,14 +133,15 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
 
 def chart_tramos(tramos: dict[str, int], n_idw: int) -> Path:
     fig, ax = plt.subplots(figsize=(8.6, 2.9))
-    colores = [TEAL, "#f59e0b", ACCENT]
+    colores = [TEAL, ACCENT, RED]
+    tinta = ["#06211e", "#1a1205", "#ffffff"]
     izquierda = 0
-    for (nombre, valor), color in zip(tramos.items(), colores):
-        ax.barh(0, valor, left=izquierda, color=color, edgecolor="white", height=0.55)
+    for (nombre, valor), color, tcolor in zip(tramos.items(), colores, tinta):
+        ax.barh(0, valor, left=izquierda, color=color, edgecolor="#0b1220", height=0.55)
         ax.text(izquierda + valor / 2, 0, f"{valor}\n{nombre}", ha="center", va="center",
-                color="white" if color != "#f59e0b" else NAVY, fontsize=10, fontweight="bold")
+                color=tcolor, fontsize=10, fontweight="bold")
         izquierda += valor
-    ax.barh(1, n_idw, color="#e2e8f0", edgecolor=MUTED, hatch="//", height=0.55)
+    ax.barh(1, n_idw, color="#141d2c", edgecolor=MUTED, hatch="//", height=0.55)
     ax.text(n_idw / 2, 1, f"{n_idw}\nsolo estimacion", ha="center", va="center",
             color=INK, fontsize=10, fontweight="bold")
     ax.set_yticks([0, 1], [f"Dato oficial ({izquierda})", f"Sin cuantia oficial ({n_idw})"])
@@ -160,7 +166,7 @@ def chart_sensibilidad(sens: pd.DataFrame) -> Path:
     for ax, col, titulo in ((ax1, "mediana_esfuerzo_pct", "mediana (%)"),
                             (ax2, "pct_sobre_30", "% de municipios > 30")):
         vals = [oficial[col], idw[col]]
-        barras = ax.bar(["Oficial 159", "IDW 252"], vals, color=[TEAL, "#fdba74"],
+        barras = ax.bar(["Oficial 159", "IDW 252"], vals, color=[TEAL, ACCENT],
                         edgecolor=[TEAL, ACCENT], width=0.55)
         for b, v in zip(barras, vals):
             ax.text(b.get_x() + b.get_width() / 2, v + 0.6, _es(v, 1) if col == "pct_sobre_30" else _es(v),
