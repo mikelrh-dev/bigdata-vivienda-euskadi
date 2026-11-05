@@ -105,7 +105,7 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-Tests del contrato: `129 passed, 1 failed, 2 skipped` (132 collected, ver `pytest tests/ -q`; WP-19 incluido). El único fallo es el test P-08 preexistente por texto de contrato Operaciones PyMongo sin transcribir, ajeno a Kafka y HDFS.
+Tests del contrato: `130 passed` (130 collected, ver `pytest tests/ -q`; WP-19 incluido). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md.
 
 ## 📁 Estructura
 
@@ -115,10 +115,9 @@ bigdata-vivienda-euskadi/
 ├── config/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
 ├── extract/           Extracción API, scraping y descargas directas
-├── transform/         Limpieza y enriquecimiento (33 scripts)
+├── transform/         Limpieza y enriquecimiento (43 scripts)
 ├── storage/           PyMongo + HDFS central + Kafka VM (listos)
-├── analysis/          Aggregation Pipeline (hecho, 8 pipelines)
-├── visualization/     Gráficos (hecho, CSV desde Mongo)
+├── analysis/          Aggregation Pipeline (hecho, 8 pipelines) + CSV desde Mongo
 ├── notebooks/         Informe de resultados (pendiente)
 ├── data/raw/          Datos generados (ignorados por git, 355 archivos)
 ├── data/procesado/    Datos normalizados (ignorados por git, 185 archivos, manifest 182)
@@ -141,7 +140,7 @@ bigdata-vivienda-euskadi/
 | Municipios sin anuncios residenciales | 169 |
 | Municipios robustos (n≥30) | 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 129 passed, 1 failed, 2 skipped (132 collected) |
+| Tests | 130 passed (130 collected) |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
@@ -154,9 +153,9 @@ bigdata-vivienda-euskadi/
 
 ## 📊 Artefactos visuales (data/resultados/)
 
-- `mapa_esquema_silver.html` — grafo de relaciones entre 33 CSVs (PyVis, hubs: dim_municipios, anuncios_unificados).
-- `auditoria_lagunas_silver.csv` — profiling de 33 CSVs (filas, nulos, cobertura/252 muns).
-- `dashboard.html` / `dashboard_completo.html` — dashboards estáticos con conclusiones.
+- `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; generado 2026-11-01, verificar tras regeneracion).
+- `auditoria_lagunas_silver.csv` — profiling de 40 CSVs (filas, nulos, cobertura/252 muns).
+- `dashboard.html` / `dashboard_completo.html` — dashboards estaticos manuales con conclusiones (los generadores `transform/generar_dashboard_*.py` solo producen PNG, no HTML).
 - 13 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
 - `README.md` — índice de artefactos.
 
@@ -250,10 +249,10 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (129 passed, 1 failed, 2 skipped)
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (130 passed)
 - MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (13 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (8 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
-- Manifest de extracción: `data/raw/ingestion_manifest.json` (integridad SHA-256)
+- Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
   (lista blanca de 2 scripts). Bloqueado por `tests/test_raw_guardrails.py`, no por convención.

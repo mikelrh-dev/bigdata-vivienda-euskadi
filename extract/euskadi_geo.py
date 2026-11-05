@@ -1,7 +1,7 @@
 """Descarga y convierte la cartografia municipal de Euskadi a GeoJSON (EPSG:4326).
 
 Genera:
-  - data/raw/municipios_euskadi.geojson  (251+ poligonos, lat/lon)
+  - data/raw/municipios_euskadi.geojson  (252 poligonos, lat/lon)
   - data/raw/distancias_capitales.csv    (Haversine a las 3 capitales + comarca)
 """
 from __future__ import annotations

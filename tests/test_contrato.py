@@ -164,22 +164,32 @@ def test_p08_contrato_cubre_los_criterios():
         "Almacenamiento HDFS",
         "Kafka",
         "Integración",
+        "Integración de fuentes",
+        "Construcción del conjunto de datos",
+        "Limpieza y transformación con PyMongo",
+        "Automatización",
         "Modelado MongoDB",
-        "Operaciones PyMongo",
+        "CRUD con PyMongo",
         "Consultas",
         "Aggregation Pipeline",
-        "Gráficos",
-        "Datos utilizados",
-        "Presentación",
-        "Interpretación",
+        "Índices y rendimiento",
+        "Consistencia",
+        "Datos heterogéneos",
+        "Automatización del análisis",
+        "Indicadores",
+        "Respuesta al reto",
+        "Preparación para visualización",
     ):
         assert criterio in contrato, f"criterio sin transcribir: {criterio}"
     # Y cada criterio apunta a un requisito
     for requisito in (
-        "EXTRACCION-01", "HDFS-01", "KAFKA-01", "INTEGRACION-01",
+        "EXTRACCION-01", "EXTRACCION-02", "HDFS-01", "KAFKA-01", "INTEGRACION-01",
         "MODELO-01", "PYMONGO-01", "CONSULTAS-01", "AGREGACION-01",
-        "GRAFICOS-01", "DATOS-PYMONGO-01", "PRESENTACION-01",
-        "INTERPRETACION-01",
+        "INDICADORES-01", "PREPARACION-VISUALIZACION-01",
+        "AUTOMATIZACION-ANALISIS-01", "DATOS-HETEROGENEOS-01",
+        "CONCLUSION-01", "COMPLEMENTARIOS-01", "FORMATO-01",
+        "LIMPIEZA-01", "TRANSFORM-01", "PYTHON-01",
+        "INDICES-01", "TRANSACCIONES-01",
     ):
         assert requisito in contrato, f"requisito sin asignar: {requisito}"
 

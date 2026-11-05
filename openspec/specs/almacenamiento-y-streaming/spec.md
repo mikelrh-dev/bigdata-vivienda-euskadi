@@ -1,7 +1,7 @@
 # Almacenamiento y streaming — Especificación
 
 **Capacidad:** `almacenamiento-y-streaming`
-**Estado:** Pendiente
+**Estado:** Implementado con tests offline; gate extremo a extremo real pendiente (INTEGRACION-01)
 **Criterios cubiertos:** rúbrica v2 BDA-RA1 (HDFS, Kafka, integración: flujo
 completo hasta MongoDB) con mapeo a SBD-RA1 Integración de fuentes (2 o más
 fuentes relacionadas por un campo común)
