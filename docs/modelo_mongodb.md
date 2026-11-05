@@ -108,7 +108,7 @@ marcado explícito de nulos y resolución de duplicados, con contadores
 
 ## Pipelines y reproducibilidad (Tema 8, secciones 14 y 16)
 
-MongoDB hecho: 15 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 8 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`).
+MongoDB hecho: 16 colecciones cargadas con PyMongo (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 8 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`). La coleccion `vpo_municipal` (252) guarda el flujo oficial de VPO terminada del indicador 73; no es stock.
 
 Comandos: `.venv/Scripts/python.exe storage/load_mongo.py`, `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py`, `.venv/Scripts/python.exe analysis/run_analisis_mongo.py`, `.venv/Scripts/python.exe -m pytest tests/test_mongo*.py -q` (en particular `tests/test_mongo_geo.py` y `tests/test_mongo_comparativa.py`).
 
@@ -157,7 +157,7 @@ Preguntas literales del docx §5 con respuesta justificada. Se vuelcan literalme
 
 Backups vía `replace_collection` (`storage/mongo.py`): staging + `<name>__backup` + rename; nunca `drop()` directo sobre prod. Secuencia exacta en `replace_collection`: limpiar y cargar `__staging` (`<name>__staging`); si ya existe `<name>`, volcarlo a `<name>__backup` con `$out` (previo a nuevo); renombrar `__staging` a `<name>` con `dropTarget=True`. Nunca se hace `drop()` directo sobre la colección productiva (eso dejaría ventana sin datos y perdería el backup). El loader usa `replace_collection` para `municipios`, `alquiler_municipal`, `indicadores` y resto de colecciones municipales; `anuncios` usa upsert por `(portal, id_anuncio)` porque llega por Kafka.
 
-Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, municipios__backup, osrm_tiempos, udalmap_empleo, udalmap_extendido, udalmap_indicadores` (15 colecciones).
+Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, municipios__backup, osrm_tiempos, udalmap_empleo, udalmap_extendido, udalmap_indicadores, vpo_municipal` (16 colecciones).
 
 Con recuentos medidos el mismo día: `anuncios` 759, `municipios` 252, `indicadores` 252, `municipios__backup` 252 e `indicadores__backup` 252.
 

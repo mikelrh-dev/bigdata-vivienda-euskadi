@@ -84,3 +84,5 @@ demo-*/snap.json
 !demo-mapa/*.gif
 !demo-kpi/kpi.webp
 !demo-mapa/*.webp
+
+data/staging/

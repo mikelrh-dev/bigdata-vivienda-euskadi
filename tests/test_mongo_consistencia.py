@@ -42,6 +42,7 @@ _LOADERS = [
     "load_udalmap_extendido",
     "load_etxebide_promociones",
     "load_certificados",
+    "load_vpo_municipal",
 ]
 
 
@@ -155,6 +156,7 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
         "udalmap_extendido",
         "etxebide_promociones",
         "certificados_energeticos",
+        "vpo_municipal",
     }
     assert all(v == 1 for v in result.values())
     assert get_collection("municipios").count_documents({}) == prod_before

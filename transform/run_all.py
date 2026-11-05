@@ -179,6 +179,10 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["proc:ecvi_compraventa_limpio.csv"],
         "out": ["proc:municipio_area_funcional_ecvi.csv"], "out_glob": []},
     # analisis
+    "limpiar_vpo_municipal.py": {
+        "group": "limpieza_base",
+        "in": ["raw:udalmap_vpo_terminadas.csv", "proc:dim_municipios.csv"],
+        "out": ["proc:vpo_municipal.csv"], "out_glob": []},
     "calcular_renta_joven.py": {
         "group": "analisis",
         "in": ["proc:analisis_variables_base.csv", "raw:eustat_renta_edad.csv",

@@ -13,7 +13,7 @@
 - RealtyAPI anuncios: 139 (3 municipios).
 - Anuncios unificados: 759 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
-- Tests: 130 passed (`pytest tests -q`).
+- Tests: 136 passed (`pytest tests -q`).
 - Municipios robustos (n≥30): 4 canónicos (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
 - Tensión social (Etxebide): 76 municipios alta / 103 media / 73 baja.
@@ -53,7 +53,7 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 - Emancipación juvenil solo a nivel CAE (no municipal).
 - Pisos con geo inválida (235/235, `geo_invalida=True`).
 - 86 duplicados en anuncios unificados (845 crudos → 759; 10,18 %; 0 duplicados de fingerprint).
-- VPO: 406 promociones Etxebide en 77 municipios, pero `NumViviendas` vacío en 406/406 (stock no público). C1 solo se responde con el flujo oficial municipal (indicador 73).
+- VPO: 406 promociones Etxebide en 77 municipios con `NumViviendas` vacío (stock no público). El flujo oficial municipal (indicador 73) ya está integrado: 251/252 municipios con VPO terminada 2024 (Usansolo sin dato), en ‰ habitantes y carácter quinquenal.
 
 ## Limitaciones
 - Ranking municipal fino no defendible (solo 4 municipios robustos).

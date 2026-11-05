@@ -185,3 +185,16 @@ ofertas_empleo:
   estado: "NO hay dataset publico descargable de ofertas de empleo por municipio en Euskadi"
   lanbide: "https://www.lanbide.euskadi.eus (publica estadisticas de demanda/paro, no ofertas abiertas descargables)"
   nota: "Para ofertas reales: scraping o API no publica."
+
+udalmap_vpo:
+  url: https://opendata.euskadi.eus/contenidos/estadistica/udalmap_indicador_73/es_def/adjuntos/indicator.csv
+  descripcion: "VPO terminadas en el ultimo quinquenio (por mil habitantes), Udalmap indicador 73"
+  anio_fuente: 2024
+  script: extract/26_vpo_terminadas.py
+  raw: data/raw/udalmap_vpo_terminadas.csv
+  filas_origen: 272
+  nota: >
+    El origen mezcla territorio, comarca y municipio (272 codigos). El parser
+    conserva los 252 municipios vivos de dim_municipios y descarta 20 codigos
+    comarcales/disueltos. Es un FLUJO quinquenal, no stock: no sustituye la
+    ausencia de NumViviendas en las promociones Etxebide.

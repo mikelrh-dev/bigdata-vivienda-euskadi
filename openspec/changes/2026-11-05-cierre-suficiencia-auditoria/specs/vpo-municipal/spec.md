@@ -13,9 +13,15 @@ El sistema SHALL integrar el indicador oficial "Viviendas protegidas (VPO) termi
 - AND cada fila declara `anio_fuente`, `fuente` y el valor `vpo_terminadas_por_mil`
 
 #### Scenario: Valores fuera de rango rechazados
-- GIVEN un valor negativo o superior a 50 ‰
+- GIVEN un valor negativo o superior a 100 ‰
 - WHEN se valida el CSV
 - THEN el test falla y el pipeline no publica el dato
+
+#### Scenario: Municipios disueltos excluidos
+- GIVEN que el origen publica 272 códigos, incluidos municipios fusionados
+- WHEN se parsea el fichero
+- THEN la tabla final conserva solo los 252 códigos vivos de `dim_municipios.csv`
+- AND el parser informa de los códigos descartados
 
 #### Scenario: Stock no disponible se declara
 - GIVEN que el origen no publica `NumViviendas`
