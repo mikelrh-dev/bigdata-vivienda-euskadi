@@ -1,7 +1,7 @@
 # Almacenamiento y streaming — Especificación
 
 **Capacidad:** `almacenamiento-y-streaming`
-**Estado:** Implementado con tests offline; gate extremo a extremo real pendiente (INTEGRACION-01)
+**Estado:** Gate extremo a extremo PASS 2026-11-06 (HUELLA_SHA e32c3d3d..., GATE PASS en docs/trazabilidad_vm.md)
 **Criterios cubiertos:** rúbrica v2 BDA-RA1 (HDFS, Kafka, integración: flujo
 completo hasta MongoDB) con mapeo a SBD-RA1 Integración de fuentes (2 o más
 fuentes relacionadas por un campo común)
