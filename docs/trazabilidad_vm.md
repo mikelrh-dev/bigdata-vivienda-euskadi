@@ -1549,3 +1549,34 @@ Salida literal:
     HDFS_VM_VERIFICADOS 10/10 y HDFS_VM_FULL_UPLOADED 352 fail=0
     LIST 201 top-level, alquiler_municipal.json length 154205 sha 6f5af1b3... (local==remoto)
 Conclusión: flujo Windows>Kafka>VM>Hadoop con solo raw verificado SHA byte-identico.
+
+### 2026-11-06 Kafka centro Windows>Kafka>HDFS sin VM (raw solo, sin silver)
+
+Fecha: 2026-11-06
+Objetivo: sustituir flujo Windows>Kafka>VM>Hadoop por Windows>Kafka(centro)>HDFS(centro) manteniendo solo raw (352 ficheros, 861M), sin silver
+Máquina: Windows (repo bigdata-vivienda-euskadi) contra broker centro 10.22.87.215:9092 y HDFS centro http://10.22.87.215:50070 usuario iabd-user15
+Comando:
+    .venv/Scripts/python.exe -m storage.kafka_hdfs_uploader
+    # consumer: storage/kafka_hdfs_uploader.py grupo hdfs_centro, topic anuncios_inmobiliarios
+    # lee manifiestos {type, rel, size, sha256}, valida SHA+size en data/raw local, put WebHDFS
+    # InsecureClient('http://10.22.87.215:50070') en /user/.../data/raw con overwrite=True, log cada 50
+    .venv/Scripts/python.exe scripts/hdfs_recuperacion_un_fichero.py alquiler_municipal.json
+    .venv/Scripts/python.exe -m pytest tests/test_hdfs.py -q
+Salida literal:
+    #Antes: hdfs_centro offset 153, HDFS /raw childrenNum 152 LIST 152 (slot fileId 2850772)
+    SUBIDOS 50
+    SUBIDOS 100
+    SUBIDOS 150
+    SUBIDOS 200
+    HDFS_CENTRO_UPLOADED 201 a /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw (skipped=0)
+    OFFSETS 0:153..0:353
+    #Despues: hdfs_centro TopicPartition(p0) offset 354 (log-end 354, 2 previos + 352 raw_manifest, LAG 0)
+    STATUS_RAW {'childrenNum': 201, 'fileId': 2850772, 'type': 'DIRECTORY', 'owner': 'iabd-user15'}
+    LIST_RAW_COUNT 201
+    FICHERO alquiler_municipal.json
+    LOCAL_SIZE 154205 SHA 6f5af1b35deaf01f9cc264589284fcc29f5b3aadefd55381eb118a9dcf79574b
+    REMOTE_SIZE 154205 SHA 6f5af1b35deaf01f9cc264589284fcc29f5b3aadefd55381eb118a9dcf79574b
+    HDFS_REC OK SHA_TAMANO_IGUALES
+    ......                                                                   [100%]
+    6 passed in 0.25s
+Conclusión: producer verificado DEFAULT 10.22.87.215:9092; consumer Windows hdfs_centro reescrito (antes hdfs_vm/staging), offsets consumidos 0:153-0:353 (201 en esta corrida + 151 previos 0:2-0:152 = 352 raw_manifest, offsets totales 0-353), total subidos HDFS 352 ficheros, LISTSTATUS /raw: 201 top-level childrenNum=201 LIST 201, SHA alquiler_municipal.json 6f5af1b35deaf01f9cc264589284fcc29f5b3aadefd55381eb118a9dcf79574b local==remoto OK. Solo raw, sin silver, sin VM.
