@@ -26,6 +26,10 @@ y un consumidor Kafka utilizando Python» (PDF línea 35).
 
 ---
 
+## Planificación 2026-11-06 (HDFS Windows>Kafka>VM>Hadoop, solo raw)
+
+Flujo que marca la profesora: Windows (datos raw) > Kafka (broker solo en la VM) > consumidor Python en la VM > HDFS Hadoop centro (10.22.87.215:50070) en /data/raw/. Mongo solo en local Windows para análisis. Kafka NO escribe en Mongo en este flujo. Kafka solo está instalado en la VM (broker 4.3.1 KRaft); productor en Windows.
+
 ## Requirements
 
 ### Requirement: HDFS-01 — Originales y procesados, con recuperación
