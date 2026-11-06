@@ -156,7 +156,7 @@ bigdata-vivienda-euskadi/
 - `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; generado 2026-11-01, verificar tras regeneracion).
 - `auditoria_lagunas_silver.csv` — profiling de 40 CSVs (filas, nulos, cobertura/252 muns).
 - `dashboard.html` / `dashboard_completo.html` — dashboards estaticos manuales con conclusiones (los generadores `transform/generar_dashboard_*.py` solo producen PNG, no HTML).
-- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` es tabla literal en `transform/generar_dashboard_completo.py`, no auto. La única evidencia válida son los 4 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 4).
+- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` se genera desde conteos Mongo en `analysis/run_analisis_mongo.py` (imputados/sin anuncios/sin precio), no con literales. La evidencia válida son los 6 CSV auto generados con PyMongo en `data/resultados/` (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 5, `mongo_accesibilidad_extendida.csv` 253, `mongo_vpo_por_municipio.csv` 323, `mongo_vpo_terminadas_por_municipio.csv` 252).
 - 13 PNGs (g1–g5, A1–A2, B–G) — gráficos por bloques.
 - `README.md` — índice de artefactos.
 
