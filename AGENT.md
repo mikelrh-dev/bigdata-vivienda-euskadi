@@ -15,6 +15,7 @@
 - Preferencia: datos crudos/reales, sin valores simulados, con proxy de renta e imputación comarcal declarados según README y contrato; documentar avances en `openspec/audit`.
 - `openspec/specs/contrato-reto/spec.md` es la verdad: si código y contrato discrepan, manda el contrato.
 - Commits local-only; never `git push` sin orden explícita.
+- Archivado Kafka 2026-11-06: `archive/kafka_2026-11-06/` (storage_kafka_*, scripts_publish_adapter/gate_bloque2, tests_test_kafka) — ignorar de momento, regenerar con la nueva estructura Windows>VM>Hadoop. Datos Kafka borrados: topic `anuncios_inmobiliarios` eliminado, colección `vivienda_euskadi.anuncios` vaciada (759>0).
 
 ## References
 - Project spec: `openspec/project.md`
