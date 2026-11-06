@@ -111,9 +111,9 @@ ejecute consultas y agregaciones.
 - AND los resultados devueltos quedan preparados para su representación
 - AND repetir la ejecución reproduce los mismos resultados
 
-### Requirement: INDICADORES-01 — Cinco indicadores con pipeline Mongo verdadero o silver justificado
+### Requirement: INDICADORES-01 — Cinco indicadores distintos non-legacy (esfuerzo 18-34, tensión, paro, precio m2, VPO terminadas)
 
-El sistema SHALL calcular 5 indicadores con pipeline Mongo verdadero para
+El sistema SHALL calcular 5 indicadores distintos non-legacy (esfuerzo_16_29 archivado, no cuenta) con pipeline Mongo verdadero para
 tensión social y paro Lanbide, o SHALL declararlos silver con justificación
 documentada y sin inventar valores. SHALL preservar `metodo_imputacion` y
 MUST NOT aplicar `fillna` mediana sin flag `is_imputed`. Los CSV canónicos

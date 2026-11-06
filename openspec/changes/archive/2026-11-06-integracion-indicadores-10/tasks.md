@@ -41,4 +41,4 @@
 - [x] 4.1 `pytest tests -q` verde (anotar counts passed/skipped, repetir harness si un test destructivo requiere `MONGO_ALLOW_DESTRUCTIVE`).
 - [x] 4.2 `python scripts/verificar_fase_datos.py` exit 0.
 - [x] 4.3 `verify-report.md` con evidencia literal de cada tarea y desviaciones.
-- [ ] 4.4 Archivar el change y actualizar specs desplegados (sin tocar HDFS procesado).
+- [x] 4.4 Archivar el change y actualizar specs desplegados (sin tocar HDFS procesado).
