@@ -73,6 +73,14 @@ EXPORTS_5: tuple[tuple[str, str], ...] = (
     ("mongo_vpo_por_municipio.csv", "pipeline_vpo_por_municipio"),
 )
 
+# 6º CSV: VPO terminadas ‰ (indicador 5 non-legacy, INDICADORES-01).
+# Euskadi Open Data 73 + población dim_municipios, campo común codigo_ine.
+EXPORT_VPO_TERMINADAS: tuple[str, str] = (
+    "mongo_vpo_terminadas_por_municipio.csv",
+    "pipeline_vpo_terminadas",
+)
+EXPORTS_6: tuple[tuple[str, str], ...] = EXPORTS_5 + (EXPORT_VPO_TERMINADAS,)
+
 
 def _jsonable(value: Any) -> Any:
     if isinstance(value, Decimal128):
@@ -199,6 +207,20 @@ def exportar_tres_csv(
 ) -> dict[str, Path]:
     """Compatibilidad: escribe los 3 CSV historicos (ver `EXPORTS_3`)."""
     return exportar_csv(resultados, out_dir, EXPORTS_3)
+
+
+def exportar_seis_csv(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Escribe los 5 CSV canonicos + VPO terminadas (indicador 5 non-legacy).
+
+    `EXPORTS_6` = `EXPORTS_5` + `EXPORT_VPO_TERMINADAS`
+    (`mongo_vpo_terminadas_por_municipio.csv` desde
+    `pipeline_vpo_terminadas`, 251 filas, campo común `codigo_ine`).
+    `exportar_cinco_csv` se mantiene por compatibilidad (5).
+    """
+    return exportar_csv(resultados, out_dir, EXPORTS_6)
 
 
 def exportar_cinco_csv(
@@ -465,9 +487,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"n1={n1}")
         print(f"n2={n2}")
         return 1
-    rutas = exportar_cinco_csv(primera, Path(args.salida))
+    rutas = exportar_seis_csv(primera, Path(args.salida))
     for fichero, ruta in rutas.items():
-        nombre_pipeline = dict(EXPORTS_5)[fichero]
+        nombre_pipeline = dict(EXPORTS_6)[fichero]
         print(f"{fichero}: {len(primera[nombre_pipeline])} filas -> {ruta}")
     try:
         pngs = exportar_png_desde_mongo(primera, Path(args.salida))

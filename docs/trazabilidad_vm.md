@@ -1466,3 +1466,69 @@ Salida literal:
     759
 Conclusión: 130 passed, 5 CSV (252/252/2 + 252/322), manifest 353/184 intactos, data/raw intacto, anuncios 759, cero escrituras HDFS (no se tocó data/raw local ni raw HDFS, no carpeta nueva, no subida procesado).
 
+
+### 2026-11-06 Bloque 2 gate extremo a extremo GATE PASS + broker vivo pid 1817 (integracion-indicadores-10)
+
+Fecha: 2026-11-06
+Objetivo: acreditar INTEGRACION-01 (flujo completo Kafka>Mongo) y KAFKA-01 (productor/consumidor Python vivos) con gate encadenado y entradas VM
+Máquina: VM 192.168.201.162 usuario mikel (SSH) y local Windows repo bigdata-vivienda-euskadi, MongoDB localhost:27017 vivienda_euskadi
+Comando:
+    ssh -i C:/Users/mikel/.ssh/id_vm_hermes -o BatchMode=yes -o ConnectTimeout=6 mikel@192.168.201.162 "ss -tlnp | grep -E ':9093|:9094'; ~/kafka/bin/kafka-topics.sh --describe --topic anuncios_inmobiliarios --bootstrap-server 192.168.201.162:9094; ~/kafka/bin/kafka-console-consumer.sh --bootstrap-server 192.168.201.162:9094 --topic anuncios_inmobiliarios --from-beginning --max-messages 2 --timeout-ms 15000"
+    .venv/Scripts/python.exe scripts/gate_bloque2.py
+Salida literal:
+    LISTEN 0      50                 *:9093             *:*    users:(("java",pid=1817,fd=135))
+    LISTEN 0      50                 *:9094             *:*    users:(("java",pid=1817,fd=218))
+    Topic: anuncios_inmobiliarios	TopicId: J045oausTPeWCBdy624l5A	PartitionCount: 3	ReplicationFactor: 1	Configs: min.insync.replicas=2,segment.bytes=1073741824,max.message.bytes=1048588
+    {"portal": "fotocasa", "id_anuncio": "159915860", "modalidad": "larga_estancia", "precio_eur": 995.0, "superficie_m2": 93.0, "habitaciones": 3.0, "codigo_ine": "20055", "municipio": "Arrasate/Mondragón"}
+    {"portal": "fotocasa", "id_anuncio": "176108408", "modalidad": "larga_estancia", "precio_eur": 1250.0, "superficie_m2": 145.0, "habitaciones": null, "codigo_ine": "48044", "municipio": "Getxo"}
+    Processed a total of 2 messages
+    HDFS_LEG LIST_BASE ['raw']
+    HDFS_LEG LIST_RAW_COUNT 200
+    HDFS_LEG STATUS_RAW childrenNum=200
+    HDFS_LEG CERO_ESCRITURAS NO_SUBIDO_RAW
+    HDFS_LEG CERO_ESCRITURAS NO_SUBIDO_PROCESADO
+    SUBSET 10
+      fotocasa:131393829 codigo_ine=01059 municipio=Vitoria-Gasteiz
+      fotocasa:159915860 codigo_ine=20055 municipio=Arrasate/Mondragón
+      fotocasa:161991304 codigo_ine=48020 municipio=Bilbao
+      fotocasa:162213906 codigo_ine=48020 municipio=Bilbao
+      fotocasa:176108369 codigo_ine=48044 municipio=Getxo
+      fotocasa:176108408 codigo_ine=48044 municipio=Getxo
+      fotocasa:176113409 codigo_ine=48044 municipio=Getxo
+      fotocasa:176216653 codigo_ine=48054 municipio=Leioa
+      fotocasa:176216662 codigo_ine=48016 municipio=Berango
+      fotocasa:176219963 codigo_ine=48054 municipio=Leioa
+    HUELLA_ESPERADA e32c3d3de196f169b86304d46295e0e621b5372a3809948f360fbaf81dbfaf25
+    Publicado topic=anuncios_inmobiliarios partition=0 offset=275
+    Publicado topic=anuncios_inmobiliarios partition=0 offset=276
+    Publicado topic=anuncios_inmobiliarios partition=0 offset=277
+    Publicado topic=anuncios_inmobiliarios partition=2 offset=260
+    Publicado topic=anuncios_inmobiliarios partition=2 offset=261
+    Publicado topic=anuncios_inmobiliarios partition=2 offset=262
+    Publicado topic=anuncios_inmobiliarios partition=1 offset=285
+    Publicado topic=anuncios_inmobiliarios partition=1 offset=286
+    Publicado topic=anuncios_inmobiliarios partition=1 offset=287
+    Publicado topic=anuncios_inmobiliarios partition=1 offset=288
+    PRODUCIDOS 10
+    Procesados: 10
+    CONSUME_RET 10
+    fotocasa 131393829 esperado_ine 01059 en_mongo 01059 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 159915860 esperado_ine 20055 en_mongo 20055 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 161991304 esperado_ine 48020 en_mongo 48020 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 162213906 esperado_ine 48020 en_mongo 48020 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176108369 esperado_ine 48044 en_mongo 48044 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176108408 esperado_ine 48044 en_mongo 48044 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176113409 esperado_ine 48044 en_mongo 48044 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176216653 esperado_ine 48054 en_mongo 48054 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176216662 esperado_ine 48016 en_mongo 48016 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    fotocasa 176219963 esperado_ine 48054 en_mongo 48054 OK CONSULTA_POR_CODIGO_INE 1 doc(s)
+    LAG p0 CURRENT 278 LOG_END 278 LAG 0
+    LAG p1 CURRENT 289 LOG_END 289 LAG 0
+    LAG p2 CURRENT 263 LOG_END 263 LAG 0
+    LAG_TOTAL 0
+    VERIFICADOS 10/10
+    HUELLA_SHA e32c3d3de196f169b86304d46295e0e621b5372a3809948f360fbaf81dbfaf25
+    TOTAL 759
+    MUNICIPIOS 252
+    GATE PASS
+Conclusión: broker vivo pid 1817 en 9093/9094, topic 3 particiones RF=1, gate GATE PASS con 10/10 verificados por codigo_ine, lag 0, total 759 y municipios 252. INTEGRACION-01 y KAFKA-01 acreditados en vivo. Limitación documentada: min.insync.replicas=2 con RF=1 (no bloqueó por upsert idempotente).
