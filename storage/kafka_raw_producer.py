@@ -19,7 +19,7 @@ load_dotenv()
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RAW_DIR = ROOT / "data" / "raw"
-DEFAULT_BOOTSTRAP_SERVERS = "192.168.201.162:9094"
+DEFAULT_BOOTSTRAP_SERVERS = "10.22.87.215:9092"
 DEFAULT_TOPIC = "anuncios_inmobiliarios"
 
 
