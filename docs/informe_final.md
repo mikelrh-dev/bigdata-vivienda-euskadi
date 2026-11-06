@@ -23,7 +23,7 @@ auditoría queda cerrada o declarada:
 
 ```
 356 ficheros raw (354 con hash)  →  188 silver (185 con manifest)
-        →  Mongo 16 colecciones  →  8 aggregation pipelines
+        →  Mongo 16 colecciones  →  9 aggregation pipelines
         →  5 CSV canónicos + comparativa + VPO + sensibilidad
 ```
 
@@ -80,7 +80,7 @@ firme, es un empate estadístico.
 
 ### O3 — ¿Trabajo y vivienda barata?
 
-No hay trade-off simple: paro juvenil y alquiler correlacionan +0,385;
+No hay trade-off simple: conteo de parados jóvenes y alquiler correlacionan +0,39 (conteos, no tasa);
 distancia mínima a capital y alquiler, −0,603. Los municipios baratos no son
 sistemáticamente los de mejor empleo.
 

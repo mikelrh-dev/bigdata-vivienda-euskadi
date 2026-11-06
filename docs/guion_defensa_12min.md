@@ -84,7 +84,7 @@ calcularlo municipal y decir dónde no se puede calcular."
   hay mercado de alquiler tensionado.
 - Con IDW el titular no cambia: **25,37 % (47/252, 18,7 %)**.
 - Tensión social (Etxebide + esfuerzo): **76 alta / 103 media / 73 baja**.
-- Paro y alquiler: **r ≈ 0,385**, relación débil; no hay trade-off simple.
+- Paro y alquiler: **r(conteo, alquiler) ≈ 0,39** (conteos, no tasa), relación débil; no hay trade-off simple.
 
 > "El mapa no dice 'Euskadi es caro'. Dice dónde el alquiler se come el
 > salario y dónde ni siquiera tenemos precio para decirlo."

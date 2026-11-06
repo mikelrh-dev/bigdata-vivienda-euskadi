@@ -3,7 +3,7 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Raw inmutable congelado (manifest 353 = 355 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 184), 130 tests colectados (130 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro, Kafka VM) implementada con tests offline; MongoDB y análisis hechos. Gate extremo a extremo pendiente.
+**Estado:** Raw inmutable congelado (manifest 354 = 356 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 185), 136 tests colectados (136 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro, Kafka VM) implementada con tests offline; MongoDB y análisis hechos. Gate extremo a extremo pendiente.
 **Fecha:** 2026-10-29
 
 ---
@@ -73,10 +73,10 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | Fase | Estado |
 |---|---|
 | 0. Entorno y VM | ⚠️ venv y Docker Desktop OK; VM pendiente |
-| 1. Extracción | ✅ scripts 01–25, 355 archivos en `data/raw/` |
+| 1. Extracción | ✅ scripts 01–26, 356 archivos en `data/raw/` |
 | 2. Kafka | ✅ implementado con tests offline; gate extremo a extremo pendiente |
 | 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
-| 4. Limpieza y transformación | ✅ silver regenerado (187 archivos, manifest 184), transforms v2 |
+| 4. Limpieza y transformación | ✅ silver regenerado (188 archivos, manifest 185), transforms v2 |
 | 5. Aggregation Pipeline | ✅ 9 pipelines desde Mongo (5 CSV canónicos) |
 | 6. Visualización e informe | ✅ PNG desde silver y CSV desde Mongo; HTML manual; informe pendiente |
 

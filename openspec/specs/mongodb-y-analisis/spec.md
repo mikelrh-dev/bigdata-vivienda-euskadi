@@ -341,7 +341,7 @@ el listing de 16 colecciones, sin escrituras en prod.
 
 El sistema SHALL incluir `validar_renta.py` como paso de
 `transform/run_all.py` o SHALL firmar su exclusión, y `pytest tests` SHALL
-pasar con 130 tests.
+pasar con 136 tests.
 
 #### Scenario: Integración o justificación
 

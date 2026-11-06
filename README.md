@@ -144,9 +144,9 @@ bigdata-vivienda-euskadi/
 
 ## 🔍 Conclusiones del análisis (O1–O4)
 
-- **O1 — ¿Puede un joven independizarse?** Esfuerzo joven mediano 43,5%; 100% de los 159 municipios con dato supera el 30%. Emancipación municipal no defendible (proxy renta). Puntuación 7/10. Nota canónica 18-34 oficial: 26,61%; 25,2 por ciento sobre 30; 7,5 IDW.
+- **O1 — ¿Puede un joven independizarse?** Esfuerzo canónico 18–34 oficial mediano 26,61%; 25,2% de los 159 municipios oficiales supera el 30% (40/159). Emancipación municipal no defendible (proxy renta). Puntuación 7/10. Sensibilidad IDW-252: 25,37% (47/252, 18,7%); IDW-93 med 23,38%. Legacy 16–29: mediana oficial 42,9% (no comparable, solo demo).
 - **O2 — ¿Qué municipios son viables?** Solo 4 robustos (n≥30): Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39; resto Nivel2 (41) / Nivel3 (205). Ranking fino solo para los 4. 8/10.
-- **O3 — ¿Trabajo + vivienda barata?** r(paro juvenil, alquiler)=+0,385 (no hay trade-off simple); r(densidad, alquiler)=+0,456; r(distancia mín. a capital, alquiler)=-0,603. 8/10.
+- **O3 — ¿Trabajo + vivienda barata?** r(conteo parados jóvenes, alquiler)=+0,39 (conteos, no tasa; no hay trade-off simple); r(densidad, alquiler)=+0,456; r(distancia mín. a capital, alquiler)=-0,603. 8/10.
 - **O4 — ¿Limitaciones?** Proxy renta (falacia ecológica), 93 sin alquiler directo, solo 4 robustos, emancipación solo CAE, mezcla de años, ECVI solo territorial. 9/10.
 - **Media global (42 preguntas):** 8,2/10.
 - Renta como proxy salarial: Pearson renta–alquiler r≈0,28 (159 municipios).
@@ -252,7 +252,7 @@ completos.
 
 - Tests: `.venv/Scripts/python.exe -m pytest tests -q` (136 passed)
 - MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (16 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (9 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
-- CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (3, Bilbao 173, Donostia 113, Getxo 40). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
+- CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4 filas: Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
