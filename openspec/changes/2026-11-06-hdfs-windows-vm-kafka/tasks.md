@@ -35,4 +35,4 @@
 - [x] 3.1 Ejecutar subset 10 (producción Windows con límite, consumo VM, put a HDFS y verificación SHA), luego full 352 si PASS.
 - [x] 3.2 Recopilar toda salida VM en `docs/trazabilidad_vm.md` (Fecha/Objetivo/Máquina=VM/Comando/Salida/Conclusión) y en `docs/movimientos_hdfs_windows_vm.md` (bitácora + explicaciones).
 - [x] 3.3 `pytest tests -q` verde y `verify-report.md` con evidencia literal.
-- [ ] 3.4 Archivar el change y fusionar specs desplegados.
+- [x] 3.4 Archivar el change y fusionar specs desplegados.
