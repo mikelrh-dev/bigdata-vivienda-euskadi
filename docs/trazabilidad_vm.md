@@ -1532,3 +1532,20 @@ Salida literal:
     MUNICIPIOS 252
     GATE PASS
 Conclusión: broker vivo pid 1817 en 9093/9094, topic 3 particiones RF=1, gate GATE PASS con 10/10 verificados por codigo_ine, lag 0, total 759 y municipios 252. INTEGRACION-01 y KAFKA-01 acreditados en vivo. Limitación documentada: min.insync.replicas=2 con RF=1 (no bloqueó por upsert idempotente).
+
+
+### 2026-11-06 HDFS Windows->Kafka->VM->Hadoop raw 352 GATE PASS
+
+Fecha: 2026-11-06
+Objetivo: HDFS solo raw vía Kafka Windows>VM>Hadoop (sin silver, sin Mongo en flujo)
+Máquina: VM 192.168.201.162 usuario mikel (venv --user hdfs 2.7.3) + Windows (manifiesto scp)
+Comando:
+    scp -r data/raw/ mikel@192.168.201.162:~/staging/raw/
+    .venv/Scripts/python.exe storage/kafka_raw_producer.py
+    VM: grupo hdfs_vm consume 362 manifiestos y upload_raw_excluding_legacy desde staging
+Salida literal:
+    ADAPTER_RAW_PUBLICADOS 10 (subset) + 352 (full) en anuncios_inmobiliarios
+    LAG 0 (124/121/117) en grupo hdfs_vm
+    HDFS_VM_VERIFICADOS 10/10 y HDFS_VM_FULL_UPLOADED 352 fail=0
+    LIST 201 top-level, alquiler_municipal.json length 154205 sha 6f5af1b3... (local==remoto)
+Conclusión: flujo Windows>Kafka>VM>Hadoop con solo raw verificado SHA byte-identico.
