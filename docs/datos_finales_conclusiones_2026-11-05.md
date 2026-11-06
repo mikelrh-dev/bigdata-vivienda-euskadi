@@ -6,7 +6,8 @@ Fuente: `pipeline_indicadores_municipio` (252 filas), `pipeline_vpo_por_municipi
 ## Cobertura real
 
 - 252 municipios con esfuerzo 18-34: 159 oficial + 93 IDW (bandera `is_imputed`).
-  Mediana 25,4%, rango 13,9–38,5. 47 municipios (18,7%) por encima del 30%.
+  Mediana oficial 26,61%, rango 13,9–38,5. En los 159 oficiales, 40 (25,2%)
+  por encima del 30%; en los 252 con IDW, mediana 25,37% y 47 (18,7%) por encima.
 - Anuncios: 759 en 83 municipios (33%). 169 municipios (67%) sin anuncios.
   Bilbao 173 + Donostia 113 = 38% de la muestra; top-4 = 48%.
   Municipios con >=5: 28; >=10: 20; >=30: 4.
@@ -23,7 +24,7 @@ Fuente: `pipeline_indicadores_municipio` (252 filas), `pipeline_vpo_por_municipi
 2. Getxo (28,60%): unico robusto bajo el 30%, por solo 1,4 puntos; no asequible.
 3. Vitoria (33,37%): esfuerzo por denominador (renta), con la cuantia oficial
    mas baja (700 EUR/mes) y m2 mas barato (9,6).
-4. Titular territorial: mediana 25,4%, 18,7% de municipios por encima del umbral.
+4. Titular territorial: mediana oficial 26,61% (40/159, 25,2%); sensibilidad IDW-252 25,37% (47/252, 18,7%).
 
 ## Suficiente o corto
 

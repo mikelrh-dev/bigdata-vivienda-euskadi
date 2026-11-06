@@ -12,9 +12,9 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 
 ## Recorrido de decisión a gate
 
-1. **O1 (podes independizarte?)**: canonico **18-34 oficial -> 26,61% mediana oficial, 25,2% sobre 30 (40/159)**. Con **16-29 legacy** la mediana es 43,5% (100% sobre 30): 16-29 queda solo legacy, ninguna conclusion lo usa como canonico. **Sensibilidad**: con IDW 252 -> 25,37% (47/252, 18,7%); el titular no cambia. Bootstrap: Bilbao 32,3-42,4 y Donostia 32,4-45,8 se solapan, sin orden firme.
+1. **O1 (podes independizarte?)**: canonico **18-34 oficial -> 26,61% mediana oficial, 25,2% sobre 30 (40/159)**. Con **16-29 legacy** la mediana es 42,9% (oficial, no comparable): 16-29 queda solo legacy, ninguna conclusion lo usa como canonico. **Sensibilidad**: con IDW 252 -> 25,37% (47/252, 18,7%); el titular no cambia. Bootstrap: Bilbao 32,3-42,4 y Donostia 32,4-45,8 se solapan, sin orden firme.
 2. **O2 (municipios robustos?)**: solo 4 con n>=30: **Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39**. Advertencia: **Getxo 40 vs Vitoria-Gasteiz 39 = 1 anuncio, no ranking firme**; Barakaldo (n=13) queda fuera por n<30.
-3. **O3 (trabajo + vivienda)**: paro Lanbide Mongo + precio m2 oficial; r(paro juvenil, alquiler) ~0,385, sin trade-off simple.
+3. **O3 (trabajo + vivienda)**: paro Lanbide Mongo + precio m2 oficial; r(conteo parados jóvenes, alquiler) ~0,39 (conteos, no tasa), sin trade-off simple.
 4. **O4 (limitaciones)**: proxy de renta, 93 IDW solo sensibilidad, 4 robustos, emancipacion solo CAE, mezcla de anos 2024/2026. VPO: flujo oficial 251/252 (Usansolo sin dato); stock historico sin fuente.
 5. **Pipeline reproducible**: 9 pipelines + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`, `08665d03...`): dos ejecuciones dan la misma huella y los mismos CSV 253/253/3 (ver `docs/matriz_indicadores.md`).
 6. **Los 10 criterios** (detalle abajo): raw inmutable, silver utf-8-sig, esfuerzo 18-34, robustos n>=30, pipelines con huella, performance explain, tests, trazabilidad, cobertura 159+IDW, cadena HDFS+Kafka.
@@ -27,7 +27,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 |---|---|---|---|
 | 1 | Raw inmutable y manifest | 354 raw + 185 silver SHA-256, `--verify` exit 0 | Sin `.FROZEN`/huella reproducible no hay defensa de no he tocado raw. |
 | 2 | Silver utf-8-sig y `codigo_ine` 5 digitos | 252 municipios, zfill en transform | Araba 4 digitos rompe joins; sin `utf-8-sig` mojibake. |
-| 3 | Esfuerzo canonico 18-34 | O1 = 26,61% oficial, 25,2% >30, reproducible en Mongo y CSV | Confundir 16-29 (43,5%) con 18-34 invalida O1; 16-29 sigue legacy. |
+| 3 | Esfuerzo canonico 18-34 | O1 = 26,61% oficial, 25,2% >30, reproducible en Mongo y CSV | Confundir 16-29 (42,9%) con 18-34 invalida O1; 16-29 sigue legacy. |
 | 4 | Robustos n>=30 y sensibles | Bilbao 173, Donostia 113, Getxo 40, Vitoria 39 (1 anuncio de diferencia) | Rankear a Barakaldo 38,49% sin n es el error que visa O2. |
 | 5 | Pipelines y huella reproducible | 9 pipelines + orden canonico + SHA-256 en `run_analisis` | Sin orden canonico, empates de `$sort` dan huellas distintas. |
 | 6 | Performance Mongo (índices/explain) | COLLSCAN 759 -> IXSCAN 1 en `test_indexes_explain` | Sin indice compuesto el lookup es full scan. |
