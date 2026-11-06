@@ -98,6 +98,8 @@ Los pesos siguientes NO son pesos v2: son la evaluación separada de la parte Mo
 > Trazabilidad docx (cotejo 2026-11-05): Tema 8 sección 16 literal en docx líneas 228-252. Pesos 15/15/20/15/10/15/10. Sin diferencias literales.
 
 
+> Nota planificación 2026-11-06: la profesora indica publicar raw via Kafka Windows>VM y subir a Hadoop desde la VM; el sink de este flujo es HDFS (no Kafka>Mongo). Los procesados no se suben por decisión firmada. Mongo queda solo en local Windows.
+
 ### Requisitos adicionales del PDF
 
 Las fuentes concretas citadas en este contrato y en los specs (Eustat, INE,

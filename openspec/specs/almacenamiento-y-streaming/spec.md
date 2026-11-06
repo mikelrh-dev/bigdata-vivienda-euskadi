@@ -84,8 +84,8 @@ utilizando Python» (PDF línea 35).
 
 - GIVEN el topic con mensajes
 - WHEN el consumidor se ejecuta
-- THEN lee cada mensaje
-- AND lo inserta en MongoDB
+- THEN lee cada manifiesto raw_manifest
+- AND hace put WebHDFS al Hadoop centro desde la VM (NO escribe en Mongo en este flujo)
 - AND reporta cuántos ha procesado
 
 #### Scenario: El consumidor no duplica
@@ -122,8 +122,8 @@ emancipación para una persona joven y explicar por qué» (PDF líneas 58-66).
 - GIVEN una fuente, HDFS, Kafka y MongoDB en marcha
 - WHEN se ejecuta el pipeline
 - THEN un dato sale de la fuente
-- AND pasa por HDFS y por Kafka
-- AND termina consultable en MongoDB
+- AND pasa por Kafka y la VM hace el put a HDFS
+- AND queda recuperable en HDFS con SHA igual
 
 #### Scenario: Dos fuentes relacionadas por campo común — nivel 10
 
