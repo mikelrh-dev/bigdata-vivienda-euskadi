@@ -1,7 +1,7 @@
 # Almacenamiento y streaming — Especificación
 
 **Capacidad:** `almacenamiento-y-streaming`
-**Estado:** Gate extremo a extremo PASS 2026-11-06 (HUELLA_SHA e32c3d3d..., GATE PASS en docs/trazabilidad_vm.md)
+**Estado:** HDFS raw 352/352 con SHA igual y Kafka lag 0 verificados manualmente 2026-11-06 (`openspec/audit/informe_auditoria_2026-11-06_v2.md`). No hay script de gate único: `scripts/gate_bloque2.py` está archivado.
 **Criterios cubiertos:** rúbrica v2 BDA-RA1 (HDFS, Kafka, integración: flujo
 completo hasta MongoDB) con mapeo a SBD-RA1 Integración de fuentes (2 o más
 fuentes relacionadas por un campo común)
@@ -26,9 +26,9 @@ y un consumidor Kafka utilizando Python» (PDF línea 35).
 
 ---
 
-## Planificación 2026-11-06 (HDFS Windows>Kafka>VM>Hadoop, solo raw)
+## Planificación 2026-11-06 (HDFS Windows>Kafka centro>Hadoop, solo raw)
 
-Flujo que marca la profesora: Windows (datos raw) > Kafka (broker solo en la VM) > consumidor Python en la VM > HDFS Hadoop centro (10.22.87.215:50070) en /data/raw/. Mongo solo en local Windows para análisis. Kafka NO escribe en Mongo en este flujo. Kafka solo está instalado en la VM (broker 4.3.1 KRaft); productor en Windows.
+Flujo real: Windows (datos raw) > Kafka (broker del clúster centro 10.22.87.215:9092) > consumidor Python (`storage/kafka_hdfs_uploader.py`) > HDFS Hadoop centro (10.22.87.215:50070) en /data/raw/. Mongo solo en local Windows para análisis. Kafka NO escribe en Mongo en este flujo.
 
 ## Requirements
 
@@ -85,7 +85,7 @@ utilizando Python» (PDF línea 35).
 - GIVEN el topic con mensajes
 - WHEN el consumidor se ejecuta
 - THEN lee cada manifiesto raw_manifest
-- AND hace put WebHDFS al Hadoop centro desde la VM (NO escribe en Mongo en este flujo)
+- AND hace put WebHDFS al Hadoop centro desde Windows (NO escribe en Mongo en este flujo)
 - AND reporta cuántos ha procesado
 
 #### Scenario: El consumidor no duplica
@@ -122,7 +122,7 @@ emancipación para una persona joven y explicar por qué» (PDF líneas 58-66).
 - GIVEN una fuente, HDFS, Kafka y MongoDB en marcha
 - WHEN se ejecuta el pipeline
 - THEN un dato sale de la fuente
-- AND pasa por Kafka y la VM hace el put a HDFS
+- AND pasa por Kafka y el consumidor hace el put a HDFS
 - AND queda recuperable en HDFS con SHA igual
 
 #### Scenario: Dos fuentes relacionadas por campo común — nivel 10

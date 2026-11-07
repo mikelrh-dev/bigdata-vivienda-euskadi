@@ -23,7 +23,7 @@ auditoría queda cerrada o declarada:
 
 ```
 356 ficheros raw (354 con hash)  →  188 silver (185 con manifest)
-        →  Mongo 16 colecciones  →  9 aggregation pipelines
+        →  Mongo 14 colecciones  →  9 aggregation pipelines
         →  5 CSV canónicos + comparativa + VPO + sensibilidad
 ```
 
@@ -132,9 +132,9 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 ```bash
 .venv/Scripts/python.exe transform/run_all.py --check          # exit 0
 .venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 185, 0 errores
-.venv/Scripts/python.exe -m pytest tests -q                    # 136 passed
+.venv/Scripts/python.exe -m pytest tests -q                    # 151 passed
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py       # OK 18/18
-.venv/Scripts/python.exe -m storage.load_mongo                 # 16 colecciones
+.venv/Scripts/python.exe -m storage.load_mongo                 # 14 colecciones
 .venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 9 pipelines + huella
 .venv/Scripts/python.exe analysis/sensibilidad.py              # IDW + bootstrap
 ```

@@ -253,7 +253,7 @@ def busqueda_avanzada_demo() -> dict[str, Any]:
     return {
         "por_municipio": len(anuncios_por_municipio(code)),
         "dot_notation": len(dot_notation_municipio(code)),
-        "equipamiento_ascensor": len(anuncios_con_equipamiento("ascensor")),
+        "equipamiento_exterior": len(anuncios_con_equipamiento("exterior")),
         "exists_superficie": len(anuncios_exists("superficie_m2", True)),
         "type_precio_decimal": len(anuncios_type("precio_eur", "decimal")),
         "regex_municipio_vitoria": len(anuncios_regex("ubicacion.municipio", "vitoria")),

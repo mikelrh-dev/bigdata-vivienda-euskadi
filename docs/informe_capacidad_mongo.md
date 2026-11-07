@@ -1,6 +1,6 @@
 # Informe de capacidad de respuesta con MongoDB — bigdata-vivienda-euskadi
 
-> Actualización 2026-11-05 (cierre-auditoria): 16 colecciones (14 principales + `indicadores__backup` y `municipios__backup`): `municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promociones/certificados_energeticos/vpo_municipal`.  
+> Actualización 2026-11-05 (cierre-auditoria): 14 colecciones principales (+13 `__backup` posteriores): `municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promociones/certificados_energeticos/vpo_municipal`.  
 > Lista de preguntas tomada de `docs/preguntas_analisis_profesional.md` (4 obligatorias + bloques A–G = 42 preguntas).
 
 ## Alcance y método

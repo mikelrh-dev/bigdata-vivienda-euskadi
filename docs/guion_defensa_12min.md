@@ -33,7 +33,7 @@ técnico cae sobre una conclusión que ya está en pie.
 6. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
 7. **Quién queda fuera**: 169 sin anuncios, 93 IDW, falacia ecológica.
 8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 9 pipelines.
-9. **Pruebas**: explain 759→1, 136 tests, gate 18/18, huella.
+9. **Pruebas**: explain 759→1, 151 tests, gate 18/18, huella.
 10. **Límites y qué haríamos con más datos**.
 
 ## Reparto y tiempos
@@ -139,7 +139,7 @@ lo que se puede afirmar."
 ## 7:40–9:10 · P2 · Cómo se calculó (técnico, comprimido)
 
 - Cadena: `extract/` → **raw 354 con manifest SHA-256** → silver **185** →
-  Mongo **16 colecciones** → **9 pipelines** → 5 CSV + 13 PNG.
+  Mongo **14 colecciones** → **9 pipelines** → 5 CSV + 13 PNG.
 - Modelo: **embedding** de demografía/empleo/demanda social en `municipios`
   (se leen juntos, cambian poco); **referencing** por `codigo_ine` para
   `anuncios` y `etxebide_promociones` (crecen sin límite).
@@ -165,7 +165,7 @@ No expliques las 9: tres bastan si cada una responde a una pregunta del reto.
 | Comando | Salida que se lee en voz alta |
 |---|---|
 | manifest | `354` y `185` entradas, **0 errores** |
-| pytest | **136 passed** |
+| pytest | **151 passed** |
 | run_analisis | **9 pipelines**, 5 CSV, **13 PNG**, huella `08665d03…`, reproducible |
 | gate | **OK 18/18** |
 
@@ -217,7 +217,7 @@ get_collection("municipios").find_one(
 - ¿Y una persona concreta? → renta municipal ≠ individual; falacia ecológica.
 
 **P2 (método y modelo)**
-- ¿Por qué 16 colecciones? → una por fuente/frecuencia; backups aparte.
+- ¿Por qué 14 colecciones? → una por fuente/frecuencia; los 13 `__backup` no cuentan.
 - ¿Qué va embebido y qué referenciado? → ficha municipal vs arrays que crecen.
 - ¿Por qué IDW y no imputar todo? → no inventar precio donde no lo hay.
 
