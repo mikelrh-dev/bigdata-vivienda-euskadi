@@ -24,13 +24,15 @@ OUT = Path(__file__).resolve().parent
 ASSETS = OUT / "assets"
 ASSETS.mkdir(exist_ok=True)
 
-NAVY = "#f6f1e7"
-INK = "#e9e4da"
-MUTED = "#9aa7bd"
-ACCENT = "#f59e0b"
-TEAL = "#2dd4bf"
-RED = "#ef4444"
-GRID = "#2a3446"
+# Paleta de tinta sobre papel (las diapositivas 1-7 y 10 son claras).
+NAVY = "#12233A"
+INK = "#2A3B4D"
+MUTED = "#8C8577"
+ACCENT = "#A8481F"
+TEAL = "#1F4B43"
+RED = "#8C2B1E"
+GRID = "#D8D1C2"
+PAPER = "#F4F0E6"
 
 plt.rcParams.update({
     "font.family": "DejaVu Sans",
@@ -59,10 +61,10 @@ def _clean(ax) -> None:
 def chart_histograma(esf: pd.Series, mediana: float, n30: int, total: int) -> Path:
     fig, ax = plt.subplots(figsize=(6.2, 3.3))
     bins = np.arange(10, 50, 2.5)
-    ax.hist(esf, bins=bins, color=ACCENT, alpha=0.85, edgecolor="#0b1220", linewidth=0.8)
+    ax.hist(esf, bins=bins, color=ACCENT, alpha=0.88, edgecolor=PAPER, linewidth=0.9)
     ax.axvline(30, color=RED, linewidth=2, linestyle="--")
     ax.axvline(mediana, color=NAVY, linewidth=2)
-    placa = dict(facecolor="#0b1220", edgecolor="none", pad=2.5)
+    placa = dict(facecolor=PAPER, edgecolor="none", pad=2.5, alpha=0.92)
     ax.text(29.3, ax.get_ylim()[1] * 0.95, "umbral 30 %", color=RED, fontsize=10, ha="right", bbox=placa)
     ax.text(mediana - 0.6, ax.get_ylim()[1] * 0.62, f"mediana {_es(mediana)} %",
             color=NAVY, fontsize=10, ha="right", bbox=placa)
@@ -83,7 +85,7 @@ def chart_territorios(medias: pd.Series, ns: pd.Series) -> Path:
     etiquetas = [f"{n} (n={int(ns[t])})" for n, t in zip(nombres, medias.index)]
     ax.barh(etiquetas, medias.values, color=TEAL, height=0.55)
     for y, v in enumerate(medias.values):
-        ax.text(v - 1.2, y, f"{_es(v)} %", va="center", ha="right", color="#06211e",
+        ax.text(v - 1.2, y, f"{_es(v)} %", va="center", ha="right", color=PAPER,
                 fontsize=11, fontweight="bold")
     ax.axvline(30, color=RED, linewidth=2, linestyle="--")
     ax.set_xlim(0, 33)
@@ -108,7 +110,7 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
     ]
     fig, ax = plt.subplots(figsize=(6.6, 3.4))
     y = np.arange(len(d))
-    ax.barh(y, d["esfuerzo_canonico_pct"], color=ACCENT, alpha=0.55, edgecolor=ACCENT, height=0.55)
+    ax.barh(y, d["esfuerzo_canonico_pct"], color=ACCENT, alpha=0.45, edgecolor=ACCENT, height=0.55)
     ax.errorbar(
         d["esfuerzo_canonico_pct"], y,
         xerr=[d["esfuerzo_canonico_pct"] - d["ic95_inf"], d["ic95_sup"] - d["esfuerzo_canonico_pct"]],
@@ -134,14 +136,14 @@ def chart_robustos(boot: pd.DataFrame, totales: dict[str, int]) -> Path:
 def chart_tramos(tramos: dict[str, int], n_idw: int) -> Path:
     fig, ax = plt.subplots(figsize=(8.6, 2.9))
     colores = [TEAL, ACCENT, RED]
-    tinta = ["#06211e", "#1a1205", "#ffffff"]
+    tinta = [PAPER, PAPER, PAPER]
     izquierda = 0
     for (nombre, valor), color, tcolor in zip(tramos.items(), colores, tinta):
-        ax.barh(0, valor, left=izquierda, color=color, edgecolor="#0b1220", height=0.55)
+        ax.barh(0, valor, left=izquierda, color=color, edgecolor=PAPER, height=0.55)
         ax.text(izquierda + valor / 2, 0, f"{valor}\n{nombre}", ha="center", va="center",
                 color=tcolor, fontsize=10, fontweight="bold")
         izquierda += valor
-    ax.barh(1, n_idw, color="#141d2c", edgecolor=MUTED, hatch="//", height=0.55)
+    ax.barh(1, n_idw, color="#E7E0D0", edgecolor=MUTED, hatch="//", height=0.55)
     ax.text(n_idw / 2, 1, f"{n_idw}\nsolo estimacion", ha="center", va="center",
             color=INK, fontsize=10, fontweight="bold")
     ax.set_yticks([0, 1], [f"Dato oficial ({izquierda})", f"Sin cuantia oficial ({n_idw})"])
@@ -184,6 +186,70 @@ def chart_sensibilidad(sens: pd.DataFrame) -> Path:
     return ruta
 
 
+# --------------------------------------------------------------------------
+# Imagenes decorativas (no son datos nuevos: son los mismos datos dibujados)
+# --------------------------------------------------------------------------
+def decor_topo() -> Path:
+    """Curvas de nivel: Euskadi es monte; el relieve es contexto, no dato."""
+    rng = np.random.default_rng(11)
+    n = 420
+    x = np.linspace(0, 10, n)
+    y = np.linspace(0, 6, n)
+    X, Y = np.meshgrid(x, y)
+
+    Z = np.zeros_like(X)
+    for _ in range(7):
+        fx, fy = rng.uniform(0.5, 2.2, 2)
+        ph = rng.uniform(0, 2 * np.pi)
+        Z += rng.uniform(0.4, 1.0) * np.sin(fx * X + fy * Y + ph)
+    Z += 0.45 * np.cos(3.1 * X - 1.3 * Y)
+
+    fig, ax = plt.subplots(figsize=(12.8, 7.2))
+    ax.contour(X, Y, Z, levels=24, colors=NAVY, linewidths=0.7, alpha=0.55)
+    ax.set_axis_off()
+    fig.subplots_adjust(0, 0, 1, 1)
+    ruta = ASSETS / "topo.svg"
+    fig.savefig(ruta, format="svg", transparent=True)
+    plt.close(fig)
+    return ruta
+
+
+def decor_trama(n_anuncios: int) -> Path:
+    """Un pictograma de vivienda por anuncio: 759 dibujos, ni uno mas."""
+    cols, rows, cell = 41, 20, 17
+    w, h = 11, 10
+    assert cols * rows >= n_anuncios, (cols * rows, n_anuncios)
+
+    partes: list[str] = []
+    i = 0
+    for r in range(rows):
+        for c in range(cols):
+            if i >= n_anuncios:
+                break
+            cx, cy = 10 + c * cell, 10 + r * cell
+            d = (
+                f"M{cx} {cy + 4.2} L{cx + 5.5} {cy} L{cx + w} {cy + 4.2} "
+                f"M{cx + 1.7} {cy + 3.4} L{cx + 1.7} {cy + h} "
+                f"L{cx + 9.3} {cy + h} L{cx + 9.3} {cy + 3.4}"
+            )
+            partes.append(
+                f'<path d="{d}" fill="none" stroke="{ACCENT}" '
+                f'stroke-width="1.3" stroke-linecap="square"/>'
+            )
+            i += 1
+
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {10 + cols * cell} {10 + rows * cell}" '
+        f'width="{10 + cols * cell}" height="{10 + rows * cell}">\n'
+        f"<!-- {n_anuncios} anuncios: un pictograma por anuncio -->\n"
+        + "\n".join(partes)
+        + "\n</svg>\n"
+    )
+    ruta = ASSETS / "trama.svg"
+    ruta.write_text(svg, encoding="utf-8")
+    return ruta
+
+
 def main() -> int:
     df = pd.read_csv(
         RES / "mongo_esfuerzo_por_municipio.csv",
@@ -223,11 +289,15 @@ def main() -> int:
     assert n_idw == len(df) - len(esf_of), (n_idw, len(df), len(esf_of))
     print("tramos:", tramos, "| idw:", n_idw)
 
+    n_anuncios = int(df["n_anuncios"].sum())
+
     chart_histograma(esf_of, mediana_of, n30_of, len(esf_of))
     chart_territorios(medias_terr, ns_terr)
     chart_tramos(tramos, n_idw)
     chart_robustos(boot, totales)
     chart_sensibilidad(sens)
+    decor_topo()
+    decor_trama(n_anuncios)
 
     fila = boot.set_index("municipio")
     vals = {
@@ -244,6 +314,7 @@ def main() -> int:
         "tramo_justo": tramos["25-30 %"],
         "tramo_no": tramos["> 30 %"],
         "n_idw": n_idw,
+        "n_anuncios": n_anuncios,
         "tension_alta": int(tension.get("alta", 0)),
         "tension_media": int(tension.get("media", 0)),
         "tension_baja": int(tension.get("baja", 0)),
@@ -272,9 +343,10 @@ def main() -> int:
     if resto:
         raise SystemExit(f"Placeholders sin resolver: {sorted(set(resto))}")
     (OUT / "index.html").write_text(html, encoding="utf-8")
-    print(f"OK index.html ({len(html)} bytes) y 4 SVG en {ASSETS}")
+    print(f"OK index.html ({len(html)} bytes) y 7 SVG en {ASSETS}")
     print(f"oficial: {vals['mediana_oficial']} % · {vals['n30_oficial']}/{vals['n_oficial']} > 30")
     print(f"global: {vals['mediana_global']} % · {vals['n30_global']}/{vals['n_global']} > 30")
+    print(f"decor: topo + trama de {n_anuncios} anuncios")
     return 0
 
 

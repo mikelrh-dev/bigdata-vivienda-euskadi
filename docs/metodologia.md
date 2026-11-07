@@ -13,7 +13,7 @@
 - RealtyAPI anuncios: 139 (3 municipios).
 - Anuncios unificados: 759 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
-- Tests: 136 passed (`pytest tests -q`).
+- Tests: 151 passed (`pytest tests -q`).
 - Municipios robustos (n≥30): 4 canónicos (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
 - Tensión social (Etxebide): 76 municipios alta / 103 media / 73 baja.

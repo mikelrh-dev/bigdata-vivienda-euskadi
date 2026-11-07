@@ -2,13 +2,13 @@
 
 > Para la defensa completa de 12 minutos con reparto por persona: `docs/guion_defensa_12min.md`.
 
-Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline actual: HDFS centro `http://10.22.87.215:50070` solo lectura + Kafka VM `192.168.201.162:9094` broker 4.3.1 KRaft pid 1832 (re-verificado en `docs/trazabilidad_vm.md`).
+Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline actual: HDFS centro `http://10.22.87.215:50070` solo lectura + Kafka clúster centro `10.22.87.215:9092` topic `anuncios_inmobiliarios` 1 partición (lag 0 verificado en `openspec/audit/informe_auditoria_2026-11-06_v2.md`).
 
 ## Tema 8: embedding, índices, atomicidad
 
 - **Embedding**: cada anuncio se almacena embebido en `municipios` (`ubicacion.codigo_ine`, `demografia`, `empleo`, `demanda_social`) con `alquiler_municipal` por `$lookup`; documentos agregados, no referencias sueltas.
 - **Índices**: `anuncios` pasa de COLLSCAN a IXSCAN con indice compuesto (`ubicacion.codigo_ine`, `modalidad`, `precio_eur`) + cobertura de `portal_id` (`explain_before_after`, test `test_indexes_explain`).
-- **Atomicidad**: escrituras al vuelo por documento (upsert idempotente desde Kafka, `storage/kafka_consumer.py`), sin operaciones multi-documento parciales en la cadena; el pipeline de analisis solo lee.
+- **Atomicidad**: escrituras al vuelo por documento (upsert idempotente en `storage/load_mongo.py`, índice único `(portal, id_anuncio)`), sin operaciones multi-documento parciales en la cadena; el pipeline de analisis solo lee.
 
 ## Recorrido de decisión a gate
 
@@ -19,7 +19,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 5. **Pipeline reproducible**: 9 pipelines + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`, `08665d03...`): dos ejecuciones dan la misma huella y los mismos CSV 253/253/3 (ver `docs/matriz_indicadores.md`).
 6. **Los 10 criterios** (detalle abajo): raw inmutable, silver utf-8-sig, esfuerzo 18-34, robustos n>=30, pipelines con huella, performance explain, tests, trazabilidad, cobertura 159+IDW, cadena HDFS+Kafka.
 7. **Integridad**: `generar_manifest.py --verify` (354 raw + 185 silver) y `transform/run_all.py --check` (exit 0).
-8. **Tests**: `pytest tests -q` = 136 passed, sin `data/raw` en `git status`.
+8. **Tests**: `pytest tests -q` = 151 passed, sin `data/raw` en `git status`.
 
 ## Los 10 criterios y su laguna
 
@@ -31,11 +31,11 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 | 4 | Robustos n>=30 y sensibles | Bilbao 173, Donostia 113, Getxo 40, Vitoria 39 (1 anuncio de diferencia) | Rankear a Barakaldo 38,49% sin n es el error que visa O2. |
 | 5 | Pipelines y huella reproducible | 9 pipelines + orden canonico + SHA-256 en `run_analisis` | Sin orden canonico, empates de `$sort` dan huellas distintas. |
 | 6 | Performance Mongo (índices/explain) | COLLSCAN 759 -> IXSCAN 1 en `test_indexes_explain` | Sin indice compuesto el lookup es full scan. |
-| 7 | Tests y gate | 136 passed en `.venv`, `run_all --check` exit 0 | Gate rojo = no cierre; no hay cierre parcial. |
+| 7 | Tests y gate | 151 passed en `.venv`, `run_all --check` exit 0 | Gate rojo = no cierre; no hay cierre parcial. |
 | 8 | Trazabilidad de fuentes | 5 indicadores con fuente + pipeline en `matriz_indicadores` | Tasa paro aprox (NaN) o renta como salario real destruye la defensa. |
 | 9 | Cobertura 159 + sensibilidad IDW | Oficial 159 mediana 26,61; con IDW 252 -> 25,37 (47 > 30) | Usar los 252 como si fueran 159 oficiales exagera cobertura. |
-| 10 | Cadena HDFS centro + Kafka pid 1832 | HDFS solo lectura + Kafka pid 1832 re-verificado en trazabilidad | Si se promete cadena sin verificarla, la defensa cae por sobreventa. |
+| 10 | Cadena HDFS centro + Kafka centro | HDFS 352/352 con SHA igual + Kafka lag 0 tras recarga de 352 | Si se promete cadena sin verificarla, la defensa cae por sobreventa. |
 
 ## Cierre de sesion
 
-Mostrar en orden: manifest verify, manifest check, pytest 136, huella de `run_analisis`, explain COLLSCAN/IXSCAN y tabla de 4 robustos (Getxo 40 vs Vitoria 39 sin ranking firme). Todo lectura; no se hace commit ni push en la demo.
+Mostrar en orden: manifest verify, manifest check, pytest 151, huella de `run_analisis`, explain COLLSCAN/IXSCAN y tabla de 4 robustos (Getxo 40 vs Vitoria 39 sin ranking firme). Todo lectura; no se hace commit ni push en la demo.
