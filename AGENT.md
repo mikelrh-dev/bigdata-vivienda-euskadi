@@ -1,12 +1,12 @@
 # AGENT.md — bigdata-vivienda-euskadi
 
 ## Stack
-- Python 3.12 (`.venv`); extracción `requests`/`beautifulsoup4`/`lxml`; almacenamiento HDFS centro `http://10.22.87.215:50070` `iabd-user15`, streaming Kafka clúster centro `10.22.87.215:9092` (`hadoop-master1.tartangalh.eus`) topic `anuncios_inmobiliarios` 1 partición, BD MongoDB (Docker) + PyMongo; análisis Aggregation Pipeline (9 pipelines); viz matplotlib/seaborn; contrato `pdf v2` más `docx Tema 8` como evaluación separada según `brief/RETO 1Evaluacion SBD-BDAv2.pdf` y `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`.
+- Python 3.12 (`.venv`); extracción `requests`/`beautifulsoup4`/`lxml`; almacenamiento HDFS centro `http://10.22.87.215:50070` `iabd-user15`, streaming Kafka clúster centro `10.22.87.215:9092` (`hadoop-master1.tartangalh.eus`) topic `anuncios_inmobiliarios` 1 partición, BD MongoDB local (HDFS centro + Mongo local sin Docker Compose en repo) + PyMongo; análisis Aggregation Pipeline (10 pipelines); viz matplotlib/seaborn; contrato `pdf v2` más `docx Tema 8` como evaluación separada según `brief/RETO 1Evaluacion SBD-BDAv2.pdf` y `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`.
 - Detalle, layout, fuentes y estado por fase: `openspec/project.md`.
 
 ## Key facts
 - Objetivo: qué municipios de Euskadi ofrecen mejor emancipación juvenil, con datos reales.
-- Raw inmutable congelado (manifest 354), silver regenerado (manifest 185), 151 tests colectados (151 passed).
+- Raw inmutable congelado (352 en HDFS), silver regenerado (manifest 188), 178 tests colectados (177 passed, 1 skipped).
 - Estado pesado, fases, preferencias y descubrimientos: Engram proyecto "bigdata-vivienda-euskadi" (obs 2988).
 
 ## Conventions
@@ -15,7 +15,7 @@
 - Preferencia: datos crudos/reales, sin valores simulados, con proxy de renta e imputación comarcal declarados según README y contrato; documentar avances en `openspec/audit`.
 - `openspec/specs/contrato-reto/spec.md` es la verdad: si código y contrato discrepan, manda el contrato.
 - Commits local-only; never `git push` sin orden explícita.
-- Archivado Kafka 2026-11-06: `archive/kafka_2026-11-06/` (storage_kafka_*, scripts_publish_adapter/gate_bloque2, tests_test_kafka) — ignorar: la cadena vigente es Windows>Kafka centro>Hadoop (`storage/kafka_raw_producer.py` → `storage/kafka_hdfs_uploader.py`). Datos Kafka borrados: topic `anuncios_inmobiliarios` eliminado, colección `vivienda_euskadi.anuncios` vaciada (759>0).
+- Archivado Kafka 2026-11-06: `archive/kafka_2026-11-06/` (storage_kafka_*, scripts_publish_adapter/gate_bloque2, tests_test_kafka) — ignorar: la cadena vigente es Windows>Kafka centro>Hadoop (`storage/kafka_raw_producer.py` → `storage/kafka_hdfs_uploader.py`). Datos Kafka borrados: topic `anuncios_inmobiliarios` eliminado, colección `vivienda_euskadi.anuncios` vaciada (759>0, cifra histórica pre-v5; vigente 594/843).
 
 ## References
 - Project spec: `openspec/project.md`

@@ -1,5 +1,9 @@
 # Análisis vault vs reto + rúbrica — guardar para revisar (2026-11-05)
 
+> **Histórico (2026-11-05).** Este análisis usa las cifras del pre-change
+> (759 anuncios, 151 tests, 9 pipelines, 28 resultados). La auditoría vigente
+> está en `vaultVivienda/vault-tecnico/06-Defensa/04-auditoria-vault-vs-reto-2026-11-08.md`.
+
 Fuente de verdad: `brief/RETO 1Evaluacion SBD-BDAv2.pdf` (BDA RA1 4 criterios, SBD RA1 46,7%, RA3 13,3%, RA4 40%) + `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx` (§4-17) + `openspec/specs/contrato-reto/spec.md` (27 requisitos, P-01..P-08, canónico 18-34).
 
 ## Veredicto global

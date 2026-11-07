@@ -1,0 +1,79 @@
+"""Guarda de gobernanza: cifras canónicas e IDs únicos (solo lectura).
+
+Comprueba lo que la auditoría 2026-11-07 dejó fijado:
+- 45 cabeceras de requisito con IDs únicos.
+- 44 scripts en transform/ y 34 nodos en el DAG.
+- 188 entradas en el manifiesto silver.
+- 0 variables de entorno usadas sin declarar en .env.example.
+- 10 pipelines en PIPELINE_ORDER.
+
+Uso: .venv/Scripts/python.exe scripts/verificar_gobernanza.py
+"""
+
+from __future__ import annotations
+
+import ast
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+ERRORES: list[str] = []
+
+
+def check(nombre: str, ok: bool, detalle: str) -> None:
+    print(("OK   " if ok else "FALLA") + f" {nombre}: {detalle}")
+    if not ok:
+        ERRORES.append(nombre)
+
+
+def ids_requisito() -> list[str]:
+    ids: list[str] = []
+    for spec in sorted((ROOT / "openspec" / "specs").glob("*/spec.md")):
+        for line in spec.read_text(encoding="utf-8").splitlines():
+            if line.startswith("### Requirement:"):
+                match = re.search(r"([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{2})", line)
+                if match:
+                    ids.append(match.group(1))
+    return ids
+
+
+def main() -> int:
+    ids = ids_requisito()
+    check("requisitos", len(ids) == 45 and len(set(ids)) == 45,
+          f"{len(ids)} cabeceras, {len(set(ids))} IDs únicos")
+
+    transform = sorted((ROOT / "transform").glob("*.py"))
+    tree = ast.parse((ROOT / "transform" / "run_all.py").read_text(encoding="utf-8-sig"))
+    dag = 0
+    for node in tree.body:
+        if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "SCRIPTS":
+            dag = len(node.value.keys)
+    check("transform", len(transform) == 44 and dag == 34,
+          f"{len(transform)} scripts, {dag} nodos DAG")
+
+    silver = ROOT / "data" / "procesado" / "manifest_sha256.txt"
+    entradas = sum(1 for line in silver.read_text(encoding="utf-8").splitlines() if line.strip())
+    check("silver", entradas == 188, f"{entradas} entradas en manifest_sha256.txt")
+
+    usadas: set[str] = set()
+    for carpeta in ("extract", "transform", "storage", "analysis", "scripts"):
+        for py in (ROOT / carpeta).rglob("*.py"):
+            texto = py.read_text(encoding="utf-8", errors="ignore")
+            usadas.update(re.findall(r"getenv\(['\"]([A-Z0-9_]+)['\"]", texto))
+            usadas.update(re.findall(r"environ\[['\"]([A-Z0-9_]+)['\"]", texto))
+    declaradas = set(re.findall(r"^([A-Z0-9_]+)=", (ROOT / ".env.example").read_text(encoding="utf-8"), re.M))
+    faltan = sorted(usadas - declaradas - {"PYTHONPATH"})
+    check("env", not faltan, f"sin declarar: {faltan or 'ninguna'}")
+
+    texto = (ROOT / "analysis" / "run_analisis_mongo.py").read_text(encoding="utf-8")
+    bloque = re.search(r"PIPELINE_ORDER[^=]*=\s*\((.*?)\)", texto, re.S)
+    pipelines = len(re.findall(r'"pipeline_[a-z_]+"', bloque.group(1))) if bloque else 0
+    check("pipelines", pipelines == 10, f"{pipelines} pipelines en PIPELINE_ORDER")
+
+    print(f"\n{'TODO OK' if not ERRORES else 'FALLOS: ' + ', '.join(ERRORES)}")
+    return 0 if not ERRORES else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

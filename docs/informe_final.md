@@ -12,27 +12,30 @@ auditoría queda cerrada o declarada:
 
 | Deuda | Estado |
 |---|---|
-| Manifest silver no verificaba | Cerrada: `--verify` exit 0 (354 raw / 185 silver) |
+| Manifest silver no verificaba | Cerrada: `--verify` exit 0 (354 raw / 188 silver) |
 | Dos definiciones de esfuerzo | Cerrada: mediana canónica en silver, Mongo y CSV |
 | Ocho cifras falsas en docs | Cerrada: VPO, colecciones, tests, duplicados, sin anuncios |
 | VPO "sin dato" | Parcial: flujo oficial integrado; stock sigue sin fuente |
-| Ranking de 252 municipios | No defendible: solo 4 con n≥30 |
+| Ranking de 252 municipios | Cerrada: ranking n>=30 (4 rankeables; resto `n_insuficiente`, Barakaldo n=6 bloqueado) |
 | Salario/desempleo juvenil real | Proxy declarado; sin fuente municipal |
 
 ## 2. Cadena de datos
 
 ```
-356 ficheros raw (354 con hash)  →  188 silver (185 con manifest)
-        →  Mongo 14 colecciones  →  9 aggregation pipelines
+356 ficheros raw (354 con hash)  →  188 silver (188 con manifest)
+        →  Mongo 14 colecciones  →  10 aggregation pipelines
         →  5 CSV canónicos + comparativa + VPO + sensibilidad
 ```
 
 - Raw inmutable con `.FROZEN`, guard y manifest SHA-256.
 - Silver regenerado desde raw; `run_all.py --check` sin avisos.
-- Mongo local con 252 municipios, 759 anuncios, 5040 solicitudes Etxebide,
+- Mongo local con 252 municipios, 594 anuncios, 5040 solicitudes Etxebide,
   406 promociones y 252 documentos de VPO municipal.
+- Recarga vigente: **594 anuncios** (326 larga estancia + 268 temporal),
+  **188 municipios Tier D en cero** (sin anuncios) y **Bilbao 204 anuncios
+  como máximo**. Paro Lanbide 252/252 (0 imputadas). 759 era el pre-change.
 - Huella agregada de los pipelines:
-  `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a`
+  `f26264b6c9ec024a27b36a99546dffdc71bb4cdd5aff61fc8519e15b17fa19d0`
   (dos ejecuciones consecutivas, misma huella).
 
 ## 3. Base de datos
@@ -40,9 +43,9 @@ auditoría queda cerrada o declarada:
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Anuncios unificados | 759 (491 larga estancia, 268 temporal) |
-| Municipios con anuncios | 83 |
-| Municipios sin anuncios | 169 |
+| Anuncios unificados | 594 (326 larga estancia, 268 temporal) |
+| Municipios con anuncios | 64 |
+| Municipios sin anuncios | 188 |
 | Alquiler oficial Eustat | 159/252 |
 | Alquiler imputado IDW | 93/252 |
 | Municipios robustos (n≥30) | 4 |
@@ -50,8 +53,9 @@ auditoría queda cerrada o declarada:
 | Viviendas en promociones | 0 (`NumViviendas` vacío 406/406) |
 | VPO terminada 2024 | 251/252 (Usansolo sin dato) |
 
-No hay duplicados: 845 anuncios crudos → 759 tras deduplicar (86 eliminados,
-10,18 %); 0 duplicados de fingerprint.
+No hay duplicados: 1.828 anuncios transformados → 873 tras dedup portal+id
+(955 eliminados) → 639 tras dedup `property_fingerprint` (234 cross-portal) →
+594 tras cuarentena pisos (45); 0 duplicados de fingerprint.
 
 ## 4. Resultados (O1–O4)
 
@@ -66,17 +70,20 @@ No hay duplicados: 845 anuncios crudos → 759 tras deduplicar (86 eliminados,
 
 ### O2 — ¿Qué municipios son viables?
 
-Solo 4 municipios tienen muestra suficiente. Esfuerzo canónico y n:
+Solo 4 municipios tienen muestra suficiente. Esfuerzo canónico y n
+(`ranking_esfuerzo.csv`: solo n_anuncios>=30; el resto es `n_insuficiente`):
 
 | Municipio | `codigo_ine` | n | Esfuerzo 18-34 |
 |---|---|---:|---:|
-| Bilbao | 48020 | 173 | 37,69 % |
-| Donostia | 20069 | 113 | 38,17 % |
-| Getxo | 48044 | 40 | 28,60 % |
+| Donostia | 20069 | 126 | 38,17 % |
+| Bilbao | 48020 | 204 | 37,69 % |
 | Vitoria-Gasteiz | 01059 | 39 | 33,37 % |
+| Getxo | 48044 | 50 | 28,60 % |
 
-Getxo (40) y Vitoria (39) están a un anuncio de distancia: no es un ranking
-firme, es un empate estadístico.
+Barakaldo (48013) tiene n=6 (`n_insuficiente`) y no ranking nunca por encima
+de Donostia (n=126) ni de ningún Tier A. Getxo (50) y Vitoria (39) están
+cerca en n, pero con esfuerzo e ICs que se solapan: no hay ranking firme
+entre ambos, es una comparación.
 
 ### O3 — ¿Trabajo y vivienda barata?
 
@@ -107,14 +114,14 @@ solo la dispersión de la muestra de anuncios:
 
 | Municipio | n | Esfuerzo | IC 95 % | Amplitud |
 |---|---:|---:|---|---:|
-| Bilbao | 51 | 37,69 % | 32,32–42,40 | 10,08 pp |
-| Donostia | 51 | 38,17 % | 32,44–45,80 | 13,36 pp |
-| Getxo | 31 | 28,60 % | 28,60–32,99 | 4,40 pp |
+| Bilbao | 67 | 37,69 % | 33,75–40,95 | 7,20 pp |
+| Donostia | 60 | 38,17 % | 32,44–45,80 | 13,36 pp |
+| Getxo | 39 | 28,60 % | 27,54–31,77 | 4,24 pp |
 | Vitoria-Gasteiz | 37 | 33,37 % | 30,80–39,40 | 8,60 pp |
 
 Los intervalos de Bilbao y Donostia se solapan: el orden entre ambos no es
-defendible. Getxo queda por debajo de los cuatro con el límite inferior igual
-al valor puntual, señal de una distribución de precios muy concentrada.
+defendible. Getxo queda por debajo de los cuatro (IC 27,54–31,77 %, por
+debajo del 30 % en casi todo el intervalo).
 
 ## 6. VPO: flujo oficial, no stock
 
@@ -131,11 +138,11 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 
 ```bash
 .venv/Scripts/python.exe transform/run_all.py --check          # exit 0
-.venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 185, 0 errores
-.venv/Scripts/python.exe -m pytest tests -q                    # 151 passed
+.venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 188, 0 errores
+.venv/Scripts/python.exe -m pytest tests -q                    # 177 passed + 1 skipped
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py       # OK 18/18
 .venv/Scripts/python.exe -m storage.load_mongo                 # 14 colecciones
-.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 9 pipelines + huella
+.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 10 pipelines + huella
 .venv/Scripts/python.exe analysis/sensibilidad.py              # IDW + bootstrap
 ```
 
@@ -143,7 +150,7 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 
 - `data/resultados/mongo_esfuerzo_por_municipio.csv` (252)
 - `data/resultados/mongo_alquiler_por_municipio.csv` (252)
-- `data/resultados/mongo_vpo_por_municipio.csv` (322 filas, 77 municipios)
+- `data/resultados/mongo_vpo_por_municipio.csv` (322 filas, 77 municipios; `viviendas` vacío = sin dato, no stock cero)
 - `data/resultados/comparativa_3_municipios_mongo.csv` (4 filas; nombre histórico)
 - `data/resultados/sensibilidad_idw.csv`
 - `data/resultados/bootstrap_robustos.csv`

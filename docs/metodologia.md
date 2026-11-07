@@ -3,18 +3,19 @@
 ## Universo de análisis
 - CAE (Euskadi): 1 nivel.
 - Comarca: 20 comarcas oficiales.
-- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 4 municipios (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
+- Municipio robusto: n≥30 anuncios combinados (Fotocasa + Pisos + RealtyAPI). Actualmente: 4 municipios (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39).
 - Municipios con dato oficial de alquiler: 159/252.
 - Municipios sin dato oficial: 93/252 (imputados por IDW_5_vecinos, no comarcal).
 
 ## Métricas canónicas
 - Fotocasa anuncios: 471 (57 municipios).
-- Pisos anuncios: 230 (37 ámbitos de búsqueda).
+- Pisos anuncios: 87 en silver tras re-resolucion por subtitulo/titulo (261 ids unicos raw → 87 + 45 cuarentena + 129 fingerprint); 230 en enriquecido_geo.
 - RealtyAPI anuncios: 139 (3 municipios).
-- Anuncios unificados: 759 (excluye 155 habitaciones de Fotocasa y 46 de Pisos).
+- Anuncios unificados: 594 (excluye 155 habitaciones de Fotocasa y 46 de Pisos; cuarentena pisos 45 fuera de Euskadi en `cuarentena_pisos.csv`).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
-- Tests: 151 passed (`pytest tests -q`).
-- Municipios robustos (n≥30): 4 canónicos (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39).
+- Tests: 177 passed, 1 skipped destructivo separado (`pytest tests -q`; Tier A/B/C/D en `tests/test_tier_confianza.py`).
+- Municipios robustos Tier A (n≥30): 4 canónicos (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) — fuerte. Tier B indicativo 10-29 = 3 (Sopela 19, Zarautz 15, Santurtzi 11, temporal!=larga); Tier C sin precio municipal 1-9 = 57; Tier D sin dato 0 = 188. Nivel (tipología 4/54/194) es ortogonal a Tier (confianza 4/3/57/188): Nivel mide estructura del mercado; Tier mide cuánta muestra sustenta la conclusión para ese municipio; son ejes ortogonales, no intercambiables. Tier derivado de n_anuncios real en Mongo (`pipeline_tier_por_municipio`, `mongo_tier_confianza.csv`, 252 filas).
+- Bootstrap robusto (`data/resultados/bootstrap_robustos.csv`): usa `n_larga_solo_vivienda` 67/60/39/37 (Bilbao/Donostia/Getxo/Vitoria-Gasteiz), distinto del `n_anuncios` Tier 204/126/50/39; los dos `n` no se intercambian en textos ni gráficos. IC95 Bilbao 33.75–40.95 y Getxo 27.54–31.77 (10.000 remuestreos); Bilbao y Donostia se solapan, sin orden firme.
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).
 - Tensión social (Etxebide): 76 municipios alta / 103 media / 73 baja.
 
@@ -52,7 +53,7 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 - Mezcla de años (2026 anuncios vs 2024 alquiler/renta).
 - Emancipación juvenil solo a nivel CAE (no municipal).
 - Pisos con geo inválida (235/235, `geo_invalida=True`).
-- 86 duplicados en anuncios unificados (845 crudos → 759; 10,18 %; 0 duplicados de fingerprint).
+- 251 duplicados/retirados en anuncios unificados (845 crudos → 594; 29,70 %; cadena histórica 845→759→594; 0 duplicados de fingerprint).
 - VPO: 406 promociones Etxebide en 77 municipios con `NumViviendas` vacío (stock no público). El flujo oficial municipal (indicador 73) ya está integrado: 251/252 municipios con VPO terminada 2024 (Usansolo sin dato), en ‰ habitantes y carácter quinquenal.
 
 ## Limitaciones
@@ -62,4 +63,4 @@ esfuerzo_joven_pct = alquiler_anual / renta_joven_estimada × 100
 
 ## Decisiones congeladas
 
-- No ranking municipal fino: solo 4 municipios robustos (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) + tipología (Nivel1/Nivel2/Nivel3). Evita ataque en defensa por F5/B6.
+- No ranking municipal fino: solo Tier A sustenta ranking (Bilbao, Donostia, Getxo, Vitoria-Gasteiz); Tier B/C/D sin ranking. + tipología (Nivel1/Nivel2/Nivel3). Evita ataque en defensa por F5/B6.

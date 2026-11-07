@@ -50,6 +50,31 @@ EQUIVALENCIAS = {
 }
 
 
+TIER_ETIQUETAS = {
+    "A": "fuerte",
+    "B": "indicativo",
+    "C": "sin precio municipal",
+    "D": "sin dato (+ contexto oficial)",
+}
+
+
+def tier_de_n(n: int) -> tuple[str, str]:
+    """Tier derivado solo de n_anuncios (sin imputacion comarcal/IDW).
+
+    A >=30 (fuerte), B 10-29 (indicativo), C 1-9 (sin precio municipal),
+    D 0 (sin dato + contexto oficial). n<30 nunca sube a A.
+    """
+    if n >= 30:
+        t = "A"
+    elif n >= 10:
+        t = "B"
+    elif n >= 1:
+        t = "C"
+    else:
+        t = "D"
+    return t, TIER_ETIQUETAS[t]
+
+
 def _cargar_eustat() -> dict[str, dict]:
     """Devuelve {nombre_normalizado: {codigo_ine, nombre_canonico, territorio}}."""
     import pandas as pd
@@ -236,6 +261,12 @@ def main() -> int:
         r["tiene_alquiler_oficial"] = tof
         r["tiene_fianzas_emal"] = tft
         r["tipologia_mercado"] = tip
+        # CONCLUSION-02 (tier; enricher post-catalogo, sin imputacion): derivado de
+        # n_anuncios crudo. aplicar_cobertura_mercado.py lo recalcula tras
+        # el dedup con el recuento real (ese es el definitivo).
+        _t, _te = tier_de_n(na)
+        r["tier"] = _t
+        r["tier_etiqueta"] = _te
 
     log.info("Tipologia mercado: %s",
              {t: sum(1 for r in registros if r["tipologia_mercado"] == t) for t in
@@ -258,11 +289,13 @@ def main() -> int:
     with csv_path.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
         w.writerow(["codigo_ine", "nombre_canonico", "territorio", "nombre_normalizado", "variantes",
-                    "n_anuncios", "tiene_alquiler_oficial", "tiene_fianzas_emal", "tipologia_mercado"])
+                    "n_anuncios", "tiene_alquiler_oficial", "tiene_fianzas_emal", "tipologia_mercado",
+                    "tier", "tier_etiqueta"])
         for r in registros:
             w.writerow([r["codigo_ine"], r["nombre_canonico"], r["territorio"], r["nombre_normalizado"], "|".join(r["variantes"]),
                         r.get("n_anuncios", 0), r.get("tiene_alquiler_oficial", False),
-                        r.get("tiene_fianzas_emal", False), r.get("tipologia_mercado", "")])
+                        r.get("tiene_fianzas_emal", False), r.get("tipologia_mercado", ""),
+                        r.get("tier", ""), r.get("tier_etiqueta", "")])
     log.info("CSV -> %s", csv_path.name)
 
     # Verificación de los 3 municipios clave
@@ -276,4 +309,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-PY

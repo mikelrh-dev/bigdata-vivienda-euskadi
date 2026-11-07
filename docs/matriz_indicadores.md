@@ -16,7 +16,7 @@ Archivo legacy (NO cuenta como indicador): `esfuerzo_16_29` se conserva solo por
 
 - `n_anuncios` y `precio_medio_eur` pertenecen al pipeline 1 y a `anuncios` (2026), no al precio m2 oficial; no confundir `precio_medio_eur` (foto de anuncios) con `cuantia_media_eur_mes_mediana` (Eustat).
 - `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm` replican esfuerzos para desglose; `pipeline_vpo_por_municipio` (stock promociones, 322 filas) documenta stock historico sin dato y no crea indicador nuevo.
-- 9 pipelines en `analysis/mongo_aggregations.py`: indicadores, alquiler, modalidades, top esfuerzo, esfuerzo sexo, accesibilidad extendida, udalmap_osrm, vpo promociones, vpo terminadas.
+- 10 pipelines en `analysis/mongo_aggregations.py`: indicadores, alquiler, modalidades, top esfuerzo, esfuerzo sexo, accesibilidad extendida, udalmap_osrm, vpo promociones, vpo terminadas, tier por municipio.
 - Imputacion explicita (Bloque 4): `pipeline_indicadores_municipio` preserva `metodo_imputacion` (`oficial` 159 / `IDW_5_vecinos` 93) y deriva `is_imputed` (False oficial, True IDW); ningun calculo rellena con medianas en silencio.
 
 ## Huella (2026-11-06, regenerada desde Mongo prod por `analysis/run_analisis_mongo.py`)
@@ -29,4 +29,4 @@ Archivo legacy (NO cuenta como indicador): `esfuerzo_16_29` se conserva solo por
 | `data/resultados/comparativa_3_municipios_mongo.csv` (4 robustos) | 5 | `9dc4e8d34d736e6fb74f16a05d064fb249d398b0ceca8b3b7168c3709d3881bb` |
 | `data/resultados/mongo_vpo_terminadas_por_municipio.csv` | 252 | `d9a512c82d9c493499b757fbb914b3ee331e0b3e390b59a64c1f4ab6c1f587bb` |
 
-Huella agregada de los 9 pipelines (`huella_resultados`, SHA-256 con `sort_keys=True`): `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a` (sin cambios: el 6º CSV no altera la huella de pipelines). Verificacion: `wc -l` = 253/253/3, comparativa 5 (cabecera + Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, `codigo_ine` 5 digitos, paro Lanbide no nulo), terminadas 252 (cabecera + 251 municipios, sin Usansolo). Rango canonico 18-34; 16-29 legacy solo demo.
+Huella agregada de los 9 pipelines originales (`huella_resultados`, SHA-256 con `sort_keys=True`; el 10.º, tier, se añadió después y no entra en esta huella histórica): `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a` (sin cambios: el 6º CSV no altera la huella de pipelines). Verificacion: `wc -l` = 253/253/3, comparativa 5 (cabecera + Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, `codigo_ine` 5 digitos, paro Lanbide no nulo), terminadas 252 (cabecera + 251 municipios, sin Usansolo). Rango canonico 18-34; 16-29 legacy solo demo.

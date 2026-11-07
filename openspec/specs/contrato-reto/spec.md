@@ -133,6 +133,9 @@ MongoDB, un esquema de arquitectura del recorrido de los datos, un informe de
 resultados con gráficos y tablas, y una demostración con explicación de las
 decisiones técnicas.
 
+El sistema SHALL describir la arquitectura como «HDFS centro + Mongo local sin Docker Compose en el repo». SHALL NOT afirmar Docker Compose, Docker como despliegue ni `(Docker)` en `AGENT.md`/`README.md` (incl. `README.md:100` y la etiqueta `mongo[Docker]`). Todo documento SHALL usar la frase contractual.
+(Previously: `README.md:100` «Docker Compose HDFS + MongoDB» y `(Docker)` en `AGENT.md`.)
+
 #### Scenario: El esquema de arquitectura existe
 
 - GIVEN el flujo completo
@@ -151,6 +154,24 @@ decisiones técnicas.
 - GIVEN el sistema ejecutable
 - WHEN se demuestra
 - THEN se ejecuta el flujo y se explican las decisiones técnicas
+
+#### Scenario: Ninguna mención Docker vigente
+
+- GIVEN `README.md` y `AGENT.md`
+- WHEN se buscan con `grep -in "docker"`
+- THEN toda mención dice «HDFS centro + Mongo local sin Docker Compose en el repo» y ninguna afirma despliegue Docker
+- AND `grep -c "Docker Compose HDFS" README.md` → `0`
+
+### Requirement: ARQUITECTURA-01 — Invariantes globales
+
+El sistema SHALL mantener: sin Docker; HDFS solo raw 352; Kafka→HDFS, nunca Kafka→Mongo; sin imputar comarcal/IDW como municipal. Nivel (tipología 4/54/194) y Tier (confianza 4/3/57/188) SHALL tratarse como ejes ortogonales en metodología y guion.
+
+#### Scenario: Invariantes verificables
+
+- GIVEN los documentos del repo
+- WHEN se revisan arquitectura, metodología y guion
+- THEN constan las cuatro invariantes y la frase ortogonal Nivel/Tier
+- AND ningún texto afirma Docker, Kafka→Mongo o precio comarcal municipal
 
 ---
 

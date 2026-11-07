@@ -19,6 +19,7 @@ log = get_logger("lanbide_historico_paro_joven")
 SRC = RAW_DIR / "lanbide_paro_historico.xlsx"
 OUT_CSV = RAW_DIR / "lanbide_paro_historico_joven.csv"
 OUT_JSON = RAW_DIR / "lanbide_paro_historico_joven.json"
+URL = "https://www.lanbide.euskadi.eus/contenidos/estadistica/paro_historico/es_def/adjuntos/Dap_Historico.xlsx"
 
 
 def main() -> int:
@@ -84,6 +85,7 @@ def main() -> int:
         registros,
         metadata={
             "fuente": "Lanbide histórico (lanbide_paro_historico.xlsx, Hoja DATOS)",
+            "url": URL,
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_registros": len(registros),
             "periodos": sorted({(r.get("anio"), r.get("trimestre")) for r in registros}),

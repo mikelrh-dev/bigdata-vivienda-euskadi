@@ -1,6 +1,6 @@
 # Presentación de defensa
 
-10 diapositivas 16:9, sin dependencias externas y sin conexión.
+13 diapositivas 16:9, sin dependencias externas y sin conexión.
 
 ## Ficheros
 
@@ -9,8 +9,8 @@
 | `index.html` | Deck generado (presentar abriéndolo en Chrome) |
 | `presentacion.pdf` | Export para entregar o imprimir |
 | `index.template.html` | Plantilla editable (sistema visual y contenido) |
-| `build_presentacion.py` | Genera HTML y los 7 SVG desde los CSV |
-| `assets/*.svg` | 5 gráficos + 2 capas decorativas (topo y trama) |
+| `build_presentacion.py` | Genera HTML y los 10 SVG desde los CSV |
+| `assets/*.svg` | 8 gráficos + 2 capas decorativas (topo y trama) |
 | `shots/*.jpg` | Previsualización de las 10 diapositivas |
 
 ## Regenerar
@@ -59,7 +59,7 @@ Dos tonos deliberados, para que el cambio de tema se vea sin anunciarlo:
   papel. Por eso se disuelven en el fondo sin caja blanca.
 - **Imágenes decorativas:** no son fotos de stock.
   - `assets/topo.svg`: curvas de nivel (el relieve es contexto, no dato).
-  - `assets/trama.svg`: **un pictograma de vivienda por anuncio** (759), que en
+  - `assets/trama.svg`: **un pictograma de vivienda por anuncio** (594), que en
     la diapositiva 7 convierte la cobertura del dato en textura.
 - **Cifras:** las que varían salen de los CSV vía `{{placeholders}}`; el build
   falla si queda alguno sin resolver.

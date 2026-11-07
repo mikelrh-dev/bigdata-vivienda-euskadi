@@ -1,0 +1,22 @@
+pipeline_indicadores_municipio filas=252 etapas=6 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort'] 0.05s
+pipeline_alquiler_por_municipio filas=252 etapas=7 ['group', 'limit', 'lookup', 'match', 'project', 'sort', 'unwind'] 0.03s
+pipeline_modalidades filas=2 etapas=4 ['group', 'match', 'project', 'sort'] 0.00s
+pipeline_top_municipios_por_esfuerzo filas=4 etapas=6 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort'] 0.01s
+pipeline_esfuerzo_por_sexo filas=252 etapas=6 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort'] 0.01s
+pipeline_accesibilidad_extendida filas=252 etapas=6 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort'] 0.09s
+pipeline_udalmap_extendido_osrm filas=252 etapas=7 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort', 'unwind'] 0.05s
+pipeline_vpo_por_municipio filas=322 etapas=7 ['group', 'limit', 'lookup', 'match', 'project', 'sort', 'unwind'] 0.06s
+pipeline_vpo_terminadas filas=251 etapas=6 ['limit', 'lookup', 'match', 'project', 'sort', 'unwind'] 0.02s
+pipeline_tier_por_municipio filas=252 etapas=6 ['addFields', 'limit', 'lookup', 'match', 'project', 'sort'] 0.02s
+
+=== DOBLE EJECUCION: conteos ===
+pipeline_indicadores_municipio 252 252 OK
+pipeline_alquiler_por_municipio 252 252 OK
+pipeline_modalidades 2 2 OK
+pipeline_top_municipios_por_esfuerzo 4 4 OK
+pipeline_esfuerzo_por_sexo 252 252 OK
+pipeline_accesibilidad_extendida 252 252 OK
+pipeline_udalmap_extendido_osrm 252 252 OK
+pipeline_vpo_por_municipio 322 322 OK
+pipeline_vpo_terminadas 251 251 OK
+pipeline_tier_por_municipio 252 252 OK

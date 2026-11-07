@@ -33,7 +33,38 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
     5040 docs, `alquiler_municipal.metodo_imputacion` 159 oficial / 93 IDW).
     Preserva `metodo_imputacion` y deriva `is_imputed` sin rellenar valores
     en silencio (la imputacion queda explicita, nunca oculta).
+
+    M1 (AGREGACION-01): solo entran anuncios con `precio_m2` valido en
+    [3, 50], `superficie_m2` en [10, 500] y `habitaciones` entero (garantizado
+    aguas arriba en OUTLIER-01). `precio_medio_eur` excluye ademas los
+    valores fuera del IQR (Q3+1,5·IQR y Q1−1,5·IQR por municipio) y
+    `mediana_precio_m2_winsorizada` aplica winsorizacion al percentil 1–99
+    antes de la mediana (recorte, no imputacion). La mediana cruda no se
+    usa para conclusiones.
     """
+
+    def _winsorizado() -> tuple[dict[str, Any], dict[str, Any]]:
+        """Expresiones 1-99: recorta extremos (no imputa) y toma la mediana."""
+        pm2 = "$_pm2_ordenados"
+        n = "$_n_pm2"
+        p1_idx = {"$floor": {"$multiply": [n, 0.01]}}
+        p99_idx = {"$min": [{"$floor": {"$multiply": [n, 0.99]}}, {"$subtract": [n, 1]}]}
+        p1 = {"$arrayElemAt": [pm2, p1_idx]}
+        p99 = {"$arrayElemAt": [pm2, p99_idx]}
+        wins = {"$map": {"input": pm2, "as": "v",
+                         "in": {"$max": [{"$min": ["$$v", p99]}, p1]}}}
+        return wins, {"$arrayElemAt": [wins, {"$floor": {"$divide": [n, 2]}}]}
+
+    _wins, _mediana_wins = _winsorizado()
+    # Puerta M1: precio_m2 ya validado en carga (3-50 / sup 10-500), mas
+    # superficie en [10, 500] y habitaciones entero en el propio pipeline.
+    _filtro_valido = {"$and": [
+        {"$ne": ["$$a.precio_m2", None]},
+        {"$gte": ["$$a.superficie_m2", 10]},
+        {"$lte": ["$$a.superficie_m2", 500]},
+        {"$ne": ["$$a.habitaciones", None]},
+        {"$eq": ["$$a.habitaciones", {"$trunc": "$$a.habitaciones"}]},
+    ]}
     pipeline: list[dict[str, Any]] = [
         {"$match": {}},
         {"$lookup": {
@@ -43,9 +74,43 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "as": "anuncios",
         }},
         {"$addFields": {
+            "anuncios_filtrados": {"$filter": {"input": "$anuncios", "as": "a", "cond": _filtro_valido}},
+        }},
+        {"$addFields": {
+            "_n_pm2": {"$size": "$anuncios_filtrados"},
+            "_pm2_ordenados": {"$sortArray": {"input": {"$map": {
+                "input": "$anuncios_filtrados", "as": "a", "in": "$$a.precio_m2"}}, "sortBy": 1}},
+        }},
+        {"$addFields": {
+            "_q1_pm2": {"$arrayElemAt": ["$_pm2_ordenados", {"$floor": {"$multiply": ["$_n_pm2", 0.25]}}]},
+            "_q3_pm2": {"$arrayElemAt": ["$_pm2_ordenados", {"$floor": {"$multiply": ["$_n_pm2", 0.75]}}]},
+        }},
+        {"$addFields": {
+            "_iqr_pm2": {"$subtract": ["$_q3_pm2", "$_q1_pm2"]},
+        }},
+        {"$addFields": {
+            "_iqr_lo": {"$cond": [{"$gt": ["$_iqr_pm2", 0]},
+                                 {"$subtract": ["$_q1_pm2", {"$multiply": [1.5, "$_iqr_pm2"]}]},
+                                 {"$multiply": [-1, 1e18]}]},
+            "_iqr_hi": {"$cond": [{"$gt": ["$_iqr_pm2", 0]},
+                                 {"$add": ["$_q3_pm2", {"$multiply": [1.5, "$_iqr_pm2"]}]},
+                                 {"$multiply": [1e18, 1]}]},
+        }},
+        {"$addFields": {
+            "anuncios_iqr": {"$filter": {"input": "$anuncios_filtrados", "as": "a",
+                                         "cond": {"$and": [
+                                             {"$gte": ["$$a.precio_m2", "$_iqr_lo"]},
+                                             {"$lte": ["$$a.precio_m2", "$_iqr_hi"]}]}}},
+        }},
+        {"$addFields": {
             "n_anuncios": {"$size": "$anuncios"},
-            "precio_medio_eur": {"$avg": "$anuncios.precio_eur"},
-            "superficie_media_m2": {"$avg": "$anuncios.superficie_m2"},
+            "n_anuncios_filtrados": {"$size": "$anuncios_filtrados"},
+            # M1 AGREGACION-01: precio medio SIN outliers IQR.
+            "precio_medio_eur": {"$avg": "$anuncios_iqr.precio_eur"},
+            "superficie_media_m2": {"$avg": "$anuncios_filtrados.superficie_m2"},
+            # M1 AGREGACION-01: mediana winsorizada p1-99 (null si n=0).
+            "mediana_precio_m2_winsorizada": {"$cond": [{"$gt": ["$_n_pm2", 0]},
+                                                        _mediana_wins, None]},
             "n_larga_estancia": {
                 "$sum": {"$map": {
                     "input": "$anuncios",
@@ -60,6 +125,19 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
                     "in": {"$cond": [{"$eq": ["$$a.modalidad", "temporal"]}, 1, 0]},
                 }}
             },
+        }},
+        # TIER-01 (AGREGACION-01): n_precio con precio_eur no nulo, solo
+        # Tier A/B (C/D sin precio municipal); estado rankeable solo n>=30
+        # (4 Tier A), el resto n_insuficiente sin ordenacion.
+        {"$addFields": {
+            "tier": _tier_expr("$n_anuncios"),
+            "_n_precio_raw": {"$sum": {"$map": {"input": "$anuncios", "as": "a",
+                "in": {"$cond": [{"$ne": ["$$a.precio_eur", None]}, 1, 0]}}}},
+        }},
+        {"$addFields": {
+            "n_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_n_precio_raw", 0]},
+            "estado": {"$cond": [{"$gte": ["$n_anuncios", 30]},
+                                 "rankeable", "n_insuficiente"]},
         }},
         {"$lookup": {
             "from": "alquiler_municipal",
@@ -168,8 +246,13 @@ def pipeline_indicadores_municipio(limit: int | None = None) -> list[dict[str, A
             "nombre": 1,
             "territorio": 1,
             "n_anuncios": 1,
+            "n_anuncios_filtrados": 1,
+            "n_precio": 1,
+            "tier": 1,
+            "estado": 1,
             "precio_medio_eur": 1,
             "superficie_media_m2": 1,
+            "mediana_precio_m2_winsorizada": 1,
             "n_larga_estancia": 1,
             "n_temporal": 1,
             "renta_joven": 1,
@@ -239,11 +322,18 @@ def pipeline_modalidades() -> list[dict[str, Any]]:
 def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]]:
     # JOVEN-18-34: ranking por canonico 18-34 (fallback legacy 16-29 si el
     # campo nuevo aun no esta cargado); se devuelve tambien el legacy.
+    # M3 (CONCLUSION-01): ningun ranking con n_anuncios<30; los municipios
+    # con n<30 quedan como «n insuficiente» y nunca ordenan por encima de
+    # un Tier A (p. ej. Barakaldo n=6 no ranking vs Donostia n=126).
     pipeline: list[dict[str, Any]] = [
         {"$match": {"$or": [
             {"demografia.renta_joven_estimada_18_34": {"$gt": 0}},
             {"demografia.renta_joven_estimada_16_29": {"$gt": 0}},
         ]}},
+        {"$lookup": {"from": "anuncios", "localField": "_id",
+                     "foreignField": "ubicacion.codigo_ine", "as": "ann"}},
+        {"$addFields": {"n_anuncios": {"$size": "$ann"}}},
+        {"$match": {"n_anuncios": {"$gte": 30}}},
         {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
         {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
         {"$match": {"alq.cuantia_media_eur_mes_mediana": {"$ne": None}}},
@@ -262,7 +352,7 @@ def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]
             ]},
         }},
         {"$addFields": {"esfuerzo_joven_pct": "$esfuerzo_joven_pct_16_29"}},
-        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "esfuerzo_joven_pct": 1, "esfuerzo_joven_pct_16_29": 1, "esfuerzo_joven_pct_18_34": 1}},
+        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "n_anuncios": 1, "esfuerzo_joven_pct": 1, "esfuerzo_joven_pct_16_29": 1, "esfuerzo_joven_pct_18_34": 1}},
         {"$sort": {"esfuerzo_joven_pct_18_34": -1}},
         {"$limit": limit},
     ]
@@ -402,12 +492,12 @@ def pipeline_vpo_por_municipio(limit: int | None = None) -> list[dict[str, Any]]
     """
     pipeline: list[dict[str, Any]] = [
         {"$match": {"codigo_ine": {"$ne": None}}},
-        {"$group": {"_id": {"codigo_ine": "$codigo_ine", "estado": "$estado_obra", "tipologia": "$tipologia"}, "n_promociones": {"$sum": 1}, "viviendas": {"$sum": {"$ifNull": ["$num_viviendas", 0]}}}},
+        {"$group": {"_id": {"codigo_ine": "$codigo_ine", "estado": "$estado_obra", "tipologia": "$tipologia"}, "n_promociones": {"$sum": 1}, "viviendas": {"$sum": {"$ifNull": ["$num_viviendas", 0]}}, "promociones_con_viviendas": {"$sum": {"$cond": [{"$ne": ["$num_viviendas", None]}, 1, 0]}}}},
         {"$lookup": {"from": "municipios", "localField": "_id.codigo_ine", "foreignField": "_id", "as": "m"}},
         {"$unwind": {"path": "$m", "preserveNullAndEmptyArrays": True}},
         {"$lookup": {"from": "indicadores", "localField": "_id.codigo_ine", "foreignField": "_id", "as": "ind"}},
         {"$unwind": {"path": "$ind", "preserveNullAndEmptyArrays": True}},
-        {"$project": {"codigo_ine": "$_id.codigo_ine", "estado": "$_id.estado", "tipologia": "$_id.tipologia", "n_promociones": 1, "viviendas": 1, "municipio": "$m.nombre_canonico", "esfuerzo_joven_pct": "$ind.esfuerzo_joven_pct", "esfuerzo_joven_pct_16_29": "$ind.esfuerzo_joven_pct_16_29", "esfuerzo_joven_pct_18_34": "$ind.esfuerzo_joven_pct_18_34", "_id": 0}},
+        {"$project": {"codigo_ine": "$_id.codigo_ine", "estado": "$_id.estado", "tipologia": "$_id.tipologia", "n_promociones": 1, "viviendas": {"$cond": [{"$gt": ["$promociones_con_viviendas", 0]}, "$viviendas", None]}, "municipio": "$m.nombre_canonico", "esfuerzo_joven_pct": "$ind.esfuerzo_joven_pct", "esfuerzo_joven_pct_16_29": "$ind.esfuerzo_joven_pct_16_29", "esfuerzo_joven_pct_18_34": "$ind.esfuerzo_joven_pct_18_34", "_id": 0}},
         {"$sort": {"n_promociones": -1}},
     ]
     if limit:
@@ -445,6 +535,193 @@ def pipeline_vpo_terminadas(limit: int | None = None) -> list[dict[str, Any]]:
 agregar = run_all
 run_aggregation = run_all
 run_aggregations = run_all
+
+TIER_ETIQUETAS = {
+    "A": "fuerte",
+    "B": "indicativo",
+    "C": "sin precio municipal",
+    "D": "sin dato (+ contexto oficial)",
+}
+
+
+def _tier_expr(n: str = "$n_anuncios") -> dict[str, Any]:
+    return {"$switch": {
+        "branches": [
+            {"case": {"$gte": [n, 30]}, "then": "A"},
+            {"case": {"$gte": [n, 10]}, "then": "B"},
+            {"case": {"$gte": [n, 1]}, "then": "C"},
+        ],
+        "default": "D",
+    }}
+
+
+def pipeline_tier_por_municipio(limit: int | None = None) -> list[dict[str, Any]]:
+    """Tier A/B/C/D por municipio desde Mongo ($group-equivalente por codigo_ine).
+
+    Base `municipios` (252) + `$lookup` a `anuncios` por `ubicacion.codigo_ine`;
+    para cada municipio calcula `n_anuncios`, `n_precio`, `min_precio`,
+    `max_precio`, `mediana_precio`, `n_precio_temporal`, `n_precio_larga`,
+    `mediana_precio_temporal`, `mediana_precio_larga` (canonico; quedan
+    tambien los alias legacy `mediana_temporal`/`mediana_larga`),
+    `min_precio_temporal`, `max_precio_temporal`, `min_precio_larga`,
+    `max_precio_larga` y deriva `tier` solo de `n_anuncios`
+    (A >=30, B 10-29, C 1-9, D 0). Tier C/D: `n_precio`=0, min/max/mediana
+    nulos, sin precio municipal y sin imputacion comarcal/IDW. Devuelve 252 filas.
+    """
+    def _mediana(cond: dict[str, Any]) -> dict[str, Any]:
+        filtrados = {"$filter": {"input": "$anuncios", "as": "a", "cond": cond}}
+        precios = {"$map": {"input": filtrados, "as": "x", "in": "$$x.precio_eur"}}
+        ordenados = {"$sortArray": {"input": precios, "sortBy": 1}}
+        return {"$arrayElemAt": [ordenados,
+                                 {"$floor": {"$divide": [{"$size": precios}, 2]}}]}
+
+    def _minmax(cond: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+        filtrados = {"$filter": {"input": "$anuncios", "as": "a", "cond": cond}}
+        precios = {"$map": {"input": filtrados, "as": "x", "in": "$$x.precio_eur"}}
+        return {"$min": precios}, {"$max": precios}
+
+    _cond_temporal = {"$and": [
+        {"$eq": ["$$a.modalidad", "temporal"]},
+        {"$ne": ["$$a.precio_eur", None]}]}
+    _cond_larga = {"$and": [
+        {"$eq": ["$$a.modalidad", "larga_estancia"]},
+        {"$ne": ["$$a.precio_eur", None]}]}
+    _min_t, _max_t = _minmax(_cond_temporal)
+    _min_l, _max_l = _minmax(_cond_larga)
+
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {}},
+        {"$lookup": {"from": "anuncios", "localField": "_id",
+                     "foreignField": "ubicacion.codigo_ine", "as": "anuncios"}},
+        {"$addFields": {
+            "n_anuncios": {"$size": "$anuncios"},
+            "_n_precio": {"$sum": {"$map": {"input": "$anuncios", "as": "a",
+                                           "in": {"$cond": [
+                                               {"$ne": ["$$a.precio_eur", None]}, 1, 0]}}}},
+            "_min_precio": {"$min": "$anuncios.precio_eur"},
+            "_max_precio": {"$max": "$anuncios.precio_eur"},
+            "_n_precio_temporal": {"$sum": {"$map": {"input": "$anuncios", "as": "a",
+                                                   "in": {"$cond": [
+                                                       {"$and": [
+                                                           {"$eq": ["$$a.modalidad", "temporal"]},
+                                                           {"$ne": ["$$a.precio_eur", None]}]}, 1, 0]}}}},
+            "_n_precio_larga": {"$sum": {"$map": {"input": "$anuncios", "as": "a",
+                                                "in": {"$cond": [
+                                                    {"$and": [
+                                                        {"$eq": ["$$a.modalidad", "larga_estancia"]},
+                                                        {"$ne": ["$$a.precio_eur", None]}]}, 1, 0]}}}},
+            "_mediana_precio": _mediana({"$ne": ["$$a.precio_eur", None]}),
+            "_mediana_temporal": _mediana(_cond_temporal),
+            "_mediana_larga": _mediana(_cond_larga),
+            "_min_precio_temporal": _min_t,
+            "_max_precio_temporal": _max_t,
+            "_min_precio_larga": _min_l,
+            "_max_precio_larga": _max_l,
+        }},
+        {"$addFields": {"tier": _tier_expr()}},
+        # Tier C/D sin precio municipal: n_precio=0, min/max/mediana nulos
+        # (spec AGREGACION-01 edge), aunque el anuncio tenga precio.
+        # Solo Tier A/B conservan estadisticas de precio (B indicativo).
+        {"$addFields": {
+            "n_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_n_precio", 0]},
+            "n_precio_temporal": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_n_precio_temporal", 0]},
+            "n_precio_larga": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_n_precio_larga", 0]},
+            "min_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_min_precio", None]},
+            "max_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_max_precio", None]},
+            "mediana_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_mediana_precio", None]},
+            "mediana_temporal": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_mediana_temporal", None]},
+            "mediana_larga": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_mediana_larga", None]},
+            # Nombres canonicos (spec) + rango por modalidad (Tier B indicativo).
+            "mediana_precio_temporal": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_mediana_temporal", None]},
+            "mediana_precio_larga": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_mediana_larga", None]},
+            "min_precio_temporal": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_min_precio_temporal", None]},
+            "max_precio_temporal": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_max_precio_temporal", None]},
+            "min_precio_larga": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_min_precio_larga", None]},
+            "max_precio_larga": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_max_precio_larga", None]},
+        }},
+        {"$addFields": {"tier_etiqueta": {"$switch": {
+            "branches": [
+                {"case": {"$eq": ["$tier", "A"]}, "then": TIER_ETIQUETAS["A"]},
+                {"case": {"$eq": ["$tier", "B"]}, "then": TIER_ETIQUETAS["B"]},
+                {"case": {"$eq": ["$tier", "C"]}, "then": TIER_ETIQUETAS["C"]},
+            ],
+            "default": TIER_ETIQUETAS["D"]}}}},
+        {"$project": {
+            "codigo_ine": "$_id", "nombre": "$nombre_canonico", "territorio": 1,
+            "n_anuncios": 1, "n_precio": 1, "min_precio": 1, "max_precio": 1,
+            "mediana_precio": 1, "n_precio_temporal": 1, "n_precio_larga": 1,
+            "mediana_temporal": 1, "mediana_larga": 1,
+            "mediana_precio_temporal": 1, "mediana_precio_larga": 1,
+            "min_precio_temporal": 1, "max_precio_temporal": 1,
+            "min_precio_larga": 1, "max_precio_larga": 1, "tier": 1,
+            "tier_etiqueta": 1, "_id": 0}},
+        {"$sort": {"n_anuncios": -1, "codigo_ine": 1}},
+    ]
+    if limit is not None:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("municipios").aggregate(pipeline))
+
+
+def _hab_col():
+    """Colección de habitaciones: bigdata si tiene docs, si no unificados."""
+    try:
+        big = get_collection("anuncios_habitaciones_unificados_bigdata")
+        if big.estimated_document_count() > 0:
+            return big
+    except Exception:
+        pass
+    return get_collection("anuncios_habitaciones_unificados")
+
+
+def pipeline_habitaciones_por_municipio(limit: int | None = None) -> list[dict[str, Any]]:
+    """Mediana municipal de habitaciones desde anuncios de habitaciones.
+
+    `$group` por `codigo_ine` normalizado (no por texto de municipio) sobre
+    `anuncios_habitaciones_unificados` (201 anuncios; Bilbao 96, Donostia
+    66, Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango 2,
+    Eibar 1). Cada fila expone `codigo_ine`, `municipio`, `n`, `n_precio`,
+    `min_precio_eur`, `max_precio_eur`, `mediana_precio_eur` (mediana cruda,
+    sin winsorizar ni imputar comarcal/IDW). Solo Bilbao y Donostia
+    (n_precio >= 30) sostienen comparación firme; el resto es indicativo
+    (n_insuficiente, sin ranking).
+    """
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"codigo_ine": {"$ne": None}}},
+        {"$group": {
+            "_id": "$codigo_ine",
+            "municipio": {"$first": "$municipio"},
+            "n": {"$sum": 1},
+            "n_precio": {"$sum": {"$cond": [{"$ne": ["$precio_eur", None]}, 1, 0]}},
+            "precios": {"$push": {"$cond": [{"$ne": ["$precio_eur", None]}, "$precio_eur", "$$REMOVE"]}},
+        }},
+        {"$addFields": {
+            "_ordenados": {"$sortArray": {"input": "$precios", "sortBy": 1}},
+            "_n_precio_arr": {"$size": "$precios"},
+        }},
+        {"$addFields": {
+            "min_precio_eur": {"$cond": [{"$gt": ["$_n_precio_arr", 0]}, {"$arrayElemAt": ["$_ordenados", 0]}, None]},
+            "max_precio_eur": {"$cond": [{"$gt": ["$_n_precio_arr", 0]}, {"$arrayElemAt": ["$_ordenados", -1]}, None]},
+            "mediana_precio_eur": {"$cond": [
+                {"$gt": ["$_n_precio_arr", 0]},
+                {"$arrayElemAt": ["$_ordenados", {"$floor": {"$divide": ["$_n_precio_arr", 2]}}]},
+                None,
+            ]},
+        }},
+        {"$project": {
+            "codigo_ine": "$_id",
+            "municipio": 1,
+            "n": 1,
+            "n_precio": 1,
+            "min_precio_eur": 1,
+            "max_precio_eur": 1,
+            "mediana_precio_eur": 1,
+            "_id": 0,
+        }},
+        {"$sort": {"n_precio": -1, "codigo_ine": 1}},
+    ]
+    if limit is not None:
+        pipeline.append({"$limit": limit})
+    return list(_hab_col().aggregate(pipeline))
 
 if __name__ == "__main__":
     run_all()

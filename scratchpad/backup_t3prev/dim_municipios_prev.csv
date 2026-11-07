@@ -1,0 +1,253 @@
+﻿codigo_ine,nombre_canonico,territorio,nombre_normalizado,variantes,tiene_alquiler_oficial,tiene_fianzas_emal,tipologia_mercado,n_anuncios_raw,n_anuncios
+48001,Abadiño,Bizkaia,abadino,Abadiño,True,True,Nivel2_Mercado_Regulado,3,3
+20001,Abaltzisketa,Gipuzkoa,abaltzisketa,Abaltzisketa,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48002,Abanto y Ciérvana-Abanto Zierbena,Bizkaia,abanto y ciervana abanto zierbena,Abanto y Ciérvana-Abanto Zierbena,True,True,Nivel2_Mercado_Regulado,31,29
+20002,Aduna,Gipuzkoa,aduna,Aduna,True,False,Nivel2_Mercado_Regulado,23,20
+01051,Agurain/Salvatierra,Araba/Álava,agurain salvatierra,Agurain/Salvatierra,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20016,Aia,Gipuzkoa,aia,Aia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20003,Aizarnazabal,Gipuzkoa,aizarnazabal,Aizarnazabal,True,False,Nivel2_Mercado_Regulado,1,3
+48911,Ajangiz,Bizkaia,ajangiz,Ajangiz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20004,Albiztur,Gipuzkoa,albiztur,Albiztur,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20005,Alegia,Gipuzkoa,alegia,Alegia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01001,Alegría-Dulantzi,Araba/Álava,alegria dulantzi,Alegría-Dulantzi,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20006,Alkiza,Gipuzkoa,alkiza,Alkiza,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48912,Alonsotegi,Bizkaia,alonsotegi,Alonsotegi,True,False,Nivel2_Mercado_Regulado,7,6
+20906,Altzaga,Gipuzkoa,altzaga,Altzaga,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20007,Altzo,Gipuzkoa,altzo,Altzo,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20008,Amezketa,Gipuzkoa,amezketa,Amezketa,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48003,Amorebieta-Etxano,Bizkaia,amorebieta etxano,Amorebieta-Etxano,True,True,Nivel2_Mercado_Regulado,1,1
+48004,Amoroto,Bizkaia,amoroto,Amoroto,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01002,Amurrio,Araba/Álava,amurrio,Amurrio,True,True,Nivel2_Mercado_Regulado,1,1
+20009,Andoain,Gipuzkoa,andoain,Andoain,True,True,Nivel2_Mercado_Regulado,1,1
+20010,Anoeta,Gipuzkoa,anoeta,Anoeta,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20011,Antzuola,Gipuzkoa,antzuola,Antzuola,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01049,Añana,Araba/Álava,anana,Añana,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48005,Arakaldo,Bizkaia,arakaldo,Arakaldo,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+20012,Arama,Gipuzkoa,arama,Arama,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01003,Aramaio,Araba/Álava,aramaio,Aramaio,True,False,Nivel2_Mercado_Regulado,2,2
+48006,Arantzazu,Bizkaia,arantzazu,Arantzazu,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48093,Areatza,Bizkaia,areatza,Areatza,True,False,Nivel2_Mercado_Regulado,1,1
+20013,Aretxabaleta,Gipuzkoa,aretxabaleta,Aretxabaleta,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+01006,Armiñón,Araba/Álava,arminon,Armiñón,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01037,Arraia-Maeztu,Araba/Álava,arraia maeztu,Arraia-Maeztu,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48009,Arrankudiaga-Zollo,Bizkaia,arrankudiaga zollo,Arrankudiaga-Zollo|Arrankudiaga / Zollo,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+20055,Arrasate/Mondragón,Gipuzkoa,arrasate mondragon,Arrasate/Mondragón|Arrasate / Mondragón,True,True,Nivel2_Mercado_Regulado,2,2
+48914,Arratzu,Bizkaia,arratzu,Arratzu,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01008,Arratzua-Ubarrundia,Araba/Álava,arratzua ubarrundia,Arratzua-Ubarrundia,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48010,Arrieta,Bizkaia,arrieta,Arrieta,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48011,Arrigorriaga,Bizkaia,arrigorriaga,Arrigorriaga,True,True,Nivel2_Mercado_Regulado,5,10
+48023,Artea,Bizkaia,artea,Artea,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48008,Artzentales,Bizkaia,artzentales,Artzentales,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01004,Artziniega,Araba/Álava,artziniega,Artziniega,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01009,Asparrena,Araba/Álava,asparrena,Asparrena,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20014,Asteasu,Gipuzkoa,asteasu,Asteasu,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20903,Astigarraga,Gipuzkoa,astigarraga,Astigarraga,True,True,Nivel2_Mercado_Regulado,4,4
+20015,Ataun,Gipuzkoa,ataun,Ataun,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48091,Atxondo,Bizkaia,atxondo,Atxondo,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48070,Aulesti,Bizkaia,aulesti,Aulesti,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01010,Ayala/Aiara,Araba/Álava,ayala aiara,Ayala/Aiara,True,False,Nivel2_Mercado_Regulado,30,29
+20017,Azkoitia,Gipuzkoa,azkoitia,Azkoitia,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20018,Azpeitia,Gipuzkoa,azpeitia,Azpeitia,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48012,Bakio,Bizkaia,bakio,Bakio,True,False,Nivel2_Mercado_Regulado,20,19
+20904,Baliarrain,Gipuzkoa,baliarrain,Baliarrain,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48090,Balmaseda,Bizkaia,balmaseda,Balmaseda,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+01011,Baños de Ebro/Mañueta,Araba/Álava,banos de ebro manueta,Baños de Ebro/Mañueta,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+48013,Barakaldo,Bizkaia,barakaldo,Barakaldo,True,True,Nivel2_Mercado_Regulado,18,13
+48014,Barrika,Bizkaia,barrika,Barrika,True,False,Nivel2_Mercado_Regulado,14,13
+01013,Barrundia,Araba/Álava,barrundia,Barrundia,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48015,Basauri,Bizkaia,basauri,Basauri,True,True,Nivel2_Mercado_Regulado,5,8
+20019,Beasain,Gipuzkoa,beasain,Beasain,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48092,Bedia,Bizkaia,bedia,Bedia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20020,Beizama,Gipuzkoa,beizama,Beizama,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20021,Belauntza,Gipuzkoa,belauntza,Belauntza,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48016,Berango,Bizkaia,berango,Berango,True,True,Nivel2_Mercado_Regulado,10,10
+01014,Berantevilla,Araba/Álava,berantevilla,Berantevilla,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20022,Berastegi,Gipuzkoa,berastegi,Berastegi,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20074,Bergara,Gipuzkoa,bergara,Bergara,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48017,Bermeo,Bizkaia,bermeo,Bermeo,True,True,Nivel2_Mercado_Regulado,3,3
+01016,Bernedo,Araba/Álava,bernedo,Bernedo,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48018,Berriatua,Bizkaia,berriatua,Berriatua,True,False,Nivel2_Mercado_Regulado,2,2
+48019,Berriz,Bizkaia,berriz,Berriz,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20023,Berrobi,Gipuzkoa,berrobi,Berrobi,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20024,Bidania-Goiatz,Gipuzkoa,bidania goiatz,Bidania-Goiatz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48020,Bilbao,Bizkaia,bilbao,Bilbao|Bilbao,True,True,Nivel1_Mercado_Dinamico,239,173
+48021,Busturia,Bizkaia,busturia,Busturia,True,False,Nivel2_Mercado_Regulado,1,1
+01017,Campezo/Kanpezu,Araba/Álava,campezo kanpezu,Campezo/Kanpezu,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20029,Deba,Gipuzkoa,deba,Deba,True,True,Nivel2_Mercado_Regulado,2,2
+48901,Derio,Bizkaia,derio,Derio,True,True,Nivel2_Mercado_Regulado,5,12
+48026,Dima,Bizkaia,dima,Dima,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20069,Donostia / San Sebastián,Gipuzkoa,donostia san sebastian,Donostia / San Sebastián|Donostia - San Sebastián,True,True,Nivel1_Mercado_Dinamico,130,113
+48027,Durango,Bizkaia,durango,Durango,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48028,Ea,Bizkaia,ea,Ea,True,False,Nivel2_Mercado_Regulado,1,1
+20030,Eibar,Gipuzkoa,eibar,Eibar,True,True,Nivel2_Mercado_Regulado,1,1
+48031,Elantxobe,Bizkaia,elantxobe,Elantxobe,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01021,Elburgo/Burgelu,Araba/Álava,elburgo burgelu,Elburgo/Burgelu,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01022,Elciego,Araba/Álava,elciego,Elciego,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+20031,Elduain,Gipuzkoa,elduain,Elduain,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20033,Elgeta,Gipuzkoa,elgeta,Elgeta,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20032,Elgoibar,Gipuzkoa,elgoibar,Elgoibar,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48032,Elorrio,Bizkaia,elorrio,Elorrio,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+01023,Elvillar/Bilar,Araba/Álava,elvillar bilar,Elvillar/Bilar,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48902,Erandio,Bizkaia,erandio,Erandio,True,True,Nivel2_Mercado_Regulado,15,15
+48033,Ereño,Bizkaia,ereno,Ereño,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48034,Ermua,Bizkaia,ermua,Ermua,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20067,Errenteria,Gipuzkoa,errenteria,Errenteria,True,True,Nivel2_Mercado_Regulado,1,1
+20066,Errezil,Gipuzkoa,errezil,Errezil,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01046,Erriberagoitia/Ribera Alta,Araba/Álava,erriberagoitia ribera alta,Erriberagoitia/Ribera Alta,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48079,Errigoiti,Bizkaia,errigoiti,Errigoiti,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20034,Eskoriatza,Gipuzkoa,eskoriatza,Eskoriatza,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48029,Etxebarri,Bizkaia,etxebarri,Etxebarri,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48030,Etxebarria,Bizkaia,etxebarria,Etxebarria,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20035,Ezkio-Itsaso,Gipuzkoa,ezkio itsaso,Ezkio-Itsaso,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48906,Forua,Bizkaia,forua,Forua,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48035,Fruiz,Bizkaia,fruiz,Fruiz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20038,Gabiria,Gipuzkoa,gabiria,Gabiria,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20037,Gaintza,Gipuzkoa,gaintza,Gaintza,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48036,Galdakao,Bizkaia,galdakao,Galdakao,True,True,Nivel2_Mercado_Regulado,3,3
+48037,Galdames,Bizkaia,galdames,Galdames,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48038,Gamiz-Fika,Bizkaia,gamiz fika,Gamiz-Fika,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48039,Garai,Bizkaia,garai,Garai,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48040,Gatika,Bizkaia,gatika,Gatika,True,False,Nivel2_Mercado_Regulado,1,1
+48041,Gautegiz Arteaga,Bizkaia,gautegiz arteaga,Gautegiz Arteaga,True,False,Nivel2_Mercado_Regulado,1,1
+20907,Gaztelu,Gipuzkoa,gaztelu,Gaztelu,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48046,Gernika-Lumo,Bizkaia,gernika lumo,Gernika-Lumo,True,True,Nivel2_Mercado_Regulado,2,1
+20039,Getaria,Gipuzkoa,getaria,Getaria,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48044,Getxo,Bizkaia,getxo,Getxo|Getxo,True,True,Nivel1_Mercado_Dinamico,40,40
+48047,Gizaburuaga,Bizkaia,gizaburuaga,Gizaburuaga,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48042,Gordexola,Bizkaia,gordexola,Gordexola,True,False,Nivel2_Mercado_Regulado,1,1
+48043,Gorliz,Bizkaia,gorliz,Gorliz,True,True,Nivel2_Mercado_Regulado,6,5
+48045,Güeñes,Bizkaia,guenes,Güeñes,True,True,Nivel2_Mercado_Regulado,0,10
+01056,Harana/Valle de Arana,Araba/Álava,harana valle de arana,Harana/Valle de Arana,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20040,Hernani,Gipuzkoa,hernani,Hernani,True,True,Nivel2_Mercado_Regulado,1,1
+20041,Hernialde,Gipuzkoa,hernialde,Hernialde,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20036,Hondarribia,Gipuzkoa,hondarribia,Hondarribia,True,True,Nivel2_Mercado_Regulado,2,2
+20042,Ibarra,Gipuzkoa,ibarra,Ibarra,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48048,Ibarrangelu,Bizkaia,ibarrangelu,Ibarrangelu,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+20043,Idiazabal,Gipuzkoa,idiazabal,Idiazabal,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48094,Igorre,Bizkaia,igorre,Igorre,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20044,Ikaztegieta,Gipuzkoa,ikaztegieta,Ikaztegieta,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20045,Irun,Gipuzkoa,irun,Irun,True,True,Nivel2_Mercado_Regulado,3,3
+01901,Iruña Oka/Iruña de Oca,Araba/Álava,iruna oka iruna de oca,Iruña Oka/Iruña de Oca,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20046,Irura,Gipuzkoa,irura,Irura,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01027,Iruraiz-Gauna,Araba/Álava,iruraiz gauna,Iruraiz-Gauna,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48049,Ispaster,Bizkaia,ispaster,Ispaster,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20047,Itsasondo,Gipuzkoa,itsasondo,Itsasondo,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48910,Iurreta,Bizkaia,iurreta,Iurreta,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48050,Izurtza,Bizkaia,izurtza,Izurtza,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48022,Karrantza Harana/Valle de Carranza,Bizkaia,karrantza harana valle de carranza,Karrantza Harana/Valle de Carranza,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48907,Kortezubi,Bizkaia,kortezubi,Kortezubi,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01019,Kripan,Araba/Álava,kripan,Kripan,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01020,Kuartango,Araba/Álava,kuartango,Kuartango,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01028,Labastida/Bastida,Araba/Álava,labastida bastida,Labastida/Bastida,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01030,Lagrán,Araba/Álava,lagran,Lagrán,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01031,Laguardia,Araba/Álava,laguardia,Laguardia,True,False,Nivel2_Mercado_Regulado,15,15
+01032,Lanciego/Lantziego,Araba/Álava,lanciego lantziego,Lanciego/Lantziego,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48051,Lanestosa,Bizkaia,lanestosa,Lanestosa,False,False,Nivel3_Mercado_Rural_Cerrado,3,3
+01902,Lantarón,Araba/Álava,lantaron,Lantarón,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01033,Lapuebla de Labarca,Araba/Álava,lapuebla de labarca,Lapuebla de Labarca,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48052,Larrabetzu,Bizkaia,larrabetzu,Larrabetzu,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20048,Larraul,Gipuzkoa,larraul,Larraul,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20902,Lasarte-Oria,Gipuzkoa,lasarte oria,Lasarte-Oria,True,True,Nivel2_Mercado_Regulado,4,4
+01036,Laudio/Llodio,Araba/Álava,laudio llodio,Laudio/Llodio,True,True,Nivel2_Mercado_Regulado,6,5
+48053,Laukiz,Bizkaia,laukiz,Laukiz,False,False,Nivel3_Mercado_Rural_Cerrado,2,2
+20049,Lazkao,Gipuzkoa,lazkao,Lazkao,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20050,Leaburu,Gipuzkoa,leaburu,Leaburu,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20051,Legazpi,Gipuzkoa,legazpi,Legazpi,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20052,Legorreta,Gipuzkoa,legorreta,Legorreta,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01058,Legutio,Araba/Álava,legutio,Legutio,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20068,Leintz-Gatzaga,Gipuzkoa,leintz gatzaga,Leintz-Gatzaga,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48054,Leioa,Bizkaia,leioa,Leioa,True,True,Nivel2_Mercado_Regulado,9,10
+48057,Lekeitio,Bizkaia,lekeitio,Lekeitio,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48055,Lemoa,Bizkaia,lemoa,Lemoa,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48056,Lemoiz,Bizkaia,lemoiz,Lemoiz,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01034,Leza,Araba/Álava,leza,Leza,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48081,Lezama,Bizkaia,lezama,Lezama,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20053,Lezo,Gipuzkoa,lezo,Lezo,True,True,Nivel2_Mercado_Regulado,1,1
+20054,Lizartza,Gipuzkoa,lizartza,Lizartza,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48903,Loiu,Bizkaia,loiu,Loiu,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48058,Mallabia,Bizkaia,mallabia,Mallabia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48059,Mañaria,Bizkaia,manaria,Mañaria,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48060,Markina-Xemein,Bizkaia,markina xemein,Markina-Xemein,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48061,Maruri-Jatabe,Bizkaia,maruri jatabe,Maruri-Jatabe,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20901,Mendaro,Gipuzkoa,mendaro,Mendaro,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48062,Mendata,Bizkaia,mendata,Mendata,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+48063,Mendexa,Bizkaia,mendexa,Mendexa,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48064,Meñaka,Bizkaia,menaka,Meñaka,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+01039,Moreda de Álava/Moreda Araba,Araba/Álava,moreda de alava moreda araba,Moreda de Álava/Moreda Araba,False,False,Nivel3_Mercado_Rural_Cerrado,3,3
+48066,Morga,Bizkaia,morga,Morga,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48068,Mundaka,Bizkaia,mundaka,Mundaka,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48069,Mungia,Bizkaia,mungia,Mungia,True,True,Nivel2_Mercado_Regulado,3,4
+48007,Munitibar-Arbatzegi Gerrikaitz,Bizkaia,munitibar arbatzegi gerrikaitz,Munitibar-Arbatzegi Gerrikaitz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48908,Murueta,Bizkaia,murueta,Murueta,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48071,Muskiz,Bizkaia,muskiz,Muskiz,True,True,Nivel2_Mercado_Regulado,13,12
+20057,Mutiloa,Gipuzkoa,mutiloa,Mutiloa,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20056,Mutriku,Gipuzkoa,mutriku,Mutriku,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48067,Muxika,Bizkaia,muxika,Muxika,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+48909,Nabarniz,Bizkaia,nabarniz,Nabarniz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01041,Navaridas,Araba/Álava,navaridas,Navaridas,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20063,Oiartzun,Gipuzkoa,oiartzun,Oiartzun,True,True,Nivel2_Mercado_Regulado,1,1
+01042,Okondo,Araba/Álava,okondo,Okondo,True,False,Nivel2_Mercado_Regulado,5,5
+20058,Olaberria,Gipuzkoa,olaberria,Olaberria,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48073,Ondarroa,Bizkaia,ondarroa,Ondarroa,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20059,Oñati,Gipuzkoa,onati,Oñati,True,True,Nivel2_Mercado_Regulado,1,1
+20076,Ordizia,Gipuzkoa,ordizia,Ordizia,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20905,Orendain,Gipuzkoa,orendain,Orendain,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20060,Orexa,Gipuzkoa,orexa,Orexa,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20061,Orio,Gipuzkoa,orio,Orio,True,True,Nivel2_Mercado_Regulado,1,1
+20062,Ormaiztegi,Gipuzkoa,ormaiztegi,Ormaiztegi,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48075,Orozko,Bizkaia,orozko,Orozko,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48083,Ortuella,Bizkaia,ortuella,Ortuella,True,True,Nivel2_Mercado_Regulado,3,3
+48072,Otxandio,Bizkaia,otxandio,Otxandio,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01043,Oyón-Oion,Araba/Álava,oyon oion,Oyón-Oion,True,False,Nivel2_Mercado_Regulado,4,4
+20064,Pasaia,Gipuzkoa,pasaia,Pasaia,True,True,Nivel2_Mercado_Regulado,2,2
+01044,Peñacerrada-Urizaharra,Araba/Álava,penacerrada urizaharra,Peñacerrada-Urizaharra,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48077,Plentzia,Bizkaia,plentzia,Plentzia,True,False,Nivel2_Mercado_Regulado,4,4
+48078,Portugalete,Bizkaia,portugalete,Portugalete,True,True,Nivel2_Mercado_Regulado,4,5
+01047,Ribera Baja/Erriberabeitia,Araba/Álava,ribera baja erriberabeitia,Ribera Baja/Erriberabeitia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01052,Samaniego,Araba/Álava,samaniego,Samaniego,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01053,San Millán/Donemiliaga,Araba/Álava,san millan donemiliaga,San Millán/Donemiliaga,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+48082,Santurtzi,Bizkaia,santurtzi,Santurtzi,True,True,Nivel2_Mercado_Regulado,8,8
+20070,Segura,Gipuzkoa,segura,Segura,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48084,Sestao,Bizkaia,sestao,Sestao,True,True,Nivel2_Mercado_Regulado,5,4
+48904,Sondika,Bizkaia,sondika,Sondika,True,False,Nivel2_Mercado_Regulado,1,1
+48085,Sopela,Bizkaia,sopela,Sopela,True,True,Nivel2_Mercado_Regulado,13,13
+48086,Sopuerta,Bizkaia,sopuerta,Sopuerta,True,False,Nivel2_Mercado_Regulado,7,6
+20065,Soraluze-Placencia de las Armas,Gipuzkoa,soraluze placencia de las armas,Soraluze-Placencia de las Armas,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48076,Sukarrieta,Bizkaia,sukarrieta,Sukarrieta,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20071,Tolosa,Gipuzkoa,tolosa,Tolosa,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48087,Trucios-Turtzioz,Bizkaia,trucios turtzioz,Trucios-Turtzioz,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48088,Ubide,Bizkaia,ubide,Ubide,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48065,Ugao-Miraballes,Bizkaia,ugao miraballes,Ugao-Miraballes,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48089,Urduliz,Bizkaia,urduliz,Urduliz,True,True,Nivel2_Mercado_Regulado,1,1
+48074,Urduña/Orduña,Bizkaia,urduna orduna,Urduña/Orduña,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01054,Urkabustaiz,Araba/Álava,urkabustaiz,Urkabustaiz,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20072,Urnieta,Gipuzkoa,urnieta,Urnieta,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20077,Urretxu,Gipuzkoa,urretxu,Urretxu,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+48916,Usansolo,Bizkaia,usansolo,Usansolo,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20073,Usurbil,Gipuzkoa,usurbil,Usurbil,True,True,Nivel2_Mercado_Regulado,1,1
+01055,Valdegovía/Gaubea,Araba/Álava,valdegovia gaubea,Valdegovía/Gaubea,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48080,Valle de Trápaga-Trapagaran,Bizkaia,valle de trapaga trapagaran,Valle de Trápaga-Trapagaran,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20075,Villabona,Gipuzkoa,villabona,Villabona,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+01057,Villabuena de Álava/Eskuernaga,Araba/Álava,villabuena de alava eskuernaga,Villabuena de Álava/Eskuernaga,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01059,Vitoria-Gasteiz,Araba/Álava,vitoria gasteiz,Vitoria-Gasteiz|Vitoria - Gasteiz,True,True,Nivel1_Mercado_Dinamico,48,39
+01060,Yécora/Iekora,Araba/Álava,yecora iekora,Yécora/Iekora,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48095,Zaldibar,Bizkaia,zaldibar,Zaldibar,True,False,Nivel2_Mercado_Regulado,1,1
+20078,Zaldibia,Gipuzkoa,zaldibia,Zaldibia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01061,Zalduondo,Araba/Álava,zalduondo,Zalduondo,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48096,Zalla,Bizkaia,zalla,Zalla,True,True,Nivel2_Mercado_Regulado,1,2
+01062,Zambrana,Araba/Álava,zambrana,Zambrana,False,False,Nivel3_Mercado_Rural_Cerrado,1,1
+48905,Zamudio,Bizkaia,zamudio,Zamudio,True,False,Nivel2_Mercado_Regulado,2,2
+48097,Zaratamo,Bizkaia,zaratamo,Zaratamo,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20079,Zarautz,Gipuzkoa,zarautz,Zarautz,True,True,Nivel2_Mercado_Regulado,17,15
+48024,Zeanuri,Bizkaia,zeanuri,Zeanuri,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48025,Zeberio,Bizkaia,zeberio,Zeberio,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20025,Zegama,Gipuzkoa,zegama,Zegama,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20026,Zerain,Gipuzkoa,zerain,Zerain,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20027,Zestoa,Gipuzkoa,zestoa,Zestoa,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48913,Zierbena,Bizkaia,zierbena,Zierbena,True,False,Nivel2_Mercado_Regulado,5,4
+01018,Zigoitia,Araba/Álava,zigoitia,Zigoitia,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+48915,Ziortza-Bolibar,Bizkaia,ziortza bolibar,Ziortza-Bolibar,False,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20028,Zizurkil,Gipuzkoa,zizurkil,Zizurkil,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+01063,Zuia,Araba/Álava,zuia,Zuia,True,False,Nivel3_Mercado_Rural_Cerrado,0,0
+20081,Zumaia,Gipuzkoa,zumaia,Zumaia,True,True,Nivel3_Mercado_Rural_Cerrado,0,0
+20080,Zumarraga,Gipuzkoa,zumarraga,Zumarraga,True,True,Nivel3_Mercado_Rural_Cerrado,0,0

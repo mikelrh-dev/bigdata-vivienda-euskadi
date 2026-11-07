@@ -178,9 +178,9 @@
     <p class="lead">Con el alquiler oficial, la mediana se lleva <span class="accent">{{mediana_oficial}} %</span>
       del salario joven. En <span class="accent">{{n30_oficial}} de {{n_oficial}}</span> municipios con dato
       se supera el 30 %, y en Bilbao y Donostia roza el 38 %.</p>
-    <p class="lead muted">En <b>169</b> municipios no hay anuncios (sin precio observado);
+    <p class="lead muted">En <b>188</b> municipios no hay anuncios (sin precio observado);
       en <b>93</b> no hay cuantía oficial y solo tenemos una estimación IDW.</p>
-    <div class="footer-q" style="margin-top:22px">Datos reales · 252 municipios · {{n_anuncios}} anuncios · conclusiones con perímetro declarado</div>
+    <div class="footer-q" style="margin-top:22px">Datos reales · 252 municipios · {{n_anuncios}} anuncios · 188 Tier D en cero · Bilbao 204 máximo · conclusiones con perímetro declarado (759 era el pre-change)</div>
     <div class="brand">bigdata-vivienda-euskadi</div>
     <div class="num"></div>
   </section>
@@ -279,7 +279,91 @@
     <div class="num"></div>
   </section>
 
-  <!-- 6 · sensibilidad -->
+  <!-- 6 · Tier B indicativo -->
+  <section class="slide paper">
+    <div class="layer topo"></div><div class="layer grain"></div>
+    <div class="kicker">La incertidumbre · Tier B</div>
+    <h2>Tres municipios: rango, no ranking</h2>
+    <div class="rule"></div>
+    <div class="grid2" style="grid-template-columns:1.5fr 1fr;align-items:center">
+      <figure class="fig">
+        <img src="assets/chart_tierB_range.svg" alt="Tier B: rango min-max y mediana por modalidad">
+        <figcaption>Sopela {{tierB_sopela_n}}: temporal {{tierB_sopela_med_t}} (n={{tierB_sopela_n_t}}) · larga {{tierB_sopela_med_l}} (n={{tierB_sopela_n_l}}) · Zarautz {{tierB_zarautz_n}}: temporal {{tierB_zarautz_med_t}} (n={{tierB_zarautz_n_t}}) · larga {{tierB_zarautz_med_l}} (n={{tierB_zarautz_n_l}}) · Santurtzi {{tierB_santurtzi_n}}: temporal {{tierB_santurtzi_med_t}} (n={{tierB_santurtzi_n_t}}) · larga {{tierB_santurtzi_med_l}} (n={{tierB_santurtzi_n_l}})</figcaption>
+      </figure>
+      <div>
+        <p>Con <b>10–29 anuncios</b> no hay ranking firme: hay un rango.</p>
+        <div class="note"><b>indicativo</b>: cada mediana se dibuja con su propio n_precio; temporal y larga nunca se promedian.</div>
+        <p class="muted" style="margin-top:12px">Sopela ({{tierB_sopela_n}}), Zarautz ({{tierB_zarautz_n}}) y Santurtzi ({{tierB_santurtzi_n}}) se representan en barras de rango, no se ordenan como firmes.</p>
+      </div>
+    </div>
+    <div class="brand">bigdata-vivienda-euskadi</div>
+    <div class="num"></div>
+  </section>
+
+  <!-- 7 · mapa de tiers -->
+  <section class="slide paper">
+    <div class="layer topo"></div><div class="layer grain"></div>
+    <div class="kicker">La incertidumbre · el mapa</div>
+    <h2>Dónde hay dato y dónde no</h2>
+    <div class="rule"></div>
+    <div class="grid2" style="grid-template-columns:1.7fr 1fr;align-items:center">
+      <figure class="fig">
+        <img src="assets/chart_mapa_tier.svg" alt="Mapa coroplético de tiers A B C D">
+        <figcaption>252 contextual sobre 159 · 4 niveles A/B/C/D</figcaption>
+      </figure>
+      <div>
+        <p>Un coroplético por <b>código INE</b>: 252/252 municipios clasificados.</p>
+        <p class="muted">Capas: oficial <b>159</b> (borde sólido) · IDW <b>93</b> (borde discontinuo) · contexto <b>252</b>.</p>
+        <div class="note"><b>252 contextual sobre 159</b>: el contexto no es dato oficial; no sustituye la cuantía de Eustat.</div>
+      </div>
+    </div>
+    <div class="brand">bigdata-vivienda-euskadi</div>
+    <div class="num"></div>
+  </section>
+
+  <!-- 8 · burbuja esfuerzo-n -->
+  <section class="slide paper">
+    <div class="layer topo"></div><div class="layer grain"></div>
+    <div class="kicker">La incertidumbre · esfuerzo y muestra</div>
+    <h2>Solo 4 municipios aguantan el ranking</h2>
+    <div class="rule"></div>
+    <div class="grid2" style="grid-template-columns:1.5fr 1fr;align-items:center">
+      <figure class="fig">
+        <img src="assets/chart_effort_vs_n.svg" alt="Burbuja esfuerzo frente a muestra, solo 4 Tier A">
+        <figcaption>X n_anuncios · Y esfuerzo 18-34 · tamaño n_precio · solo 4 Tier A</figcaption>
+      </figure>
+      <div>
+        <p>Cada burbuja es un <b>Tier A</b>: Bilbao, Donostia, Getxo y Vitoria-Gasteiz.</p>
+        <p class="muted">La banda sombreada es <b>n_insuficiente</b>: muestra insuficiente, no ranking. Con n &lt; 30 no se ordena nada.</p>
+        <div class="note">Sin ranking 1-16 ni imputación de esfuerzo: el eje Y solo existe donde hay muestra.</div>
+      </div>
+    </div>
+    <div class="brand">bigdata-vivienda-euskadi</div>
+    <div class="num"></div>
+  </section>
+
+  <!-- 9 · residencia vs habitaciones -->
+  <section class="slide paper">
+    <div class="layer topo"></div><div class="layer grain"></div>
+    <div class="kicker">La incertidumbre · habitaciones</div>
+    <h2>Habitación vs vivienda entera</h2>
+    <div class="rule"></div>
+    <div class="grid2" style="grid-template-columns:1.55fr 1fr;align-items:center">
+      <figure class="fig">
+        <img src="assets/chart_habitaciones_medianas.svg" alt="Comparación residencia vs habitaciones por municipio">
+        <figcaption>mediana residencia temporal y larga por separado + mediana habitaciones con min–max y n_precio · solo Bilbao y Donostia firmes</figcaption>
+      </figure>
+      <div>
+        <p>Compartir cuesta, pero no como alquilar entero: cada municipio dibuja <b>tres barras nunca agregadas</b> (temporal, larga y habitaciones).</p>
+        <p class="muted">Solo <b>Bilbao (96)</b> y <b>Donostia (66)</b> sostienen la comparación firme (n≥30). El resto es <b>indicativo</b> (n_insuficiente, Vitoria 12 · Barakaldo 11 · Getxo 8 · Irun 3 · Errenteria 2 · Durango 2 · Eibar 1): rango mostrado, sin ranking ni imputación.</p>
+        <div class="note">Cada barra de habitaciones lleva su <b>n_precio</b> y su <b>min–max</b>; temporal y larga nunca se promedian.</div>
+      </div>
+    </div>
+    <div class="brand">bigdata-vivienda-euskadi</div>
+    <div class="num"></div>
+  </section>
+
+  <!-- 10 · sensibilidad -->
   <section class="slide paper">
     <div class="layer topo"></div><div class="layer grain"></div>
     <div class="kicker">La respuesta · 4 de 4</div>
@@ -302,7 +386,7 @@
     <div class="num"></div>
   </section>
 
-  <!-- 7 · perímetro (trama de anuncios) -->
+  <!-- 11 · perímetro (trama de anuncios) -->
   <section class="slide paper">
     <div class="layer topo"></div><div class="layer grain"></div>
     <div class="layer trama"></div>
@@ -326,7 +410,7 @@
     <div class="num"></div>
   </section>
 
-  <!-- 8 · cómo se calculó (blueprint) -->
+  <!-- 12 · cómo se calculó (blueprint) -->
   <section class="slide night">
     <div class="layer grid"></div><div class="layer glow"></div><div class="layer traza"></div>
     <div class="kicker">Cómo se calculó</div>
@@ -359,7 +443,7 @@
     <div class="num"></div>
   </section>
 
-  <!-- 9 · pruebas (blueprint) -->
+  <!-- 13 · pruebas (blueprint) -->
   <section class="slide night">
     <div class="layer grid"></div><div class="layer glow"></div><div class="layer traza"></div>
     <div class="kicker">Las pruebas</div>
@@ -371,7 +455,7 @@
 .venv/Scripts/python.exe extract/generar_manifest.py --verify
 <span class="c"># suite completa</span>
 .venv/Scripts/python.exe -m pytest tests -q
-<span class="c"># 9 pipelines + 6 CSV + 13 PNG + huella</span>
+<span class="c"># 9 pipelines + 6 CSV + 12 PNG únicos de 13 emitidos + huella</span>
 .venv/Scripts/python.exe analysis/run_analisis_mongo.py
 <span class="c"># gate de la fase de datos</span>
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py</pre>
@@ -379,10 +463,10 @@
       </div>
       <div class="grid2 g2" style="gap:12px;flex:0 1 auto">
         <div class="stat"><b>352 / 352</b><span>raw → HDFS · 895.596.949 B</span></div>
-        <div class="stat"><b>151 passed</b><span>suite completa</span></div>
-        <div class="stat"><b>759 → 1</b><span>COLLSCAN → IXSCAN</span></div>
+        <div class="stat"><b>177 passed</b><span>suite completa · 1 skipped</span></div>
+        <div class="stat"><b>594 → 1</b><span>COLLSCAN → IXSCAN</span></div>
         <div class="stat"><b>9 pipelines</b><span>14 colecciones</span></div>
-        <div class="stat" style="grid-column:span 2"><b style="font-size:15px">08665d03…c30a</b>
+        <div class="stat" style="grid-column:span 2"><b style="font-size:15px">f26264b6…0d0</b>
           <span>huella reproducible de los 9 pipelines</span></div>
       </div>
     </div>
@@ -391,7 +475,7 @@
     <div class="num"></div>
   </section>
 
-  <!-- 10 · cierre -->
+  <!-- 14 · cierre -->
   <section class="slide paper">
     <div class="layer topo"></div><div class="layer grain"></div>
     <div class="kicker">Cierre</div>

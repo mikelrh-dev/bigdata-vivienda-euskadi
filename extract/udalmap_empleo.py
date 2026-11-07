@@ -83,7 +83,7 @@ def main() -> int:
         log.error("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
         return 1
     dim = json.loads(dim_path.read_text(encoding="utf-8"))
-    dim_codigos = {r["codigo_ine"] for r in dim["datos"] if isinstance(dim, dict) and "datos" in dim} if False else set()
+    dim_codigos = set()
     # dim_municipios.json es una lista directa (guardar_json envuelve en metadata/datos?)
     if isinstance(dim, dict):
         registros = dim.get("datos", [])

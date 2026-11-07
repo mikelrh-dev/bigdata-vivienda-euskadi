@@ -100,6 +100,7 @@ def main() -> int:
             fila["codigo_ine"] = codigo
             fila["nivel_geografico"] = "municipal"
             fila["metodo_imputacion"] = "oficial"
+            fila["is_imputed"] = False
             salida.append(fila)
             continue
 
@@ -133,13 +134,16 @@ def main() -> int:
             fila[col] = round(acc / wsum, 2) if wsum > 0 else None
 
         fila["nivel_geografico"] = "comarcal"
-        fila["metodo_imputacion"] = "IDW_5_vecinos"
+        # M7 CAPAS-01: metodo canonical 'idw' (antes 'IDW_5_vecinos');
+        # el detalle de vecinos sigue en idw_vecinos. Nunca precio municipal.
+        fila["metodo_imputacion"] = "idw"
+        fila["is_imputed"] = True
         fila["idw_vecinos"] = ";".join(f"{codigo_a_nombre[d]}({km:.1f}km)" for d, km in vecinos)
         salida.append(fila)
 
-    columnas = ["codigo_ine", "territorio", "municipio", "distrito", "nivel_geografico", "metodo_imputacion", "idw_vecinos"] + \
+    columnas = ["codigo_ine", "territorio", "municipio", "distrito", "nivel_geografico", "metodo_imputacion", "is_imputed", "idw_vecinos"] + \
                [k for k in salida[0].keys() if k not in ("codigo_ine", "territorio", "municipio", "distrito",
-                                                          "nivel_geografico", "metodo_imputacion", "idw_vecinos")]
+                                                          "nivel_geografico", "metodo_imputacion", "is_imputed", "idw_vecinos")]
 
     ruta_csv = PROC_DIR / "alquiler_municipal_completo.csv"
     with ruta_csv.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -148,7 +152,7 @@ def main() -> int:
         w.writerows(salida)
 
     n_municipal = sum(1 for r in salida if r.get("nivel_geografico") == "municipal")
-    n_idw = sum(1 for r in salida if r.get("metodo_imputacion") == "IDW_5_vecinos")
+    n_idw = sum(1 for r in salida if r.get("metodo_imputacion") == "idw")
     log.info("alquiler_municipal_completo: %d municipios (%d municipal, %d IDW)", len(salida), n_municipal, n_idw)
     log.info("CSV -> %s", ruta_csv.name)
     return 0

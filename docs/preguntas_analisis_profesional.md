@@ -96,7 +96,7 @@
 
 ## Reevaluación post-Fase 1.5
 
-Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 9 pipelines), las puntuaciones mejoran:
+Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 10 pipelines), las puntuaciones mejoran:
 
 | Pregunta | Antes | Después | Motivo |
 |---|---|---|---|
@@ -117,4 +117,4 @@ Limitaciones restantes: F5 (ECVI con mapeo a área funcional, no municipal fino)
 
 ## Conclusión
 
-Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39)** y **"sin dato" explícito** para el resto. El ranking municipal fino y la atribución de emancipación a un municipio concreto **no son defendibles** con la muestra actual. Los indicadores Mongo (14 colecciones + 13 `__backup`, 9 pipelines, CSV en `data/resultados/`) confirman el esfuerzo y la comparativa de 4 municipios (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) vía `analysis/run_analisis_mongo.py`.
+Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39)** y **"sin dato" explícito** para el resto. El ranking municipal fino y la atribución de emancipación a un municipio concreto **no son defendibles** con la muestra actual. Los indicadores Mongo (14 colecciones + 13 `__backup`, 10 pipelines, CSV en `data/resultados/`) confirman el esfuerzo y la comparativa de 4 municipios (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) vía `analysis/run_analisis_mongo.py`.

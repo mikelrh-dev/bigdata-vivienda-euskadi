@@ -1,0 +1,10 @@
+manifest_lineas 354
+muestra ['b0e3583f42ae4b0a888cb6b7096ee57a2c9f420c3c229fb86a56e94f4f1f5134  alquiler_distrito_seccion_original.csv', '2de1aa56cf8903241b81d5b4146fd6a60a6b0b736ea0f0893a7652be60e0ec49  alquiler_municipal.csv']
+manifest_pares 354
+raw_ficheros 356
+manifest_sin_fichero 0 []
+fichero_sin_manifest 2 ['.FROZEN', '.gitkeep']
+sha_ok 12 sha_bad 0
+FROZEN True
+procesado_ficheros 192
+procesado_csv 42

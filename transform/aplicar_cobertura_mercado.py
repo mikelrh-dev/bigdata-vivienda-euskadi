@@ -19,12 +19,16 @@ No toca raw.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from transform.dim_municipios import tier_de_n  # noqa: E402
+
 PROC = PROJECT_ROOT / "data" / "procesado"
 
 
@@ -37,6 +41,17 @@ def main() -> int:
     uni = pd.read_csv(PROC / "anuncios_unificados.csv", dtype=str, encoding="utf-8-sig")
     uni["codigo_ine"] = uni["codigo_ine"].str.zfill(5)
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
+
+    # PISOS-02/03: cuarentena fuera-Euskadi (geo_invalida=True) queda fuera de
+    # n_anuncios y de L1/L2; n_anuncios_raw conserva el conteo pre-limpieza.
+    if "geo_invalida" in uni.columns:
+        _es_true = uni["geo_invalida"].astype(str).str.lower().isin(["true", "1"])
+        if _es_true.any():
+            print(f"Cuarentena excluida de cobertura: {int(_es_true.sum())} "
+                  "anuncios geo_invalida=True")
+            uni = uni.loc[~_es_true].copy()
+    # Codigos nulos/vacios (cuarentena sin codigo) nunca cuentan como municipio.
+    uni = uni[uni["codigo_ine"].astype(str).str.strip().replace("", "nan") != "nan"].copy()
 
     # Trazabilidad: conservar el recuento crudo antes de sustituirlo.
     # Idempotente: si ya existe (re-ejecucion), se preserva el original.
@@ -58,6 +73,18 @@ def main() -> int:
         [dim["n_anuncios"] >= 30, (dim["n_anuncios"] >= 1) & con_mercado],
         ["Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado"],
         default="Nivel3_Mercado_Rural_Cerrado")
+
+    # CONCLUSION-02: tier definitivo DESPUES del base de dim_municipios.py, con
+    # el recuento real post-dedup. Fuente: n_anuncios real (nunca crudo).
+    # Ante conflicto de escritura con el tier provisional crudo del base
+    # (que corre antes del dedup y puede inflar: 6 A / 10 B en crudo),
+    # gana el recuento real; max() se aplica solo entre re-ejecuciones
+    # idempotentes de este script (mismo n real -> mismo tier, sin
+    # degradar ni promocionar). Sin imputacion comarcal/IDW;
+    # tipologia_mercado y n_anuncios_raw intactos.
+    _tiers = [tier_de_n(int(v)) for v in dim["n_anuncios"]]
+    dim["tier"] = [t for t, _ in _tiers]
+    dim["tier_etiqueta"] = [te for _, te in _tiers]
 
     # WP-12: artefacto auditable de cobertura por municipio.
     uni["portal"] = uni["portal"].fillna("desconocido")

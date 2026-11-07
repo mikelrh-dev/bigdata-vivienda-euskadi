@@ -34,7 +34,8 @@ def test_conteos():
     # dimension municipal fija 252; resto por rangos para no fragilizar por recargas
     for name in ["municipios", "alquiler_municipal", "indicadores", "udalmap_indicadores", "udalmap_empleo", "osrm_tiempos", "udalmap_extendido", "certificados_energeticos"]:
         assert get_collection(name).count_documents({}) == 252, name
-    assert get_collection("anuncios").count_documents({}) >= 700
+    # PISOS-2026-11-07: 594 tras re-resolucion (759 antes).
+    assert get_collection("anuncios").count_documents({}) >= 500
     assert get_collection("ecvi_compraventa").count_documents({}) >= 20
     assert get_collection("emancipacion_juventud").count_documents({}) == 1
     assert get_collection("etxebide_solicitudes").count_documents({}) >= 5000
@@ -107,7 +108,7 @@ def test_provenance_g5_g6():
 
 def test_query_exists_type():
     r = mq.resumen_exists_type()
-    assert r["total_anuncios"] >= 700
+    assert r["total_anuncios"] >= 500
     assert r["precio_null"] >= 0
     # $type decimal count should match non-null prices
     non_null = get_collection("anuncios").count_documents({"precio_eur": {"$ne": None}})

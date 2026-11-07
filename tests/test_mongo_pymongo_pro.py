@@ -104,5 +104,6 @@ def test_anuncios_objectid():
     finally:
         for _n in ("_probe_clean", "_probe_mun", "_probe_crud"):
             _db[_n].drop()
-    # Prod sigue en 759 tras limpieza canónica (solo test DB).
-    assert get_collection("anuncios").count_documents({}) == 759
+    # Prod sigue en 594 tras limpieza canónica (solo test DB).
+    # PISOS-2026-11-07: 594 tras re-resolucion (759 antes).
+    assert get_collection("anuncios").count_documents({}) == 594

@@ -11,10 +11,10 @@ from storage.mongo import get_collection, ping
 def test_anuncios_geojson_real():
     assert ping() is True
     n = load_anuncios()
-    assert n >= 700
+    assert n >= 500
     coll = get_collection("anuncios")
     total = coll.count_documents({})
-    assert total >= 700
+    assert total >= 500
     puntos = 0
     invalid = 0
     for doc in coll.find({"ubicacion.coordenadas": {"$ne": None}}, {"ubicacion.coordenadas": 1}):

@@ -1,9 +1,12 @@
-"""Orquestador de la extracción completa (scripts 01-13).
+"""Orquestador de la extracción completa.
 
-Ejecuta en orden los extractores de ``extract/01_*.py`` ... ``extract/13_*.py``,
-aislando los fallos de cada uno (un extractor que falle no aborta los demás) y
-genera ``data/raw/ingestion_manifest.json`` con un registro por cada fichero
-de datos tocado: nombre, timestamp UTC, SHA-256, número de registros y estado.
+Ejecuta en orden alfabético los extractores ``extract/[0-9][0-9]_*.py`` más
+los auxiliares no numerados. El prefijo numérico identifica el lote, no una
+secuencia estricta: varios scripts pueden compartir prefijo (dos ``09_`` y
+tres ``10_``) y son independientes entre sí. Aísla los fallos de cada uno (un
+extractor que falle no aborta los demás) y genera
+``data/raw/ingestion_manifest.json`` con un registro por cada fichero de datos
+tocado: nombre, timestamp UTC, SHA-256, número de registros y estado.
 
 Uso:
     python extract/main_ingest.py
@@ -186,6 +189,8 @@ def _ejecutar_extractor(script: Path) -> tuple[int, list[dict]]:
 
 
 def _live() -> int:
+    # Orden determinista (alfabético). Los prefijos repetidos son lotes
+    # independientes, no una secuencia estricta; no hace falta renumerar.
     scripts = sorted((PROJECT_ROOT / "extract").glob("[0-9][0-9]_*.py"))
     # Añadir extractores auxiliares no numerados.
     for nombre in AUX_SCRIPTS:

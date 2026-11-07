@@ -33,8 +33,10 @@ from analysis.mongo_aggregations import (
     pipeline_accesibilidad_extendida,
     pipeline_alquiler_por_municipio,
     pipeline_esfuerzo_por_sexo,
+    pipeline_habitaciones_por_municipio,
     pipeline_indicadores_municipio,
     pipeline_modalidades,
+    pipeline_tier_por_municipio,
     pipeline_top_municipios_por_esfuerzo,
     pipeline_udalmap_extendido_osrm,
     pipeline_vpo_por_municipio,
@@ -43,7 +45,7 @@ from analysis.mongo_aggregations import (
 
 RESULTADOS_DIR = ROOT / "data" / "resultados"
 
-# Orden fijo de ejecucion de los 9 pipelines principales.
+# Orden fijo de ejecucion de los 11 pipelines principales.
 PIPELINE_ORDER: tuple[str, ...] = (
     "pipeline_indicadores_municipio",
     "pipeline_alquiler_por_municipio",
@@ -54,6 +56,8 @@ PIPELINE_ORDER: tuple[str, ...] = (
     "pipeline_udalmap_extendido_osrm",
     "pipeline_vpo_por_municipio",
     "pipeline_vpo_terminadas",
+    "pipeline_tier_por_municipio",
+    "pipeline_habitaciones_por_municipio",
 )
 
 # Los 3 conjuntos preparados para visualizacion: fichero -> pipeline origen.
@@ -79,7 +83,23 @@ EXPORT_VPO_TERMINADAS: tuple[str, str] = (
     "mongo_vpo_terminadas_por_municipio.csv",
     "pipeline_vpo_terminadas",
 )
-EXPORTS_6: tuple[tuple[str, str], ...] = EXPORTS_5 + (EXPORT_VPO_TERMINADAS,)
+# 7º CSV (CONCLUSION-02): tier A/B/C/D derivado solo de n_anuncios (252 filas).
+EXPORT_TIER_CONFANZA: tuple[str, str] = (
+    "mongo_tier_confianza.csv",
+    "pipeline_tier_por_municipio",
+)
+# Los 5 canonicos + tier = 6 CSV canonicos de AGREGACION-01.
+EXPORTS_6: tuple[tuple[str, str], ...] = EXPORTS_5 + (EXPORT_TIER_CONFANZA,)
+# Compatibilidad: el 6º CSV historico era VPO terminadas; se mantiene como
+# exportacion adicional (EXPORT_VPO_TERMINADAS) para no perder el indicador.
+EXPORTS_7: tuple[tuple[str, str], ...] = EXPORTS_6 + (EXPORT_VPO_TERMINADAS,)
+# 8º CSV (HAB-01): habitaciones por municipio (9 filas, pipeline nº 11).
+EXPORT_HABITACIONES: tuple[str, str] = (
+    "mongo_habitaciones_por_municipio.csv",
+    "pipeline_habitaciones_por_municipio",
+)
+CSV_POR_PIPELINE: tuple[tuple[str, str], ...] = EXPORTS_7 + (EXPORT_HABITACIONES,)
+EXPORTS_8: tuple[tuple[str, str], ...] = CSV_POR_PIPELINE
 
 
 def _jsonable(value: Any) -> Any:
@@ -213,14 +233,132 @@ def exportar_seis_csv(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
 ) -> dict[str, Path]:
-    """Escribe los 5 CSV canonicos + VPO terminadas (indicador 5 non-legacy).
+    """Escribe los 6 CSV canonicos (AGT-01): 5 + `mongo_tier_confianza.csv`.
 
-    `EXPORTS_6` = `EXPORTS_5` + `EXPORT_VPO_TERMINADAS`
-    (`mongo_vpo_terminadas_por_municipio.csv` desde
-    `pipeline_vpo_terminadas`, 251 filas, campo común `codigo_ine`).
-    `exportar_cinco_csv` se mantiene por compatibilidad (5).
+    `EXPORTS_6` = `EXPORTS_5` + `EXPORT_TIER_CONFANZA`
+    (`mongo_tier_confianza.csv` desde `pipeline_tier_por_municipio`,
+    252 filas). `exportar_cinco_csv` se mantiene por compatibilidad (5).
+    VPO terminadas se escribe con `exportar_vpo_terminadas_csv` (adicional,
+    no cuenta en los 6 canonicos).
     """
     return exportar_csv(resultados, out_dir, EXPORTS_6)
+
+
+def exportar_vpo_terminadas_csv(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Escribe el CSV adicional VPO terminadas (indicador 5 non-legacy)."""
+    return exportar_csv(resultados, out_dir, (EXPORT_VPO_TERMINADAS,))
+
+
+def exportar_habitaciones_csv(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Escribe `mongo_habitaciones_por_municipio.csv` (9 filas, pipeline nº 11)."""
+    return exportar_csv(resultados, out_dir, (EXPORT_HABITACIONES,))
+
+
+RANKEABLE_ESTADO = "rankeable"
+N_INSUFICIENTE_ESTADO = "n_insuficiente"
+
+
+def exportar_extras(
+    resultados: dict[str, list[dict[str, Any]]],
+    out_dir: Path | str,
+) -> dict[str, Path]:
+    """Capas M7 + paro M5 + ranking M3 (desde pipelines en memoria).
+
+    - `capa_oficial.csv` (159): metodo_imputacion=oficial, is_imputed=false.
+    - `capa_idw.csv` (93): metodo_imputacion=idw, is_imputed=true.
+    - `capa_contexto.csv` (252): metodo_imputacion=contexto, is_imputed=true.
+    - `udalmap_paro.csv` (252): metodo_imputacion=oficial/ninguno,
+      is_imputed=false siempre (paro sin imputacion).
+    - `ranking_esfuerzo.csv`: solo n_anuncios>=30 (M3 CONCLUSION-01); el
+      resto es «n_insuficiente» y no ordena. Barakaldo (n=6) nunca ranking
+      por encima de Donostia (n=126) ni de ningun Tier A.
+    """
+    destino = Path(out_dir)
+    destino.mkdir(parents=True, exist_ok=True)
+    ind = resultados.get("pipeline_indicadores_municipio", [])
+
+    def _esf(d: dict[str, Any]) -> Any:
+        v = d.get("esfuerzo_joven_pct_18_34")
+        return v if v is not None else d.get("esfuerzo_joven_pct")
+
+    def _metodo(d: dict[str, Any]) -> str | None:
+        m = d.get("metodo_imputacion")
+        if m is None:
+            return None
+        s = str(m)
+        return "idw" if s.startswith("IDW") else s
+
+    capa_oficial, capa_idw, capa_contexto, paro, ranking = [], [], [], [], []
+    for d in ind:
+        code = str(d.get("_id"))
+        met = _metodo(d)
+        if met == "oficial":
+            capa_oficial.append({
+                "codigo_ine": code, "municipio": d.get("nombre"),
+                "territorio": d.get("territorio"),
+                "cuantia_alquiler_mes": d.get("cuantia_alquiler_mes"),
+                "renta_m2_alquiler": d.get("renta_m2_alquiler"),
+                "metodo_imputacion": "oficial", "is_imputed": False,
+            })
+        elif met == "idw":
+            capa_idw.append({
+                "codigo_ine": code, "municipio": d.get("nombre"),
+                "territorio": d.get("territorio"),
+                "cuantia_alquiler_mes": d.get("cuantia_alquiler_mes"),
+                "renta_m2_alquiler": d.get("renta_m2_alquiler"),
+                "metodo_imputacion": "idw", "is_imputed": True,
+            })
+        capa_contexto.append({
+            "codigo_ine": code, "municipio": d.get("nombre"),
+            "territorio": d.get("territorio"),
+            "renta_m2_contexto": d.get("renta_m2_alquiler"),
+            "cuantia_contexto": d.get("cuantia_alquiler_mes"),
+            "metodo_origen": met, "metodo_imputacion": "contexto",
+            "is_imputed": True,
+        })
+        tasa = d.get("tasa_paro_lanbide_pct")
+        paro.append({
+            "codigo_ine": code, "municipio": d.get("nombre"),
+            "territorio": d.get("territorio"), "tasa_paro_lanbide_pct": tasa,
+            "metodo_imputacion": "oficial" if tasa is not None else "ninguno",
+            "is_imputed": False,
+        })
+
+    cand = [(str(d.get("nombre") or d.get("_id")), str(d.get("_id")),
+             d.get("territorio"), int(d.get("n_anuncios") or 0), _esf(d),
+             d.get("esfuerzo_joven_pct_18_34"), d.get("esfuerzo_joven_pct_16_29"))
+            for d in ind]
+    cand = [c for c in cand if c[3] >= 30 and c[4] is not None]
+    cand.sort(key=lambda t: float(t[4]), reverse=True)
+    for nombre, code, terr, n, _e, e18, e16 in cand[:10]:
+        ranking.append({
+            "codigo_ine": code, "municipio": nombre, "territorio": terr,
+            "n_anuncios": n, "esfuerzo_joven_pct_18_34": e18,
+            "esfuerzo_joven_pct_16_29": e16, "estado": RANKEABLE_ESTADO,
+        })
+
+    rutas: dict[str, Path] = {}
+    for fichero, filas in (("capa_oficial.csv", capa_oficial),
+                           ("capa_idw.csv", capa_idw),
+                           ("capa_contexto.csv", capa_contexto),
+                           ("udalmap_paro.csv", paro),
+                           ("ranking_esfuerzo.csv", ranking)):
+        ruta = destino / fichero
+        cabecera = _cabecera(filas)
+        with ruta.open("w", newline="", encoding="utf-8-sig") as fh:
+            writer = csv.DictWriter(fh, fieldnames=cabecera, extrasaction="ignore",
+                                    lineterminator="\n")
+            writer.writeheader()
+            for fila in filas:
+                writer.writerow({k: _csv_value(fila.get(k)) for k in cabecera})
+        rutas[fichero] = ruta
+    return rutas
 
 
 def exportar_cinco_csv(
@@ -492,10 +630,28 @@ def main(argv: list[str] | None = None) -> int:
         nombre_pipeline = dict(EXPORTS_6)[fichero]
         print(f"{fichero}: {len(primera[nombre_pipeline])} filas -> {ruta}")
     try:
+        rutas_vpo = exportar_vpo_terminadas_csv(primera, Path(args.salida))
+        for fichero, ruta in rutas_vpo.items():
+            print(f"{fichero}: {len(primera['pipeline_vpo_terminadas'])} filas -> {ruta}")
+    except Exception as exc:
+        print(f"vpo_terminadas: NO GENERADO ({exc!r})")
+    try:
+        rutas_hab = exportar_habitaciones_csv(primera, Path(args.salida))
+        for fichero, ruta in rutas_hab.items():
+            print(f"{fichero}: {len(primera['pipeline_habitaciones_por_municipio'])} filas -> {ruta}")
+    except Exception as exc:
+        print(f"habitaciones: NO GENERADO ({exc!r})")
+    try:
         pngs = exportar_png_desde_mongo(primera, Path(args.salida))
         print(f"png_mongo: {len(pngs)} ficheros -> {args.salida}")
     except Exception as exc:
         print(f"png_mongo: NO GENERADOS ({exc!r})")
+    try:
+        extras = exportar_extras(primera, Path(args.salida))
+        for fichero, ruta in extras.items():
+            print(f"{fichero}: {sum(1 for _ in open(ruta, encoding='utf-8-sig')) - 1} filas -> {ruta}")
+    except Exception as exc:
+        print(f"extras: NO GENERADOS ({exc!r})")
     print(f"pipelines: {list(primera)}")
     print(f"n={n1}")
     print(f"huella: {huella1}")
