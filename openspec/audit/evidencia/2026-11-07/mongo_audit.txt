@@ -1,0 +1,77 @@
+colecciones_total 28 vivas 14 backup 14
+COUNT alquiler_municipal 252
+COUNT alquiler_municipal__backup 252
+COUNT anuncios 594
+COUNT anuncios__backup 594
+COUNT certificados_energeticos 252
+COUNT certificados_energeticos__backup 252
+COUNT ecvi_compraventa 29
+COUNT ecvi_compraventa__backup 29
+COUNT emancipacion_juventud 1
+COUNT emancipacion_juventud__backup 1
+COUNT etxebide_promociones 406
+COUNT etxebide_promociones__backup 406
+COUNT etxebide_solicitudes 5040
+COUNT etxebide_solicitudes__backup 5040
+COUNT indicadores 252
+COUNT indicadores__backup 252
+COUNT municipios 252
+COUNT municipios__backup 252
+COUNT osrm_tiempos 252
+COUNT osrm_tiempos__backup 252
+COUNT udalmap_empleo 252
+COUNT udalmap_empleo__backup 252
+COUNT udalmap_extendido 252
+COUNT udalmap_extendido__backup 252
+COUNT udalmap_indicadores 252
+COUNT udalmap_indicadores__backup 252
+COUNT vpo_municipal 252
+COUNT vpo_municipal__backup 252
+
+=== TIPOS BSON (muestra) ===
+alquiler_municipal {'_id': 'str', 'codigo_ine': 'str', 'territorio': 'str', 'municipio': 'str', 'distrito': 'str', 'nivel_geografico': 'str', 'metodo_imputacion': 'str', 'idw_vecinos': 'NoneType', 'renta_media_eur_m2_media': 'float', 'renta_media_eur_m2_mediana': 'float', 'renta_media_eur_m2_p25': 'float', 'renta_media_eur_m2_p75': 'float'}
+anuncios {'_id': 'ObjectId', 'portal': 'str', 'id_anuncio': 'str', 'property_fingerprint': 'str', 'modalidad': 'str', 'precio_eur': 'Decimal128', 'superficie_m2': 'float', 'habitaciones': 'NoneType', 'es_outlier_superficie': 'bool', 'ubicacion': 'dict', 'equipamiento': 'list', 'precio_m2_calc': 'float'}
+certificados_energeticos {'_id': 'str', 'codigo_ine': 'str', 'municipio': 'str', 'n_certificados': 'int', 'cert_moda': 'str', 'distribucion': 'dict', 'fuente': 'str', 'fuente_url': 'str', 'anio_fuente': 'int', 'fecha_extraccion': 'str', 'fecha_carga': 'datetime'}
+ecvi_compraventa {'_id': 'ObjectId', 'ambito_tipo': 'str', 'nombre_ambito': 'str', 'codigo_ine': 'NoneType', 'trimestre': 'str', 'precio_medio_total_eur': 'float', 'precio_m2_libre_eur': 'float', 'precio_m2_usada_eur': 'float', 'fuente': 'str', 'fuente_url': 'NoneType', 'anio_fuente': 'NoneType', 'fecha_extraccion': 'NoneType'}
+emancipacion_juventud {'_id': 'str', 'url': 'str', 'n_filas': 'int', 'anno_min': 'str', 'anno_max': 'str', 'indicadores': 'dict', 'fecha_extraccion': 'str', 'fuente': 'str', 'fuente_url': 'NoneType', 'anio_fuente': 'int', 'fecha_carga': 'datetime'}
+etxebide_promociones {'_id': 'str', 'ID_PROM': 'str', 'Cod_Prov': 'str', 'Territorio': 'str', 'CODMUNI': 'str', 'Municipio': 'str', 'Expediente': 'str', 'Ubicacion': 'str', 'NumViviendas': 'str', 'Tipologia': 'str', 'Reg Acceso': 'str', 'UTMX': 'str'}
+etxebide_solicitudes {'_id': 'str', 'codigo_ine': 'str', 'municipio': 'str', 'anio': 'int', 'etxebide_solicitudes_por_mil': 'float', 'fuente': 'str', 'fuente_url': 'str', 'anio_fuente': 'int', 'fecha_extraccion': 'str', 'fecha_carga': 'datetime'}
+indicadores {'_id': 'str', 'codigo_ine': 'str', 'fuente': 'str', 'anio_fuente': 'int', 'fecha_carga': 'datetime', 'nombre_canonico': 'str', 'territorio': 'str', 'tipologia_mercado': 'str', 'n_anuncios': 'float', 'tiene_alquiler_oficial': 'bool', 'renta_eustat': 'float', 'renta_hogar': 'float'}
+municipios {'_id': 'str', 'nombre_canonico': 'str', 'territorio': 'str', 'nombre_normalizado': 'str', 'variantes': 'list', 'tiene_alquiler_oficial': 'bool', 'tiene_fianzas_emal': 'bool', 'demografia': 'dict', 'empleo': 'dict', 'vivienda_contexto': 'dict', 'demanda_social': 'dict', 'transporte': 'dict'}
+osrm_tiempos {'_id': 'str', 'codigo_ine': 'str', 'minutos_Vitoria-Gasteiz': 'float', 'minutos_Bilbao': 'float', 'minutos_Donostia-San Sebastian': 'float', 'fuente': 'str', 'fuente_url': 'NoneType', 'anio_fuente': 'int', 'fecha_extraccion': 'str', 'fecha_carga': 'datetime'}
+udalmap_empleo {'_id': 'str', 'codigo_ine': 'str', 'nombre_canonico': 'str', 'territorio': 'str', 'tasa_actividad_pct': 'str', 'tasa_ocupacion_pct': 'str', 'tasa_paro_lanbide_pct': 'float', 'tasa_ocupacion_juvenil_16_24_pct': 'str', 'etxebide_solicitudes_por_mil': 'str', 'etxebide_adjudicadas_por_100': 'str', 'vpo_adjudicadas_por_mil': 'str', 'vpo_terminadas_por_mil': 'str'}
+udalmap_extendido {'_id': 'str', 'codigo_ine': 'str', 'municipio': 'str', 'accesibilidad_municipio': 'float', 'accesibilidad_municipio_anio': 'str', 'tiempo_acceso_capital_th': 'float', 'tiempo_acceso_capital_th_anio': 'str', 'densidad_comercial_minorista': 'float', 'densidad_comercial_minorista_anio': 'str', 'deuda_viva_municipal_pc': 'float', 'deuda_viva_municipal_pc_anio': 'str', 'densidad_viviendas_suelo_residencial': 'float'}
+udalmap_indicadores {'_id': 'str', 'codigo_ine': 'str', 'nombre_canonico': 'str', 'territorio': 'str', 'viviendas_desocupadas_pct': 'float', 'viviendas_mas_50_anios_pct': 'float', 'indice_confort': 'float', 'edificios_ruinosos_pct': 'float', 'densidad_viviendas_suelo_residencial': 'float', 'edificios_sin_ascensor_pct': 'float', 'densidad_poblacion': 'float', 'suelo_artificializado_pct': 'float'}
+vpo_municipal {'_id': 'str', 'codigo_ine': 'str', 'municipio': 'str', 'vpo_terminadas_por_mil': 'float', 'anio_fuente': 'int', 'fuente': 'str', 'fuente_url': 'str', 'fecha_carga': 'datetime'}
+
+=== INDICES anuncios ===
+_id_ SON([('_id', 1)]) {'collation': SON([('locale', 'simple')])}
+idx_anuncios_ine_modalidad_precio SON([('ubicacion.codigo_ine', 1), ('modalidad', 1), ('precio_eur', 1)]) {'collation': SON([('locale', 'simple')])}
+idx_anuncios_geo SON([('ubicacion.coordenadas', '2dsphere')]) {'sparse': True, '2dsphereIndexVersion': 4, 'collation': SON([('locale', 'simple')])}
+idx_anuncios_portal_id SON([('portal', 1), ('id_anuncio', 1)]) {'unique': True, 'collation': SON([('locale', 'simple')])}
+idx_anuncios_equipamiento SON([('equipamiento', 1)]) {'collation': SON([('locale', 'simple')])}
+
+=== EXPLAIN con/sin indice (read-only, hint natural) ===
+hint {'$natural': 1} stage COLLSCAN nReturned 8 docs 594 keys 0
+hint None stage IXSCAN nReturned 8 docs 8 keys 8
+
+=== INTEGRIDAD REFERENCIAL ===
+anuncios_total 594
+anuncios_con_codigo 594
+anuncios_codigo_5 594
+JOIN alquiler_municipal 252
+JOIN certificados_energeticos 252
+JOIN ecvi_compraventa 29
+JOIN emancipacion_juventud 1
+JOIN etxebide_promociones 406
+JOIN etxebide_solicitudes 5040
+JOIN indicadores 252
+JOIN municipios 252
+JOIN osrm_tiempos 252
+JOIN udalmap_empleo 252
+JOIN udalmap_extendido 252
+JOIN udalmap_indicadores 252
+JOIN vpo_municipal 252
+alquiler_metodos [{'_id': 'oficial', 'n': 159}, {'_id': 'idw', 'n': 93}]
+anuncios_modalidad [{'_id': 'temporal', 'n': 268}, {'_id': 'larga_estancia', 'n': 326}]
+anuncios_portales [{'_id': 'fotocasa', 'n': 428}, {'_id': 'pisos', 'n': 87}, {'_id': 'realtyapi', 'n': 79}]

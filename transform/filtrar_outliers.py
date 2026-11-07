@@ -4,9 +4,17 @@ Marca (no elimina) anuncios con valores fuera de rango razonable:
   - precio_m2 < 3 o > 50  -> outlier = true
   - superficie_m2 < 10 o > 500 -> outlier = true
 
+MOTIVO canonical (M1 OUTLIER-01, aditivos a los motivos legacy):
+  - `motivo_exclusion`: `precio_m2_fuera_3_50` / `superficie_fuera_10_500` /
+    `iqr_excluido` (precio_m2 dentro de [3, 50] pero fuera del IQR).
+    Los valores fuera de rango se descartan con motivo, nunca se recortan
+    ni winsorizan en esta capa.
+  - `habitaciones` se castea a entero (`2,5` -> `2`).
+
 Genera:
   - data/procesado/anuncios_fotocasa_filtrado.json / .csv
   - data/procesado/anuncios_pisos_filtrado.json / .csv
+  - data/procesado/log_filtrado.txt (conteos por motivo)
 
 Los originales en data/raw/ no se modifican.
 """
@@ -67,6 +75,13 @@ def _calcular_precio_m2(anuncio: dict) -> float | None:
     return round(p / s, 2)
 
 
+def _habitaciones_int(v) -> int | None:
+    try:
+        return int(float(v)) if v is not None and str(v).strip() not in ("", "nan", "None") else None
+    except (ValueError, TypeError):
+        return None
+
+
 def _filtrar(anuncios: list[dict]) -> list[dict]:
     # Primera pasada: calcular precio_m2 y tipo_alquiler
     preparados = []
@@ -82,6 +97,9 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
             copia["tipo_alquiler"] = "temporal" if copia.get("alquiler_temporal") else "larga_estancia"
         else:
             copia["tipo_alquiler"] = "desconocido"
+        # M1 OUTLIER-01: habitaciones siempre entera (2,5 -> 2).
+        if "habitaciones" in copia:
+            copia["habitaciones"] = _habitaciones_int(copia.get("habitaciones"))
         preparados.append(copia)
 
     # Limites IQR por segmento
@@ -114,6 +132,10 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
     for copia in preparados:
         outlier = False
         motivos = []
+        motivos_excl = []
+        pm2_fuera = False
+        sup_fuera = False
+        iqr_excl = False
 
         pm2 = copia.get("precio_m2_calculado")
         if pm2 is not None:
@@ -123,19 +145,29 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
                 if v < PRECIO_M2_MIN:
                     outlier = True
                     motivos.append("precio_m2_bajo")
+                    pm2_fuera = True
                 if v > PRECIO_M2_MAX:
                     outlier = True
                     motivos.append("precio_m2_alto")
-                # IQR por segmento
-                lim = limites_iqr.get(copia["tipo_alquiler"])
-                if lim is not None:
-                    lo, hi = lim
-                    if v < lo:
-                        outlier = True
-                        motivos.append("precio_m2_iqr_bajo")
-                    if v > hi:
-                        outlier = True
-                        motivos.append("precio_m2_iqr_alto")
+                    pm2_fuera = True
+                if pm2_fuera:
+                    motivos_excl.append("precio_m2_fuera_3_50")
+                elif True:
+                    # IQR por segmento: solo excluye del precio_medio si ya
+                    # esta dentro de [3, 50] (OUTLIER-01).
+                    lim = limites_iqr.get(copia["tipo_alquiler"])
+                    if lim is not None:
+                        lo, hi = lim
+                        if v < lo:
+                            outlier = True
+                            motivos.append("precio_m2_iqr_bajo")
+                            iqr_excl = True
+                        if v > hi:
+                            outlier = True
+                            motivos.append("precio_m2_iqr_alto")
+                            iqr_excl = True
+                    if iqr_excl:
+                        motivos_excl.append("iqr_excluido")
             except (ValueError, TypeError):
                 pass
 
@@ -146,14 +178,23 @@ def _filtrar(anuncios: list[dict]) -> list[dict]:
                 if s < SUPERFICIE_MIN:
                     outlier = True
                     motivos.append("superficie_baja")
+                    sup_fuera = True
                 if s > SUPERFICIE_MAX:
                     outlier = True
                     motivos.append("superficie_alta")
+                    sup_fuera = True
+                if sup_fuera:
+                    motivos_excl.append("superficie_fuera_10_500")
             except (ValueError, TypeError):
                 pass
 
         copia["outlier"] = outlier
         copia["motivo_outlier"] = ";".join(motivos) if motivos else ""
+        # M1 OUTLIER-01: motivo canonical + flags por motivo (nunca recorte).
+        copia["motivo_exclusion"] = ";".join(motivos_excl) if motivos_excl else ""
+        copia["precio_m2_fuera_3_50"] = bool(pm2_fuera)
+        copia["superficie_fuera_10_500"] = bool(sup_fuera)
+        copia["iqr_excluido"] = bool(iqr_excl)
         # guardar limites aplicados (trazabilidad)
         lim = limites_iqr.get(copia["tipo_alquiler"])
         if lim is not None:
@@ -196,6 +237,8 @@ def _guardar(nombre_base: str, anuncios: list[dict]) -> None:
 
 
 def main() -> int:
+    tot_pm2 = tot_sup = tot_iqr = tot_int_ok = tot_hab = 0
+    lineas_log = []
     for nombre_json, nombre_base in [
         ("anuncios_fotocasa.json", "anuncios_fotocasa"),
         ("anuncios_pisos.json", "anuncios_pisos"),
@@ -205,9 +248,39 @@ def main() -> int:
             continue
         filtrados = _filtrar(anuncios)
         n_out = sum(1 for a in filtrados if a.get("outlier"))
+        n_pm2 = sum(1 for a in filtrados if a.get("precio_m2_fuera_3_50"))
+        n_sup = sum(1 for a in filtrados if a.get("superficie_fuera_10_500"))
+        n_iqr = sum(1 for a in filtrados if a.get("iqr_excluido"))
+        n_hab = sum(1 for a in filtrados if a.get("habitaciones") is not None)
+        n_int = sum(1 for a in filtrados if isinstance(a.get("habitaciones"), int))
+        tot_pm2 += n_pm2
+        tot_sup += n_sup
+        tot_iqr += n_iqr
+        tot_int_ok += n_int
+        tot_hab += n_hab
         log.info("%s: %d anuncios, %d outliers", nombre_base, len(filtrados), n_out)
+        log.info("excluidos_precio_m2=%d, excluidos_superficie=%d, "
+                 "excluidos_iqr_precio_medio=%d, habitaciones_int=%s"
+                 % (n_pm2, n_sup, n_iqr,
+                    "100%" if n_hab and n_int == n_hab else
+                    (f"{n_int}/{n_hab}" if n_hab else "sin datos")))
+        for a in filtrados:
+            if a.get("motivo_exclusion"):
+                lineas_log.append(
+                    f"{nombre_base} id={a.get('id_anuncio')} motivo={a.get('motivo_exclusion')}")
         _guardar(nombre_base, filtrados)
 
+    # OUTLIER-01: log de filtrado con conteos por motivo (grep iqr_excluido).
+    ruta_log = PROC_DIR / "log_filtrado.txt"
+    with ruta_log.open("w", newline="", encoding="utf-8") as fh:
+        fh.write(f"excluidos_precio_m2={tot_pm2}, excluidos_superficie={tot_sup}, "
+                 f"excluidos_iqr_precio_medio={tot_iqr}, "
+                 f"habitaciones_int={'100%' if tot_hab and tot_int_ok == tot_hab else f'{tot_int_ok}/{tot_hab}'}\n")
+        for ln in lineas_log:
+            fh.write(ln + "\n")
+    print(f"excluidos_precio_m2={tot_pm2}, excluidos_superficie={tot_sup}, "
+          f"excluidos_iqr_precio_medio={tot_iqr}, "
+          f"habitaciones_int={'100%' if tot_hab and tot_int_ok == tot_hab else f'{tot_int_ok}/{tot_hab}'}")
     log.info("P1a completado.")
     return 0
 

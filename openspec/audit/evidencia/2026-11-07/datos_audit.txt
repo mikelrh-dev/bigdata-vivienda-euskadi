@@ -1,0 +1,107 @@
+
+data/resultados\auditoria_lagunas_silver.csv filas=42 cols=16
+
+data/resultados\bootstrap_robustos.csv filas=4 cols=8
+  codigo_ine: non_null=4/4 unicos=4
+  longitudes Counter({5: 4}) dups 0
+
+data/resultados\capa_contexto.csv filas=252 cols=8
+  codigo_ine: non_null=252/252 unicos=252
+  metodo_imputacion: non_null=252/252 unicos=1
+  is_imputed: non_null=252/252 unicos=1
+  longitudes Counter({5: 252}) dups 0
+
+data/resultados\capa_idw.csv filas=93 cols=7
+  codigo_ine: non_null=93/93 unicos=93
+  cuantia_alquiler_mes: non_null=93/93 unicos=93
+  metodo_imputacion: non_null=93/93 unicos=1
+  is_imputed: non_null=93/93 unicos=1
+  longitudes Counter({5: 93}) dups 0
+
+data/resultados\capa_oficial.csv filas=159 cols=7
+  codigo_ine: non_null=159/159 unicos=159
+  cuantia_alquiler_mes: non_null=159/159 unicos=101
+  metodo_imputacion: non_null=159/159 unicos=1
+  is_imputed: non_null=159/159 unicos=1
+  longitudes Counter({5: 159}) dups 0
+
+data/resultados\comparativa_3_municipios_mongo.csv filas=4 cols=12
+  codigo_ine: non_null=4/4 unicos=4
+  n_anuncios: non_null=4/4 unicos=4
+  esfuerzo_joven_pct_18_34: non_null=4/4 unicos=4
+  cuantia_alquiler_mes: non_null=4/4 unicos=4
+  tasa_paro_lanbide_pct: non_null=4/4 unicos=4
+  precio_medio_eur: non_null=4/4 unicos=4
+  tier: non_null=4/4 unicos=1
+  longitudes Counter({5: 4}) dups 0
+  tiers Counter({'A': 4})
+  n>=30 4 n==0 0 max 204
+
+data/resultados\mongo_accesibilidad_extendida.csv filas=252 cols=13
+  esfuerzo_joven_pct_18_34: non_null=252/252 unicos=252
+  esfuerzo_joven_pct: non_null=252/252 unicos=252
+
+data/resultados\mongo_alquiler_por_municipio.csv filas=252 cols=7
+
+data/resultados\mongo_esfuerzo_por_municipio.csv filas=252 cols=32
+  n_anuncios: non_null=252/252 unicos=16
+  esfuerzo_joven_pct_18_34: non_null=252/252 unicos=252
+  esfuerzo_joven_pct: non_null=252/252 unicos=252
+  cuantia_alquiler_mes: non_null=252/252 unicos=193
+  tasa_paro_lanbide_pct: non_null=252/252 unicos=215
+  precio_medio_eur: non_null=60/252 unicos=47
+  tier: non_null=252/252 unicos=4
+  metodo_imputacion: non_null=252/252 unicos=2
+  is_imputed: non_null=252/252 unicos=2
+  tiers Counter({'D': 188, 'C': 57, 'A': 4, 'B': 3})
+  n>=30 4 n==0 188 max 204
+
+data/resultados\mongo_modalidades.csv filas=2 cols=3
+
+data/resultados\mongo_tier_confianza.csv filas=252 cols=20
+  codigo_ine: non_null=252/252 unicos=252
+  n_anuncios: non_null=252/252 unicos=16
+  tier: non_null=252/252 unicos=4
+  longitudes Counter({5: 252}) dups 0
+  tiers Counter({'D': 188, 'C': 57, 'A': 4, 'B': 3})
+  n>=30 4 n==0 188 max 204
+
+data/resultados\mongo_vpo_por_municipio.csv filas=322 cols=9
+  codigo_ine: non_null=322/322 unicos=77
+  esfuerzo_joven_pct_18_34: non_null=322/322 unicos=64
+  esfuerzo_joven_pct: non_null=322/322 unicos=70
+  longitudes Counter({5: 322}) dups 245
+
+data/resultados\mongo_vpo_terminadas_por_municipio.csv filas=251 cols=5
+  codigo_ine: non_null=251/251 unicos=251
+  longitudes Counter({5: 251}) dups 0
+
+data/resultados\ranking_esfuerzo.csv filas=4 cols=7
+  codigo_ine: non_null=4/4 unicos=4
+  n_anuncios: non_null=4/4 unicos=4
+  esfuerzo_joven_pct_18_34: non_null=4/4 unicos=4
+  longitudes Counter({5: 4}) dups 0
+  n>=30 4 n==0 0 max 204
+
+data/resultados\sensibilidad_idw.csv filas=2 cols=5
+
+data/resultados\udalmap_paro.csv filas=252 cols=6
+  codigo_ine: non_null=252/252 unicos=252
+  tasa_paro_lanbide_pct: non_null=252/252 unicos=215
+  metodo_imputacion: non_null=252/252 unicos=1
+  is_imputed: non_null=252/252 unicos=1
+  longitudes Counter({5: 252}) dups 0
+
+=== BOM / ENCODING (primeros 3 bytes) ===
+auditoria_lagunas_silver.csv b'\xef\xbb\xbf'
+bootstrap_robustos.csv b'\xef\xbb\xbf'
+capa_contexto.csv b'\xef\xbb\xbf'
+capa_idw.csv b'\xef\xbb\xbf'
+capa_oficial.csv b'\xef\xbb\xbf'
+comparativa_3_municipios_mongo.csv b'cod'
+alquiler_municipal_completo.csv b'\xef\xbb\xbf'
+alquiler_municipal_enriquecido.csv b'\xef\xbb\xbf'
+alquiler_seccion.csv b'\xef\xbb\xbf'
+alquiler_seccion_resumen.csv b'\xef\xbb\xbf'
+analisis_variables_base.csv b'\xef\xbb\xbf'
+anuncios_fotocasa_enriquecido.csv b'\xef\xbb\xbf'

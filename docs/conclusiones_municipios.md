@@ -4,24 +4,32 @@ Fuente de verdad: Mongo pipeline `pipeline_indicadores_municipio` (n y `precio_m
 
 | Municipio | Codigo INE | n anuncios (Mongo `pipeline_indicadores_municipio`) | Esfuerzo 18-34 (%) | Esfuerzo 16-29 legacy (%) | Precio medio EUR (Mongo `precio_medio_eur`) | Cuantia alquiler EUR/mes (mediana oficial) | Precio m2 EUR/mes (mediana oficial) | Paro Lanbide (%) |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| Bilbao | 48020 | 173 | 37,69 | 60,70 | 1695,59 | 850,00 | 11,4 | 9,71 |
-| Donostia / San Sebastian | 20069 | 113 | 38,17 | 61,48 | 2462,89 | 995,00 | 14,6 | 5,82 |
-| Getxo | 48044 | 40 | 28,60 | 46,06 | 1527,50 | 887,00 | 11,1 | 6,40 |
+| Bilbao | 48020 | 204 | 37,69 | 60,70 | 1716,69 | 850,00 | 11,4 | 9,71 |
+| Donostia / San Sebastian | 20069 | 126 | 38,17 | 61,48 | 2465,32 | 995,00 | 14,6 | 5,82 |
+| Getxo | 48044 | 50 | 28,60 | 46,06 | 1536,04 | 887,00 | 11,1 | 6,40 |
 | Vitoria-Gasteiz | 01059 | 39 | 33,37 | 53,75 | 1406,13 | 700,00 | 9,6 | 8,89 |
 
-Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite las cuatro filas (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, `codigo_ine` a 5 digitos) con `esfuerzo_joven_pct_18_34`, `precio_medio_eur` y `tasa_paro_lanbide_pct` no nulo identicos a la tabla. Paro: Mongo `municipios.empleo.tasa_paro_lanbide_pct` via `pipeline_indicadores_municipio` (silver `analisis_variables_base.csv` col. `tasa_paro_lanbide_pct` como respaldo coherente, nunca `tasa_paro_aprox_pct` que es NaN en 252). Precio m2: `alquiler_municipal_completo.csv` columna `renta_media_eur_m2_mediana` (Eustat oficial 2024) y Mongo `renta_m2_alquiler`.
+Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite las cuatro filas (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39, `codigo_ine` a 5 digitos) con `esfuerzo_joven_pct_18_34`, `precio_medio_eur` y `tasa_paro_lanbide_pct` no nulo identicos a la tabla (precio medio nuevo post re-resolucion pisos; esfuerzo/cuantia/paro sin cambio). Paro: Mongo `municipios.empleo.tasa_paro_lanbide_pct` via `pipeline_indicadores_municipio` (silver `analisis_variables_base.csv` col. `tasa_paro_lanbide_pct` como respaldo coherente, nunca `tasa_paro_aprox_pct` que es NaN en 252). Precio m2: `alquiler_municipal_completo.csv` columna `renta_media_eur_m2_mediana` (Eustat oficial 2024) y Mongo `renta_m2_alquiler`.
 
 ## Una frase por municipio
 
-- **Bilbao (48020, n=173, esfuerzo 18-34 37,69%)**: con la muestra mas robusta del estudio, supera el umbral de 30% por casi 8 puntos y combina el paro Lanbide mas alto de los cuatro (9,71%), por lo que la tension no viene solo del precio sino de la renta disponible.
-- **Donostia / San Sebastian (20069, n=113, esfuerzo 18-34 38,17%)**: esfuerzo canonico maximo entre los robustos con el precio medio (2462,89 EUR) y el precio m2 (14,6 EUR/m2) mas altos, pese al paro mas bajo (5,82%), lo que indica presion pura de mercado y no de empleo.
-- **Getxo (48044, n=40, esfuerzo 18-34 28,60%)**: es el unico robusto por debajo del 30% en 18-34, pero solo por 1,4 puntos y con cuantia de 887 EUR/mes, por lo que no se puede declarar asequible sin refuerzo de muestra.
+- **Bilbao (48020, n=204, esfuerzo 18-34 37,69%)**: con la muestra mas robusta del estudio, supera el umbral de 30% por casi 8 puntos y combina el paro Lanbide mas alto de los cuatro (9,71%), por lo que la tension no viene solo del precio sino de la renta disponible.
+- **Donostia / San Sebastian (20069, n=126, esfuerzo 18-34 38,17%)**: esfuerzo canonico maximo entre los robustos con el precio medio (2465,32 EUR) y el precio m2 (14,6 EUR/m2) mas altos, pese al paro mas bajo (5,82%), lo que indica presion pura de mercado y no de empleo.
+- **Getxo (48044, n=50, esfuerzo 18-34 28,60%)**: es el unico robusto por debajo del 30% en 18-34, pero solo por 1,4 puntos y con cuantia de 887 EUR/mes, por lo que no se puede declarar asequible sin refuerzo de muestra.
 - **Vitoria-Gasteiz (01059, n=39, esfuerzo 18-34 33,37%)**: esfuerzo necesitado 33,37% con cuantia oficial de 700 EUR/mes (la minima de los cuatro) y precio m2 de 9,6 EUR/m2, con paro 8,89%, por lo que el esfuerzo viene del denominador (renta joven estimada) mas que de un alquiler caro.
 
 ## Advertencia metodologica
 
-- **Getxo 40 vs Vitoria-Gasteiz 39 (1 anuncio de diferencia)**: el umbral robusto n>=30 es una linea de decision, no una diferencia economica; el ranking fino Getxo > Vitoria puede invertirse con un solo anuncio nuevo. Por eso el esfuerzo 18-34 (28,60% frente a 33,37%) se cita con su n y con la cuantia, no como victoria; Getxo 40 vs Vitoria no es ranking firme.
-- **Barakaldo (48013, n=13, esfuerzo 18-34 38,49%) supera a Donostia (38,17%)**: el ejemplo de Barakaldo (Mongo `pipeline_indicadores_municipio`, esfuerzo 18-34 = 38,4959%) demuestra que el esfuerzo alto aparece tambien fuera de los robustos; no se puede convertir el ranking de esfuerzo en ranking de municipios sin aplicar el filtro n>=30.
+- **Getxo 50 vs Vitoria-Gasteiz 39 (11 anuncios, no 1)**: tras re-resolucion pisos por subtitulo/titulo (Getxo +10 por Algorta/Areeta/Andra Mari/Neguri-Aiboa; Vitoria sin pisos), el umbral n>=30 sigue firme (ambos superan 30), pero la diferencia de 11 ya no es de un anuncio. Vitoria 39 = 30 RealtyAPI + 9 Fotocasa (0 pisos); Getxo 50 = 40 Fotocasa + 10 pisos. El esfuerzo 18-34 (28,60% frente a 33,37%) se cita con n y cuantia, no como ranking.
+- **Barakaldo (48013, n=6, esfuerzo 18-34 38,49%) supera a Donostia (38,17%)**: el ejemplo de Barakaldo (Mongo `pipeline_indicadores_municipio`, esfuerzo 18-34 = 38,4959%) demuestra que el esfuerzo alto aparece tambien fuera de los robustos; no se puede convertir el ranking de esfuerzo en ranking de municipios sin aplicar el filtro n>=30. Barakaldo bajo de n=13 a 6 al retirar pisos por busqueda (Ayala/Abanto inflaban).
+
+## Tiers A/B/C/D (derivados de `n_anuncios`, sin ranking 1-16)
+
+- **Tier A fuerte (n>=30): 4** — Bilbao 204, Donostia 126, Getxo 50, Vitoria 39. Solo estos cuatro comparan firme (ranking Tier A). Tier derivado de `n_anuncios` real en Mongo (`mongo_tier_confianza.csv`, 252 filas, `tier_etiqueta` fuerte).
+- **Tier B indicativo (10-29): 3** — Sopela 19 (min 900 EUR, max 3000 EUR, mediana 1500 EUR, `n_precio` 17; temporal `n_precio` 9 mediana 1500 / larga `n_precio` 8 mediana 1500), Zarautz 15 (min 900 EUR, max 4500 EUR, mediana 1200 EUR, `n_precio` 15; temporal 9 mediana 1200 / larga 6 mediana 1800), Santurtzi 11 (min 900 EUR, max 2000 EUR, mediana 1250 EUR, `n_precio` 9; temporal 5 mediana 1250 / larga 4 mediana 1900). Solo indicativo: temporal y larga se reportan por separado (`n_precio_temporal` != `n_precio_larga` en los 3), sin ranking municipal.
+- **Tier C sin precio municipal (1-9):** 57 con 1-9 («sin precio municipal», `n_precio`=0 en el CSV, min/max nulos, fuera de mediana y comparativa).
+- **Tier D sin dato (0):** 188 con 0 anuncios («sin dato (+ contexto oficial)», solo contexto oficial cuando existe, sin conclusion de precio). Nivel2 (n>=1 con mercado oficial, tabla `dim_municipios`): 54; Nivel3: 194. Antes de re-resolucion era 66/182 y Tier B 10-29 = 16 (pisos por busqueda en Ayala/Abanto/Aduna/Laguardia); ahora los pisos estan en capitales y el fingerprint cross-portal elimina duplicados (129), por eso Tier B cae a 3.
+- **Precio solo donde hay anuncio real:** observable solo en 62/252 municipios con `precio_medio_eur` (mongo `pipeline_indicadores_municipio`); resto `None` con `metodo_imputacion=ninguno` para anuncios (sin IDW ni comarcal para precio de anuncios). Esfuerzo 252 contextual sobre 159 oficiales: los 252 municipios con esfuerzo son contexto, no estimacion oficial donde n<30.
 
 ## O1 canonico (ver `README.md`)
 

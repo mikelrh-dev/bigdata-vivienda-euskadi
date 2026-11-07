@@ -91,9 +91,6 @@ def ensure_indexes() -> dict[str, Any]:
     out["certificados_moda"] = str(get_collection("certificados_energeticos").create_index(
         [("cert_moda", 1)], name="idx_cert_moda",
     ))
-    out["udalmap_extendido_id"] = str(get_collection("udalmap_extendido").create_index(
-        [("_id", 1)], name="idx_udx_id",
-    ))
     return out
 
 

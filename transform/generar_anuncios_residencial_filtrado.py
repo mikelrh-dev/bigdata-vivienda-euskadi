@@ -6,6 +6,11 @@ Genera data/procesado/anuncios_vivienda_residencial_filtrado.csv a partir de
 data/procesado/anuncios_vivienda_residencial.csv, aplicando el filtrado
 heuristico de outliers (precio_m2, superficie, IQR por segmento) de
 transform/filtrar_outliers.py. Determinista, solo lectura de silver.
+
+M1 OUTLIER-01: motivos canonical (`precio_m2_fuera_3_50`, `superficie_fuera_10_500`,
+`iqr_excluido` en `motivo_exclusion` + flags), `habitaciones` a entero y conteos
+por motivo impresos (excluidos_precio_m2/excluidos_superficie/
+excluidos_iqr_precio_medio/habitaciones_int).
 """
 from __future__ import annotations
 
@@ -68,11 +73,19 @@ def main() -> int:
 
     outliers = []
     motivos_list = []
+    motivo_excl_list = []
+    pm2_fuera_list = []
+    sup_fuera_list = []
+    iqr_excl_list = []
     iqr_lower_list = []
     iqr_upper_list = []
     for _, row in df.iterrows():
         outlier = False
         motivos = []
+        motivos_excl = []
+        pm2_fuera = False
+        sup_fuera = False
+        iqr_excl = False
         pm2 = row["precio_m2_calculado"]
         if pm2 is not None and pm2 != "":
             try:
@@ -80,18 +93,27 @@ def main() -> int:
                 if v < PRECIO_M2_MIN:
                     outlier = True
                     motivos.append("precio_m2_bajo")
+                    pm2_fuera = True
                 if v > PRECIO_M2_MAX:
                     outlier = True
                     motivos.append("precio_m2_alto")
-                lim = limites.get(row["tipo_alquiler"])
-                if lim is not None:
-                    lo, hi = lim
-                    if v < lo:
-                        outlier = True
-                        motivos.append("precio_m2_iqr_bajo")
-                    if v > hi:
-                        outlier = True
-                        motivos.append("precio_m2_iqr_alto")
+                    pm2_fuera = True
+                if pm2_fuera:
+                    motivos_excl.append("precio_m2_fuera_3_50")
+                else:
+                    lim = limites.get(row["tipo_alquiler"])
+                    if lim is not None:
+                        lo, hi = lim
+                        if v < lo:
+                            outlier = True
+                            motivos.append("precio_m2_iqr_bajo")
+                            iqr_excl = True
+                        if v > hi:
+                            outlier = True
+                            motivos.append("precio_m2_iqr_alto")
+                            iqr_excl = True
+                    if iqr_excl:
+                        motivos_excl.append("iqr_excluido")
             except (ValueError, TypeError):
                 pass
         sup = row.get("superficie_m2", "")
@@ -101,13 +123,21 @@ def main() -> int:
                 if s < SUPERFICIE_MIN:
                     outlier = True
                     motivos.append("superficie_baja")
+                    sup_fuera = True
                 if s > SUPERFICIE_MAX:
                     outlier = True
                     motivos.append("superficie_alta")
+                    sup_fuera = True
+                if sup_fuera:
+                    motivos_excl.append("superficie_fuera_10_500")
             except (ValueError, TypeError):
                 pass
         outliers.append(bool(outlier))
         motivos_list.append(";".join(motivos))
+        motivo_excl_list.append(";".join(motivos_excl))
+        pm2_fuera_list.append(bool(pm2_fuera))
+        sup_fuera_list.append(bool(sup_fuera))
+        iqr_excl_list.append(bool(iqr_excl))
         lim = limites.get(row["tipo_alquiler"])
         if lim is not None:
             iqr_lower_list.append(round(lim[0], 2))
@@ -118,8 +148,17 @@ def main() -> int:
 
     df["outlier"] = outliers
     df["motivo_outlier"] = motivos_list
+    df["motivo_exclusion"] = motivo_excl_list
+    df["precio_m2_fuera_3_50"] = pm2_fuera_list
+    df["superficie_fuera_10_500"] = sup_fuera_list
+    df["iqr_excluido"] = iqr_excl_list
     df["iqr_lower"] = iqr_lower_list
     df["iqr_upper"] = iqr_upper_list
+
+    # M1 OUTLIER-01: habitaciones a entero (2,5 -> 2).
+    if "habitaciones" in df.columns:
+        _nums = pd.to_numeric(df["habitaciones"], errors="coerce")
+        df["habitaciones"] = [int(v) if pd.notna(v) else v for v in list(_nums)]
 
     # ordenar columnas como en el existente
     cols_existentes = [
@@ -141,6 +180,19 @@ def main() -> int:
     df.to_csv(out_path, index=False, encoding="utf-8-sig")
     n_out = sum(1 for o in outliers if o)
     print(f"[OK] {out_path}: {len(df)} filas, {n_out} outliers")
+    n_pm2 = sum(1 for v in pm2_fuera_list if v)
+    n_sup = sum(1 for v in sup_fuera_list if v)
+    n_iqr = sum(1 for v in iqr_excl_list if v)
+    if "habitaciones" in df.columns:
+        _nums = pd.to_numeric(df["habitaciones"], errors="coerce")
+        _vals = [v for v in list(_nums) if pd.notna(v)]
+        _n_int = sum(1 for v in _vals if float(v) == int(float(v)))
+        _int = (_n_int == len(_vals))
+        _pct = "100%" if _int else f"{_n_int}/{len(_vals)}"
+    else:
+        _pct = "sin datos"
+    print(f"excluidos_precio_m2={n_pm2}, excluidos_superficie={n_sup}, "
+          f"excluidos_iqr_precio_medio={n_iqr}, habitaciones_int={_pct}")
     return 0
 
 

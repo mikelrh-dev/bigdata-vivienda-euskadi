@@ -98,12 +98,13 @@ def test_atomicidad_documental():
 
     # Sonda commit/abort solo en vivienda_euskadi_test (TRANSACCIONES-01, docx §11 READ):
     # standalone sin replica set rechaza la transacción multidocumento; la sonda
-    # no debe tocar prod por defecto (MONGO_ALLOW_DESTRUCTIVE sin definir, 759 intacto).
+    # no debe tocar prod por defecto (MONGO_ALLOW_DESTRUCTIVE sin definir).
     import os as _os
 
     assert _os.environ.get("MONGO_ALLOW_DESTRUCTIVE") != "1"
     prod_anuncios_before = get_collection("anuncios").count_documents({})
-    assert prod_anuncios_before == 759
+    # PISOS-2026-11-07: 594 tras re-resolucion (759 antes).
+    assert prod_anuncios_before == 594
     _db = get_test_db()
     _db["__tx_probe"].drop()
     _tx_outcome = "sin-replica-set"
@@ -120,8 +121,8 @@ def test_atomicidad_documental():
         _db["__tx_probe"].drop()
     assert _tx_outcome in {"abort-revertido", "rechazado-standalone", "sin-replica-set"}
     assert _db["__tx_probe"].count_documents({}) == 0
-    # Prod invariante tras abortar/sonda.
-    assert get_collection("anuncios").count_documents({}) == 759
+    # Prod invariante tras abortar/sonda (594 tras PISOS-2026-11-07).
+    assert get_collection("anuncios").count_documents({}) == 594
     assert get_collection("municipios").count_documents({}) == prod_before
 
 

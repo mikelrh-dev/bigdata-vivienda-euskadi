@@ -1,0 +1,46 @@
+﻿n,id,dominio,requisito,menciones_codigo,menciones_test,menciones_doc,veredicto,nota
+1,HDFS-01,almacenamiento-y-streaming,"HDFS-01 — Originales y procesados, con recuperación",1,2,4,CUMPLE,
+2,KAFKA-01,almacenamiento-y-streaming,KAFKA-01 — Productor y consumidor en Python,0,1,5,CUMPLE,
+3,INTEGRACION-01,almacenamiento-y-streaming,INTEGRACION-01 — Flujo completo hasta MongoDB,0,1,5,PARCIAL,Código existe; flujo vivo no capturado en esta sesión
+4,ENTREGABLES-01,contrato-reto,ENTREGABLES-01 — Entregables y demostración,0,0,2,CUMPLE,
+5,ARQUITECTURA-01,contrato-reto,ARQUITECTURA-01 — Invariantes globales,0,0,1,CUMPLE,
+6,EXTRACCION-01,extraccion-datos,EXTRACCION-01 — Automatiza una API y scraping,3,2,7,CUMPLE,
+7,EXTRACCION-02,extraccion-datos,EXTRACCION-02 — No hay fuente única,1,1,5,CUMPLE,
+8,FORMATO-01,extraccion-datos,FORMATO-01 — JSON o CSV,1,1,8,CUMPLE,
+9,COMPLEMENTARIOS-01,extraccion-datos,"COMPLEMENTARIOS-01 — Salarios, población y paro Lanbide 252/252 (M5)",1,2,7,CUMPLE,
+10,PYTHON-01,extraccion-datos,PYTHON-01 — Todo en Python,0,1,6,CUMPLE,
+11,GATE-JOIN-01,extraccion-datos,GATE-JOIN-01 — Nueva fuente con join previo,0,0,1,PARCIAL,Gate definido en docs; sin test automatizado
+12,EXTRACCION-03,extraccion-datos,"EXTRACCION-03 — Ubicación real desde subtítulo/título (pisos, extensión 2026-11-07)",3,2,7,CUMPLE,
+13,PISOS-01,extraccion-datos,PISOS-01 — Evidencia y orden de resolución,3,1,1,CUMPLE,
+14,PISOS-02,extraccion-datos,PISOS-02 — Cuarentena geo_invalida,3,1,1,CUMPLE,
+15,OUTLIER-01,extraccion-datos,OUTLIER-01 — Limpieza dura de outliers en extracción (M1),5,1,2,CUMPLE,
+16,DEDUP-01,extraccion-datos,DEDUP-01 — Dedup dura por `property_fingerprint` (M6),1,1,2,CUMPLE,
+17,VERIFICACION-01,extraccion-datos,VERIFICACION-01 — Gate FAIL 06/07 y huella,0,0,1,CUMPLE,--verify exit 0: 354 raw / 188 silver
+18,MODELO-01,mongodb-y-analisis,MODELO-01 — Modelo justificado y relaciones,0,1,5,CUMPLE,
+19,PYMONGO-01,mongodb-y-analisis,PYMONGO-01 — CRUD con excepciones tipadas,0,2,7,CUMPLE,
+20,CARGA-SEGURA-01,mongodb-y-analisis,CARGA-SEGURA-01 — Carga sin ventana vacía ni borrado irreversible,1,1,1,CUMPLE,
+21,CONSULTAS-01,mongodb-y-analisis,CONSULTAS-01 — Campos anidados y arrays,0,1,4,CUMPLE,
+22,AGREGACION-01,mongodb-y-analisis,AGREGACION-01 — Pipeline con mediana winsorizada y exclusión IQR (M1),3,2,7,CUMPLE,
+23,RAW-01,mongodb-y-analisis,"RAW-01 — Raw inmutable, HDFS solo raw, Kafka→HDFS",5,0,1,PARCIAL,ID corregido; captura viva HDFS/Kafka N/V por red
+24,LIMPIEZA-01,mongodb-y-analisis,"LIMPIEZA-01 — Incompletos, duplicados, incorrectos",0,2,9,CUMPLE,
+25,TRANSFORM-01,mongodb-y-analisis,TRANSFORM-01 — Transformaciones en MongoDB,0,1,5,CUMPLE,
+26,INDICES-01,mongodb-y-analisis,INDICES-01 — Índices y explain(),1,2,6,CUMPLE,
+27,TRANSACCIONES-01,mongodb-y-analisis,TRANSACCIONES-01 — Atomicidad multidocumento,1,2,6,CUMPLE,
+28,DISTRIBUIDA-01,mongodb-y-analisis,DISTRIBUIDA-01 — Arquitectura distribuida (conceptual),0,0,3,CUMPLE,
+29,PYMONGO-PRO-01,mongodb-y-analisis,PYMONGO-PRO-01 — PyMongo profesional,0,2,3,CUMPLE,
+30,VALIDACION-01,mongodb-y-analisis,VALIDACION-01 — Validación de esquema (si procede),0,0,2,PARCIAL,Validación documentada; sin validador de esquema en código
+31,RESPALDO-01,mongodb-y-analisis,RESPALDO-01 — Backups y geo en lectura pura,0,0,3,CUMPLE,
+32,RENTA-01,mongodb-y-analisis,RENTA-01 — `validar_renta` o justificación firmada,0,0,1,PARCIAL,validar_renta.py existe fuera del DAG
+33,PISOS-03,mongodb-y-analisis,"PISOS-03 — Conteos honestos, sin imputación",0,0,1,CUMPLE,
+34,PISOS-04,mongodb-y-analisis,PISOS-04 — Paro 252/252 desde Lanbide normalizado (M5),0,1,1,CUMPLE,
+35,CAPAS-01,mongodb-y-analisis,CAPAS-01 — Capas de precio visibles y etiquetadas (M7),1,0,1,CUMPLE,
+36,DATOS-HETEROGENEOS-01,presentacion-de-resultados,DATOS-HETEROGENEOS-01 — Datos heterogéneos,0,1,2,CUMPLE,
+37,AUTOMATIZACION-ANALISIS-01,presentacion-de-resultados,AUTOMATIZACION-ANALISIS-01 — Automatización del análisis,0,1,2,CUMPLE,
+38,INDICADORES-01,presentacion-de-resultados,"INDICADORES-01 — Cinco indicadores distintos non-legacy (esfuerzo 18-34, tensión, paro, precio m2, VPO terminadas)",2,2,2,CUMPLE,
+39,PREPARACION-VISUALIZACION-01,presentacion-de-resultados,PREPARACION-VISUALIZACION-01 — Tres conjuntos automáticos para representar,0,1,2,CUMPLE,
+40,CONCLUSION-01,presentacion-de-resultados,CONCLUSION-01 — Guion Tema 8 de 1 página con 10 criterios y lagunas,3,2,7,CUMPLE,
+41,RESPUESTA-01,presentacion-de-resultados,RESPUESTA-01 — Respuesta comparativa de 4 robustos con matriz O1-O4,0,0,1,CUMPLE,
+42,CONCLUSION-02,presentacion-de-resultados,"CONCLUSION-02 — Tiers A/B/C/D, conciliación 62/252 vs n_precio=7 y ranking n>=30 (M2/M3, extensión 2026-11-07, sustituye L1/L2/L3)",3,2,7,CUMPLE,
+43,PISOS-05,presentacion-de-resultados,"PISOS-05 — Esfuerzo contextual, frase literal",0,0,1,CUMPLE,
+44,BOOTSTRAP-01,presentacion-de-resultados,BOOTSTRAP-01 — `n_larga_solo_vivienda` ≠ Tier,0,0,1,CUMPLE,
+45,DOCS-01,presentacion-de-resultados,DOCS-01 — 759→594 y frase ortogonal,0,0,1,CUMPLE,759->594 correcto; 188/191 aclarado; 43/44 corregido

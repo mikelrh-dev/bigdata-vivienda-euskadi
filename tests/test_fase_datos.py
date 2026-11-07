@@ -25,14 +25,26 @@ def test_wp03_n_anuncios_real():
 
 
 def test_wp04_ceros_a_nulo_con_flag():
-    """WP-04: ceros imposiles de paro -> NaN + flag, bruto conservado."""
+    """WP-04 + M5 (COMPLEMENTARIOS-01): ceros imposibles de paro -> NaN + flag,
+    bruto conservado; si Lanbide directo (extract 18, fuente oficial) aporta
+    tasa breve, se rellena con ella y se marca `tasa_paro_fuente`.
+    """
     df = _csv("udalmap_empleo_corregido.csv")
     assert "tasa_paro_lanbide_bruto" in df.columns
     assert "paro_registrado_cero" in df.columns
     assert "tasa_paro_valida" in df.columns
+    assert "tasa_paro_fuente" in df.columns
     ceros = df[df["paro_registrado_cero"]]
     assert len(ceros) > 0, "se esperaba al menos un cero documentado"
-    assert ceros["tasa_paro_lanbide_pct"].isna().all()
+    # Sin fuente Lanbide directa: sigue nulo.
+    sin_fuente = ceros[ceros["tasa_paro_fuente"] != "lanbide_directo"]
+    assert sin_fuente["tasa_paro_lanbide_pct"].isna().all()
+    # Con Lanbide directo: valor oficial en (0, 100], bruto conservado.
+    con_fuente = ceros[ceros["tasa_paro_fuente"] == "lanbide_directo"]
+    assert len(con_fuente) > 0, "M5: se esperaban ceros rellenados desde Lanbide"
+    vals = con_fuente["tasa_paro_lanbide_pct"]
+    assert vals.notna().all() and (vals > 0).all() and (vals <= 100).all()
+    assert (con_fuente["tasa_paro_valida"] == True).all()  # noqa: E712
 
 
 def test_wp04_sin_clip_contra_cero():
@@ -190,7 +202,8 @@ def test_wp12_cobertura_mercado():
     assert "n_anuncios_raw" in dim.columns
     real = pd.to_numeric(dim["n_anuncios"], errors="coerce")
     crudo = pd.to_numeric(dim["n_anuncios_raw"], errors="coerce")
-    # El dedup reduce el total (843 -> 759); por municipio el recuento real
+    # El dedup reduce el total (843 -> 594 tras re-resolucion pisos +
+    # cuarentena 45 + fingerprint 129); por municipio el recuento real
     # puede superar al crudo porque el unificador resuelve mas variantes.
     assert int(crudo.sum()) >= int(real.sum()), "el dedup no reduce el total"
     assert (real >= 0).all() and (crudo >= 0).all()
@@ -235,9 +248,10 @@ def test_wp19_precio_nulo_con_motivo():
     import json
     recs = json.loads((PROC / "anuncios_unificados.json").read_text(
         encoding="utf-8"))
-    assert len(recs) == 759
+    # PISOS-2026-11-07: 843 raw -> 594 (re-resolucion + cuarentena 45).
+    assert len(recs) == 594
     con_pm2 = [r for r in recs if r["auditoria"].get("precio_m2_calc") is not None]
-    assert len(con_pm2) > 700, "precio_m2_calc casi vacio"
+    assert len(con_pm2) > 500, "precio_m2_calc casi vacio"
     nulos = [r for r in recs if r.get("precio_eur") is None]
     assert nulos, "se esperaban algunos nulos de origen"
     for r in nulos:

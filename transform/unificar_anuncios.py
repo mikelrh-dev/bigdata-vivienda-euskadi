@@ -2,7 +2,7 @@
 from __future__ import annotations
 import json, os, glob as _glob, hashlib
 import pandas as pd
-from muni_resolve import resolver_codigo
+from muni_resolve import resolver_codigo, resolver_pisos_por_texto
 
 RAW = os.path.join("data", "raw")
 OUT = os.path.join("data", "procesado")
@@ -30,6 +30,36 @@ def _property_fingerprint(rec):
     hab_r = hab if hab is not None else 0
     key = f"{ci}|{sup_r}|{hab_r}|{precio_r}"
     return hashlib.sha256(key.encode("utf-8")).hexdigest()
+
+
+def _habitaciones_int(v):
+    """M1 OUTLIER-01: habitaciones a entero (2,5 -> 2); None si no numerico."""
+    try:
+        return int(float(v)) if v is not None and str(v).strip() not in ("", "nan", "None") else None
+    except (ValueError, TypeError):
+        return None
+
+
+def deduplicar_fingerprint(recs):
+    """M6 DEDUP-01: dedup dura cross-portal por property_fingerprint.
+
+    El primer anuncio de cada huella (orden determinista por
+    _source_order/portal/id_anuncio) conserva; el resto se descarta con
+    motivo `duplicado_fingerprint`. Devuelve (conservados, descartados).
+    """
+    recs_sorted = sorted(recs, key=lambda r: (r.get("_source_order", 99), r.get("portal") or "", r.get("id_anuncio") or ""))
+    seen = set()
+    conservados = []
+    descartados = []
+    for r in recs_sorted:
+        fp = r.get("_fingerprint")
+        if fp in seen:
+            descartados.append({"portal": r.get("portal"), "id_anuncio": r.get("id_anuncio"),
+                                "fingerprint": fp, "source_order": r.get("_source_order"), "tipo": "fingerprint"})
+            continue
+        seen.add(fp)
+        conservados.append(r)
+    return conservados, descartados
 
 
 def load_json(name):
@@ -72,6 +102,26 @@ def equipamiento_fotocasa(item):
         if item.get(k) is True or str(item.get(k)).lower() == "true":
             eq.append(k)
     return eq
+
+def equipamiento_realtyapi(item):
+    # RealtyAPI trae exterior (bool) + descripcion ES/EN; el equipamiento
+    # silver se deriva de ahi (exterior/balcon/interior/parking/planta_baja).
+    eq = set()
+    if item.get("exterior") is True:
+        eq.add("exterior")
+    desc = str(item.get("descripcion") or "").lower()
+    if "balcon" in desc or "balcony" in desc:
+        eq.add("balcon")
+    if "interior" in desc:
+        eq.add("interior")
+    if "parking" in desc or "garage" in desc:
+        eq.add("parking")
+    planta = str(item.get("planta") or "").strip().lower()
+    if planta in ("bj", "0", "baja", "pb"):
+        eq.add("planta_baja")
+    if str(item.get("tipo_inmueble") or "").lower() == "duplex":
+        eq.add("duplex")
+    return sorted(eq)
 
 def modalidad(item, portal):
     if portal == "fotocasa":
@@ -125,11 +175,14 @@ def transform_fotocasa(items):
     return recs
 
 def transform_pisos(items):
+    # PISOS-01/EXTRACCION-01: subtitulo/titulo manda; el campo de busqueda NUNCA
+    # como ubicacion. Fuera de Euskadi / sin texto -> geo_invalida=True +
+    # cuarentena reversible (excluido de dim_municipios y conteos L1/L2).
     recs = []
     for it in items:
-        ci, canon = resolver_codigo(it.get("municipio_busqueda") or it.get("nombre_canonico_resuelto"), it.get("codigo_ine"))
-        if ci is None:
-            continue
+        ci, canon, origen, motivo = resolver_pisos_por_texto(
+            it.get("subtitulo"), it.get("titulo"), it.get("codigo_ine"))
+        es_cuarentena = ci is None
         recs.append({
             "id_anuncio": it.get("id_anuncio"),
             "portal": "pisos",
@@ -140,6 +193,9 @@ def transform_pisos(items):
             "banos": it.get("banos"),
             "titulo": it.get("titulo"),
             "subtitulo": it.get("subtitulo"),
+            "origen_resolucion": origen,
+            "motivo_cuarentena": motivo if es_cuarentena else None,
+            "es_busqueda_no_ubicacion": True,
             "ubicacion": {
                 "codigo_ine": ci,
                 "municipio": canon,
@@ -154,7 +210,7 @@ def transform_pisos(items):
                 "es_outlier_iqr": None,
                 "precio_m2_calc": None,
             },
-            "geo_invalida": True,
+            "geo_invalida": True if es_cuarentena else False,
         })
     return recs
 
@@ -190,7 +246,7 @@ def transform_realtyapi(items):
                 "distrito": it.get("distrito"),
                 "coordenadas": coords,
             },
-            "equipamiento": [],
+            "equipamiento": equipamiento_realtyapi(it),
             "historico_precios": [],
             "auditoria": {
                 "es_outlier_iqr": None,
@@ -267,20 +323,9 @@ def main():
     recs = deduped
     print(f"Anuncios tras dedup portal+id: {len(recs)} (eliminados: {len(duplicados)})")
 
-    # Dedup cross-portal por property_fingerprint (marcar duplicados)
-    recs_sorted_fp = sorted(recs, key=lambda r: (r.get("_source_order", 99), r.get("portal") or "", r.get("id_anuncio") or ""))
-    seen_fp = set()
-    deduped_fp = []
-    duplicados_fp = []
-    for r in recs_sorted_fp:
-        fp = r.get("_fingerprint")
-        if fp in seen_fp:
-            duplicados_fp.append({"portal": r.get("portal"), "id_anuncio": r.get("id_anuncio"),
-                                 "fingerprint": fp, "source_order": r.get("_source_order"), "tipo": "fingerprint"})
-            continue
-        seen_fp.add(fp)
-        deduped_fp.append(r)
-    recs = deduped_fp
+    # Dedup cross-portal por property_fingerprint (M6 DEDUP-01, dura):
+    # el primero de cada huella conserva; resto -> duplicado_fingerprint.
+    recs, duplicados_fp = deduplicar_fingerprint(recs)
     duplicados = duplicados + duplicados_fp
     print(f"Anuncios tras dedup fingerprint: {len(recs)} (eliminados cross-portal: {len(duplicados_fp)})")
 
@@ -309,7 +354,9 @@ def main():
         except (ValueError, TypeError):
             supf = None
         r["es_outlier_superficie"] = bool(supf is not None and (supf < 10 or supf > 500))
-    # Cuarentena estricta Silver Maestro: integridad referencial + anomalías
+    # Cuarentena estricta Silver Maestro + cuarentena reversible pisos.
+    # PISOS-02: pisos fuera de Euskadi / sin texto -> geo_invalida=True y
+    # cuarentena_pisos.csv (reversible, excluido de n_anuncios y L1/L2).
     before_q = len(recs)
     dropped = {"codigo_ine_null": 0, "codigo_ine_no_dim": 0, "superficie_lt_10": 0, "pm2_gt_100": 0}
     dim_path = os.path.join(OUT, "dim_municipios.csv")
@@ -318,16 +365,24 @@ def main():
     _dim = pd.read_csv(dim_path, dtype=str, encoding="utf-8-sig")
     valid_codes = set(_dim["codigo_ine"].astype(str).str.strip().str.zfill(5))
     cleaned = []
+    cuarentena = []
     for r in recs:
         ci = r["ubicacion"].get("codigo_ine")
         if ci is None:
             dropped["codigo_ine_null"] += 1
+            if r.get("portal") == "pisos":
+                r["geo_invalida"] = True
+                cuarentena.append(r)
             continue
         ci_norm = str(ci).strip()
         if ci_norm.isdigit():
             ci_norm = ci_norm.zfill(5)
         if ci_norm not in valid_codes:
             dropped["codigo_ine_no_dim"] += 1
+            if r.get("portal") == "pisos":
+                r["geo_invalida"] = True
+                r["motivo_cuarentena"] = r.get("motivo_cuarentena") or "fuera_de_euskadi"
+                cuarentena.append(r)
             continue
         sup = r.get("superficie_m2")
         price = r.get("precio_eur")
@@ -350,6 +405,37 @@ def main():
     print("Anuncios antes de cuarentena:", before_q)
     print("Anuncios tras cuarentena:", len(recs))
     print("Descartados cuarentena:", before_q - len(recs), dropped)
+    # Cuarentena reversible pisos: nunca se borra el anuncio.
+    if cuarentena:
+        _qdf = pd.DataFrame([{
+            "id_anuncio": r["id_anuncio"],
+            "portal": r["portal"],
+            "titulo": r.get("titulo"),
+            "subtitulo": r.get("subtitulo"),
+            "origen_resolucion": r.get("origen_resolucion"),
+            "motivo_cuarentena": r.get("motivo_cuarentena"),
+            "geo_invalida": r.get("geo_invalida"),
+            "precio_eur": r.get("precio_eur"),
+            "superficie_m2": r.get("superficie_m2"),
+            "es_busqueda_no_ubicacion": r.get("es_busqueda_no_ubicacion"),
+        } for r in cuarentena])
+        _qdf.to_csv(os.path.join(OUT, "cuarentena_pisos.csv"), index=False, encoding="utf-8-sig")
+        with open(os.path.join(OUT, "cuarentena_pisos.json"), "w", encoding="utf-8") as _qf:
+            json.dump(cuarentena, _qf, ensure_ascii=False, indent=2)
+    else:
+        _qdf = pd.DataFrame()
+        try:
+            if os.path.exists(os.path.join(OUT, "cuarentena_pisos.csv")):
+                os.remove(os.path.join(OUT, "cuarentena_pisos.csv"))
+            if os.path.exists(os.path.join(OUT, "cuarentena_pisos.json")):
+                os.remove(os.path.join(OUT, "cuarentena_pisos.json"))
+        except OSError:
+            pass
+    print("Cuarentena pisos (reversible):", len(cuarentena))
+    # M1 OUTLIER-01: habitaciones siempre entera en la salida (2,5 -> 2).
+    # OJO: se castea DESPUES del fingerprint/dedup para no alterar huellas.
+    for r in recs:
+        r["habitaciones"] = _habitaciones_int(r.get("habitaciones"))
     # A1: precio_m2 + flag IQR (advisory, no borra). Rellena `auditoria`.
     for r in recs:
         try:
@@ -379,6 +465,33 @@ def main():
               f"flags={sum(1 for r in recs if r['auditoria']['es_outlier_iqr'])}")
     else:
         print("IQR precio_m2: muestra insuficiente, sin flags")
+    # M1 OUTLIER-01: anotaciones canonical propagadas sin reintroducir fuera
+    # de rango (no se borra el anuncio; precio_m2 valido vive en Mongo).
+    for r in recs:
+        pm2 = r["auditoria"]["precio_m2_calc"]
+        sup = r.get("superficie_m2")
+        try:
+            supf = float(sup) if sup is not None else None
+        except (ValueError, TypeError):
+            supf = None
+        pm2_fuera = bool(pm2 is not None and (pm2 < 3 or pm2 > 50))
+        sup_fuera = bool(supf is not None and (supf < 10 or supf > 500))
+        iqr_ex = bool(r["auditoria"]["es_outlier_iqr"] and not pm2_fuera)
+        r["precio_m2_fuera_3_50"] = pm2_fuera
+        r["superficie_fuera_10_500"] = sup_fuera
+        r["iqr_excluido"] = iqr_ex
+        mot = []
+        if pm2_fuera:
+            mot.append("precio_m2_fuera_3_50")
+        if sup_fuera:
+            mot.append("superficie_fuera_10_500")
+        if iqr_ex:
+            mot.append("iqr_excluido")
+        r["motivo_exclusion"] = ";".join(mot) if mot else ""
+    print(f"excluidos_precio_m2={sum(1 for r in recs if r['precio_m2_fuera_3_50'])}, "
+          f"excluidos_superficie={sum(1 for r in recs if r['superficie_fuera_10_500'])}, "
+          f"excluidos_iqr_precio_medio={sum(1 for r in recs if r['iqr_excluido'])}, "
+          "habitaciones_int=100%")
     with open(os.path.join(OUT, "anuncios_unificados.json"), "w", encoding="utf-8") as f:
         json.dump(recs, f, ensure_ascii=False, indent=2)
     _df = pd.DataFrame([{
@@ -395,8 +508,14 @@ def main():
         "municipio": r["ubicacion"]["municipio"],
         "titulo": r.get("titulo"),
         "subtitulo": r.get("subtitulo"),
+        "origen_resolucion": r.get("origen_resolucion"),
+        "geo_invalida": r.get("geo_invalida"),
         "equipamiento": ",".join(r["equipamiento"]),
         "property_fingerprint": r.get("property_fingerprint"),
+        "motivo_exclusion": r.get("motivo_exclusion", ""),
+        "precio_m2_fuera_3_50": r.get("precio_m2_fuera_3_50", False),
+        "superficie_fuera_10_500": r.get("superficie_fuera_10_500", False),
+        "iqr_excluido": r.get("iqr_excluido", False),
     } for r in recs])
     _df["codigo_ine"] = _df["codigo_ine"].astype(str).str.strip().str.zfill(5)
     _df.to_csv(os.path.join(OUT, "anuncios_unificados.csv"), index=False, encoding="utf-8-sig")

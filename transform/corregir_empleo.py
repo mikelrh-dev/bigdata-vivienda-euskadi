@@ -56,6 +56,40 @@ def main() -> int:
     df["paro_registrado_cero"] = p.eq(0)
     df["tasa_paro_valida"] = p.notna() & p.gt(0)
     df["tasa_paro_lanbide_pct"] = p.mask(p.le(0))
+    # M5 COMPLEMENTARIOS-01: 249 -> 252 con extractores 18/21 (Lanbide
+    # directo, fuente OFICIAL, sin imputacion comarcal/IDW). Para los
+    # municipios sin tasa Udalmap (01003/20037/48916) se calcula
+    # paro_total/poblacion_activa*100 desde `lanbide_paro_juvenil.csv`
+    # (extract 18). El bruto Udalmap se conserva para trazabilidad.
+    df["tasa_paro_fuente"] = "udalmap"
+    lanb_path = RAW_DIR / "lanbide_paro_juvenil.csv"
+    if lanb_path.exists():
+        lb = pd.read_csv(lanb_path, dtype=str, encoding="utf-8-sig")
+        lb["codigo_ine"] = lb["codigo_ine"].str.zfill(5)
+        _pt = pd.to_numeric(lb["paro_total"], errors="coerce")
+        _pa = pd.to_numeric(lb["poblacion_activa"], errors="coerce")
+        tasa_lb = (_pt / _pa * 100).round(2)
+        tasa_lb = tasa_lb.mask((_pa.notna() & (_pa <= 0)) | tasa_lb.isna())
+        lb = lb.assign(tasa_lanbide_directa=tasa_lb)
+        lb = lb.drop_duplicates(subset=["codigo_ine"])[["codigo_ine", "tasa_lanbide_directa"]]
+    else:
+        lb = pd.DataFrame(columns=["codigo_ine", "tasa_lanbide_directa"])
+    df = df.merge(lb, on="codigo_ine", how="left")
+    faltan = df["tasa_paro_lanbide_pct"].isna() & df["tasa_lanbide_directa"].notna()
+    df.loc[faltan, "tasa_paro_lanbide_pct"] = df.loc[faltan, "tasa_lanbide_directa"]
+    df.loc[faltan, "tasa_paro_fuente"] = "lanbide_directo"
+    df.loc[faltan, "tasa_paro_valida"] = True
+    df = df.drop(columns=["tasa_lanbide_directa"])
+    # M5 COMPLEMENTARIOS-01: paro oficial en el 100% (sin imputacion).
+    # Fila sin fuente oficial -> metodo 'ninguno' + is_imputed=false (nunca
+    # comarcal/IDW). Tras 18/21 + este merge debe ser 0 filas.
+    df["metodo_imputacion"] = "oficial"
+    df.loc[df["tasa_paro_lanbide_pct"].isna(), "metodo_imputacion"] = "ninguno"
+    df["is_imputed"] = False
+    n_paro_ok = int(df["tasa_paro_lanbide_pct"].notna().sum())
+    log.info("M5 paro Lanbide: %d/252 oficiales, 0 imputadas (%d lanbide_directo)",
+             n_paro_ok, int((df["tasa_paro_fuente"] == "lanbide_directo").sum()))
+    assert df["tasa_paro_lanbide_pct"].between(0, 100).sum() == n_paro_ok
     df["nota_metodologica"] = NOTA
     df.to_csv(PROC_DIR / "udalmap_empleo_corregido.csv", index=False, encoding="utf-8-sig")
     guardar_json(PROC_DIR / "udalmap_empleo_corregido.json", df.to_dict(orient="records"),

@@ -29,11 +29,11 @@ técnico cae sobre una conclusión que ya está en pie.
 2. **Cómo se mide**: esfuerzo = cuantía × 12 / renta joven 18-34; umbral 30 %.
 3. **Mapa de Euskadi** por municipios (159 oficiales, color por esfuerzo).
 4. **La respuesta en cuatro cifras**: 54 con margen / 65 justos / 40 no / 93 solo IDW.
-5. **Los 4 robustos** con n y esfuerzo; Getxo/Vitoria a un anuncio.
+5. **Los 4 robustos** con n y esfuerzo; Getxo 50/Vitoria 39 (diferencia 11).
 6. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
-7. **Quién queda fuera**: 169 sin anuncios, 93 IDW, falacia ecológica.
-8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 9 pipelines.
-9. **Pruebas**: explain 759→1, 151 tests, gate 18/18, huella.
+7. **Quién queda fuera**: 188 sin anuncios, 93 IDW, falacia ecológica.
+8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 10 pipelines.
+9. **Pruebas**: explain 594→1, 177 tests, gate en `scripts/verificar_fase_datos.py`, huella.
 10. **Límites y qué haríamos con más datos**.
 
 ## Reparto y tiempos
@@ -58,7 +58,7 @@ técnico cae sobre una conclusión que ya está en pie.
 > salario. **Con el alquiler oficial, la mediana se lleva el 26,6 % del salario
 > joven; en 40 de los 159 municipios con dato se supera el 30 %, y en Bilbao y
 > Donostia se roza el 38 %.** La respuesta es: en la mayoría del territorio,
-> justo; en las dos capitales grandes, no; y en 169 municipios no podemos
+> justo; en las dos capitales grandes, no; y en 188 municipios no podemos
 > afirmarlo porque no hay anuncios."
 
 No empieces por la arquitectura. Esa frase es la presentación.
@@ -70,7 +70,7 @@ No empieces por la arquitectura. Esa frase es la presentación.
 - Universo: **252 municipios**; **159 con alquiler oficial Eustat** y **93
   imputados por IDW** que solo valen para sensibilidad.
 - Umbral: **30 %** del salario, el que usa la literatura de emancipación.
-- Datos de apoyo: paro Lanbide 249/252, Etxebide 5.040 solicitudes, VPO flujo
+- Datos de apoyo: paro Lanbide 252/252, Etxebide 5.040 solicitudes, VPO flujo
   251/252.
 
 Frase: "El indicador no es nuestro: es el estándar; lo que aportamos es
@@ -103,14 +103,15 @@ Los 93 IDW van en barra aparte: no se suman a los 159 oficiales.
 
 | Municipio | n anuncios | Esfuerzo | Lectura |
 |---|---|---|---|
-| Bilbao | 173 | 37,69 % | peor: precio alto + esfuerzo máximo |
-| Donostia | 113 | 38,17 % | peor: misma pauta |
-| Getxo | 40 | 28,60 % | bajo el umbral por 1,4 puntos |
+| Bilbao | 204 | 37,69 % | peor: precio alto + esfuerzo máximo |
+| Donostia | 126 | 38,17 % | peor: misma pauta |
+| Getxo | 50 | 28,60 % | bajo el umbral por 1,4 puntos |
 | Vitoria-Gasteiz | 39 | 33,37 % | esfuerzo por renta, m² más barato |
 
-- **Getxo 40 vs Vitoria 39: un anuncio de diferencia.** No hay ranking firme.
-- Barakaldo (n=13) queda fuera por muestra, aunque su esfuerzo sea alto.
-- Bilbao + Donostia = **38 % de los anuncios**; el top-4, el 48 %.
+- **Getxo 50 vs Vitoria 39: diferencia 11 (no 1).** No hay ranking firme entre los dos, pero el umbral n>=30 está superado en ambos.
+- Barakaldo (n=6) queda fuera por muestra, aunque su esfuerzo sea alto.
+- Bilbao + Donostia = **56 % de los anuncios**; el top-4, el 71 %.
+- Nivel (tipología 4/54/194) es ortogonal a Tier (confianza 4/3/57/188): son ejes ortogonales, no intercambiables.
 
 Frase: "Podemos comparar cuatro; podemos rankear dos. La diferencia es la que
 la rúbrica llama conclusión defendible."
@@ -119,15 +120,15 @@ la rúbrica llama conclusión defendible."
 
 - **Oficial 159**: 26,61 % de mediana, 40 > 30.
 - **IDW 252**: 25,37 %, 47 > 30 → el signo no cambia.
-- **Bootstrap 10.000**: Bilbao 32,3–42,4; Donostia 32,4–45,8; **se solapan**.
-  Getxo 28,6–33,0; Vitoria 30,8–39,4.
+- **Bootstrap 10.000** (n_larga_solo_vivienda 67/60/39/37, distinto del n_anuncios Tier 204/126/50/39; no intercambiables): Bilbao 33.75–40.95; Donostia 32,4–45,8; **se solapan**.
+  Getxo 27.54–31.77; Vitoria 30,8–39,4.
 
 > "El titular aguanta, el orden entre Bilbao y Donostia no. Eso lo decimos
 > nosotros antes de que lo pregunte el tribunal."
 
 ## 7:00–7:40 · P2 · Quién queda fuera
 
-- **169 municipios (67 %) sin anuncios** → sin precio observado.
+- **188 municipios (75 %) sin anuncios** → sin precio observado.
 - **93 IDW** → sensibilidad, nunca titular.
 - Renta municipal como **proxy**: falacia ecológica, no es renta individual.
 - Años mezclados: anuncios 2026, renta/paro 2024.
@@ -138,18 +139,19 @@ lo que se puede afirmar."
 
 ## 7:40–9:10 · P2 · Cómo se calculó (técnico, comprimido)
 
-- Cadena: `extract/` → **raw 354 con manifest SHA-256** → silver **185** →
-  Mongo **14 colecciones** → **9 pipelines** → 5 CSV + 13 PNG.
+- Cadena: `extract/` → **raw 352 en HDFS** (solo `raw`) → silver **188** →
+  Mongo **14 colecciones** → **10 pipelines** → 6 CSV + 12 PNG únicos de 13 emitidos.
 - Modelo: **embedding** de demografía/empleo/demanda social en `municipios`
   (se leen juntos, cambian poco); **referencing** por `codigo_ine` para
   `anuncios` y `etxebide_promociones` (crecen sin límite).
-- Limpieza: **845 → 759** anuncios, **86 duplicados (10,18 %)**; Usansolo no se
+- Limpieza: **843 raw → 594** anuncios (dedup portal+id 955, fingerprint 234,
+  cuarentena pisos 45); Usansolo no se
   imputa.
 - Pipelines que sostienen la respuesta:
   1. `pipeline_indicadores_municipio` → 252 filas, esfuerzo, tensión, paro.
   2. `pipeline_vpo_terminadas` → 251 filas, VPO de flujo.
   3. `pipeline_esfuerzo_por_sexo` → 252 filas, esfuerzo calculado en Mongo.
-- **Huella reproducible** `08665d03…c30a`: dos ejecuciones, mismos CSV.
+- **Huella reproducible** (ver salida de `run_analisis_mongo`): dos ejecuciones del mismo estado, mismos CSV.
 
 No expliques las 9: tres bastan si cada una responde a una pregunta del reto.
 
@@ -164,13 +166,13 @@ No expliques las 9: tres bastan si cada una responde a una pregunta del reto.
 
 | Comando | Salida que se lee en voz alta |
 |---|---|
-| manifest | `354` y `185` entradas, **0 errores** |
-| pytest | **151 passed** |
-| run_analisis | **9 pipelines**, 5 CSV, **13 PNG**, huella `08665d03…`, reproducible |
-| gate | **OK 18/18** |
+| manifest | `352` raw en HDFS y `188` silver, **0 errores** |
+| pytest | **177 passed + 1 skipped** |
+| run_analisis | **10 pipelines**, 6 CSV, **12 PNG únicos de 13 emitidos**, huella reproducible |
+| gate | `scripts/verificar_fase_datos.py` (06 PASS 594/843; 07 FAIL conocido paro-cero) |
 
 Índices: la consulta municipio + modalidad + precio ≤1000 pasa de
-**COLLSCAN 759 examinados** a **IXSCAN 1**. Índice ESR
+**COLLSCAN 594 examinados** a **IXSCAN 1**. Índice ESR
 `(codigo_ine, modalidad, precio_eur)`; coste: escrituras y espacio.
 
 Consulta que puedes enseñar (verificada):
@@ -198,14 +200,14 @@ get_collection("municipios").find_one(
 
 ## 11:20–12:00 · P1 · Límites y cierre
 
-1. **169 sin anuncios**: no hay precio que comparar.
-2. **93 IDW**: solo sensibilidad.
-3. **4 robustos**: Getxo y Vitoria a un anuncio.
+1. **188 sin anuncios**: no hay precio que comparar (precio solo en 62/252).
+2. **93 IDW**: solo sensibilidad; esfuerzo 252 contextual sobre 159 oficiales.
+3. **4 robustos**: Getxo 50 vs Vitoria 39 (diferencia 11, no ranking firme entre ambos).
 4. **Años y VPO**: 2026 vs 2024; flujo no es stock.
 
 > "La conclusión que sostenemos es esta: Bilbao y Donostia son las peores
 > plazas para emanciparse con el salario joven; Getxo y Vitoria quedan cerca
-> del umbral; y en dos tercios de los municipios no hay datos para afirmarlo.
+> del umbral; y en tres cuartos de los municipios no hay datos para afirmarlo.
 > Con más anuncios y stock de VPO podríamos ampliar el mapa, no cambiar el
 > signo del titular."
 
@@ -213,7 +215,7 @@ get_collection("municipios").find_one(
 
 **P1 (la pregunta)**
 - ¿Por qué mediana? → outliers; canónico declarado.
-- ¿Getxo es más asequible? → 1 anuncio; no hay ranking.
+- ¿Getxo es más asequible? → diferencia 11 con n firme en ambos, pero sin ranking municipal fuera de los 4.
 - ¿Y una persona concreta? → renta municipal ≠ individual; falacia ecológica.
 
 **P2 (método y modelo)**
@@ -230,9 +232,9 @@ get_collection("municipios").find_one(
 
 - "HDFS tiene originales y procesados" → solo originales (rúbrica: 7, no 10).
 - "Tenemos stock de VPO" → flujo 2020–2024; stock sin fuente.
-- "Getxo es el más asequible" → 1 anuncio de diferencia.
-- "Los 252 son oficiales" → 159 + 93 IDW.
-- "La huella es `f1e78870`" → la vigente es `08665d03…c30a`.
+- "Getxo es el más asequible" → sin ranking municipal fuera de Tier A (Tier B solo indicativo).
+- "Los 252 son oficiales" → 159 + 93 IDW; esfuerzo 252 contextual sobre 159 oficiales.
+- "La huella es un hex fijo" → la huella depende del estado; dos ejecuciones del mismo estado coinciden.
 - "16-29 es el canónico" → legacy; el canónico es 18–34.
 
 ## Si vas justo de tiempo
@@ -244,7 +246,7 @@ modelo a 40 s. **Nunca** recortes la respuesta, los 4 robustos ni los límites.
 
 - [ ] Mongo responde (`pipeline_vpo_terminadas` → 251).
 - [ ] `.venv` activo y `pytest -q` verde.
-- [ ] CSV y 13 PNG generados en `data/resultados`.
+- [ ] CSV y 12 PNG únicos de 13 emitidos en `data/resultados`.
 - [ ] Huella `08665d03…c30a` copiada.
 - [ ] Mapa y tabla de robustos abiertos, no buscados en vivo.
 - [ ] `git status` limpio.

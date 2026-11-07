@@ -161,11 +161,13 @@ def scrapear_municipio(
     except Exception:  # noqa: BLE001
         _cod, _can = None, None
     for anuncio in anuncios:
+        # EXTRACCION-01/PISOS-01: subtitulo/titulo se conservan del raw;
+        # el nombre de busqueda es metadata de busqueda, NUNCA ubicacion.
         anuncio["municipio_busqueda"] = nombre
         anuncio.setdefault("codigo_ine", _cod)
         anuncio.setdefault("nombre_canonico", _can)
         anuncio.setdefault("anio_fuente", 2026)
-        anuncio.setdefault("es_busqueda_no_ubicacion", True)
+        anuncio["es_busqueda_no_ubicacion"] = True
         anuncio["total_resultados"] = total
     return anuncios
 

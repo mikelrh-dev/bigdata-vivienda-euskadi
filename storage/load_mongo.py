@@ -56,7 +56,8 @@ def _lookup_csv(name: str, key: str = "codigo_ine") -> dict[str, dict]:
         return {}
     try:
         df = pd.read_csv(path, encoding="utf-8-sig", dtype=str)
-    except Exception:
+    except (OSError, pd.errors.ParserError, UnicodeDecodeError) as exc:
+        logger.warning("no se pudo leer %s: %s", path.name, exc)
         return {}
     out: dict[str, dict] = {}
     for _, r in df.iterrows():
@@ -84,7 +85,8 @@ def _lookup_fotocasa_geo() -> dict[str, dict | None]:
         return {}
     try:
         df = pd.read_csv(path, encoding="utf-8-sig", dtype=str)
-    except Exception:
+    except (OSError, pd.errors.ParserError, UnicodeDecodeError) as exc:
+        logger.warning("no se pudo leer %s: %s", path.name, exc)
         return {}
     out: dict[str, dict | None] = {}
     for _, r in df.iterrows():
@@ -230,17 +232,30 @@ def load_municipios() -> int:
 
 
 def load_anuncios() -> int:
+    # CARGA-SEGURA-01: staging + <name>__backup + rename atomico via
+    # replace_collection (rename con dropTarget=True); nunca drop directo
+    # sobre la coleccion original; docs vacios abortan sin tocar origen.
     df = _read_csv("anuncios_unificados.csv")
     geo_by_id = _lookup_fotocasa_geo()
-    coll = get_collection("anuncios")
-    n = 0
+    docs: list[dict] = []
     for _, row in df.iterrows():
         code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
         equip = to_str(row.get("equipamiento"))
         equip_list = [x.strip() for x in equip.split(",") if x.strip()] if equip else []
         portal = to_str(row.get("portal"))
         id_anuncio = to_str(row.get("id_anuncio"))
         coordenadas = geo_by_id.get(id_anuncio) if portal == "fotocasa" and id_anuncio else None
+        # M1 OUTLIER-01 (AGREGACION-01): `precio_m2` solo porta el valor valido
+        # para la agregacion (precio_m2_calc en [3, 50] y superficie en
+        # [10, 500]); fuera de rango -> None (el bruto queda en
+        # precio_m2_calc + auditoria). Asi, 0 documentos participan en la
+        # agregacion con precio_m2 fuera de [3, 50].
+        _pm2 = to_float(row.get("precio_m2_calc"))
+        _sup = to_float(row.get("superficie_m2"))
+        precio_m2_valido = _pm2 if (_pm2 is not None and 3 <= _pm2 <= 50
+                                    and (_sup is None or 10 <= _sup <= 500)) else None
         doc = {
             "portal": to_str(row.get("portal")),
             "id_anuncio": to_str(row.get("id_anuncio")),
@@ -248,7 +263,7 @@ def load_anuncios() -> int:
             "modalidad": to_str(row.get("modalidad")),
             "precio_eur": _money(row.get("precio_eur")),
             "superficie_m2": to_float(row.get("superficie_m2")),
-            "habitaciones": to_float(row.get("habitaciones")),
+            "habitaciones": to_int(row.get("habitaciones")),
             "es_outlier_superficie": to_bool(row.get("es_outlier_superficie")),
             "ubicacion": {
                 "codigo_ine": code,
@@ -259,7 +274,12 @@ def load_anuncios() -> int:
             },
             "equipamiento": equip_list,
             "precio_m2_calc": to_float(row.get("precio_m2_calc")),
+            "precio_m2": precio_m2_valido,
             "es_outlier_iqr": to_bool(row.get("es_outlier_iqr")),
+            "motivo_exclusion": to_str(row.get("motivo_exclusion")),
+            "precio_m2_fuera_3_50": to_bool(row.get("precio_m2_fuera_3_50")),
+            "superficie_fuera_10_500": to_bool(row.get("superficie_fuera_10_500")),
+            "iqr_excluido": to_bool(row.get("iqr_excluido")),
             "auditoria": {
                 "es_outlier_iqr": to_bool(row.get("es_outlier_iqr")),
                 "precio_m2_calc": to_float(row.get("precio_m2_calc")),
@@ -268,14 +288,13 @@ def load_anuncios() -> int:
             "fuente": "silver anuncios_unificados",
             "anio_fuente": 2026,
             "fecha_carga": datetime.now(timezone.utc),
+            "origen_resolucion": to_str(row.get("origen_resolucion")),
+            "geo_invalida": to_bool(row.get("geo_invalida")),
         }
-        coll.update_one(
-            {"portal": doc["portal"], "id_anuncio": doc["id_anuncio"]},
-            {"$set": doc},
-            upsert=True,
-        )
-        n += 1
-    return n
+        docs.append(doc)
+    if not docs:
+        return 0
+    return replace_collection("anuncios", docs)
 
 
 def load_alquiler() -> int:

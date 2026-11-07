@@ -59,15 +59,30 @@ def main() -> int:
     dim["codigo_ine"] = dim["codigo_ine"].str.zfill(5)
     check("05 dim 252 + len5", len(dim) == 252 and (dim["codigo_ine"].str.len() == 5).all(), f"{len(dim)}")
 
-    # 6. n_anuncios real post-dedup
-    check("06 n_anuncios 759/843", int(pd.to_numeric(dim["n_anuncios"]).sum()) == 759
+    # 6. n_anuncios real post-dedup (verdad v5: 594/843)
+    check("06 n_anuncios 594/843", int(pd.to_numeric(dim["n_anuncios"]).sum()) == 594
           and int(pd.to_numeric(dim["n_anuncios_raw"]).sum()) == 843,
           f"real={pd.to_numeric(dim['n_anuncios']).sum()}")
 
-    # 7-8. Ceros y brecha
+    # 7-8. Ceros y brecha (FAIL conocido, sin enmascarar como PASS)
     emp = pd.read_csv(PROC / "udalmap_empleo_corregido.csv", encoding="utf-8-sig", dtype=str)
-    check("07 ceros a nulo con flag", "paro_registrado_cero" in emp.columns
-          and emp[emp["paro_registrado_cero"] == "True"]["tasa_paro_lanbide_pct"].isna().all())
+    _cero = emp[emp["paro_registrado_cero"] == "True"] if "paro_registrado_cero" in emp.columns else emp.iloc[0:0]
+    _con_nulo = _cero[_cero["tasa_paro_lanbide_pct"].astype(str).str.lower().isin(["nan", "none", "", "nat"]) | _cero["tasa_paro_lanbide_pct"].isna()]
+    _con_valor = _cero[~_cero.index.isin(_con_nulo.index)]
+    _CONOCIDOS = {("Aramaio", "0.28"), ("Gaintza", "1.45"), ("Usansolo", "3.26")}
+    _visto = {(str(r["nombre_canonico"]).strip(), str(r["tasa_paro_lanbide_pct"]).strip()) for _, r in _con_valor.iterrows()}
+    _desconocidos = sorted(_visto - _CONOCIDOS)
+    _nombres_conocidos = "Aramaio 0.28, Gaintza 1.45, Usansolo 3.26"
+    if _con_valor.empty:
+        check("07 ceros a nulo con flag", "paro_registrado_cero" in emp.columns and _cero["tasa_paro_lanbide_pct"].isna().all(),
+              "sin ceros con valor no nulo")
+    elif not _desconocidos and _visto == _CONOCIDOS:
+        # Casos documentados v5: jamás PASS, jamás imputación comarcal.
+        check(f"07 FAIL conocido paro-cero ({_nombres_conocidos})", False,
+              f"{len(_con_valor)} ceros documentados con tasa no nula (no enmascarados, sin imputación)")
+    else:
+        check("07 FAIL ceros no conocidos", False,
+              f"desconocidos={_desconocidos} conocidos={sorted(_visto & _CONOCIDOS)}")
     gold = pd.read_csv(PROC / "dim_municipios_enriquecido.csv", encoding="utf-8-sig", dtype=str)
     check("08 sin brecha ocup-activ", "brecha_ocupacion_actividad_pct" not in gold.columns)
 
@@ -132,8 +147,10 @@ def main() -> int:
           and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
           f"{len(cob)} mun")
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(encoding="utf-8"))
+    # 354 = ficheros con hash en ingestion_manifest local; distinto de los
+    # 352 ficheros raw publicados en HDFS (alias documentado, no se colapsa).
     check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 354,
-          f"{man['n_ficheros']} ficheros")
+          f"{man['n_ficheros']} ficheros (354 ingestion local; 352 raw en HDFS)")
     mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").read_text(encoding="utf-8"))
     import re as _re
     con_ts = [p.name for p in PROC.glob("*_normalizado.json")
@@ -142,6 +159,20 @@ def main() -> int:
     check("18 nombres estables registrados", set(con_ts) <= reg, f"{len(con_ts)} con ts")
 
     print("RESULTADO:", "OK 18/18" if ok else "PENDIENTE (ver FAIL)")
+    # Huella SHA-256 reproducible de los artefactos comprobados (mismo
+    # criterio que check 01 con docs/raw_manifest_sha256.txt). Se emite
+    # siempre: con 07 FAIL conocido el resultado sigue siendo PENDIENTE.
+    _artefactos = [
+        ROOT / "docs" / "raw_manifest_sha256.txt",
+        PROC / "dim_municipios.csv",
+        PROC / "udalmap_empleo_corregido.csv",
+        PROC / "_meta" / "ingestion_manifest.json",
+        PROC / "cobertura_anuncios.csv",
+    ]
+    _h = hashlib.sha256()
+    for _p in _artefactos:
+        _h.update(_p.read_bytes())
+    print("HUELLA SHA-256:", _h.hexdigest())
     return 0 if ok else 1
 
 

@@ -1,0 +1,74 @@
+requisitos_headers 45 ids_unicos 43
+duplicados {'EXTRACCION-01': 2, 'CONCLUSION-01': 2}
+corpus 259
+01|HDFS-01|almacenamiento-y-streaming|code=1|test=2|doc=4|### Requirement: HDFS-01 — Originales y procesados, con recuperación
+02|KAFKA-01|almacenamiento-y-streaming|code=0|test=1|doc=5|### Requirement: KAFKA-01 — Productor y consumidor en Python
+03|INTEGRACION-01|almacenamiento-y-streaming|code=0|test=1|doc=5|### Requirement: INTEGRACION-01 — Flujo completo hasta MongoDB
+04|ENTREGABLES-01|contrato-reto|code=0|test=0|doc=2|### Requirement: ENTREGABLES-01 — Entregables y demostración
+05|ARQUITECTURA-01|contrato-reto|code=0|test=0|doc=1|### Requirement: ARQUITECTURA-01 — Invariantes globales
+06|EXTRACCION-01|extraccion-datos|code=3|test=2|doc=7|### Requirement: EXTRACCION-01 — Automatiza una API y scraping
+07|EXTRACCION-02|extraccion-datos|code=1|test=1|doc=5|### Requirement: EXTRACCION-02 — No hay fuente única
+08|FORMATO-01|extraccion-datos|code=1|test=1|doc=8|### Requirement: FORMATO-01 — JSON o CSV
+09|COMPLEMENTARIOS-01|extraccion-datos|code=1|test=2|doc=7|### Requirement: COMPLEMENTARIOS-01 — Salarios, población y paro Lanbide 252/252 (M5)
+10|PYTHON-01|extraccion-datos|code=0|test=1|doc=6|### Requirement: PYTHON-01 — Todo en Python
+11|GATE-JOIN-01|extraccion-datos|code=0|test=0|doc=1|### Requirement: GATE-JOIN-01 — Nueva fuente con join previo
+12|EXTRACCION-01|extraccion-datos|code=3|test=2|doc=7|### Requirement: EXTRACCION-01 — Ubicación real desde subtítulo/título (pisos, extensión 2026-1
+13|PISOS-01|extraccion-datos|code=3|test=1|doc=1|### Requirement: PISOS-01 — Evidencia y orden de resolución
+14|PISOS-02|extraccion-datos|code=3|test=1|doc=1|### Requirement: PISOS-02 — Cuarentena geo_invalida
+15|OUTLIER-01|extraccion-datos|code=5|test=1|doc=2|### Requirement: OUTLIER-01 — Limpieza dura de outliers en extracción (M1)
+16|DEDUP-01|extraccion-datos|code=1|test=1|doc=2|### Requirement: DEDUP-01 — Dedup dura por `property_fingerprint` (M6)
+17|VERIFICACION-01|extraccion-datos|code=0|test=0|doc=1|### Requirement: VERIFICACION-01 — Gate FAIL 06/07 y huella
+18|MODELO-01|mongodb-y-analisis|code=0|test=1|doc=5|### Requirement: MODELO-01 — Modelo justificado y relaciones
+19|PYMONGO-01|mongodb-y-analisis|code=0|test=2|doc=7|### Requirement: PYMONGO-01 — CRUD con excepciones tipadas
+20|CARGA-SEGURA-01|mongodb-y-analisis|code=1|test=1|doc=1|### Requirement: CARGA-SEGURA-01 — Carga sin ventana vacía ni borrado irreversible
+21|CONSULTAS-01|mongodb-y-analisis|code=0|test=1|doc=4|### Requirement: CONSULTAS-01 — Campos anidados y arrays
+22|AGREGACION-01|mongodb-y-analisis|code=3|test=2|doc=7|### Requirement: AGREGACION-01 — Pipeline con mediana winsorizada y exclusión IQR (M1)
+23|TIER-01|mongodb-y-analisis|code=5|test=0|doc=1|### Requirement: TIER-01 — Raw inmutable, HDFS solo raw, Kafka→HDFS
+24|LIMPIEZA-01|mongodb-y-analisis|code=0|test=2|doc=9|### Requirement: LIMPIEZA-01 — Incompletos, duplicados, incorrectos
+25|TRANSFORM-01|mongodb-y-analisis|code=0|test=1|doc=5|### Requirement: TRANSFORM-01 — Transformaciones en MongoDB
+26|INDICES-01|mongodb-y-analisis|code=1|test=2|doc=6|### Requirement: INDICES-01 — Índices y explain()
+27|TRANSACCIONES-01|mongodb-y-analisis|code=1|test=2|doc=6|### Requirement: TRANSACCIONES-01 — Atomicidad multidocumento
+28|DISTRIBUIDA-01|mongodb-y-analisis|code=0|test=0|doc=3|### Requirement: DISTRIBUIDA-01 — Arquitectura distribuida (conceptual)
+29|PYMONGO-PRO-01|mongodb-y-analisis|code=0|test=2|doc=3|### Requirement: PYMONGO-PRO-01 — PyMongo profesional
+30|VALIDACION-01|mongodb-y-analisis|code=0|test=0|doc=2|### Requirement: VALIDACION-01 — Validación de esquema (si procede)
+31|RESPALDO-01|mongodb-y-analisis|code=0|test=0|doc=3|### Requirement: RESPALDO-01 — Backups y geo en lectura pura
+32|RENTA-01|mongodb-y-analisis|code=0|test=0|doc=1|### Requirement: RENTA-01 — `validar_renta` o justificación firmada
+33|PISOS-03|mongodb-y-analisis|code=0|test=0|doc=1|### Requirement: PISOS-03 — Conteos honestos, sin imputación
+34|PISOS-04|mongodb-y-analisis|code=0|test=1|doc=1|### Requirement: PISOS-04 — Paro 252/252 desde Lanbide normalizado (M5)
+35|CAPAS-01|mongodb-y-analisis|code=1|test=0|doc=1|### Requirement: CAPAS-01 — Capas de precio visibles y etiquetadas (M7)
+36|DATOS-HETEROGENEOS-01|presentacion-de-resultados|code=0|test=1|doc=2|### Requirement: DATOS-HETEROGENEOS-01 — Datos heterogéneos
+37|AUTOMATIZACION-ANALISIS-01|presentacion-de-resultados|code=0|test=1|doc=2|### Requirement: AUTOMATIZACION-ANALISIS-01 — Automatización del análisis
+38|INDICADORES-01|presentacion-de-resultados|code=2|test=2|doc=2|### Requirement: INDICADORES-01 — Cinco indicadores distintos non-legacy (esfuerzo 18-34, tensi
+39|PREPARACION-VISUALIZACION-01|presentacion-de-resultados|code=0|test=1|doc=2|### Requirement: PREPARACION-VISUALIZACION-01 — Tres conjuntos automáticos para representar
+40|CONCLUSION-01|presentacion-de-resultados|code=3|test=2|doc=7|### Requirement: CONCLUSION-01 — Guion Tema 8 de 1 página con 10 criterios y lagunas
+41|RESPUESTA-01|presentacion-de-resultados|code=0|test=0|doc=1|### Requirement: RESPUESTA-01 — Respuesta comparativa de 4 robustos con matriz O1-O4
+42|CONCLUSION-01|presentacion-de-resultados|code=3|test=2|doc=7|### Requirement: CONCLUSION-01 — Tiers A/B/C/D, conciliación 62/252 vs n_precio=7 y ranking n>=
+43|PISOS-05|presentacion-de-resultados|code=0|test=0|doc=1|### Requirement: PISOS-05 — Esfuerzo contextual, frase literal
+44|BOOTSTRAP-01|presentacion-de-resultados|code=0|test=0|doc=1|### Requirement: BOOTSTRAP-01 — `n_larga_solo_vivienda` ≠ Tier
+45|DOCS-01|presentacion-de-resultados|code=0|test=0|doc=1|### Requirement: DOCS-01 — 759→594 y frase ortogonal
+
+=== CRITERIOS NIVEL 10 ===
+total 23
+| Criterio | 0 puntos | 3 puntos | 7 puntos | **10 puntos** |
+| Extracción de datos mediante Python | No obtiene datos | Obtiene datos de una fuente manualmente | Automatiza una API o scraping | **Autom
+| Almacenamiento HDFS | No almacena datos | Crea directorios | Guarda y recupera archivos | **Organiza originales y procesados y demuestra s
+| Kafka | No funciona | Crea un tópico | Envía mensajes con productor Python | **Productor y consumidor Python funcionan y procesan mensajes
+| Integración | No hay integración | Los componentes funcionan por separado | Integra dos o más componentes | **Demuestra el flujo completo 
+| Criterio | 0 puntos | 3 puntos | 7 puntos | **10 puntos** |
+| Integración de fuentes | No carga datos en MongoDB | Carga datos de 1 fuente | Carga datos de 2 fuentes diferentes | **Carga datos de 2 o 
+| Construcción del conjunto de datos | No existe una estructura de datos funcional | Guarda todos los datos en una colección sin tratamiento
+| Limpieza y transformación con PyMongo | No realiza limpieza | Realiza 1 operación de limpieza o transformación | Realiza al menos 3 operac
+| Automatización | El tratamiento se realiza manualmente | Existe algún script Python parcial | Los datos se cargan y transforman mediante s
+| Criterio | 0 puntos | 3 puntos | 7 puntos | **10 puntos** |
+| Modelado MongoDB | No crea una BD funcional | Crea al menos 1 colección | Utiliza 2 o más colecciones con tipos de datos adecuados | **Ade
+| CRUD con PyMongo | No utiliza PyMongo | Realiza insert | Realiza mediante PyMongo insert + update + delete + find | **Realiza las 4 operac
+| Consultas | No realiza consultas | Realiza consultas con igualdad | Utiliza al menos 4 tipos diferentes entre filtros, comparación, operad
+| Aggregation Pipeline | No utiliza aggregate() | Pipeline con $match y/o $group | Crea al menos 2 pipelines y utiliza 4 etapas diferentes e
+| Índices y rendimiento | No crea índices | Crea 1 índice | Crea un índice relacionado con una consulta y ejecuta explain() | **Compara medi
+| Consistencia | No aplica lo trabajado | Solo describe el concepto | Identifica en su proyecto una operación atómica o un caso donde podría
+| Criterio | 0 puntos | 3 puntos | 7 puntos | **10 puntos** |
+| Datos heterogéneos | No integra datos | Trabaja con una estructura simple | Utiliza arrays, documentos anidados o datos con estructuras di
+| Automatización del análisis | Los resultados se obtienen manualmente | Ejecuta consultas manuales | Un script PyMongo ejecuta consultas/ag
+| Indicadores | No calcula indicadores | Calcula 1 indicador | Calcula al menos 3 indicadores relacionados con vivienda/emancipación | **Cal
+| Respuesta al reto | No responde a la pregunta | Presenta datos sin conclusión | Obtiene conclusiones para al menos 2 municipios o zonas | 
+| Preparación para visualización | No prepara resultados | Copia resultados manualmente | Genera mediante PyMongo datos utilizables para grá
