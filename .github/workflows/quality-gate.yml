@@ -1,0 +1,44 @@
+# Quality gate: pytest offline (sin red) + vivo solo manual con GATE_LIVE=1.
+# Mongo local localhost:27017; HDFS/Kafka centro solo en vivo manana.
+name: quality-gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      gate_vivo:
+        description: 'Ejecutar gate vivo (requiere centro 10.22.87.215)'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  pytest_offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar
+        run: |
+          pip install -r requirements.txt pytest mongomock
+      - name: Pytest offline (sin red)
+        run: python -m pytest tests -q
+        env:
+          GATE_LIVE: '0'
+
+  gate_vivo_manual:
+    if: github.event_name == 'workflow_dispatch' && inputs.gate_vivo == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Gate vivo opt-in (centro manana)
+        run: python scripts/gate_extremo_a_extremo.py --vivo
+        env:
+          GATE_LIVE: '1'

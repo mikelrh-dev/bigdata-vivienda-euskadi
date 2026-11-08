@@ -1,0 +1,14 @@
+# pyproject.toml — bigdata-vivienda-euskadi
+# Do not store secrets. Mongo defaults to local localhost:27017;
+# HDFS/Kafka centro (10.22.87.215) solo en vivo mañana con GATE_LIVE=1.
+
+[project]
+name = "bigdata-vivienda-euskadi"
+version = "0.1.0"
+description = "Donde pueden vivir los jovenes en Euskadi: gate extremo a extremo"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

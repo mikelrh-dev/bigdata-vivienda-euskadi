@@ -1,0 +1,8 @@
+........................................................................ [ 29%]
+........................................................................ [ 59%]
+............................................................s..s........ [ 89%]
+..........................                                               [100%]
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_pisos_ubicacion_real.py:202: artefactos de data/resultados no versionados (solo .gitkeep en git): conteo local no hardcodeado
+SKIPPED [1] tests\test_pisos_ubicacion_real.py:255: skip separado: MONGO_ALLOW_DESTRUCTIVE!=1
+240 passed, 2 skipped in 18.63s

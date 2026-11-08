@@ -1,0 +1,384 @@
+{
+  "dim": {
+    "filas": 252,
+    "cols": 12,
+    "ine_unicos": 252,
+    "ine_len5": 252,
+    "dup_ine": 0
+  },
+  "unificados": {
+    "filas": 594,
+    "cols": 21,
+    "municipios": 64,
+    "dup_ine": 530
+  },
+  "csv": [
+    {
+      "fichero": "auditoria_lagunas_silver.csv",
+      "filas": 42,
+      "cols": 16,
+      "nulos_primeras": {
+        "archivo": 0,
+        "filas": 0,
+        "columnas_total": 0,
+        "nulos_por_columna_vital": 0,
+        "nulos_vitales_total": 0,
+        "tiene_codigo_ine": 0
+      }
+    },
+    {
+      "fichero": "bootstrap_robustos.csv",
+      "filas": 4,
+      "cols": 8,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "n_anuncios_larga_vivienda": 0,
+        "esfuerzo_canonico_pct": 0,
+        "esfuerzo_anuncios_pct": 0,
+        "ic95_inf": 0
+      }
+    },
+    {
+      "fichero": "capa_contexto.csv",
+      "filas": 252,
+      "cols": 8,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0,
+        "renta_m2_contexto": 0,
+        "cuantia_contexto": 0,
+        "metodo_origen": 0
+      }
+    },
+    {
+      "fichero": "capa_idw.csv",
+      "filas": 93,
+      "cols": 7,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0,
+        "cuantia_alquiler_mes": 0,
+        "renta_m2_alquiler": 0,
+        "metodo_imputacion": 0
+      }
+    },
+    {
+      "fichero": "capa_oficial.csv",
+      "filas": 159,
+      "cols": 7,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0,
+        "cuantia_alquiler_mes": 0,
+        "renta_m2_alquiler": 0,
+        "metodo_imputacion": 0
+      }
+    },
+    {
+      "fichero": "comparativa_3_municipios_mongo.csv",
+      "filas": 4,
+      "cols": 12,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "nombre": 0,
+        "n_anuncios": 0,
+        "tier": 0,
+        "tier_etiqueta": 0,
+        "delta_n_anuncios": 1
+      }
+    },
+    {
+      "fichero": "mongo_accesibilidad_extendida.csv",
+      "filas": 252,
+      "cols": 13,
+      "nulos_primeras": {
+        "_id": 0,
+        "esfuerzo_joven_pct": 0,
+        "esfuerzo_joven_pct_18_34": 0,
+        "nombre": 0,
+        "territorio": 0,
+        "viviendas_mas_50_anios_pct": 0
+      }
+    },
+    {
+      "fichero": "mongo_alquiler_por_municipio.csv",
+      "filas": 252,
+      "cols": 7,
+      "nulos_primeras": {
+        "_id": 0,
+        "n_registros": 0,
+        "cuantia_media": 0,
+        "renta_m2_media": 0,
+        "superficie_media": 0,
+        "nombre": 0
+      }
+    },
+    {
+      "fichero": "mongo_esfuerzo_por_municipio.csv",
+      "filas": 252,
+      "cols": 32,
+      "nulos_primeras": {
+        "_id": 0,
+        "territorio": 0,
+        "tiene_alquiler_oficial": 0,
+        "n_anuncios": 0,
+        "n_anuncios_filtrados": 0,
+        "precio_medio_eur": 192
+      }
+    },
+    {
+      "fichero": "mongo_habitaciones_por_municipio.csv",
+      "filas": 9,
+      "cols": 7,
+      "nulos_primeras": {
+        "municipio": 0,
+        "n": 0,
+        "n_precio": 0,
+        "min_precio_eur": 0,
+        "max_precio_eur": 0,
+        "mediana_precio_eur": 0
+      }
+    },
+    {
+      "fichero": "mongo_modalidades.csv",
+      "filas": 2,
+      "cols": 3,
+      "nulos_primeras": {
+        "n": 0,
+        "precio_medio": 0,
+        "modalidad": 0
+      }
+    },
+    {
+      "fichero": "mongo_tier_confianza.csv",
+      "filas": 252,
+      "cols": 20,
+      "nulos_primeras": {
+        "territorio": 0,
+        "n_anuncios": 0,
+        "tier": 0,
+        "n_precio": 0,
+        "n_precio_temporal": 0,
+        "n_precio_larga": 0
+      }
+    },
+    {
+      "fichero": "mongo_vpo_por_municipio.csv",
+      "filas": 322,
+      "cols": 9,
+      "nulos_primeras": {
+        "n_promociones": 0,
+        "codigo_ine": 0,
+        "estado": 0,
+        "tipologia": 0,
+        "viviendas": 322,
+        "municipio": 0
+      }
+    },
+    {
+      "fichero": "mongo_vpo_terminadas_por_municipio.csv",
+      "filas": 251,
+      "cols": 5,
+      "nulos_primeras": {
+        "vpo_terminadas_por_mil": 0,
+        "anio_fuente": 0,
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0
+      }
+    },
+    {
+      "fichero": "ranking_esfuerzo.csv",
+      "filas": 4,
+      "cols": 7,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0,
+        "n_anuncios": 0,
+        "esfuerzo_joven_pct_18_34": 0,
+        "esfuerzo_joven_pct_16_29": 0
+      }
+    },
+    {
+      "fichero": "sensibilidad_idw.csv",
+      "filas": 2,
+      "cols": 5,
+      "nulos_primeras": {
+        "escenario": 0,
+        "n": 0,
+        "mediana_esfuerzo_pct": 0,
+        "n_sobre_30": 0,
+        "pct_sobre_30": 0
+      }
+    },
+    {
+      "fichero": "udalmap_paro.csv",
+      "filas": 252,
+      "cols": 6,
+      "nulos_primeras": {
+        "codigo_ine": 0,
+        "municipio": 0,
+        "territorio": 0,
+        "tasa_paro_lanbide_pct": 0,
+        "metodo_imputacion": 0,
+        "is_imputed": 0
+      }
+    }
+  ],
+  "png": [
+    {
+      "fichero": "A1_distribucion_esfuerzo_por_TH.png",
+      "bytes": 21327,
+      "mtime": 1794146422.565323
+    },
+    {
+      "fichero": "A2_pct_inasequibles_por_TH.png",
+      "bytes": 16228,
+      "mtime": 1794146422.9493804
+    },
+    {
+      "fichero": "B_paro_vs_precio.png",
+      "bytes": 22856,
+      "mtime": 1794146423.0161984
+    },
+    {
+      "fichero": "C_vpo_por_estado.png",
+      "bytes": 18304,
+      "mtime": 1794146423.076047
+    },
+    {
+      "fichero": "D_distancia_vs_precio.png",
+      "bytes": 24672,
+      "mtime": 1794146423.1949563
+    },
+    {
+      "fichero": "dumbbell_esfuerzo_18_24_vs_25_34.png",
+      "bytes": 115121,
+      "mtime": 1794168915.5573797
+    },
+    {
+      "fichero": "E_confort_vs_esfuerzo.png",
+      "bytes": 35712,
+      "mtime": 1794146423.2810385
+    },
+    {
+      "fichero": "F_comparativa_th.png",
+      "bytes": 30477,
+      "mtime": 1794168916.000558
+    },
+    {
+      "fichero": "g2_renta_vs_alquiler.png",
+      "bytes": 45805,
+      "mtime": 1794146422.657572
+    },
+    {
+      "fichero": "g3_top10_precio_medio.png",
+      "bytes": 24019,
+      "mtime": 1794146422.740619
+    },
+    {
+      "fichero": "g4_distribucion_anuncios.png",
+      "bytes": 14928,
+      "mtime": 1794146422.812919
+    },
+    {
+      "fichero": "g5_esfuerzo_robustos.png",
+      "bytes": 23368,
+      "mtime": 1794146422.8944893
+    },
+    {
+      "fichero": "H10_tension_vs_esfuerzo.png",
+      "bytes": 49446,
+      "mtime": 1794146426.8555346
+    },
+    {
+      "fichero": "H11_imputacion_oficial_idw_por_TH.png",
+      "bytes": 18004,
+      "mtime": 1794146427.1272955
+    },
+    {
+      "fichero": "H13_mediana_precio_m2_winsorizada.png",
+      "bytes": 20139,
+      "mtime": 1794146427.656428
+    },
+    {
+      "fichero": "H1_ranking_esfuerzo_18_34.png",
+      "bytes": 29826,
+      "mtime": 1794146423.801111
+    },
+    {
+      "fichero": "H2_tier_confianza_ABCD.png",
+      "bytes": 63188,
+      "mtime": 1794168915.9289622
+    },
+    {
+      "fichero": "H3_esfuerzo_por_sexo.png",
+      "bytes": 54517,
+      "mtime": 1794146424.709574
+    },
+    {
+      "fichero": "H5_vpo_terminadas_por_mil.png",
+      "bytes": 41438,
+      "mtime": 1794146425.2941864
+    },
+    {
+      "fichero": "H6_habitaciones_mediana_rango.png",
+      "bytes": 25218,
+      "mtime": 1794146425.8436153
+    },
+    {
+      "fichero": "H7_accesibilidad_tiempo_capital.png",
+      "bytes": 76242,
+      "mtime": 1794146426.182039
+    },
+    {
+      "fichero": "H8_tier_mediana_temporal_vs_larga.png",
+      "bytes": 49839,
+      "mtime": 1794168916.108929
+    },
+    {
+      "fichero": "hist_esfuerzo_18_34_umbral30.png",
+      "bytes": 56791,
+      "mtime": 1794168915.0925887
+    },
+    {
+      "fichero": "J_tier_confianza_vs_precio.png",
+      "bytes": 60265,
+      "mtime": 1794168916.3557906
+    },
+    {
+      "fichero": "mapa_coroplastico_esfuerzo_18_34.png",
+      "bytes": 244948,
+      "mtime": 1794168914.918164
+    },
+    {
+      "fichero": "O_ranking_bloqueado_n30.png",
+      "bytes": 43206,
+      "mtime": 1794146429.154685
+    },
+    {
+      "fichero": "P_oficial_vs_anuncios_por_TH.png",
+      "bytes": 45710,
+      "mtime": 1794168916.4689488
+    },
+    {
+      "fichero": "transporte_oferta_vs_esfuerzo.png",
+      "bytes": 108972,
+      "mtime": 1794168915.7305543
+    }
+  ],
+  "png_count": 28,
+  "csv_count": 17,
+  "otros_resultados": [
+    ".gitkeep",
+    "dashboard.html",
+    "dashboard_completo.html",
+    "mapa_esquema_silver.html",
+    "README.md"
+  ]
+}
