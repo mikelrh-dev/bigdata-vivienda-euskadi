@@ -1,0 +1,7 @@
+FALLA requisitos: 46 cabeceras, 46 IDs únicos
+FALLA transform: 45 scripts, 34 nodos DAG
+OK    silver: 188 entradas en manifest_sha256.txt
+OK    env: sin declarar: ninguna
+FALLA pipelines: 11 pipelines en PIPELINE_ORDER
+
+FALLOS: requisitos, transform, pipelines

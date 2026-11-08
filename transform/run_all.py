@@ -241,6 +241,7 @@ EXCLUIDOS: dict[str, str] = {
     "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
     "generar_dashboard_visual.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo en analysis/run_analisis_mongo.py)",
     "generar_dashboard_completo.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo; G literal->conteos Mongo)",
+    "generar_figuras_N.py": "genera PNG P0 N1,N2,N3,N7 y H2 desde CSV sin Mongo vivo (evidencia visual, no silver)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }
 

@@ -1,0 +1,1 @@
+ERROR: --vivo requiere GATE_LIVE=1 (PENDA-01 centro solo en vivo).
