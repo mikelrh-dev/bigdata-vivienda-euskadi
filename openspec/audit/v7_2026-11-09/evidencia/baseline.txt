@@ -1,0 +1,13 @@
+HEAD 9382cea6f13021e2121da3c7495e2907ee7deb65
+BRANCH master
+PY Python 3.12.10
+---STATUS---
+ M .env.example
+ M .github/workflows/quality-gate.yml
+ M AGENT.md
+ M README.md
+ M docs/arquitectura_datos.md
+ M docs/guion_defensa.md
+ M scripts/verificar_gobernanza.py
+ M transform/run_all.py
+?? openspec/audit/v7_2026-11-09/

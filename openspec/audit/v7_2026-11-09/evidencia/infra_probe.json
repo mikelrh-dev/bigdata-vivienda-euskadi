@@ -1,0 +1,22 @@
+{
+  "hdfs_namenode": {
+    "ok": true,
+    "rc": 0,
+    "ms": 6
+  },
+  "kafka": {
+    "ok": true,
+    "rc": 0,
+    "ms": 18
+  },
+  "mongo_local": {
+    "ok": true,
+    "rc": 0,
+    "ms": 1
+  },
+  "hdfs_http": {
+    "ok": true,
+    "status": 200,
+    "ms": 57
+  }
+}

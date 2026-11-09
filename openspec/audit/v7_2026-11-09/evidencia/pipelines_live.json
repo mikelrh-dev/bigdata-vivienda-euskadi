@@ -1,0 +1,170 @@
+{
+  "pipeline_indicadores_municipio": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "cuantia_alquiler_mes",
+      "esfuerzo_alquiler_pct",
+      "esfuerzo_joven_pct",
+      "esfuerzo_joven_pct_16_29",
+      "esfuerzo_joven_pct_18_24",
+      "esfuerzo_joven_pct_18_34",
+      "esfuerzo_joven_pct_25_34",
+      "estado",
+      "etxebide_solicitudes_por_mil",
+      "is_imputed",
+      "mediana_precio_m2_winsorizada",
+      "metodo_imputacion",
+      "n_anuncios",
+      "n_anuncios_filtrados",
+      "n_larga_estancia",
+      "n_precio",
+      "n_temporal",
+      "nombre",
+      "precio_medio_eur",
+      "renta_joven",
+      "renta_joven_18_24",
+      "renta_joven_18_34",
+      "renta_joven_25_34",
+      "renta_m2_alquiler",
+      "superficie_media_m2",
+      "tasa_paro_lanbide_pct",
+      "tension_categoria",
+      "tension_demanda_social",
+      "territorio",
+      "tiene_alquiler_oficial",
+      "tier"
+    ]
+  },
+  "pipeline_alquiler_por_municipio": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "cuantia_media",
+      "n_registros",
+      "nombre",
+      "renta_m2_media",
+      "superficie_media",
+      "territorio"
+    ]
+  },
+  "pipeline_modalidades": {
+    "n": 2,
+    "keys": [
+      "modalidad",
+      "n",
+      "precio_medio"
+    ]
+  },
+  "pipeline_top_municipios_por_esfuerzo": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "esfuerzo_joven_pct",
+      "esfuerzo_joven_pct_16_29",
+      "esfuerzo_joven_pct_18_34",
+      "n_anuncios",
+      "nombre",
+      "territorio"
+    ]
+  },
+  "pipeline_esfuerzo_por_sexo": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "esfuerzo_alquiler_hombres_pct",
+      "esfuerzo_alquiler_mujeres_pct",
+      "nombre",
+      "territorio"
+    ]
+  },
+  "pipeline_accesibilidad_extendida": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "accesibilidad_municipio",
+      "esfuerzo_alquiler_pct",
+      "esfuerzo_joven_pct",
+      "esfuerzo_joven_pct_16_29",
+      "esfuerzo_joven_pct_18_34",
+      "indice_confort",
+      "minutos_Bilbao",
+      "minutos_Vitoria",
+      "nombre",
+      "territorio",
+      "tiempo_acceso_capital_th",
+      "viviendas_mas_50_anios_pct"
+    ]
+  },
+  "pipeline_udalmap_extendido_osrm": {
+    "n": 2,
+    "keys": [
+      "_id",
+      "nombre",
+      "osrm",
+      "territorio",
+      "udx"
+    ]
+  },
+  "pipeline_vpo_por_municipio": {
+    "n": 2,
+    "keys": [
+      "codigo_ine",
+      "esfuerzo_joven_pct",
+      "esfuerzo_joven_pct_16_29",
+      "esfuerzo_joven_pct_18_34",
+      "estado",
+      "municipio",
+      "n_promociones",
+      "tipologia",
+      "viviendas"
+    ]
+  },
+  "pipeline_vpo_terminadas": {
+    "n": 2,
+    "keys": [
+      "anio_fuente",
+      "codigo_ine",
+      "municipio",
+      "territorio",
+      "vpo_terminadas_por_mil"
+    ]
+  },
+  "pipeline_tier_por_municipio": {
+    "n": 2,
+    "keys": [
+      "codigo_ine",
+      "max_precio",
+      "max_precio_larga",
+      "max_precio_temporal",
+      "mediana_larga",
+      "mediana_precio",
+      "mediana_precio_larga",
+      "mediana_precio_temporal",
+      "mediana_temporal",
+      "min_precio",
+      "min_precio_larga",
+      "min_precio_temporal",
+      "n_anuncios",
+      "n_precio",
+      "n_precio_larga",
+      "n_precio_temporal",
+      "nombre",
+      "territorio",
+      "tier",
+      "tier_etiqueta"
+    ]
+  },
+  "pipeline_habitaciones_por_municipio": {
+    "n": 2,
+    "keys": [
+      "codigo_ine",
+      "max_precio_eur",
+      "mediana_precio_eur",
+      "min_precio_eur",
+      "municipio",
+      "n",
+      "n_precio"
+    ]
+  }
+}

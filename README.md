@@ -98,16 +98,16 @@ erDiagram
 | 3 | Transformaciones (entity resolution, dim_municipios, distancias, filtrado, enriquecimiento, geojson, metadata) | ✅ Hecha (parcial) |
 | 3b | Cuarentena Silver + vistas de mercado + profiling + mapa esquema | ✅ Hecha |
 | 4 | HDFS centro + Mongo local sin Docker Compose en repo | ✅ Hecha (HDFS centro + Mongo local) |
-| 5 | Subida HDFS + recuperación | ✅ Hecha (352 ficheros raw en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw, sin legacy) |
-| 6 | Modelado + operaciones PyMongo | ✅ Hecha (14 colecciones, PyMongo) |
-| 7 | Aggregation Pipeline | ✅ Hecha (10 pipelines) |
-| 8 | Kafka productor/consumidor | ✅ Hecha (broker del centro 10.22.87.215:9092, topic `anuncios_inmobiliarios` 1 partición, productor de manifiesto y consumidor que sube a HDFS) |
+| 5 | Subida HDFS + recuperación | ✅ Hecha (352 ficheros raw canónicos en /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw; manifest local 354 en docs/raw_manifest_sha256.txt — ver nota 352 vs 354) |
+| 6 | Modelado + operaciones PyMongo | ✅ Hecha (16 colecciones vivas en Mongo local: 14 de negocio + 2 de habitaciones `anuncios_habitaciones_unificados` 201 y `anuncios_habitaciones_unificados_bigdata` 201; + 14 `__backup` = 30 totales; PyMongo) |
+| 7 | Aggregation Pipeline | ✅ Hecha (11 pipelines en `analysis/run_analisis_mongo.py` `PIPELINE_ORDER`; antes 10) |
+| 8 | Kafka productor/consumidor | ✅ Hecha (broker del centro 10.22.87.215:9092, topic vigente `vivienda_euskadi` 1 partición RF 1, productor de manifiesto y consumidor que sube a HDFS; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06) |
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros de `data/raw`; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la recuperación verificada (`scripts/hdfs_recuperacion_un_fichero.py`) y esta excepción declarada, no supuesta.
+> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros canónicos de `data/raw` en HDFS; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la recuperación verificada (`scripts/hdfs_recuperacion_un_fichero.py`) y esta excepción declarada, no supuesta. Nota 352 vs 354: el manifest local `docs/raw_manifest_sha256.txt` tiene 354 entradas SHA (incluye 2 alias legacy no publicados en HDFS); el canónico publicado en HDFS es 352. El gate offline (`scripts/gate_extremo_a_extremo.py --offline`) verifica 354 SHA + silver 188.
 
-Tests del contrato: `177 passed, 1 skipped` (178 collected, ver `pytest tests/ -q`; WP-19 incluido + 15 pisos re-resolucion + 7 Tier confianza). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md.
+Tests del contrato: `236 passed, 2 skipped` (238 collected, ver `pytest tests/ -q`). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md (gobernanza: 46 requisitos con ID numérico, 45 scripts en transform/ con 34 en el DAG, 11 pipelines — ver `scripts/verificar_gobernanza.py`).
 
 ## 📁 Estructura
 
@@ -117,9 +117,9 @@ bigdata-vivienda-euskadi/
 ├── config/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
 ├── extract/           Extracción API, scraping y descargas directas
-├── transform/         Limpieza y enriquecimiento (44 scripts; 34 en el DAG)
-├── storage/           PyMongo + HDFS central + Kafka VM (listos)
-├── analysis/          Aggregation Pipeline (hecho, 10 pipelines) + CSV desde Mongo
+├── transform/         Limpieza y enriquecimiento (45 scripts; 34 en el DAG)
+├── storage/           PyMongo + HDFS central + Kafka centro (listos)
+├── analysis/          Aggregation Pipeline (hecho, 11 pipelines en PIPELINE_ORDER) + 8 CSV `mongo_*` desde Mongo
 ├── notebooks/         Informe de resultados (pendiente)
 ├── data/raw/          Datos generados (ignorados por git, 356 archivos)
 ├── data/procesado/    Datos normalizados (ignorados por git, 188 archivos, manifest 188)
@@ -133,10 +133,10 @@ bigdata-vivienda-euskadi/
 | Métrica | Valor |
 |---|---:|
 | Municipios de referencia | 252 |
-| Archivos raw (bronce) | 356 en disco local; 352 ficheros raw publicados en HDFS (manifest local en `docs/raw_manifest_sha256.txt`) |
+| Archivos raw (bronce) | 356 en disco local; 352 ficheros raw canónicos en HDFS; manifest local 354 SHA en `docs/raw_manifest_sha256.txt` (354 = 352 HDFS + 2 alias legacy no publicados; ver nota 352 vs 354) |
 | Archivos raw por tipo | CSV 129, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
 | Archivos silver | 188 (manifest 188: excluidos `.gitkeep`/`ingestion_manifest.json`/manifest; antes 185 como historia) |
-| Anuncios unificados | 594 (326 larga estancia + 268 temporal) en 64 municipios |
+| Anuncios unificados | 594 vigentes post re-resolucion pisos (843 raw → 594 tras dedup + cuarentena 45; 759 es la cifra histórica pre-v5, no vigente) (326 larga estancia + 268 temporal) en 64 municipios |
 | Anuncios residenciales | 326 en 53 municipios |
 | Anuncios de habitaciones | 201 en 9 municipios |
 | Municipios sin anuncios residenciales | 188 |
@@ -145,7 +145,7 @@ bigdata-vivienda-euskadi/
 | Tier A/B/C/D (de `mongo_tier_confianza.csv`) | A fuerte 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria 39) / B indicativo 3 / C sin precio municipal 57 / D sin dato 188 |
 | Precio medio observable | Solo 62/252 con anuncio real (resto None, sin IDW/comarcal); esfuerzo 252 contextual sobre 159 oficiales |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
-| Tests | 177 passed, 1 skipped (destructivo separado) |
+| Tests | 236 passed, 2 skipped (238 collected) |
 | VPO | `viviendas=0` en `mongo_vpo_por_municipio.csv` significa «sin dato»: `NumViviendas` vacío en 406/406 promociones; no es stock |
 
 ## 🔍 Conclusiones del análisis (O1–O4)
@@ -162,8 +162,8 @@ bigdata-vivienda-euskadi/
 - `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; generado 2026-11-01, verificar tras regeneracion).
 - `auditoria_lagunas_silver.csv` — profiling de 40 CSVs (filas, nulos, cobertura/252 muns).
 - `dashboard.html` / `dashboard_completo.html` — dashboards estaticos manuales con conclusiones (los generadores `transform/generar_dashboard_*.py` solo producen PNG, no HTML).
-- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` se genera desde conteos Mongo en `analysis/run_analisis_mongo.py` (imputados/sin anuncios/sin precio), no con literales. La evidencia válida son los 6 CSV canónicos auto generados con PyMongo en `data/resultados/` según AGREGACION-01 (`mongo_esfuerzo_por_municipio.csv` 253 líneas, `mongo_alquiler_por_municipio.csv` 253, `mongo_modalidades.csv` 3, `comparativa_3_municipios_mongo.csv` 5, `mongo_accesibilidad_extendida.csv` 253, `mongo_vpo_por_municipio.csv` 323, `mongo_tier_confianza.csv` 253; + `mongo_vpo_terminadas_por_municipio.csv` 252 adicional).
-- 12 PNG únicos (13 emitidos; g1 duplicado de A1 eliminado sin renumerar) — gráficos por bloques.
+- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` se genera desde conteos Mongo en `analysis/run_analisis_mongo.py` (imputados/sin anuncios/sin precio), no con literales. La evidencia válida son los 8 CSV `mongo_*` auto generados con PyMongo en `data/resultados/` según AGREGACION-01 (`mongo_esfuerzo_por_municipio.csv`, `mongo_alquiler_por_municipio.csv`, `mongo_modalidades.csv`, `mongo_accesibilidad_extendida.csv`, `mongo_vpo_por_municipio.csv`, `mongo_tier_confianza.csv`, `mongo_vpo_terminadas_por_municipio.csv`, `mongo_habitaciones_por_municipio.csv`; los 6 canónicos de AGREGACION-01 + VPO terminadas adicional + habitaciones; ver `analysis/run_analisis_mongo.py` `EXPORTS_8`).
+- 28+8 PNG (28 en `data/resultados/` + 8 en `data/resultados/anexo/` generados por `exportar_png_desde_mongo` desde los 11 pipelines; antes 12 únicos / 13 emitidos, cifra histórica de DuckDB). Los de anexo se conservan sin pérdida (g1, H4, G, I, H9, K, L, H12).
 - `README.md` — índice de artefactos.
 
 #### Demo KPI (8,5 s)
@@ -195,7 +195,9 @@ Variables de infraestructura (clúster centro):
 export HDFS_URL=http://10.22.87.215:50070
 export HDFS_USER=iabd-user15
 export KAFKA_BOOTSTRAP_SERVERS=10.22.87.215:9092
-export KAFKA_TOPIC=anuncios_inmobiliarios
+export KAFKA_TOPIC=vivienda_euskadi
+export KAFKA_NUM_PARTITIONS=1
+export KAFKA_REPLICATION_FACTOR=1
 ```
 
 ### 2. Descargar la cartografía municipal
@@ -251,13 +253,13 @@ completos.
 | RealtyAPI.io (Idealista, no oficial) | API | Opcional, 84 anuncios |
 | INE Atlas de la renta | Descarga directa | Rellena municipios faltantes de renta |
 | Udalmap (api.euskadi.eus) | API | Actividad, ocupación, paro Lanbide, VPO, renta... |
-| HDFS clúster centro | Infraestructura | `HDFS_URL=http://10.22.87.215:50070`, `HDFS_USER=iabd-user15` (352 ficheros raw sin legacy; solo `raw`, ver la excepción declarada arriba) |
-| Kafka clúster centro | Infraestructura | `KAFKA_BOOTSTRAP_SERVERS=10.22.87.215:9092`, `KAFKA_TOPIC=anuncios_inmobiliarios` (broker `hadoop-master1.tartangalh.eus`, 1 partición, RF 1) |
+| HDFS clúster centro | Infraestructura | `HDFS_URL=http://10.22.87.215:50070`, `HDFS_USER=iabd-user15` (352 ficheros raw canónicos en HDFS; manifest local 354 SHA con 2 alias legacy; solo `raw`, ver la excepción declarada arriba) |
+| Kafka clúster centro | Infraestructura | `KAFKA_BOOTSTRAP_SERVERS=10.22.87.215:9092`, `KAFKA_TOPIC=vivienda_euskadi` (1 partición, RF 1; topic viejo `anuncios_inmobiliarios` eliminado) |
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (177 passed, 1 skipped destructivo separado)
-- MongoDB (36 passed en la suite Mongo antes del cierre): `.venv/Scripts/python.exe storage/load_mongo.py` (14 colecciones, PyMongo, índices); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (10 pipelines a CSV); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (236 passed, 2 skipped). Gobernanza: `.venv/Scripts/python.exe scripts/verificar_gobernanza.py` (TODO OK: 46 requisitos, 45 scripts / 34 DAG, 188 silver, 0 env sin declarar, 11 pipelines). Staleness: `.venv/Scripts/python.exe transform/run_all.py --check` (34/34 OK). Gate offline: `.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline` (OK: 354 SHA + 188 silver + 14 nombres en loader + 0 duplicados + lag 0). FAIL 07 conocido en `scripts/verificar_fase_datos.py` (paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26) documentado sin enmascarar — no se toca data para forzarlo.
+- MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (16 vivas + 14 `__backup` = 30 totales, PyMongo, índices ESR/2dsphere); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (11 pipelines a 8 CSV `mongo_*` + 28+8 PNG; `explain()` COLLSCAN→IXSCAN con `analysis/mongo_indexes.py` `explain_before_after`); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4 filas: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
 - Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
@@ -266,8 +268,8 @@ completos.
 
 ## ⚠️ Cosas que faltan
 
-- **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`. Flujo vigente vía Kafka: `storage/kafka_raw_producer.py` publica manifiesto y `storage/kafka_hdfs_uploader.py` sube con `InsecureClient` directo (sin pasar por utils).
-- **Kafka:** listo en el broker del clúster centro `10.22.87.215:9092` (`hadoop-master1.tartangalh.eus`), topic `anuncios_inmobiliarios` con 1 partición (RF 1). Productor y consumidor Python en `storage/kafka_raw_producer.py` (publica el manifiesto `{rel,size,sha256}` de cada fichero de `data/raw`) y `storage/kafka_hdfs_uploader.py` (consume y sube a HDFS, descartando por SHA lo que ya coincide). Kafka no escribe en Mongo: Mongo se carga en batch con `storage/load_mongo.py`. Tests offline del pipeline en `tests/test_kafka_pipeline.py` (dobles de `KafkaProducer`/`KafkaConsumer`/`InsecureClient`, sin broker).
+- **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw` (352 canónicos; manifest local 354). Flujo vigente vía Kafka: `storage/kafka_raw_producer.py` publica manifiesto y `storage/kafka_hdfs_uploader.py` sube con `InsecureClient` directo (sin pasar por utils).
+- **Kafka:** listo en el broker del clúster centro `10.22.87.215:9092`, topic vigente `vivienda_euskadi` con 1 partición (RF 1, justificado: single node sin alta disponibilidad, upsert idempotente; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06, datos Kafka borrados, colección `vivienda_euskadi.anuncios` vaciada — cifra histórica 759 pre-v5, vigente 594/843). Productor y consumidor Python en `storage/kafka_raw_producer.py` (publica el manifiesto `{rel,size,sha256}` de cada fichero de `data/raw`) y `storage/kafka_hdfs_uploader.py` (consume y sube a HDFS, descartando por SHA lo que ya coincide). Kafka no escribe en Mongo: Mongo se carga en batch con `storage/load_mongo.py`. Tests offline del pipeline en `tests/test_kafka_pipeline.py` (dobles de `KafkaProducer`/`KafkaConsumer`/`InsecureClient`, sin broker).
 - **Informe y demo:** pendiente. Aggregation Pipeline, indicadores y CSV desde Mongo hechos (`analysis/run_analisis_mongo.py`); falta informe/demo final.
 - **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal para los 93 faltantes.
@@ -282,6 +284,8 @@ completos.
 - **Cobertura de anuncios:** n≥30 como umbral de robustez, “sin dato” como valor legítimo para municipios sin anuncios.
 - **Temporal vs larga estancia:** no mezclar. Los anuncios de alquiler temporal tienen un precio ~24% mayor.
 - **Paro y actividad:** fuente oficial municipal (Udalmap + Lanbide). `tasa_paro_aprox_pct` invalidado → usar `tasa_paro_lanbide_pct`.
+- **Índices ESR + explain:** la consulta `ubicacion.codigo_ine` + `modalidad` + `precio_eur` pasa de COLLSCAN (594 examinados) a IXSCAN (1 examinado) con el índice compuesto ESR `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` en `analysis/mongo_indexes.py`; `explain_before_after()` lo demuestra en `analysis/run_analisis_mongo.py`.
+- **Atomicidad vs transacción:** la atomicidad de un único documento (upsert idempotente, índice único `(portal, id_anuncio)`) no exige replica set; la transacción multi-documento commit/abort sí exigiría replica set y no se fuerza en el standalone local (solo sonda en `vivienda_euskadi_test`).
 
 ## 📖 Documentación
 
@@ -301,5 +305,5 @@ El flujo actual tiene dos ramas sobre los mismos originales: fuente → silver �
 - VPO: 406 promociones en 77 municipios con `NumViviendas` vacío (stock no público); el flujo oficial municipal se integra aparte.
 - ECVI solo territorial/área funcional, no municipal.
 - Correlaciones laborales débiles/espurias: paro-alquiler r≈0,385 (conteos) / 0,146 (tasas); afiliación SS vs alquiler ≈-0,011.
-- Infraestructura: MongoDB hecho (14 colecciones, 10 pipelines), HDFS centro y Kafka centro listos y documentados, falta solo el gate extremo a extremo y la demo final.
+- Infraestructura: MongoDB hecho (16 vivas + 14 backup = 30 totales, 11 pipelines), HDFS centro y Kafka centro listos y documentados, CI en rama `master` (`.github/workflows/quality-gate.yml`) con gate vivo solo manual `GATE_LIVE=1`; gobernanza 46/45/11 (ver `scripts/verificar_gobernanza.py`).
 - Distancias por carretera solo Gipuzkoa; Álava/Bizkaia por Haversine.

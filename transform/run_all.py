@@ -325,6 +325,20 @@ def _orden_topologico(scripts: list[str]) -> list[str]:
 def _estado(script: str) -> tuple[str, str]:
     """Devuelve (estado, detalle) sin ejecutar nada."""
     salidas = _salidas(script)
+    # Gobernanza (sin tocar datos): normalizar_json_crudos declara
+    # raw:*.json -> proc:*_normalizado.json. Existe un huerfano legacy
+    # udalmap_empleo_corregido_normalizado.json (2026-11-05, sin raw
+    # correspondiente, parte del manifest silver 188 pero no lo produce
+    # el pipeline actual). Si se incluye en min(mtime), cualquier raw
+    # posterior (lanbide_paro_*.json 2026-11-07) se marca falsamente
+    # como DESACTUALIZADO aunque los bytes sean identicos al manifest
+    # (0 diffs vs run_manifest verificado 2026-11-09). Se excluyen las
+    # salidas sin entrada correspondiente solo para este script glob->glob.
+    if script == "normalizar_json_crudos.py":
+        entradas_nombres = {p.name for p in _entradas(script)}
+        salidas = [p for p in salidas
+                   if p.name.replace("_normalizado.json", ".json")
+                   in entradas_nombres]
     if not salidas:
         return "SIN-DECLARAR", "sin salidas declaradas"
     faltan = [p.name for p in salidas if not p.exists()]
