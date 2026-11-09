@@ -150,14 +150,14 @@ def test_defaults_apuntan_al_cluster_centro(monkeypatch) -> None:
         monkeypatch.delenv(var, raising=False)
     assert DEFAULT_BOOTSTRAP_SERVERS == "10.22.87.215:9092"
     assert DEFAULT_BOOTSTRAP == "10.22.87.215:9092"
-    assert DEFAULT_TOPIC == "anuncios_inmobiliarios"
+    assert DEFAULT_TOPIC == "vivienda_euskadi"
     assert DEFAULT_GROUP == "hdfs_centro"
     assert DEFAULT_DEST == (
         "/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw"
     )
     assert get_bootstrap_servers() == "10.22.87.215:9092"
     assert get_bootstrap() == "10.22.87.215:9092"
-    assert get_topic() == "anuncios_inmobiliarios"
+    assert get_topic() == "vivienda_euskadi"
     assert get_group() == "hdfs_centro"
     assert get_idle_ms() == 10_000
 
@@ -214,7 +214,7 @@ def test_produce_publica_con_key_rel_y_api_future(monkeypatch, tmp_path, capsys)
     # Cada envio registro exito y error (API de Future, no `callback=`).
     assert all(len(f.callbacks) == 1 and len(f.errbacks) == 1 for f in fake.futures)
     salida = capsys.readouterr().out
-    assert "Publicado anuncios_inmobiliarios:0@" in salida
+    assert "Publicado vivienda_euskadi:0@" in salida
     assert "ADAPTER_RAW_PUBLICADOS 3" in salida
 
 
@@ -222,9 +222,19 @@ def test_produce_cierra_su_propio_productor_y_respeta_limit(monkeypatch, tmp_pat
     raw = _raw_tree(tmp_path)
     monkeypatch.setattr("storage.kafka_raw_producer.DEFAULT_RAW_DIR", raw)
     fake = FakeProducer()
+
+    class _FakeAdmin:
+        created = []
+
+        def create_topics(self, configs):
+            self.created.extend(configs)
+
+        def close(self):
+            pass
+
     monkeypatch.setattr("kafka.KafkaProducer", lambda **kwargs: fake)
 
-    enviados = produce(limit=1)
+    enviados = produce(limit=1, admin=_FakeAdmin())
 
     assert enviados == 1
     assert len(fake.sent) == 1
