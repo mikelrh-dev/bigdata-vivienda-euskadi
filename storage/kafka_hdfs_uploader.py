@@ -1,6 +1,6 @@
 """Consumer Windows: consume manifiesto Kafka y sube a HDFS (Windows -> Kafka -> HDFS).
 
-Grupo hdfs_centro, topic anuncios_inmobiliarios, broker centro
+Grupo hdfs_centro, topic vivienda_euskadi, broker centro
 10.22.87.215:9092. Descarta mensajes sin type raw_manifest, valida
 rel (sin .. / absoluta), comprueba SHA+size en data/raw local
 contra manifiesto y hace put WebHDFS con
@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-DEFAULT_TOPIC = "anuncios_inmobiliarios"
+DEFAULT_TOPIC = "vivienda_euskadi"
 DEFAULT_GROUP = "hdfs_centro"
 DEFAULT_BOOTSTRAP = "10.22.87.215:9092"
 DEFAULT_HDFS_URL = "http://10.22.87.215:50070"

@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -18,9 +19,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 DEFAULT_RAW_DIR = ROOT / "data" / "raw"
 DEFAULT_BOOTSTRAP_SERVERS = "10.22.87.215:9092"
-DEFAULT_TOPIC = "anuncios_inmobiliarios"
+DEFAULT_TOPIC = "vivienda_euskadi"
 
 
 def get_bootstrap_servers() -> str:
@@ -43,11 +46,19 @@ def manifest_entry(path: Path, raw_dir: Path | str | None = None) -> dict:
     return {"type": "raw_manifest", "rel": rel, "size": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
 
-def produce(limit: int | None = None, topic: str | None = None, bootstrap_servers: str | None = None, producer=None) -> int:
+def produce(limit: int | None = None, topic: str | None = None, bootstrap_servers: str | None = None, producer=None, admin=None) -> int:
     files = iter_raw_files()
     if limit is not None:
         files = files[:limit]
     own = producer is None
+    if own or admin is not None:
+        from storage.kafka_topic import ensure_topic as _ensure_topic
+
+        _ensure_topic(
+            topic=topic or get_topic(),
+            bootstrap_servers=bootstrap_servers or get_bootstrap_servers(),
+            admin=admin,
+        )
     if own:
         from kafka import KafkaProducer
 
