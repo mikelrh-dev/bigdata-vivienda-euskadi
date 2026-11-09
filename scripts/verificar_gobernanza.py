@@ -1,11 +1,12 @@
 """Guarda de gobernanza: cifras canónicas e IDs únicos (solo lectura).
 
-Comprueba lo que la auditoría 2026-11-07 dejó fijado:
-- 45 cabeceras de requisito con IDs únicos.
-- 44 scripts en transform/ y 34 nodos en el DAG.
+Comprueba lo que la auditoría dejó fijado (v6 2026-11-08, valores reales
+contados con Python):
+- 46 cabeceras de requisito con ID numérico único.
+- 45 scripts en transform/ y 34 nodos en el DAG.
 - 188 entradas en el manifiesto silver.
 - 0 variables de entorno usadas sin declarar en .env.example.
-- 10 pipelines en PIPELINE_ORDER.
+- 11 pipelines en PIPELINE_ORDER.
 
 Uso: .venv/Scripts/python.exe scripts/verificar_gobernanza.py
 """
@@ -40,7 +41,7 @@ def ids_requisito() -> list[str]:
 
 def main() -> int:
     ids = ids_requisito()
-    check("requisitos", len(ids) == 45 and len(set(ids)) == 45,
+    check("requisitos", len(ids) == 46 and len(set(ids)) == 46,
           f"{len(ids)} cabeceras, {len(set(ids))} IDs únicos")
 
     transform = sorted((ROOT / "transform").glob("*.py"))
@@ -49,7 +50,7 @@ def main() -> int:
     for node in tree.body:
         if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "SCRIPTS":
             dag = len(node.value.keys)
-    check("transform", len(transform) == 44 and dag == 34,
+    check("transform", len(transform) == 45 and dag == 34,
           f"{len(transform)} scripts, {dag} nodos DAG")
 
     silver = ROOT / "data" / "procesado" / "manifest_sha256.txt"
@@ -69,7 +70,7 @@ def main() -> int:
     texto = (ROOT / "analysis" / "run_analisis_mongo.py").read_text(encoding="utf-8")
     bloque = re.search(r"PIPELINE_ORDER[^=]*=\s*\((.*?)\)", texto, re.S)
     pipelines = len(re.findall(r'"pipeline_[a-z_]+"', bloque.group(1))) if bloque else 0
-    check("pipelines", pipelines == 10, f"{pipelines} pipelines en PIPELINE_ORDER")
+    check("pipelines", pipelines == 11, f"{pipelines} pipelines en PIPELINE_ORDER")
 
     print(f"\n{'TODO OK' if not ERRORES else 'FALLOS: ' + ', '.join(ERRORES)}")
     return 0 if not ERRORES else 1

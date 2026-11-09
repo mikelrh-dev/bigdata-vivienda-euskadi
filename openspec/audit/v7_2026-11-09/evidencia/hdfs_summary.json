@@ -1,0 +1,23 @@
+{
+  "raw": {
+    "directoryCount": 6,
+    "fileCount": 352,
+    "length": 895597494,
+    "quota": -1,
+    "spaceConsumed": 2686792482,
+    "spaceQuota": -1,
+    "typeQuota": {}
+  },
+  "procesado": {
+    "error": "<HTTPError 404: 'Not Found'>"
+  },
+  "root": {
+    "directoryCount": 7,
+    "fileCount": 352,
+    "length": 895597494,
+    "quota": -1,
+    "spaceConsumed": 2686792482,
+    "spaceQuota": -1,
+    "typeQuota": {}
+  }
+}

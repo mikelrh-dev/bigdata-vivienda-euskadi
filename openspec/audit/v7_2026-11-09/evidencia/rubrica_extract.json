@@ -1,0 +1,6 @@
+{
+  "pdf_error": "ModuleNotFoundError(\"No module named 'pdfplumber'\")",
+  "python_docx": true,
+  "docx_chars": 8531,
+  "docx_has_pesos": false
+}

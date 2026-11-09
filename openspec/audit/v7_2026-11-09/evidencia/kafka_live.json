@@ -1,0 +1,579 @@
+{
+  "topics": [
+    "KAFKA_1",
+    "__consumer_offsets",
+    "anuncios_alquiler_reto",
+    "anuncios_inmobiliarios",
+    "anuncios_vivienda",
+    "claudiaPedidos",
+    "datos_vivienda",
+    "euskadi_vivienda_hdfs_user6",
+    "euskadi_vivienda_prueba_user6",
+    "euskadi_vivienda_user13",
+    "euskadi_vivienda_user6",
+    "pedidos_iabd-user10",
+    "pedidos_iabd-user11",
+    "pedidos_iabd-user12",
+    "pedidos_iabd-user13",
+    "pedidos_iabd-user15",
+    "pedidos_iabd-user16",
+    "pedidos_iabd-user17",
+    "pedidos_iabd-user18",
+    "pedidos_iabd-user19",
+    "pedidos_iabd-user7",
+    "pedidos_iabd-user9",
+    "pedidos_iabd_19",
+    "prueba",
+    "prueba_egoitz",
+    "prueba_inigo",
+    "prueba_jag",
+    "reto-vivienda-iabd-user14",
+    "reto1_archivos_iabd-user11",
+    "reto_municipios_vivienda",
+    "reto_vivienda_iabd_user17",
+    "subscribe",
+    "topic_prueba_inexistente",
+    "vivienda_euskadi",
+    "viviendas"
+  ],
+  "describe": {
+    "KAFKA_1": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "__consumer_offsets": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 10,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 20,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 40,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 30,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 9,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 39,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 11,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 31,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 13,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 18,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 22,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 8,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 32,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 43,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 29,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 34,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 1,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 6,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 41,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 27,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 48,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 5,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 15,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 35,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 25,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 46,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 26,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 36,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 44,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 16,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 37,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 17,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 45,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 3,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 4,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 24,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 38,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 33,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 23,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 28,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 2,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 12,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 19,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 14,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 47,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 49,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 42,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 7,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 21,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "anuncios_alquiler_reto": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "anuncios_inmobiliarios": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "anuncios_vivienda": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "claudiaPedidos": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "datos_vivienda": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "euskadi_vivienda_hdfs_user6": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "euskadi_vivienda_prueba_user6": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "euskadi_vivienda_user13": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "euskadi_vivienda_user6": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user10": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user11": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user12": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user13": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user15": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user16": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user17": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 2,
+        "leader": 1001,
+        "replicas": 1
+      },
+      {
+        "partition": 1,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user18": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user19": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user7": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd-user9": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "pedidos_iabd_19": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "prueba": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "prueba_egoitz": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "prueba_inigo": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "prueba_jag": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "reto-vivienda-iabd-user14": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "reto1_archivos_iabd-user11": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "reto_municipios_vivienda": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "reto_vivienda_iabd_user17": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "subscribe": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "topic_prueba_inexistente": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "vivienda_euskadi": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ],
+    "viviendas": [
+      {
+        "partition": 0,
+        "leader": 1001,
+        "replicas": 1
+      }
+    ]
+  },
+  "consumer_topics": [
+    "KAFKA_1",
+    "anuncios_alquiler_reto",
+    "anuncios_inmobiliarios",
+    "anuncios_vivienda",
+    "claudiaPedidos",
+    "datos_vivienda",
+    "euskadi_vivienda_hdfs_user6",
+    "euskadi_vivienda_prueba_user6",
+    "euskadi_vivienda_user13",
+    "euskadi_vivienda_user6",
+    "pedidos_iabd-user10",
+    "pedidos_iabd-user11",
+    "pedidos_iabd-user12",
+    "pedidos_iabd-user13",
+    "pedidos_iabd-user15",
+    "pedidos_iabd-user16",
+    "pedidos_iabd-user17",
+    "pedidos_iabd-user18",
+    "pedidos_iabd-user19",
+    "pedidos_iabd-user7",
+    "pedidos_iabd-user9",
+    "pedidos_iabd_19",
+    "prueba",
+    "prueba_egoitz",
+    "prueba_inigo",
+    "prueba_jag",
+    "reto-vivienda-iabd-user14",
+    "reto1_archivos_iabd-user11",
+    "reto_municipios_vivienda",
+    "reto_vivienda_iabd_user17",
+    "subscribe",
+    "topic_prueba_inexistente",
+    "vivienda_euskadi",
+    "viviendas"
+  ],
+  "offsets": {},
+  "consumer_error": "AttributeError(\"'int' object has no attribute 'topic'\")"
+}

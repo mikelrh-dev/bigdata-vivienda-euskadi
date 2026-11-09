@@ -1,0 +1,815 @@
+﻿fichero,linea,funcion,clase,args,tipo,profundidad,mongo,red,hdfs,escribe,env,except,test,estado,detalle
+extract/01_eustat_api.py,50,obtener_metadatos,,"cliente, tabla_id",extract,A,,,,,,,,REVISADA,"GET → título, variables y valores con sus etiquetas."
+extract/01_eustat_api.py,59,obtener_datos,,"cliente, tabla_id",extract,A,,,,,,,,REVISADA,POST con query vacía → todos los datos de la tabla.
+extract/01_eustat_api.py,74,_mapear_valores,,meta,extract,A,,,,,,,,REVISADA,Construye {variable: {codigo: etiqueta}} a partir de los metadatos.
+extract/01_eustat_api.py,87,tabla_a_filas,,"meta, datos",extract,A,,,,,,,,REVISADA,"Convierte la respuesta {key:[], values:[]} en filas de diccionarios"
+extract/01_eustat_api.py,105,guardar_csv,,"filas, destino, columnas",extract,A,,,,S,,,,REVISADA,
+extract/01_eustat_api.py,116,extraer_tabla,,"cliente, clave, tabla_id",extract,A,,,,,,,,REVISADA,
+extract/01_eustat_api.py,174,main,,,extract,A,,,,S,,S,S,REVISADA,
+extract/02_eustat_alquiler.py,61,_a_numero,,valor,extract,B,,,,,,S,,ESTATICA,"Convierte '10,6' en 10.6; devuelve None si no es numérico."
+extract/02_eustat_alquiler.py,74,parsear_municipal,,texto,extract,B,,,,,,,,ESTATICA,Interpreta el CSV municipal.
+extract/02_eustat_alquiler.py,128,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/03_euskadi_emancipacion.py,38,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/04_b5m_geo.py,39,main,,,extract,B,,,,,,S,S,ESTATICA,
+extract/05_fotocasa_scraper.py,48,_extraer_json,,html,extract,A,,,,,,S,,REVISADA,Busca el bloque JSON que contiene initialSearch.
+extract/05_fotocasa_scraper.py,60,_extraer_caracteristicas,,anuncio,extract,A,,,,,,,,REVISADA,"Fotocasa mete las características en una lista de {key, value}."
+extract/05_fotocasa_scraper.py,88,_url_detalle,,anuncio,extract,A,,,,,,,,REVISADA,El campo 'detail' es un dict {'es-ES': '/es/alquiler/...'}.
+extract/05_fotocasa_scraper.py,103,_normalizar,,anuncio,extract,A,,,,,,S,,REVISADA,Deja cada anuncio en una estructura plana y limpia.
+extract/05_fotocasa_scraper.py,149,_paginas_totales,,resultado,extract,A,,,,,,,,REVISADA,Calcula cuántas páginas hay a partir de 'count'.
+extract/05_fotocasa_scraper.py,157,scrapear_provincia,,"cliente, nombre, ruta, max_paginas, reusar_html",extract,A,,,,S,,S,,REVISADA,
+extract/05_fotocasa_scraper.py,208,main,,,extract,A,,,,S,,,S,REVISADA,
+extract/06_ine_api.py,51,extraer_tabla,,"cliente, tabla",extract,A,,,,,,,,REVISADA,
+extract/06_ine_api.py,59,_ultimo_valor,,serie,extract,A,,,,,,,,REVISADA,Último año con valor no nulo y no secreto.
+extract/06_ine_api.py,71,serie_a_registro,,serie,extract,A,,,,,,,,REVISADA,
+extract/06_ine_api.py,89,main,,,extract,A,,,,S,,S,S,REVISADA,
+extract/07_ine_salarios.py,50,extraer_tabla,,"cliente, tabla",extract,B,,,,,,,,ESTATICA,
+extract/07_ine_salarios.py,57,serie_a_registro,,serie,extract,B,,,,,,,,ESTATICA,"El nombre de la serie es ""Ambito. Subambito. Dato. Ámbito geográfico."
+extract/07_ine_salarios.py,93,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/08_pisos_scraper.py,41,_slug,,nombre,extract,A,,,,,,,,REVISADA,Convierte 'Donostia / San Sebastián' en 'donostia-san-sebastian'.
+extract/08_pisos_scraper.py,48,_limpiar,,texto,extract,A,,,,,,,,REVISADA,
+extract/08_pisos_scraper.py,54,_parsear_anuncios,,html,extract,A,,,,,,S,,REVISADA,Extrae las tarjetas `ad-preview` de una pagina.
+extract/08_pisos_scraper.py,108,_total_resultados,,html,extract,A,,,,,,,,REVISADA,Lee '30 de 43 resultados' -> 43.
+extract/08_pisos_scraper.py,117,scrapear_municipio,,"cliente, nombre, max_paginas",extract,A,,,,,,S,,REVISADA,
+extract/08_pisos_scraper.py,175,main,,,extract,A,,,,S,,S,S,REVISADA,
+extract/09_fotocasa_dirigido.py,33,_slug,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/09_fotocasa_dirigido.py,42,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/09_realtyapi.py,32,_cargar_env,,,extract,B,,,,,S,,,ESTATICA,
+extract/09_realtyapi.py,47,_obtener_key,,,extract,B,,,,,S,,,ESTATICA,
+extract/09_realtyapi.py,57,_slug_busqueda,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/09_realtyapi.py,61,_autocompletar,,"cliente, nombre",extract,B,,,,,,S,,ESTATICA,Devuelve el locationId más adecuado para el municipio.
+extract/09_realtyapi.py,85,_normalizar,,"anuncio, municipio_busqueda, location_id",extract,B,,,,,,,,ESTATICA,
+extract/09_realtyapi.py,112,scrapear_municipio,,"cliente, nombre, max_paginas",extract,B,,,,,,S,,ESTATICA,
+extract/09_realtyapi.py,162,_municipios_desde_alquiler,,,extract,B,,,,S,,,,ESTATICA,
+extract/09_realtyapi.py,182,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,42,_str_or_none,,valor,extract,B,,,,,,S,,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,54,_a_entero,,valor,extract,B,,,,,,S,,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,90,_a_numero,,valor,extract,B,,,,,,S,,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,120,_limpiar_registros,,registros,extract,B,,,,,,,,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,134,parsear_emal,,ruta_xlsx,extract,B,,,,,,,,ESTATICA,Parsea las tablas anuales municipales T2.1/T2.2/T2.3 (fianzas y renta).
+extract/10_opendata_bizilagun_etxebide.py,209,parsear_etxebide,,texto,extract,B,,,,,,,,ESTATICA,Extrae la sección 'Detalle por municipios' y la convierte a formato largo.
+extract/10_opendata_bizilagun_etxebide.py,278,_escribir_csv,,"destino, registros, columnas",extract,B,,,,S,,,S,ESTATICA,
+extract/10_opendata_bizilagun_etxebide.py,288,main,,,extract,B,,,,,,,S,ESTATICA,
+extract/10_ovj_salario.py,32,_descargar,,url,extract,B,,S,,S,,,,ESTATICA,
+extract/10_ovj_salario.py,38,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/10_scraping_faltantes.py,39,_slug,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/10_scraping_faltantes.py,47,_municipios_faltantes,,umbral,extract,B,,,,,,,,ESTATICA,"Devuelve lista de (codigo_ine, nombre_canonico) con n < umbral."
+extract/10_scraping_faltantes.py,71,main,,,extract,B,,,,,,S,S,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,70,cargar_operadores_desde_indice,,,extract,B,,S,,,,,,ESTATICA,"Descarga el indice GTFS de Moveuskadi y devuelve (nombre, slug, url)."
+extract/11_transporte_gtfs_paradas.py,112,_norm,,text,extract,B,,,,,,,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,120,_aliases,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,131,cargar_municipios,,,extract,B,,,,,,S,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,163,municipio_por_punto,,"lat, lon, municipios",extract,B,,,,,,,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,174,municipio_por_nombre,,"stop_name, municipios",extract,B,,,,,,,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,199,extraer_stops,,zip_path,extract,B,,,,S,,,,ESTATICA,
+extract/11_transporte_gtfs_paradas.py,217,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/12_enriquecer_json_anidado.py,41,_ubicacion_fotocasa,,reg,extract,B,,,,,,,,ESTATICA,
+extract/12_enriquecer_json_anidado.py,58,_ubicacion_pisos,,reg,extract,B,,,,,,,,ESTATICA,
+extract/12_enriquecer_json_anidado.py,78,_equipamiento,,reg,extract,B,,,,,,,,ESTATICA,
+extract/12_enriquecer_json_anidado.py,82,_procesar,,"entrada, salida, ubicacion_fn",extract,B,,,,,,,,ESTATICA,
+extract/12_enriquecer_json_anidado.py,97,main,,,extract,B,,,,,,,S,ESTATICA,
+extract/13_scraping_habitaciones.py,58,_slug_fotocasa,,nombre,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,63,_extraer_json,,html,extract,A,,,,,,S,,REVISADA,
+extract/13_scraping_habitaciones.py,74,_extraer_caracteristicas,,anuncio,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,96,_url_detalle_fc,,anuncio,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,110,_normalizar_fc,,"anuncio, municipio_busqueda",extract,A,,,,,,S,,REVISADA,
+extract/13_scraping_habitaciones.py,146,_paginas_totales_fc,,resultado,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,153,scrapear_fotocasa_municipio,,"cliente, nombre, max_paginas",extract,A,,,,,,S,,REVISADA,
+extract/13_scraping_habitaciones.py,206,_limpiar_pisos,,texto,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,212,_parsear_pisos,,html,extract,A,,,,,,S,,REVISADA,
+extract/13_scraping_habitaciones.py,258,_total_resultados_pisos,,html,extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,269,scrapear_pisos_municipio,,"cliente, nombre, max_paginas",extract,A,,,,,,S,,REVISADA,
+extract/13_scraping_habitaciones.py,319,_dedup,,"items, clave_func",extract,A,,,,,,,,REVISADA,
+extract/13_scraping_habitaciones.py,331,main,,,extract,A,,,,S,,S,S,REVISADA,
+extract/14_add_metadata_fingerprint.py,42,_inferir_portal_modality,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/14_add_metadata_fingerprint.py,49,_redondear_5,,valor,extract,B,,,,,,S,,ESTATICA,
+extract/14_add_metadata_fingerprint.py,58,_redondear_50,,valor,extract,B,,,,,,S,,ESTATICA,
+extract/14_add_metadata_fingerprint.py,67,_fingerprint,,reg,extract,B,,,,,,,S,ESTATICA,
+extract/14_add_metadata_fingerprint.py,76,_scraped_at,,metadata,extract,B,,,,,,,,ESTATICA,
+extract/14_add_metadata_fingerprint.py,84,procesar_fichero,,nombre,extract,B,,,S,,,S,,ESTATICA,
+extract/14_add_metadata_fingerprint.py,133,main,,,extract,B,,,,,,,S,ESTATICA,
+extract/15_add_geojson.py,33,_extraer_coordenadas,,reg,extract,B,,,,,,S,,ESTATICA,"Devuelve (lat, lon) válidos o None si el registro no tiene coordenadas."
+extract/15_add_geojson.py,79,_nombre_salida,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/15_add_geojson.py,87,procesar_fichero,,nombre,extract,B,,,,,,S,,ESTATICA,
+extract/15_add_geojson.py,131,main,,,extract,B,,,,,,,S,ESTATICA,
+extract/16_serpavi_renta.py,26,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/17_osrm_tiempos.py,31,_chunk,,"seq, n",extract,B,,,,,,,,ESTATICA,
+extract/17_osrm_tiempos.py,36,_table,,"coords_batch, dest",extract,B,,S,,S,,,,ESTATICA,
+extract/17_osrm_tiempos.py,51,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/18_lanbide_paro_juvenil.py,23,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/19_udalmap_indicadores_adicionales.py,69,_slug,,s,extract,B,,,,,,,,ESTATICA,
+extract/19_udalmap_indicadores_adicionales.py,77,_descargar,,indicator_id,extract,B,,S,,,,,,ESTATICA,
+extract/19_udalmap_indicadores_adicionales.py,86,_extraer_ultimo,,"data, dim_codigos",extract,B,,,,,,,,ESTATICA,
+extract/19_udalmap_indicadores_adicionales.py,105,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/20_ecvi_compraventa.py,31,_descubrir_enlaces,,,extract,B,,S,,,,,,ESTATICA,
+extract/20_ecvi_compraventa.py,41,_sanitizar,,nombre,extract,B,,,,,,,,ESTATICA,
+extract/20_ecvi_compraventa.py,48,main,,,extract,B,,S,,S,,S,S,ESTATICA,
+extract/21_lanbide_historico_paro_joven.py,25,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/22_geo_areas_funcionales.py,29,point_in_polygon,,"px, py, poly",extract,B,,,,,,,,ESTATICA,"Ray casting. poly = list of (x,y)."
+extract/22_geo_areas_funcionales.py,42,shape_to_polygons,,shp_rec,extract,B,,,,,,,,ESTATICA,"Convierte un shape de pyshp a lista de poligonos (cada uno lista de (x,y))."
+extract/22_geo_areas_funcionales.py,53,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/23_certificados_energeticos.py,26,main,,,extract,B,,,,,,S,S,ESTATICA,
+extract/24_etxebide_promociones.py,28,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/25_udalmap_extendido.py,43,_ultimo_valor,,years,extract,B,,,,,,,,ESTATICA,
+extract/25_udalmap_extendido.py,55,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/26_vpo_terminadas.py,43,_sha256,,path,extract,B,,,,,,,S,ESTATICA,
+extract/26_vpo_terminadas.py,47,_leer_filas,,path,extract,B,,,,S,,,,ESTATICA,
+extract/26_vpo_terminadas.py,52,validar,,path,extract,B,,,,,,S,S,ESTATICA,"Devuelve (n municipios, mínimo, máximo) del año de referencia."
+extract/26_vpo_terminadas.py,83,descargar,,,extract,B,,S,,,,,,ESTATICA,
+extract/26_vpo_terminadas.py,91,promover,,origen,extract,B,,,,,,,,ESTATICA,
+extract/26_vpo_terminadas.py,104,main,,argv,extract,B,,,,,,,S,ESTATICA,
+extract/_common.py,23,_load_env,,,extract,A,,,,,S,,,REVISADA,Carga .env sin necesidad de la librería python-dotenv.
+extract/_common.py,48,get_logger,,name,extract,A,,,,,,,,REVISADA,
+extract/_common.py,74,__init__,Cliente,"self, nombre, headers, reintentos, espera_inicial, timeout, delay",extract,A,,S,,,,,S,REVISADA,
+extract/_common.py,92,_espera_educada,Cliente,self,extract,A,,,,,,,,REVISADA,No machacar el servidor: espera entre peticiones.
+extract/_common.py,100,get,Cliente,"self, url",extract,A,,S,,,,,S,REVISADA,
+extract/_common.py,103,post,Cliente,"self, url",extract,A,,S,,,,,S,REVISADA,
+extract/_common.py,106,_peticion,Cliente,"self, metodo, url",extract,A,,S,,,,S,,REVISADA,
+extract/_common.py,136,descargar,Cliente,"self, url, destino",extract,A,,,,,,,,REVISADA,Descarga un fichero binario/texto y lo guarda.
+extract/_common.py,148,leer_csv_seguro,,path,extract,A,,,,,,,,REVISADA,read_csv con dtype=str + utf-8-sig y codigo_ine zfill(5).
+extract/_common.py,177,_es_raw,,destino,extract,A,,,,,,S,,REVISADA,
+extract/_common.py,185,guardar_json,,"destino, datos, metadata",extract,A,,,,S,,,S,REVISADA,
+extract/educacion_centros.py,35,_norm,,s,extract,B,,,,,,,,ESTATICA,
+extract/educacion_centros.py,41,_cargar_dim,,,extract,B,,,,,,,,ESTATICA,
+extract/educacion_centros.py,50,main,,,extract,B,,S,,S,,,S,ESTATICA,
+extract/entity_resolution.py,22,norm,,texto,extract,B,,,,,,,,ESTATICA,
+extract/entity_resolution.py,43,cargar_dim,,,extract,B,,,,,,S,,ESTATICA,
+extract/entity_resolution.py,54,_mapa,,,extract,B,,,,,,,,ESTATICA,"{nombre_normalizado: (codigo_ine, nombre_canonico)}"
+extract/entity_resolution.py,74,resolver_municipio,,nombre,extract,B,,,,,,,,ESTATICA,"Devuelve (codigo_ine, nombre_canonico) o (None, None)."
+extract/entity_resolution.py,88,resolver_serie,,serie,extract,B,,,,,,,,ESTATICA,
+extract/euskadi_geo.py,30,_haversine,,"lat1, lon1, lat2, lon2",extract,B,,,,,,,,ESTATICA,
+extract/euskadi_geo.py,39,main,,,extract,B,,,,S,,,S,ESTATICA,
+extract/fotocasa_detalle.py,18,_parse_detalle,,html,extract,B,,,,,,S,,ESTATICA,
+extract/fotocasa_detalle.py,28,_extraer,,re,extract,B,,,,,,,,ESTATICA,
+extract/fotocasa_detalle.py,53,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/generar_ingestion_manifest.py,28,_sha256,,path,extract,B,,,,S,,,S,ESTATICA,
+extract/generar_ingestion_manifest.py,36,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/generar_manifest.py,33,_sha256,,path,extract,B,,,,S,,,S,ESTATICA,
+extract/generar_manifest.py,41,_inventario,,root,extract,B,,,,,,,,ESTATICA,
+extract/generar_manifest.py,47,_leer_manifest,,path,extract,B,,,,,,,,ESTATICA,
+extract/generar_manifest.py,56,_escribir,,"path, root",extract,B,,,,S,,,S,ESTATICA,
+extract/generar_manifest.py,64,_verificar,,"path, root",extract,B,,,,,,,S,ESTATICA,
+extract/generar_manifest.py,87,main,,,extract,B,,,,,,,S,ESTATICA,
+extract/ine_atlas_renta.py,33,_cargar_dim,,,extract,B,,,,,,,,ESTATICA,
+extract/ine_atlas_renta.py,43,_cargar_eustat,,,extract,B,,,,,,S,,ESTATICA,
+extract/ine_atlas_renta.py,79,main,,,extract,B,,S,,S,,S,S,ESTATICA,
+extract/main_ingest.py,52,_sha256,,path,extract,A,,,,S,,,S,REVISADA,
+extract/main_ingest.py,60,_snapshot,,,extract,A,,,,,,S,,REVISADA,"Mapa relpath -> (mtime_ns, size, sha256) de los ficheros de datos."
+extract/main_ingest.py,82,_n_registros,,path,extract,A,,,,S,,S,,REVISADA,Cuenta registros de un fichero de datos (mejor esfuerzo).
+extract/main_ingest.py,125,_ts_utc,,,extract,A,,,,,,,,REVISADA,
+extract/main_ingest.py,129,_registro,,"rel, sha, n, status, extractor",extract,A,,,,,,,,REVISADA,
+extract/main_ingest.py,147,_ejecutar_extractor,,script,extract,A,,,,,,S,,REVISADA,
+extract/main_ingest.py,191,_live,,,extract,A,,,,S,,S,,REVISADA,
+extract/main_ingest.py,233,_cargar_manifest_previo,,,extract,A,,,,,,S,,REVISADA,
+extract/main_ingest.py,262,_replay_raw,,,extract,A,,,,S,,,,REVISADA,
+extract/main_ingest.py,300,main,,mode,extract,A,,,,,,,S,REVISADA,
+extract/normalizar_metadata.py,49,_primero,,"meta, claves",extract,B,,,,,,,,ESTATICA,
+extract/normalizar_metadata.py,56,_normalizar,,ruta,extract,B,,,,S,,,,ESTATICA,
+extract/normalizar_metadata.py,112,main,,,extract,B,,,,S,,S,S,ESTATICA,
+extract/salud_centros.py,28,_norm,,s,extract,B,,,,,,,,ESTATICA,
+extract/salud_centros.py,34,_cargar_dim,,,extract,B,,,,,,,,ESTATICA,
+extract/salud_centros.py,52,_resolver_codigo,,"municipio, provincia, name2code, by_code",extract,B,,,,,,,,ESTATICA,
+extract/salud_centros.py,67,main,,,extract,B,,S,,S,,,S,ESTATICA,
+extract/udalmap_empleo.py,49,_descargar,,indicator_id,extract,B,,S,,,,,,ESTATICA,
+extract/udalmap_empleo.py,58,_extraer_municipios,,"data, dim_codigos",extract,B,,,,,,,,ESTATICA,Devuelve {codigo_ine: valor_2024} para municipios presentes en dim.
+extract/udalmap_empleo.py,79,main,,,extract,B,,,,S,,S,S,ESTATICA,
+transform/_raw_guard.py,40,_audit_message,,reason,transform,B,,,,,,,,ESTATICA,Build an auditable message for a raw-write intent.
+transform/_raw_guard.py,46,_candidate_audit_logs,,audit_log,transform,B,,,,,S,S,,ESTATICA,
+transform/_raw_guard.py,76,assert_raw_writable,,"reason, audit_log",transform,B,,,,S,,S,S,ESTATICA,Raise ``ValueError`` unless ``reason`` is a non-empty string.
+transform/aplicar_cobertura_mercado.py,35,_es_verdadero,,serie,transform,A,,,,,,,,REVISADA,
+transform/aplicar_cobertura_mercado.py,39,main,,,transform,A,,,,S,,,S,REVISADA,
+transform/auditar_lagunas_silver.py,45,pick_column,,"columns, candidates",transform,B,,,,,,,,ESTATICA,
+transform/auditar_lagunas_silver.py,58,pick_precio,,columns,transform,B,,,,,,,,ESTATICA,
+transform/auditar_lagunas_silver.py,70,stats_series,,"df, col",transform,B,,,,,,,,ESTATICA,
+transform/auditar_lagunas_silver.py,80,nulls_por_columna,,df,transform,B,,,,,,,,ESTATICA,
+transform/auditar_lagunas_silver.py,93,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/auditoria_duckdb.py,29,q,,sql,transform,B,,,,,,,S,ESTATICA,
+transform/calcular_renta_joven.py,33,_ratio_fiscal_desde_eustat,,,transform,A,,,,,,S,,REVISADA,Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eust
+transform/calcular_renta_joven.py,65,_ratios_18_34_desde_eustat,,,transform,A,,,,,,S,,REVISADA,Ratios 18-34/18-24/25-34 ponderados por anchura (Eustat CAE 2024).
+transform/calcular_renta_joven.py,82,_get,,,transform,A,,,,,,,,REVISADA,
+transform/calcular_renta_joven.py,124,main,,,transform,A,,,,S,,,S,REVISADA,
+transform/calcular_tension_social.py,24,_percentil,,series,transform,B,,,,,,,,ESTATICA,
+transform/calcular_tension_social.py,28,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/calcular_tension_social.py,65,cat,,v,transform,B,,,,,,,,ESTATICA,
+transform/completar_alquiler_comarca.py,27,_cargar_dim,,,transform,A,,,,,,,,REVISADA,
+transform/completar_alquiler_comarca.py,33,_cargar_distancias_capitales,,,transform,A,,,,S,,,,REVISADA,
+transform/completar_alquiler_comarca.py,41,_cargar_alquiler,,,transform,A,,,,S,,,,REVISADA,
+transform/completar_alquiler_comarca.py,51,_cargar_haversine,,,transform,A,,,,S,,S,,REVISADA,
+transform/completar_alquiler_comarca.py,62,_es_numero,,v,transform,A,,,,,,S,,REVISADA,
+transform/completar_alquiler_comarca.py,70,main,,,transform,A,,,,S,,,S,REVISADA,
+transform/construir_dim_gold.py,22,main,,,transform,A,,,,S,,,S,REVISADA,
+transform/corregir_empleo.py,28,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/deduplicar_alquiler_enriquecido.py,19,_clave,,fila,transform,B,,,,,,,,ESTATICA,
+transform/deduplicar_alquiler_enriquecido.py,28,deduplicar_filas,,filas,transform,B,,,,,,,,ESTATICA,
+transform/deduplicar_alquiler_enriquecido.py,40,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/dim_municipios.py,26,_norm,,texto,transform,A,,,,,,,,REVISADA,
+transform/dim_municipios.py,61,tier_de_n,,n,transform,A,,,,,,,,REVISADA,Tier derivado solo de n_anuncios (sin imputacion comarcal/IDW).
+transform/dim_municipios.py,78,_cargar_eustat,,,transform,A,,,,,,,,REVISADA,"Devuelve {nombre_normalizado: {codigo_ine, nombre_canonico, territorio}}."
+transform/dim_municipios.py,106,main,,,transform,A,,,,S,,S,S,REVISADA,
+transform/enriquecer_codigo_ine.py,41,_check_frozen,,force,transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_codigo_ine.py,51,_zfill,,codigo,transform,B,,,,,,,,ESTATICA,Normaliza codigo_ine a 5 digitos (zfill) sin tocar nulos.
+transform/enriquecer_codigo_ine.py,61,_backup,,ruta,transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_codigo_ine.py,68,_enriquecer_csv,,"ruta, col_muni, anio, es_busqueda, destino, sufijo",transform,B,,,,S,,,,ESTATICA,
+transform/enriquecer_codigo_ine.py,98,_enriquecer_json,,"ruta, col_muni, anio, es_busqueda, destino, sufijo",transform,B,,,,S,,,,ESTATICA,
+transform/enriquecer_codigo_ine.py,131,main,,"force, silver, write_raw, reason",transform,B,,,,S,,,S,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,9,point_in_ring,,"lon, lat, ring",transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,21,point_in_polygon,,"lon, lat, geom",transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,38,load_geojson_municipios,,,transform,B,,,,S,,,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,50,stop_to_municipio,,"lon, lat, munis",transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,56,parse_date,,s,transform,B,,,,,,,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,59,service_active_on,,"trip_id, calendar, calendar_dates, target_date",transform,B,,,,,,S,,ESTATICA,
+transform/enriquecer_gtfs_conectividad.py,66,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/f4_pisos_dirigido.py,33,_nombre_lote,,raw_dir,transform,B,,,,,,,S,ESTATICA,
+transform/f4_pisos_dirigido.py,40,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/filtrar_outliers.py,44,_cargar_anuncios,,nombre_json,transform,B,,,,,,,,ESTATICA,
+transform/filtrar_outliers.py,63,_calcular_precio_m2,,anuncio,transform,B,,,,,,S,,ESTATICA,
+transform/filtrar_outliers.py,78,_habitaciones_int,,v,transform,B,,,,,,S,,ESTATICA,
+transform/filtrar_outliers.py,85,_filtrar,,anuncios,transform,B,,,,,,S,,ESTATICA,
+transform/filtrar_outliers.py,207,_guardar,,"nombre_base, anuncios",transform,B,,,,S,,,,ESTATICA,
+transform/filtrar_outliers.py,239,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/generar_analisis_variables_base.py,14,_ratios_18_34_desde_eustat,,,transform,A,,,,,,S,,REVISADA,Ratios 18-34 ponderados por anchura desde eustat_renta_edad.csv (CAE 2024).
+transform/generar_analisis_variables_base.py,29,_get,,,transform,A,,,,,,,,REVISADA,
+transform/generar_analisis_variables_base.py,63,loadcsv,,path,transform,A,,,,,,,,REVISADA,
+transform/generar_anuncios_residencial_filtrado.py,30,_precio_m2,,row,transform,B,,,,,,S,,ESTATICA,
+transform/generar_anuncios_residencial_filtrado.py,41,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/generar_anuncios_residencial_filtrado.py,51,_tipo,,v,transform,B,,,,,,,,ESTATICA,
+transform/generar_cert_energetico_moda_municipio.py,18,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/generar_cert_energetico_municipal.py,24,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/generar_dashboard_completo.py,24,_save,,"fig, name",transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,32,g_A1_esfuerzo_territorio,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,50,g_A2_municipios_inasequibles,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,69,g_B_paro_vs_precio,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,89,g_C_vpo_antiguedad,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,111,g_D_distancia_precio,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,127,g_E_demografia,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,148,g_F_comparativa_th,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,173,g_G_gaps,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_completo.py,197,main,,,transform,B,,,,,,,S,ESTATICA,
+transform/generar_dashboard_visual.py,26,_save,,"fig, name",transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,34,g1_esfuerzo_territorio,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,52,g2_renta_vs_alquiler,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,67,g3_top10_precio,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,84,g4_distribucion_anuncios,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,97,g5_esfuerzo_ranking,,,transform,B,,,,,,,,ESTATICA,
+transform/generar_dashboard_visual.py,115,main,,,transform,B,,,,,,,S,ESTATICA,
+transform/generar_distancias.py,17,_hav,,"lat1, lon1, lat2, lon2",transform,B,,,,,,,,ESTATICA,
+transform/generar_distancias.py,24,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/generar_f4_pisos_objetivo.py,28,_validar,,"obj, nombres",transform,B,,,,,,,,ESTATICA,
+transform/generar_f4_pisos_objetivo.py,43,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/generar_figuras_N.py,42,_umbrales,,,transform,B,,,,,,S,,ESTATICA,Lee umbrales esfuerzo_moderado/crítico (30/40) de parametros.
+transform/generar_figuras_N.py,54,generar_N1,,,transform,B,,,,,,,,ESTATICA,"N1: coroplético esfuerzo 18-34 por municipio (252, verde-ámbar-rojo)."
+transform/generar_figuras_N.py,123,generar_N2,,,transform,B,,,,,,,,ESTATICA,N2: histograma esfuerzo 18-34 (252) + líneas 30%/40%.
+transform/generar_figuras_N.py,150,generar_N3,,,transform,B,,,,,,,,ESTATICA,N3: dumbbell esfuerzo 18-24 vs 25-34 joven (top20 brecha + medianas).
+transform/generar_figuras_N.py,195,generar_N7,,,transform,B,,,,,,,,ESTATICA,N7: oferta transporte (paradas/1000) vs esfuerzo 18-34 (coloreado tren/metro).
+transform/generar_figuras_N.py,235,regenerar_H2,,,transform,B,,,,,,,,ESTATICA,H2 regenerado offline con layout expandido (marcado vía código Mongo).
+transform/generar_figuras_N.py,268,regenerar_F,,,transform,B,,,,,,,,ESTATICA,F con título €/mes y Territorio Histórico (TH).
+transform/generar_figuras_N.py,285,regenerar_H8,,,transform,B,,,,,,,,ESTATICA,H8 con eje €/mes.
+transform/generar_figuras_N.py,309,regenerar_J,,,transform,B,,,,,,,,ESTATICA,J con eje €/mes.
+transform/generar_figuras_N.py,338,regenerar_P,,,transform,B,,,,,,,,ESTATICA,P con título €/mes y Territorio Histórico (TH).
+transform/generar_figuras_N.py,373,main,,,transform,B,,,,,,,S,ESTATICA,
+transform/generar_fingerprint.py,11,fingerprint,,rec,transform,B,,,,,,,S,ESTATICA,
+transform/generar_fotocasa_dirigido_informe.py,22,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/generar_mapa_esquema.py,48,familia_de,,stem,transform,B,,,,,,,,ESTATICA,
+transform/generar_mapa_esquema.py,76,leer_cabecera,,ruta,transform,B,,,,S,,S,,ESTATICA,
+transform/generar_mapa_esquema.py,85,main,,,transform,B,,,,,,,S,ESTATICA,
+transform/generar_mercado_area_funcional.py,23,_norm_area,,name,transform,B,,,,,,,,ESTATICA,
+transform/generar_mercado_area_funcional.py,31,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/generar_vistas_mercado.py,22,_valid_codes,,,transform,B,,,,S,,,,ESTATICA,Códigos INE presentes en dim_municipios (cuarentena Silver).
+transform/generar_vistas_mercado.py,34,_dim_provincia,,,transform,B,,,,S,,,,ESTATICA,
+transform/generar_vistas_mercado.py,48,_norm_code,,v,transform,B,,,,,,,,ESTATICA,
+transform/generar_vistas_mercado.py,57,_to_bool,,v,transform,B,,,,,,,,ESTATICA,
+transform/generar_vistas_mercado.py,80,_flatten_unificado,,reg,transform,B,,,,,,,,ESTATICA,
+transform/generar_vistas_mercado.py,100,generar_residencial,,,transform,B,,,,S,,,,ESTATICA,
+transform/generar_vistas_mercado.py,140,generar_temporal,,,transform,B,,,,S,,,,ESTATICA,
+transform/generar_vistas_mercado.py,176,_normalizar_habitacion_fotocasa,,reg,transform,B,,,,,,,,ESTATICA,
+transform/generar_vistas_mercado.py,190,_normalizar_habitacion_pisos,,reg,transform,B,,,,,,,,ESTATICA,
+transform/generar_vistas_mercado.py,204,generar_habitaciones,,,transform,B,,,,S,,,,ESTATICA,
+transform/generar_vistas_mercado.py,244,main,,,transform,B,,,,,,,S,ESTATICA,
+transform/imputar_nulos_fuentes.py,18,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/limpiar_ecvi.py,8,read_ecvi,,path,transform,B,,,,S,,,,ESTATICA,
+transform/limpiar_ecvi.py,23,last_quarter_row,,data,transform,B,,,,,,,,ESTATICA,
+transform/limpiar_ecvi.py,29,parse_t1,,"path_total, path_m2",transform,B,,,,,,,,ESTATICA,
+transform/limpiar_ecvi.py,84,parse_t2,,"path_total, path_m2",transform,B,,,,,,,,ESTATICA,
+transform/limpiar_ecvi.py,118,parse_t3,,"path_total, path_m2",transform,B,,,,,,,,ESTATICA,
+transform/limpiar_ecvi.py,158,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/limpiar_eustat_demografia.py,9,norm,,s,transform,B,,,,,,,,ESTATICA,
+transform/limpiar_eustat_demografia.py,14,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/limpiar_eustat_demografia.py,33,pivot_renta,,tipo,transform,B,,,,,,,,ESTATICA,
+transform/limpiar_vpo_municipal.py,32,_numero,,crudo,transform,A,,,,,,,,REVISADA,
+transform/limpiar_vpo_municipal.py,39,parsear,,path,transform,A,,,,S,,,,REVISADA,
+transform/limpiar_vpo_municipal.py,85,main,,,transform,A,,,,S,,,S,REVISADA,
+transform/muni_resolve.py,23,_load_dim,,,transform,B,,,,,,,S,ESTATICA,
+transform/muni_resolve.py,141,_extraer_parentesis,,sub,transform,B,,,,,,,,ESTATICA,"(barrio_antes, hint_dentro) para 'Barrio (Muni)'; hint tras ultimo punto."
+transform/muni_resolve.py,154,_norm_code,,codigo_ine,transform,B,,,,,,,,ESTATICA,
+transform/muni_resolve.py,163,resolver_pisos_por_texto,,"subtitulo, titulo, codigo_ine",transform,B,,,,,,,S,ESTATICA,"Orden PISOS-01: (1) subtitulo, (2) titulo, (3) gazetteer, (4) fallback,"
+transform/muni_resolve.py,279,resolver_codigo,,"municipio, codigo_ine",transform,B,,,,,,,S,ESTATICA,"Resuelve (codigo_ine, canonico) SOLO por coincidencia textual."
+transform/normalizar_json_crudos.py,13,_fecha_desde_mtime,,ruta,transform,B,,,,,,S,,ESTATICA,
+transform/normalizar_json_crudos.py,19,norm_code,,v,transform,B,,,,,,,,ESTATICA,
+transform/normalizar_json_crudos.py,30,normalize_obj,,"obj, fotocasa",transform,B,,,,,,,,ESTATICA,
+transform/normalizar_json_crudos.py,47,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/parsear_secciones.py,22,_num,,v,transform,B,,,,,,S,,ESTATICA,
+transform/parsear_secciones.py,29,_territorio,,cod,transform,B,,,,,,,,ESTATICA,
+transform/parsear_secciones.py,37,_parsear,,ruta,transform,B,,,,S,,,,ESTATICA,
+transform/parsear_secciones.py,57,main,,,transform,B,,,,S,,,S,ESTATICA,
+transform/rescatar_features_nlp.py,12,rescue,,rec,transform,B,,,,,,S,,ESTATICA,
+transform/rescatar_features_nlp.py,47,main,,,transform,B,,,,S,,S,S,ESTATICA,
+transform/run_all.py,249,_resolver,,ref,transform,A,,,,,,,,REVISADA,"Traduce 'base:patron' a rutas (globs solo en el patron, no en la base)."
+transform/run_all.py,258,_sha256,,path,transform,A,,,,S,,S,S,REVISADA,
+transform/run_all.py,269,_salidas,,script,transform,A,,,,,,,S,REVISADA,
+transform/run_all.py,282,_entradas,,script,transform,A,,,,,,,S,REVISADA,
+transform/run_all.py,289,_orden_topologico,,scripts,transform,A,,,,,,,S,REVISADA,Kahn sobre productor->consumidor por nombre de fichero.
+transform/run_all.py,325,_estado,,script,transform,A,,,,,,,S,REVISADA,"Devuelve (estado, detalle) sin ejecutar nada."
+transform/run_all.py,367,_run_script,,script,transform,A,,,,,S,S,,REVISADA,"Ejecuta un script y retorna (returncode, duracion_segundos)."
+transform/run_all.py,395,_check,,,transform,A,,,,,,,,REVISADA,
+transform/run_all.py,408,_escribir_manifest,,resultados,transform,A,,,,S,,,,REVISADA,
+transform/run_all.py,420,_ficha,,"script, rc, dur",transform,A,,,,,,,,REVISADA,
+transform/run_all.py,421,_info,,p,transform,A,,,,,,,,REVISADA,
+transform/run_all.py,436,main,,,transform,A,,,,,,,S,REVISADA,
+transform/unificar_anuncios.py,13,_property_fingerprint,,rec,transform,A,,,,,,S,S,REVISADA,Huella determinista de una propiedad (misma logica que generar_fingerprint).
+transform/unificar_anuncios.py,35,_habitaciones_int,,v,transform,A,,,,,,S,,REVISADA,"M1 OUTLIER-01: habitaciones a entero (2,5 -> 2); None si no numerico."
+transform/unificar_anuncios.py,43,deduplicar_fingerprint,,recs,transform,A,,,,,,,S,REVISADA,M6 DEDUP-01: dedup dura cross-portal por property_fingerprint.
+transform/unificar_anuncios.py,65,load_json,,name,transform,A,,,,S,,,,REVISADA,
+transform/unificar_anuncios.py,73,load_payload,,name,transform,A,,,,S,,,,REVISADA,
+transform/unificar_anuncios.py,78,_es_lote_valido,,"path, payload",transform,A,,,,,,,,REVISADA,Schema guard para lotes dirigidos append-only.
+transform/unificar_anuncios.py,99,equipamiento_fotocasa,,item,transform,A,,,,,,,,REVISADA,
+transform/unificar_anuncios.py,106,equipamiento_realtyapi,,item,transform,A,,,,,,,,REVISADA,
+transform/unificar_anuncios.py,126,modalidad,,"item, portal",transform,A,,,,,,,S,REVISADA,
+transform/unificar_anuncios.py,135,transform_fotocasa,,items,transform,A,,,,,,S,,REVISADA,
+transform/unificar_anuncios.py,177,transform_pisos,,items,transform,A,,,,,,,,REVISADA,
+transform/unificar_anuncios.py,217,transform_realtyapi,,items,transform,A,,,,,,S,,REVISADA,
+transform/unificar_anuncios.py,259,main,,,transform,A,,,,S,,S,S,REVISADA,
+transform/validar_renta.py,19,main,,,transform,B,,,,S,,,S,ESTATICA,
+storage/clean_mongo.py,23,_counter,,result,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,32,canonicalize_codigo_ine,,,storage,A,S,,,,,,S,REVISADA,Ensure codigo_ine/_id are 5-digit strings in every collection.
+storage/clean_mongo.py,104,mark_nulls,,,storage,A,S,,,,,,S,REVISADA,Mark missing values explicitly instead of treating them as zero.
+storage/clean_mongo.py,164,resolve_duplicates,,,storage,A,S,,,,,,S,REVISADA,"Resolve duplicate anuncios by (portal, id_anuncio) and property_fingerprint."
+storage/clean_mongo.py,222,convert_types,,,storage,A,S,,,,,,S,REVISADA,Demonstrate $convert/$toString in update pipelines (types BSON).
+storage/clean_mongo.py,256,clean_anuncios,,,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,265,clean_municipios,,,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,273,clean_alquiler,,,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,280,clean_indicadores,,,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,286,clean_nuevas,,,storage,A,,,,,,,,REVISADA,
+storage/clean_mongo.py,293,clean_all,,,storage,A,,,,,,,S,REVISADA,
+storage/clean_mongo.py,311,demo_crud_operations,,,storage,A,S,,,S,,,S,REVISADA,
+storage/clean_mongo.py,362,_to_decimal,,value,storage,A,,,,,,S,S,REVISADA,
+storage/clean_mongo.py,374,clean_obsolete_fields,,"collection_name, fields, filter",storage,A,S,,,,,,S,REVISADA,Función canónica única de limpieza: ``update_many`` + ``$unset``.
+storage/clean_mongo.py,412,clean_null_markers,,,storage,A,,,,,,,,REVISADA,Alias used by some tests.
+storage/kafka_hdfs_uploader.py,44,get_bootstrap,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_hdfs_uploader.py,48,get_topic,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_hdfs_uploader.py,52,get_group,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_hdfs_uploader.py,56,get_hdfs_url,,,storage,A,,,S,,S,,,REVISADA,
+storage/kafka_hdfs_uploader.py,60,get_hdfs_user,,,storage,A,,,S,,S,,,REVISADA,
+storage/kafka_hdfs_uploader.py,64,get_idle_ms,,,storage,A,,,,,S,,S,REVISADA,Ms sin mensajes tras los cuales el consumidor da el topic por vaciado.
+storage/kafka_hdfs_uploader.py,69,is_valid_rel,,rel,storage,A,,,,,,,S,REVISADA,"rel valida solo si no es .., no es absoluta y no es legacy."
+storage/kafka_hdfs_uploader.py,84,verify_local,,"raw_dir, rel, size, sha",storage,A,,,,,,,S,REVISADA,
+storage/kafka_hdfs_uploader.py,92,consume,,"max_messages, raw_dir, dest, idle_ms",storage,A,,S,S,S,,S,S,REVISADA,
+storage/kafka_hdfs_uploader.py,116,_commit,,msg,storage,A,,,,,,,,REVISADA,
+storage/kafka_raw_producer.py,29,get_bootstrap_servers,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_raw_producer.py,33,get_topic,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_raw_producer.py,37,iter_raw_files,,raw_dir,storage,A,,,,,,,S,REVISADA,
+storage/kafka_raw_producer.py,42,manifest_entry,,"path, raw_dir",storage,A,,,,,,,S,REVISADA,
+storage/kafka_raw_producer.py,49,produce,,"limit, topic, bootstrap_servers, producer, admin",storage,A,,S,,S,,,S,REVISADA,
+storage/kafka_topic.py,29,get_bootstrap_servers,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_topic.py,33,get_topic,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_topic.py,37,get_num_partitions,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_topic.py,41,get_replication_factor,,,storage,A,,,,,S,,S,REVISADA,
+storage/kafka_topic.py,45,ensure_topic,,"topic, bootstrap_servers, admin, num_partitions, replication_factor",storage,A,,,,,,S,S,REVISADA,Asegura que el topic exista. Idempotente y sin red si se inyecta admin.
+storage/load_mongo.py,35,_read_csv,,name,storage,A,,,,,,,,REVISADA,
+storage/load_mongo.py,39,_money,,value,storage,A,,,,,,S,S,REVISADA,
+storage/load_mongo.py,52,_lookup_csv,,"name, key",storage,A,,,,,,S,,REVISADA,Lookup {codigo_z5: row} de un silver procesado; {} si no existe.
+storage/load_mongo.py,70,_geo_point,,"lat_raw, lon_raw",storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,82,_lookup_fotocasa_geo,,,storage,A,,,,,,S,,REVISADA,
+storage/load_mongo.py,99,load_municipios,,,storage,A,,,,,,S,S,REVISADA,
+storage/load_mongo.py,234,load_anuncios,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,300,load_alquiler,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,333,load_indicadores,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,367,_load_json,,path,storage,A,,,,S,,,,REVISADA,
+storage/load_mongo.py,372,_prov_from_loaded,,"data, default_fuente",storage,A,,,,,,,,REVISADA,
+storage/load_mongo.py,383,load_ecvi,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,401,load_udalmap_indicadores,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,418,load_udalmap_empleo,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,433,load_osrm,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,448,load_emancipacion,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,459,load_etxebide_solicitudes,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,475,_provenance_from_raw_meta,,"meta, default_fuente, default_url",storage,A,,,,,,,,REVISADA,
+storage/load_mongo.py,485,load_udalmap_extendido,,,storage,A,,,,S,,,S,REVISADA,
+storage/load_mongo.py,502,_codigo_ine_etxebide,,row,storage,A,,,,,,,,REVISADA,
+storage/load_mongo.py,515,load_etxebide_promociones,,,storage,A,,,,S,,,S,REVISADA,
+storage/load_mongo.py,536,load_certificados,,,storage,A,,,,,,,S,REVISADA,
+storage/load_mongo.py,567,load_vpo_municipal,,,storage,A,,,,,,,S,REVISADA,"VPO terminada en el ultimo quinquenio (Udalmap 73), flujo en por mil."
+storage/load_mongo.py,590,load_all,,,storage,A,,,,,,S,S,REVISADA,
+storage/mongo.py,23,get_mongo_uri,,,storage,A,,,,,S,,S,REVISADA,"Return MONGO_URI from env, or None if unset/blank (Tema 8 §12)."
+storage/mongo.py,35,is_objectid,,value,storage,A,,,,,,,S,REVISADA,True if value is an ObjectId instance or a valid 24-hex string.
+storage/mongo.py,44,to_objectid,,value,storage,A,,,,,,,S,REVISADA,"Convert value to ObjectId when possible, else None."
+storage/mongo.py,54,get_client,,,storage,A,,,,,,,S,REVISADA,
+storage/mongo.py,61,get_db,,,storage,A,,,,,,,S,REVISADA,
+storage/mongo.py,65,get_test_db,,,storage,A,,,,,,,S,REVISADA,
+storage/mongo.py,69,get_collection,,name,storage,A,,,,,,,S,REVISADA,
+storage/mongo.py,73,ping,,,storage,A,,,,,,S,S,REVISADA,
+storage/mongo.py,81,close,,,storage,A,,,,,,,S,REVISADA,
+storage/mongo.py,85,to_int,,value,storage,A,,,,,,S,,REVISADA,
+storage/mongo.py,96,to_float,,value,storage,A,,,,,,S,,REVISADA,
+storage/mongo.py,112,to_bool,,value,storage,A,,,,,,,,REVISADA,
+storage/mongo.py,125,to_str,,value,storage,A,,,,,,,,REVISADA,
+storage/mongo.py,136,zfill_ine,,value,storage,A,,,,,,S,S,REVISADA,
+storage/mongo.py,152,replace_collection,,"name, docs",storage,A,S,,,S,,,S,REVISADA,
+storage/mongo.py,170,marcar_calidad_municipio,,"codigo_ine, calidad",storage,A,S,,,,,,S,REVISADA,Marca el flag de calidad de un municipio con una actualización atómica.
+analysis/comparativa_mongo.py,44,_float,,value,analysis,A,,,,,,S,,REVISADA,
+analysis/comparativa_mongo.py,56,_paro_lanbide,,codigo_ine,analysis,A,S,,,,,,,REVISADA,
+analysis/comparativa_mongo.py,66,comparativa_tres_robustos,,"min_n, top_n, output_path",analysis,A,,,,,,,S,REVISADA,"Top `top_n` Tier A (n>=`min_n`) con paro, tier, delta y advertencia."
+analysis/comparativa_mongo.py,133,comparativa_cuatro_robustos,,"min_n, output_path",analysis,A,,,,,,,S,REVISADA,Top-4 Tier A n>=30 con paro Lanbide no nulo.
+analysis/comparativa_mongo.py,146,escribir_csv,,"filas, path",analysis,A,,,,S,,,,REVISADA,
+analysis/comparativa_mongo.py,164,main,,,analysis,A,,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,12,_money,,value,analysis,A,,,,,,S,S,REVISADA,
+analysis/mongo_aggregations.py,23,pipeline_indicadores_municipio,,limit,analysis,A,S,,,,,,S,REVISADA,Indicators per municipality combining anuncios + municipios + alquiler.
+analysis/mongo_aggregations.py,46,_winsorizado,,,analysis,A,,,,,,,,REVISADA,Expresiones 1-99: recorta extremos (no imputa) y toma la mediana.
+analysis/mongo_aggregations.py,285,pipeline_alquiler_por_municipio,,limit,analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,313,pipeline_modalidades,,,analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,322,pipeline_top_municipios_por_esfuerzo,,limit,analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,362,indicador_por_municipio,,codigo_ine,analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,395,pipeline_esfuerzo_por_sexo,,limit,analysis,A,S,,,,,,S,REVISADA,E4: esfuerzo alquiler por sexo calculado en Mongo ($match/$lookup/$addFields/$so
+analysis/mongo_aggregations.py,414,run_all,,,analysis,A,,,,,,,S,REVISADA,
+analysis/mongo_aggregations.py,422,pipeline_accesibilidad_extendida,,limit,analysis,A,S,,,,,,S,REVISADA,Accesibilidad por municipio combinando Udalmap + OSRM + municipios.
+analysis/mongo_aggregations.py,472,pipeline_udalmap_extendido_osrm,,limit,analysis,A,S,,,,,,S,REVISADA,Udalmap extendido + municipios + osrm: 6 etapas.
+analysis/mongo_aggregations.py,488,pipeline_vpo_por_municipio,,limit,analysis,A,S,,,,,,S,REVISADA,Promociones Etxebide agregadas por municipio/estado/tipologia (en Mongo).
+analysis/mongo_aggregations.py,508,pipeline_vpo_terminadas,,limit,analysis,A,S,,,,,,S,REVISADA,"VPO terminada en el ultimo quinquenio (Udalmap 73), flujo por mil."
+analysis/mongo_aggregations.py,547,_tier_expr,,n,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_aggregations.py,558,pipeline_tier_por_municipio,,limit,analysis,A,S,,,,,,S,REVISADA,Tier A/B/C/D por municipio desde Mongo ($group-equivalente por codigo_ine).
+analysis/mongo_aggregations.py,571,_mediana,,cond,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_aggregations.py,578,_minmax,,cond,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_aggregations.py,665,_hab_col,,,analysis,A,,,,,,S,,REVISADA,"Colección de habitaciones: bigdata si tiene docs, si no unificados."
+analysis/mongo_aggregations.py,676,pipeline_habitaciones_por_municipio,,limit,analysis,A,S,,,,,,,REVISADA,Mediana municipal de habitaciones desde anuncios de habitaciones.
+analysis/mongo_indexes.py,18,_winning_stage,,plan,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_indexes.py,44,_explain,,"coll, filtro",analysis,A,,,,,,,,REVISADA,
+analysis/mongo_indexes.py,62,ensure_indexes,,,analysis,A,,,,S,,,S,REVISADA,
+analysis/mongo_indexes.py,97,drop_demo_index,,,analysis,A,,,,,,S,,REVISADA,
+analysis/mongo_indexes.py,107,explain_before_after,,"codigo_ine, modalidad, precio_max",analysis,A,,,,S,,S,S,REVISADA,"Drop index, explain (COLLSCAN), create index, explain (IXSCAN)."
+analysis/mongo_indexes.py,135,explain_promo_before_after,,codigo_ine,analysis,A,,,,S,,S,S,REVISADA,Explain para etxebide_promociones por municipio.
+analysis/mongo_indexes.py,152,index_report,,,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_indexes.py,161,run_all,,,analysis,A,,,,,,,S,REVISADA,
+analysis/mongo_queries.py,12,_money,,value,analysis,A,,,,,,S,S,REVISADA,
+analysis/mongo_queries.py,23,_cursor_to_list,,cursor,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,31,anuncios_por_municipio,,"codigo_ine, modalidad, precio_min, precio_max, equipamiento, limit, skip, sort_field, descending",analysis,A,S,,,,,,S,REVISADA,Filter anuncios by nested ubicacion.codigo_ine plus optional conditions.
+analysis/mongo_queries.py,69,anuncios_por_codigo_ine,,,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,73,find_anuncios_por_municipio,,,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,77,query_anuncios_por_municipio,,,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,81,dot_notation_municipio,,"codigo_ine, limit",analysis,A,S,,,,,,S,REVISADA,Dot notation over embedded document.
+analysis/mongo_queries.py,93,anuncios_con_equipamiento,,"item, limit",analysis,A,S,,,,,,S,REVISADA,Array contains element.
+analysis/mongo_queries.py,100,anuncios_array_contains,,"item, limit",analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,104,anuncios_array_all,,"items, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,110,anuncios_array_elemmatch,,"cond, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,118,anuncios_array_size,,"n, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,124,anuncios_exists,,"field, exists, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,130,anuncios_type,,"field, bson_type, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,136,anuncios_regex,,"field, pattern, options, limit",analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_queries.py,144,anuncios_comparacion,,"field, op, value, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,159,anuncios_logica_and,,"conditions, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,165,anuncios_logica_or,,"conditions, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,171,anuncios_proyeccion,,"campos, limit, filtro",analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_queries.py,178,anuncios_ordenar_limitar,,"sort_field, limit, descending, filtro",analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_queries.py,186,anuncios_paginacion,,"skip, limit, filtro",analysis,A,S,,,,,,S,REVISADA,
+analysis/mongo_queries.py,191,anuncios_distinct,,field,analysis,A,,,,,,,,REVISADA,
+analysis/mongo_queries.py,199,municipios_por_territorio,,"territorio, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,205,municipios_regex_nombre,,"pattern, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,213,municipios_por_capital,,"capital, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,223,alquiler_por_codigo,,"codigo_ine, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,228,alquiler_por_nivel,,"nivel, limit",analysis,A,S,,,,,,,REVISADA,
+analysis/mongo_queries.py,238,resumen_exists_type,,,analysis,A,,,,,,,S,REVISADA,
+analysis/mongo_queries.py,251,busqueda_avanzada_demo,,,analysis,A,,,,,,,S,REVISADA,
+analysis/mongo_queries.py,266,run_all,,,analysis,A,,,,,,,S,REVISADA,
+analysis/run_analisis_mongo.py,105,_jsonable,,value,analysis,A,,,,,,,S,REVISADA,
+analysis/run_analisis_mongo.py,115,_clave_fila,,fila,analysis,A,,,,S,,,,REVISADA,
+analysis/run_analisis_mongo.py,121,_orden_canonico,,filas,analysis,A,,,,,,,,REVISADA,Ordena filas por su serializacion ordenada (clave canonica).
+analysis/run_analisis_mongo.py,131,run_all_estandar,,,analysis,A,,,,,,,S,REVISADA,Ejecuta en orden fijo los 9 pipelines de `mongo_aggregations`.
+analysis/run_analisis_mongo.py,148,huella_resultados,,resultados,analysis,A,,,,S,,,S,REVISADA,SHA-256 hex de la serializacion ordenada de los resultados.
+analysis/run_analisis_mongo.py,160,conteos,,resultados,analysis,A,,,,,,,S,REVISADA,Numero de filas por pipeline.
+analysis/run_analisis_mongo.py,165,_csv_value,,value,analysis,A,,,,S,,,,REVISADA,
+analysis/run_analisis_mongo.py,179,_cabecera,,filas,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,190,exportar_csv,,"resultados, out_dir, exports",analysis,A,,,,S,,,,REVISADA,Escribe los CSV canonicos de `exports` en `out_dir`.
+analysis/run_analisis_mongo.py,224,exportar_tres_csv,,"resultados, out_dir",analysis,A,,,,,,,S,REVISADA,Compatibilidad: escribe los 3 CSV historicos (ver `EXPORTS_3`).
+analysis/run_analisis_mongo.py,232,exportar_seis_csv,,"resultados, out_dir",analysis,A,,,,,,,,REVISADA,Escribe los 6 CSV canonicos (AGT-01): 5 + `mongo_tier_confianza.csv`.
+analysis/run_analisis_mongo.py,247,exportar_vpo_terminadas_csv,,"resultados, out_dir",analysis,A,,,,,,,,REVISADA,Escribe el CSV adicional VPO terminadas (indicador 5 non-legacy).
+analysis/run_analisis_mongo.py,255,exportar_habitaciones_csv,,"resultados, out_dir",analysis,A,,,,,,,,REVISADA,"Escribe `mongo_habitaciones_por_municipio.csv` (9 filas, pipeline nº 11)."
+analysis/run_analisis_mongo.py,267,exportar_extras,,"resultados, out_dir",analysis,A,,,,S,,,,REVISADA,Capas M7 + paro M5 + ranking M3 (desde pipelines en memoria).
+analysis/run_analisis_mongo.py,286,_esf,,d,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,290,_metodo,,d,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,364,exportar_cinco_csv,,"resultados, out_dir",analysis,A,,,,,,,,REVISADA,"Escribe los 5 CSV canonicos (Bloque 3, AGREGACION-01)."
+analysis/run_analisis_mongo.py,378,_fnum,,value,analysis,A,,,,,,S,,REVISADA,Convierte Decimal128/str/num a float o None (seguro para matplotlib).
+analysis/run_analisis_mongo.py,397,exportar_png_desde_mongo,,"resultados, out_dir",analysis,A,,,,S,,S,,REVISADA,Genera los 32 PNG desde PyMongo (sin DuckDB ni CSV).
+analysis/run_analisis_mongo.py,438,_save,,"fig, nombre",analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,456,_esf,,d,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,626,_honest,,"nombre, titulo, nota",analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,635,_med_lista,,vals,analysis,A,,,,,,,,REVISADA,"Mediana + Q1/Q3 (interpolacion lineal, sin numpy)."
+analysis/run_analisis_mongo.py,641,_pct,,p,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,652,_metodo_ind,,d,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,1149,_parse_args,,argv,analysis,A,,,,,,,,REVISADA,
+analysis/run_analisis_mongo.py,1161,main,,argv,analysis,A,,,,S,,S,S,REVISADA,
+analysis/sensibilidad.py,38,sensibilidad_idw,,,analysis,A,,,,,,,,REVISADA,
+analysis/sensibilidad.py,59,_precios_vivienda,,codigo,analysis,A,,,,,,,,REVISADA,
+analysis/sensibilidad.py,72,bootstrap_robustos,,,analysis,A,,,,,,,,REVISADA,
+analysis/sensibilidad.py,113,main,,,analysis,A,,,,S,,,S,REVISADA,
+scripts/ensure_topic.py,22,main,,,scripts,B,,,,,,,S,ESTATICA,
+scripts/gate_extremo_a_extremo.py,63,sha256_of,,path,scripts,A,,,,S,,,,REVISADA,
+scripts/gate_extremo_a_extremo.py,71,parse_manifest,,path,scripts,A,,,,,,,,REVISADA,"Lee manifiesto '<sha>  <ruta>' -> [(sha, ruta)]."
+scripts/gate_extremo_a_extremo.py,90,check_manifest,,"manifest_path, base_dir, expected, verify_hashes",scripts,A,,,,,,,S,REVISADA,
+scripts/gate_extremo_a_extremo.py,116,conteo_duplicados_reintentos,,keys,scripts,A,,,,,,,S,REVISADA,Idempotencia: reintentar un upsert por _id/key no duplica.
+scripts/gate_extremo_a_extremo.py,129,check_duplicados,,,scripts,A,,,,,,,,REVISADA,
+scripts/gate_extremo_a_extremo.py,137,check_colecciones,,,scripts,A,,,,,,,,REVISADA,
+scripts/gate_extremo_a_extremo.py,152,check_lag,,,scripts,A,,,,,,,,REVISADA,
+scripts/gate_extremo_a_extremo.py,156,tcp_probe,,"host, port, timeout",scripts,A,,S,,,,S,,REVISADA,
+scripts/gate_extremo_a_extremo.py,164,run_offline,,root,scripts,A,,,,,,,S,REVISADA,
+scripts/gate_extremo_a_extremo.py,180,run_vivo,,,scripts,A,,,,,,,,REVISADA,
+scripts/gate_extremo_a_extremo.py,185,main,,argv,scripts,A,,,,,S,,S,REVISADA,
+scripts/run_mongo_pipeline.py,36,_sum_counter,,"clean_result, key",scripts,A,,,,,,,,REVISADA,Suma recursiva de `key` en un dict anidado (modified/deleted_count).
+scripts/run_mongo_pipeline.py,51,_parse_args,,argv,scripts,A,,,,,,,,REVISADA,
+scripts/run_mongo_pipeline.py,63,main,,argv,scripts,A,,,,,,,S,REVISADA,
+scripts/upload_procesado.py,27,sha_local,,path,scripts,A,,,,S,,,,REVISADA,
+scripts/upload_procesado.py,35,load_manifest,,,scripts,A,,,,,,,,REVISADA,
+scripts/upload_procesado.py,49,iter_files,,base,scripts,A,,,,,,,,REVISADA,
+scripts/upload_procesado.py,53,main,,argv,scripts,A,,,,,,,S,REVISADA,
+scripts/validar_fuentes_nuevas.py,12,main,,,scripts,B,,,,,,S,S,ESTATICA,
+scripts/verificacion_crudos.py,7,check,,"name, cond, det",scripts,B,,,,,,,,ESTATICA,
+scripts/verificar_fase_datos.py,24,check,,"nombre, cond, det",scripts,A,,,,,,,,REVISADA,
+scripts/verificar_fase_datos.py,31,main,,,scripts,A,,,,S,,,S,REVISADA,
+scripts/verificar_gobernanza.py,25,check,,"nombre, ok, detalle",scripts,A,,,,,,,,REVISADA,
+scripts/verificar_gobernanza.py,31,ids_requisito,,,scripts,A,,,,,,,,REVISADA,
+scripts/verificar_gobernanza.py,42,main,,,scripts,A,,,,,S,,S,REVISADA,
+tests/test_clean_mongo.py,30,db,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_clean_mongo.py,37,test_canonicalize_codigo_ine_contadores_y_noop,,db,tests,TEST,S,,,,,,S,TEST,codigo_ine no canonico se corrige; segunda pasada modifica 0.
+tests/test_clean_mongo.py,60,test_resolve_duplicates_contadores_y_noop,,db,tests,TEST,S,,,,,,S,TEST,"Duplicados por (portal,id_anuncio) se borran; segunda pasada 0."
+tests/test_clean_mongo.py,80,test_resolve_duplicates_por_fingerprint,,db,tests,TEST,S,,,,,,S,TEST,Duplicados por property_fingerprint tambien se resuelven.
+tests/test_clean_mongo.py,98,test_convert_types_sin_convertibles_cero_y_noop,,db,tests,TEST,S,,,,,,S,TEST,"Sin precios string ni habitaciones, convert_types no toca nada (mongomock-safe)."
+tests/test_contrato.py,31,_cargar_json,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_contrato.py,40,test_extraccion_anuncios_reales,,,tests,TEST,,,,,,,S,TEST,EXTRACCION-01 / Escenario: el scraping produce anuncios reales.
+tests/test_contrato.py,49,test_extraccion_anuncios_sin_duplicar,,,tests,TEST,,,,,,,S,TEST,LIMPIEZA-01 / Escenario: los duplicados se resuelven.
+tests/test_contrato.py,56,test_extraccion_tres_fuentes_independientes,,,tests,TEST,,,,,,,S,TEST,EXTRACCION-02 / Escenario: las fuentes son independientes.
+tests/test_contrato.py,71,test_complementarios_poblacion,,,tests,TEST,,,,,,,S,TEST,COMPLEMENTARIOS-01 / Escenario: población por municipio.
+tests/test_contrato.py,78,test_complementarios_renta_municipal,,,tests,TEST,,,,,,,S,TEST,COMPLEMENTARIOS-01: la renta por municipio alimenta el indicador.
+tests/test_contrato.py,86,test_complementarios_salarios_no_simulados,,,tests,TEST,,,,,,,S,TEST,COMPLEMENTARIOS-01 / P-02: el salario proviene de una fuente real.
+tests/test_contrato.py,97,test_formato_csv_alquiler_y_municipios,,,tests,TEST,,,,S,,,S,TEST,FORMATO-01 + EXTRACCION-01: el alquiler es CSV y cubre 3 territorios.
+tests/test_contrato.py,112,test_formato_metadatos_en_json,,,tests,TEST,,,,,,,S,TEST,"FORMATO-01: el JSON lleva fuente, fecha y recuento."
+tests/test_contrato.py,123,test_limpieza_nulos_explicitos,,,tests,TEST,,,,,,,S,TEST,LIMPIEZA-01 / Escenario: los nulos no se interpretan como cero.
+tests/test_contrato.py,135,test_p06_todo_en_python,,,tests,TEST,,,,,,,S,TEST,P-06: todos los programas del reto están en Python.
+tests/test_contrato.py,143,test_p07_sin_credenciales_en_el_repositorio,,,tests,TEST,,,,,,S,S,TEST,P-07: no hay credenciales rastreadas por git.
+tests/test_contrato.py,157,test_p08_contrato_cubre_los_criterios,,,tests,TEST,,,,,,,S,TEST,P-08: cada criterio de la rúbrica tiene un requisito asignado.
+tests/test_contrato.py,199,test_entity_resolution_tres_capitales,,,tests,TEST,,,,S,,,S,TEST,"MODELO-01: Donostia, Vitoria-Gasteiz y Bilbao cruzan por codigo_ine."
+tests/test_contrato.py,236,test_ine_atlas_renta_existe,,,tests,TEST,,,,,,,S,TEST,P0: el fichero de renta del INE Atlas existe.
+tests/test_contrato.py,242,test_ine_atlas_renta_campos,,,tests,TEST,,,,,,,S,TEST,"P0: cada registro tiene renta_atlas, anio_renta, renta_origen."
+tests/test_contrato.py,257,test_renta_municipal_completa_cobertura,,,tests,TEST,,,,,,,S,TEST,P0: renta_municipal_completa cubre 252 municipios.
+tests/test_contrato.py,272,test_filtrar_outliers_marca_extremos,,,tests,TEST,,,,,,,S,TEST,P1a: los outliers extremos se marcan como outlier=True.
+tests/test_contrato.py,285,test_filtrar_outliers_validos,,,tests,TEST,,,,,,,S,TEST,P1a: los anuncios validos no se marcan como outlier.
+tests/test_contrato.py,327,test_nuevas_fuentes_json_existen,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_contrato.py,333,test_nuevas_fuentes_json_registros,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_contrato.py,342,test_nuevas_fuentes_json_codigo_ine_rango,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_contrato.py,360,test_nuevas_fuentes_csv_existen,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_contrato.py,366,test_nuevas_fuentes_csv_registros,,nombre,tests,TEST,,,,S,,,S,TEST,
+tests/test_contrato.py,378,test_nuevas_fuentes_csv_codigo_ine_rango,,nombre,tests,TEST,,,,S,,,S,TEST,
+tests/test_crudos.py,6,_leer,,n,tests,TEST,,,,,,,S,TEST,
+tests/test_crudos.py,9,test_codigo_ine_5_digitos,,,tests,TEST,,,,,,,S,TEST,
+tests/test_crudos.py,23,test_temporal_larga_no_mezclados,,,tests,TEST,,,,,,,S,TEST,
+tests/test_crudos.py,29,test_renta_origen_transparente,,,tests,TEST,,,,,,,S,TEST,
+tests/test_dedup_fingerprint.py,23,_mongo_ok,,,tests,TEST,,,,,,S,S,TEST,
+tests/test_dedup_fingerprint.py,31,_recs_cross_portal,,,tests,TEST,,,,,,,S,TEST,
+tests/test_dedup_fingerprint.py,46,test_dedup_fingerprint_dos_portales_una_fila,,,tests,TEST,,,,,,,S,TEST,
+tests/test_dedup_fingerprint.py,56,test_unificados_sin_duplicados_fingerprint,,,tests,TEST,,,,,,,S,TEST,
+tests/test_dedup_fingerprint.py,63,test_mongo_sin_duplicados_fingerprint,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,32,_manifest_tmp,,"base, n",tests,TEST,,,,S,,,S,TEST,Crea n ficheros fake + manifiesto sha correcto en base.
+tests/test_extremo_a_extremo.py,46,test_umbrales_normativos,,,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,52,test_manifiesto_fake_ok,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,58,test_manifiesto_fake_tamper_falla,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,65,test_manifiesto_conteo_incorrecto_falla,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,71,test_dedup_reintentos_cero,,,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,76,test_vivo_sin_gate_live_aborta,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_extremo_a_extremo.py,81,test_offline_no_red,,"monkeypatch, tmp_path",tests,TEST,,,,,,,S,TEST,El modo offline no debe intentar ninguna conexión de red.
+tests/test_extremo_a_extremo.py,84,_prohibido,,,tests,TEST,,,,,,,S,TEST,
+tests/test_fase_datos.py,15,_csv,,nombre,tests,TEST,,,,,,,S,TEST,
+tests/test_fase_datos.py,19,test_wp03_n_anuncios_real,,,tests,TEST,,,,,,,S,TEST,"WP-03: n_anuncios sale de los JSON de anuncios, no del 252 fijo."
+tests/test_fase_datos.py,27,test_wp04_ceros_a_nulo_con_flag,,,tests,TEST,,,,,,,S,TEST,"WP-04 + M5 (COMPLEMENTARIOS-01): ceros imposibles de paro -> NaN + flag,"
+tests/test_fase_datos.py,50,test_wp04_sin_clip_contra_cero,,,tests,TEST,,,,,,,S,TEST,WP-04: ningun clip usa un techo nulo o cero.
+tests/test_fase_datos.py,58,test_wp05_sin_brecha_ocupacion_actividad,,,tests,TEST,,,,,,,S,TEST,WP-05: la brecha invalida ocupacion-actividad no existe en gold.
+tests/test_fase_datos.py,64,test_wp06_esfuerzo_canonico_unico,,,tests,TEST,,,,,,,S,TEST,WP-06: esfuerzo_joven_pct (municipal fiscal) existe y se preserva.
+tests/test_fase_datos.py,79,test_wp06_tension_usa_canonico,,,tests,TEST,,,,,,,S,TEST,WP-06: tension sin NaN con el esfuerzo canonico como insumo.
+tests/test_fase_datos.py,86,test_wp09_nombres_canonicos,,,tests,TEST,,,,,,,S,TEST,WP-09: codigo_ine 5 digitos + nombre_canonico coherente entre tablas.
+tests/test_fase_datos.py,108,test_wp01_todo_script_declarado,,,tests,TEST,,,,,,,S,TEST,WP-01: todo transform/*.py esta en SCRIPTS o EXCLUIDOS de run_all.
+tests/test_fase_datos.py,119,test_wp09_mapa_nombres_estables,,,tests,TEST,,,,,,,S,TEST,WP-09: todo *_normalizado.json con timestamp esta en el mapa o es canonico.
+tests/test_fase_datos.py,134,_llamadas_sin,,"texto, marcador, clave",tests,TEST,S,,,,,,S,TEST,Localiza llamadas marcador(...) cuyo argumento no contiene clave.
+tests/test_fase_datos.py,157,test_wp10_lectura_tipografica,,,tests,TEST,,,,,,,S,TEST,WP-10: todo pd.read_csv de transform usa dtype=str (cero de Alava).
+tests/test_fase_datos.py,167,test_wp11_fallback_poblacion_joven,,,tests,TEST,,,,,,,S,TEST,WP-11: estimacion 15-29 con periodo y metodo declarados por fila.
+tests/test_fase_datos.py,176,test_wp11_flag_fiscal,,,tests,TEST,,,,,,,S,TEST,"WP-11: ratio fiscal con flag calculado|fallback, sin nulos silenciosos."
+tests/test_fase_datos.py,185,test_wp18_metadata_salario,,,tests,TEST,,,,,,,S,TEST,WP-18: sidecars canonicos completos para salario y emancipacion.
+tests/test_fase_datos.py,198,test_wp12_cobertura_mercado,,,tests,TEST,,,,,,,S,TEST,"WP-12: n_anuncios real post-dedup, crudo conservado, tipologia cerrada."
+tests/test_fase_datos.py,222,test_wp15_renta_origen_fila,,,tests,TEST,,,,,,,S,TEST,"WP-15: renta_joven_origen derivada de nulidad real, valores cerrados."
+tests/test_fase_datos.py,235,test_wp17_ingestion_manifest,,,tests,TEST,,,,,,,S,TEST,WP-17: acta maquina-leible con una entrada por fichero raw.
+tests/test_fase_datos.py,246,test_wp19_precio_nulo_con_motivo,,,tests,TEST,,,,,,,S,TEST,"WP-19 (A1+A3): precio_m2_calc + IQR calculados, nulos con motivo."
+tests/test_fase_datos.py,267,test_wp13_higiene_escritura,,,tests,TEST,,,,S,,,S,TEST,WP-13: todo to_csv de transform escribe con encoding utf-8-sig.
+tests/test_fuentes_validacion.py,9,test_fuentes_gate,,,tests,TEST,,,,,,,S,TEST,
+tests/test_indicadores.py,16,_indicadores_no_legacy,,,tests,TEST,,,,,,,S,TEST,
+tests/test_indicadores.py,24,test_cinco_indicadores_no_legacy,,,tests,TEST,,,,,,,S,TEST,
+tests/test_integracion_mongo.py,25,coll,,,tests,TEST,,,,,,,S,TEST,
+tests/test_integracion_mongo.py,30,test_insert_y_find,,coll,tests,TEST,S,,,,,,S,TEST,
+tests/test_integracion_mongo.py,37,test_reintento_upsert_cero_duplicados,,coll,tests,TEST,S,,,,,,S,TEST,
+tests/test_integracion_mongo.py,44,test_indice_y_agregacion,,coll,tests,TEST,S,,,S,,,S,TEST,
+tests/test_kafka_bordes.py,32,__init__,FakeHDFS,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,36,makedirs,FakeHDFS,"self, path",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,39,write,FakeHDFS,"self, path, data, overwrite",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,44,__init__,FakeConsumer,"self, batches",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,49,poll,FakeConsumer,"self, timeout_ms",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,52,commit,FakeConsumer,"self, offsets",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,55,close,FakeConsumer,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,62,__init__,LazyFuture,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,66,add_callback,LazyFuture,"self, fn",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,70,add_errback,LazyFuture,"self, fn",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,76,__init__,FakeProducerLazy,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,81,send,FakeProducerLazy,"self, topic, key, value",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,85,flush,FakeProducerLazy,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,88,close,FakeProducerLazy,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,92,_msg,,"payload, offset, partition, raw",tests,TEST,,,,S,,,S,TEST,
+tests/test_kafka_bordes.py,98,_raw,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,105,_payload,,"raw, rel",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_bordes.py,111,_instalar,,"monkeypatch, cliente, consumidor",tests,TEST,,S,S,,,,S,TEST,
+tests/test_kafka_bordes.py,116,test_consume_sha_mismatch_aborta_systemexit,,"monkeypatch, tmp_path",tests,TEST,,,S,,,,S,TEST,"kafka_hdfs_uploader: SHA/size que no cuadra -> SystemExit, sin commit ni subida."
+tests/test_kafka_bordes.py,133,test_consume_json_corrupto_se_descarta,,"monkeypatch, tmp_path",tests,TEST,,,S,,,,S,TEST,"JSON corrupto: skipped+commiteado, sin subida, sin abortar."
+tests/test_kafka_bordes.py,150,test_produce_sin_errback_no_bloquea,,"monkeypatch, tmp_path, capsys",tests,TEST,,,,,,,S,TEST,Future perezoso (sin invocar errback): produce retorna y hace flush.
+tests/test_kafka_bordes.py,166,test_poll_vacio_timeout_termina,,"monkeypatch, tmp_path",tests,TEST,,,S,,,,S,TEST,poll siempre vacio: tras idle_ms el consumidor termina con 0 subidos.
+tests/test_kafka_pipeline.py,57,__init__,FakeFuture,"self, offset",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,62,add_callback,FakeFuture,"self, fn",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,67,add_errback,FakeFuture,"self, fn",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,75,__init__,FakeProducer,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,81,send,FakeProducer,"self, topic, key, value",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,87,flush,FakeProducer,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,90,close,FakeProducer,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,95,__init__,FakeHDFS,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,99,makedirs,FakeHDFS,"self, path",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,102,write,FakeHDFS,"self, path, data, overwrite",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,107,__init__,FakeConsumer,"self, batches",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,112,poll,FakeConsumer,"self, timeout_ms",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,115,commit,FakeConsumer,"self, offsets",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,118,close,FakeConsumer,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,122,_msg,,"payload, offset, partition, raw",tests,TEST,,,,S,,,S,TEST,
+tests/test_kafka_pipeline.py,129,_raw_tree,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,142,test_defaults_apuntan_al_cluster_centro,,monkeypatch,tests,TEST,,,S,,,,S,TEST,
+tests/test_kafka_pipeline.py,165,test_getters_leen_entorno,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,177,test_iter_raw_files_excluye_legacy_y_ordena,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,184,test_manifest_entry_campos_y_sha,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,194,test_produce_publica_con_key_rel_y_api_future,,"monkeypatch, tmp_path, capsys",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,221,test_produce_cierra_su_propio_productor_y_respeta_limit,,"monkeypatch, tmp_path",tests,TEST,,S,,,,,S,TEST,
+tests/test_kafka_pipeline.py,229,create_topics,_FakeAdmin,"self, configs",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,232,close,_FakeAdmin,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,247,test_is_valid_rel_rechaza_rutas_peligrosas,,,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,259,test_verify_local_exige_size_y_sha,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,269,_payload,,"raw, rel",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_pipeline.py,279,test_consume_sube_y_commitea_tras_verificar,,"monkeypatch, tmp_path",tests,TEST,,S,S,,,,S,TEST,
+tests/test_kafka_pipeline.py,300,test_consume_aborta_sin_commitear_si_sha_no_cuadra,,"monkeypatch, tmp_path",tests,TEST,,S,S,,,,S,TEST,
+tests/test_kafka_pipeline.py,318,test_consume_descarta_mensajes_que_no_son_manifiesto,,"monkeypatch, tmp_path",tests,TEST,,S,S,,,,S,TEST,
+tests/test_kafka_topic.py,27,__init__,FakeAdmin,"self, raise_exists",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,32,create_topics,FakeAdmin,"self, configs",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,37,close,FakeAdmin,self,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,41,test_defaults_nuevo_topic_centro,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,59,test_getters_leen_entorno,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,70,test_ensure_crea_con_1_particion_rf1_capy,,,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,83,test_ensure_ya_existe_no_falla,,,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,91,test_ensure_respeta_topic_y_bootstrap_inyectados,,,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,107,test_ensure_cierra_admin_propio,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,111,create_topics,Factory,"self, configs",tests,TEST,,,,,,,S,TEST,
+tests/test_kafka_topic.py,114,close,Factory,self,tests,TEST,,,,,,,S,TEST,
+tests/test_load_mongo.py,38,mongo_tmp,,"monkeypatch, tmp_path",tests,TEST,,,,,,,S,TEST,
+tests/test_load_mongo.py,46,_escribir_csv,,"path, filas",tests,TEST,,,,S,,,S,TEST,
+tests/test_load_mongo.py,54,_fila,,,tests,TEST,,,,,,,S,TEST,
+tests/test_load_mongo.py,70,test_csv_vacio_no_toca_coleccion,,"mongo_tmp, tmp_path",tests,TEST,,,,,,,S,TEST,CSV solo con cabecera -> load_anuncios retorna 0 y no crea docs.
+tests/test_load_mongo.py,77,test_nulos_se_cargan_como_none,,"mongo_tmp, tmp_path",tests,TEST,S,,,,,,S,TEST,"Fila con precio/superficie/habitaciones vacios -> None, no 0."
+tests/test_load_mongo.py,93,test_idempotente_dos_cargas_mismo_conteo,,"mongo_tmp, tmp_path",tests,TEST,,,,,,,S,TEST,Cargar dos veces deja el mismo conteo (replace idempotente).
+tests/test_load_mongo.py,115,test_geo_point_invalida_es_none,,"lat, lon",tests,TEST,,,,,,,S,TEST,_geo_point devuelve None ante coordenadas invalidas.
+tests/test_load_mongo.py,120,test_geo_point_valida,,,tests,TEST,,,,,,,S,TEST,"_geo_point valida devuelve Point [lon, lat]."
+tests/test_load_mongo.py,126,test_fila_sin_codigo_ine_se_omite,,"mongo_tmp, tmp_path",tests,TEST,,,,,,,S,TEST,Fila sin codigo_ine no se carga (code None -> continue).
+tests/test_manifest_sha.py,30,_arbol,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_manifest_sha.py,42,test_sha256_correcto,,tmp_path,tests,TEST,,,,,,,S,TEST,_sha256 coincide con hashlib.sha256 del contenido.
+tests/test_manifest_sha.py,49,test_generar_y_verificar_ok,,tmp_path,tests,TEST,,,,,,,S,TEST,_escribir genera manifiesto y _verificar retorna 0.
+tests/test_manifest_sha.py,61,test_excluidos_fuera,,tmp_path,tests,TEST,,,,,,,S,TEST,"Excluidos (.FROZEN, .gitkeep, ingestion_manifest.json, manifest_sha256.txt) no a"
+tests/test_manifest_sha.py,75,test_mismatch_detecta_cambio,,tmp_path,tests,TEST,,,,,,,S,TEST,"Tras modificar un fichero, _verificar retorna 1."
+tests/test_manifest_sha.py,85,test_verificar_sobra_y_falta,,tmp_path,tests,TEST,,,,,,,S,TEST,Fichero nuevo no listado o borrado tambien fallan (exit 1).
+tests/test_mongo.py,22,_ensure_data,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,28,test_conexion,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,33,test_conteos,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,45,test_codigo_ine_canonico,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo.py,60,test_tiene_alquiler_oficial,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,65,test_query_por_municipio,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,72,test_query_dot_notation,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,79,test_query_equipamiento_array,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,100,test_provenance_g5_g6,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo.py,109,test_query_exists_type,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,118,test_query_regex,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,124,test_query_proyeccion_sort_limit,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,137,test_query_paginacion,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,155,_clean_mongo_on_test_db,,,tests,TEST,,,,S,,,S,TEST,
+tests/test_mongo.py,167,test_clean_mongo,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo.py,214,test_crud_demo,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo.py,233,test_aggregation_pipeline,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,249,test_aggregation_stages,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,283,test_indicador_por_municipio,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,289,test_indexes_explain,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,301,test_etxebide_promociones_codigo_ine,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,309,test_certificados_contenido,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo.py,320,test_pipeline_vpo,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,326,test_pipeline_accesibilidad_extendida,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,332,test_explain_promo,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,338,test_modalidades_pipeline,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo.py,344,test_zfill_float,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_comparativa.py,15,test_comparativa_tres_robustos_n30,,tmp_path,tests,TEST,,,,S,,,S,TEST,
+tests/test_mongo_comparativa.py,46,test_comparativa_cuatro_robustos_tier_a_delta,,tmp_path,tests,TEST,,,,S,,,S,TEST,
+tests/test_mongo_consistencia.py,49,test_atomicidad_documental,,,tests,TEST,S,,,S,S,S,S,TEST,
+tests/test_mongo_consistencia.py,129,test_load_all_no_silencia_indices,,"monkeypatch, caplog",tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_consistencia.py,134,boom,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_geo.py,11,test_anuncios_geojson_real,,,tests,TEST,S,,,,,,S,TEST,
+tests/test_mongo_indices.py,14,test_indexes_explain_totalDocsExamined,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_orquestador.py,26,_leer_csv,,ruta,tests,TEST,,,,S,,,S,TEST,
+tests/test_mongo_orquestador.py,33,test_orquestador_analisis_exporta_tres_conjuntos,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_orquestador.py,62,test_preparacion_visualizacion_tres_conjuntos,,tmp_path,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,23,_load_module,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,33,_prod_count,,,tests,TEST,,,,,,S,S,TEST,
+tests/test_mongo_pipeline.py,44,_install_spies,,"module, monkeypatch",tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,47,fake_load_all,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,51,fake_clean_all,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,60,fake_ensure_indexes,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,64,fake_pipeline,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pipeline.py,77,test_pipeline_entrypoint_existe,,"monkeypatch, capsys",tests,TEST,,,,,,,S,TEST,"El entrypoint existe y main llama a load_all primero, sin tocar prod."
+tests/test_mongo_pipeline.py,103,test_dry_run_no_muta_prod,,"monkeypatch, capsys",tests,TEST,,,,,,,S,TEST,--dry-run solo valida imports y ping; no llama a las funciones de carga.
+tests/test_mongo_pymongo_pro.py,17,test_mongo_uri_configurable,,monkeypatch,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_pymongo_pro.py,46,test_anuncios_objectid,,,tests,TEST,S,,,S,,,S,TEST,
+tests/test_mongo_queries.py,24,_mongo_vivo,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_queries.py,28,test_consulta_por_municipio_devuelve_filas,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_queries.py,34,test_consulta_dos_condiciones_devuelve_filas,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_queries.py,42,test_consulta_campo_anidado_dot_notation,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_queries.py,48,test_consulta_array_equipamiento_devuelve_filas,,,tests,TEST,,,,,,,S,TEST,El array tiene vocabulario cerrado: usar un valor que exista.
+tests/test_mongo_queries.py,55,test_consulta_regex_y_orden_limite,,,tests,TEST,,,,,,,S,TEST,
+tests/test_mongo_queries.py,60,test_demo_no_tiene_consultas_vacias,,,tests,TEST,,,,,,,S,TEST,Cualquier consulta de la demo que devuelva 0 es una regresión.
+tests/test_muni_resolve.py,30,test_vacio_es_cuarentena_sin_subtitulo,,"sub, tit",tests,TEST,,,,,,,S,TEST,"Sin subtitulo ni titulo -> cuarentena sin_subtitulo, codigo None."
+tests/test_muni_resolve.py,42,test_sin_parentesis_resuelve_por_subtitulo,,"sub, canon_esperado",tests,TEST,,,,,,,S,TEST,Subtitulo sin parentesis que es municipio -> origen subtitulo.
+tests/test_muni_resolve.py,50,test_con_parentesis_manda_hint,,,tests,TEST,,,,,,,S,TEST,'Barrio (Muni)' resuelve por el hint entre parentesis.
+tests/test_muni_resolve.py,58,test_ine_inexistente_no_se_propaga,,ine_inexistente,tests,TEST,,,,,,,S,TEST,"INE inexistente sin coincidencia textual -> cuarentena, nunca el INE dado."
+tests/test_muni_resolve.py,67,test_ine_inexistente_con_texto_resuelve_por_texto,,,tests,TEST,,,,,,,S,TEST,Con texto valido manda el texto aunque el INE no exista.
+tests/test_muni_resolve.py,74,test_load_dim_monkeypatch_tmp,,"tmp_path, monkeypatch",tests,TEST,,,,S,,,S,TEST,_load_dim lee la dim de data/procesado bajo el cwd (monkeypatch chdir).
+tests/test_muni_resolve.py,99,test_globals_monkeypatch_cambian_resolucion,,monkeypatch,tests,TEST,,,,,,,S,TEST,Parchear los globales (salida de _load_dim) cambia la resolucion.
+tests/test_pisos_ubicacion_real.py,30,_union_csv,,,tests,TEST,,,,S,,,S,TEST,Union dirigido+enriquecido dedup por id_anuncio (universo T1: 263).
+tests/test_pisos_ubicacion_real.py,42,_dim_codes,,,tests,TEST,,,,S,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,47,test_subtitulo_real_santutxu_bilbao,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,56,test_subtitulo_solo_barrio_via_gazetteer,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,65,test_subtitulo_indautxu_mantiene_bilbao,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,72,test_codigo_sin_texto_no_se_propaga,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,83,test_fuera_euskadi_cuarentena,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,93,test_orden_subtitulo_antes_que_titulo,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,100,test_titulo_como_evidencia_cuando_no_hay_subtitulo_util,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,109,test_sin_subtitulo_no_usa_busqueda,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,117,test_nunca_municipio_busqueda_como_ubicacion,,,tests,TEST,,,,S,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,131,test_universo_resueltos_o_cuarentena,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,154,test_cuarentena_excluida_de_dim_y_conteos,,,tests,TEST,,,,S,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,166,test_municipio_n0_sin_precio_sin_imputacion,,,tests,TEST,,,,S,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,183,test_resultados_13png_7csv,,,tests,TEST,,,,,,S,S,TEST,
+tests/test_pisos_ubicacion_real.py,214,_sha6,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,222,_mongo_ok,,,tests,TEST,,,,,,S,S,TEST,
+tests/test_pisos_ubicacion_real.py,231,test_backup_presente_sin_perdidas,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,244,test_sha_doble_identico,,,tests,TEST,,,,,,,S,TEST,
+tests/test_pisos_ubicacion_real.py,257,test_carga_vacia_no_toca_origen,,,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_guard_runtime.py,29,guard_tmp,,"tmp_path, monkeypatch",tests,TEST,,,,,,,S,TEST,Apunta FROZEN_MARKER y TODOS los audit logs a tmp_path.
+tests/test_raw_guard_runtime.py,44,test_sin_frozen_lanza,,guard_tmp,tests,TEST,,,,,,,S,TEST,Sin .FROZEN (tmp) -> RawFrozenMissing aunque haya reason.
+tests/test_raw_guard_runtime.py,51,test_con_frozen_ok,,guard_tmp,tests,TEST,,,,,,,S,TEST,Con .FROZEN y reason no vacio -> no lanza.
+tests/test_raw_guard_runtime.py,58,test_audit_log_se_escribe,,guard_tmp,tests,TEST,,,,,,,S,TEST,La intencion queda registrada en el audit_log de tmp_path.
+tests/test_raw_guard_runtime.py,70,test_reason_vacio_lanza_valueerror,,"guard_tmp, reason",tests,TEST,,,,,,,S,TEST,Reason vacio/no-string -> ValueError (antes de mirar .FROZEN).
+tests/test_raw_guardrails.py,43,_src,,path,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_guardrails.py,47,_tainted_names,,tree,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_guardrails.py,75,_raw_write_calls,,path,tests,TEST,,,,S,,,S,TEST,
+tests/test_raw_guardrails.py,128,test_no_transform_writes_raw,,,tests,TEST,,,,,,,S,TEST,Ningún transform escribe en data/raw salvo lista blanca + guard.
+tests/test_raw_guardrails.py,146,test_f4_filename_stable,,,tests,TEST,,,,,,,S,TEST,WP-09: _nombre_lote devuelve un nombre estable (sin timestamp); la
+tests/test_raw_guardrails.py,163,test_geo_temp_not_tmp_root,,,tests,TEST,,,,,,,S,TEST,22_geo_areas_funcionales no usa /tmp y crea el temp dir.
+tests/test_raw_guardrails.py,184,test_muni_resolve_accented_slash,,,tests,TEST,,,,,,,S,TEST,resolver_codigo resuelve variantes con acentos/barras sin fallback difuso.
+tests/test_raw_guardrails.py,195,ratio,_Boom,self,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_guardrails.py,209,test_unificados_columns_superset,,,tests,TEST,,,,,,,S,TEST,Los CSV derivados del canonico conservan las columnas base (A1: 17 con precio_m2
+tests/test_raw_inmutable.py,13,_sha256,,p,tests,TEST,,,,S,,,S,TEST,
+tests/test_raw_inmutable.py,21,test_raw_congelado_marker,,,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_inmutable.py,25,test_raw_hashes_manifest,,,tests,TEST,,,,,,,S,TEST,
+tests/test_raw_inmutable.py,58,test_raw_manifest_complete,,,tests,TEST,,,,,,,S,TEST,Todo fichero de data/raw (salvo excepciones) esta en el manifest.
+tests/test_raw_inmutable.py,81,test_raw_guard_reason,,,tests,TEST,,,,,,,S,TEST,assert_raw_writable valida el reason (no escribe nada).
+tests/test_run_all.py,31,dag,,"tmp_path, monkeypatch",tests,TEST,,,,,,,S,TEST,DAG sintetico a -> b -> c sobre tmp_path (sin tocar data/procesado).
+tests/test_run_all.py,52,_tocar,,"path, mtime",tests,TEST,,,,,,,S,TEST,
+tests/test_run_all.py,57,test_orden_topologico_respeta_dag,,dag,tests,TEST,,,,,,,S,TEST,"Aunque se pase en orden inverso, el orden sale a,b,c (sin_salida al final relati"
+tests/test_run_all.py,65,test_salidas_y_entradas_resuelven_prefijos,,dag,tests,TEST,,,,,,,S,TEST,
+tests/test_run_all.py,73,test_estado_ok_cuando_salida_fresca,,dag,tests,TEST,,,,,,,S,TEST,Salida mas nueva que la entrada -> OK (skip: no hay que re-ejecutar).
+tests/test_run_all.py,83,test_estado_desactualizado_cuando_entrada_mas_nueva,,dag,tests,TEST,,,,,,,S,TEST,Entrada mas nueva que la salida -> DESACTUALIZADO.
+tests/test_run_all.py,94,test_estado_falta_y_sin_declarar,,dag,tests,TEST,,,,,,,S,TEST,Sin salida en disco -> FALTA; sin salidas declaradas -> SIN-DECLARAR.
+tests/test_tier_confianza.py,19,_mongo_ok,,,tests,TEST,,,,,,S,S,TEST,
+tests/test_tier_confianza.py,34,tier,,,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,38,_conteo,,"filas, t",tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,42,test_conteos_4_3_57_188_total_252,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,52,test_tier_a_son_bilbao_donostia_getxo_vitoria,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,60,test_tier_b_son_sopela_zarautz_santurtzi,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,71,test_tier_c_d_sin_precio_municipal,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,88,test_tier_b_temporal_no_igual_larga,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,96,test_sin_promocion_comarcal_ni_idw,,tier,tests,TEST,,,,,,,S,TEST,
+tests/test_tier_confianza.py,110,test_doble_ejecucion_sha_identico,,tier,tests,TEST,,,,S,,,S,TEST,
+tests/test_tier_confianza.py,112,_huella,,rows,tests,TEST,,,,S,,,S,TEST,
+tests/test_tier_confianza.py,113,_jsonable,,v,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,19,vpo,,,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,25,test_252_municipios_unicos,,vpo,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,31,test_valores_en_rango,,vpo,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,36,test_sin_dato_declarado_no_imputado,,vpo,tests,TEST,,,,,,,S,TEST,"Usansolo (48916, segregado en 2023) aun no tiene VPO publicada."
+tests/test_vpo_municipal.py,42,test_anio_y_fuente_declarados,,vpo,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,48,test_municipios_robustos_presentes,,vpo,tests,TEST,,,,,,,S,TEST,
+tests/test_vpo_municipal.py,54,test_es_flujo_no_stock,,vpo,tests,TEST,,,,,,,S,TEST,

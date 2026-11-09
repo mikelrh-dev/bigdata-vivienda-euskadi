@@ -1,0 +1,103 @@
+TEMA 8
+Proyecto integrador MongoDB
+¿Puede una persona joven independizarse en Euskadi con su salario?
+
+
+Este tema no es un tutorial guiado. Cada equipo deberá tomar decisiones propias en función de sus fuentes de datos y justificar técnicamente su solución.
+
+1. Contexto del proyecto
+El proyecto parte del reto intermodular de la primera evaluación: analizar con datos reales si una persona joven puede independizarse en Euskadi con su salario. El sistema debe recoger, almacenar, transformar y analizar información de vivienda y otros indicadores relevantes para obtener conclusiones fundamentadas.
+2. Qué debe demostrar la parte MongoDB
+3. El proyecto NO tiene un modelo de datos predeterminado
+Cada equipo deberá comenzar examinando los datos reales obtenidos. Antes de crear colecciones, tendrá que decidir qué entidades o conceptos aparecen en sus fuentes y cómo se relacionan.
+No se proporciona una lista obligatoria de colecciones.
+No se proporciona un esquema de documento que todos deban copiar.
+No se fija qué datos deben ir embebidos o referenciados.
+No se proporciona una lista cerrada de pipelines.
+No se indica qué índices deben crear.
+No se exige una transacción artificial si el caso del grupo no la necesita.
+4. Evidencias obligatorias del trabajo MongoDB
+Aunque cada grupo trabaje con datos diferentes, todos deben aportar evidencias equivalentes. Estas evidencias permiten evaluar conocimientos comunes sin imponer una solución única.
+5. Modelado documental
+El modelo debe nacer de los datos y de las consultas que el equipo necesita realizar. Antes de programar, el grupo debe responder y documentar preguntas como las siguientes:
+¿Qué información se consulta normalmente junta?
+¿Qué información cambia con frecuencia?
+¿Qué arrays podrían crecer sin límite?
+¿Hay información que se repite pero interesa conservar como fotografía histórica?
+¿Qué relaciones son 1:1, 1:N o N:M?
+¿Qué campos se usarán para relacionar información procedente de fuentes distintas?
+¿Qué tipos BSON son adecuados para fechas, importes, identificadores, booleanos o arrays?
+El equipo deberá justificar al menos una decisión de embedding o referencing. Si su modelo no utiliza uno de los dos enfoques, deberá explicar por qué.
+6. CRUD, transformación y calidad de datos con PyMongo
+La limpieza y transformación de la información deberá realizarse utilizando operaciones de MongoDB desde Python. No se evalúa una lista fija de comandos, sino la capacidad de aplicar correctamente las herramientas estudiadas al conjunto de datos real.
+El proyecto debe demostrar, cuando sean aplicables a sus datos:
+insert_one(), insert_many() o estrategias equivalentes de carga.
+find_one() y find(), entendiendo la diferencia entre documento y Cursor.
+update_one(), update_many() y operadores como $set, $unset, $inc, $rename, $push, $pull o $addToSet.
+delete_one() / delete_many() cuando exista un borrado justificado.
+Comprobación de matched_count, modified_count, deleted_count o inserted_id cuando proceda.
+Conversión correcta de ObjectId y tratamiento de fechas y tipos BSON.
+Detección y tratamiento de duplicados, campos ausentes, valores incoherentes o tipos incorrectos.
+7. Consultas que deben aparecer en la solución
+Cada grupo diseñará sus propias consultas. Deben estar vinculadas a preguntas reales del análisis, no añadidas únicamente para cumplir una lista.
+
+8. Aggregation Framework orientado a responder al reto
+El núcleo analítico del proyecto debe realizarse con Aggregation Pipeline. Los pipelines deben producir información útil para responder a la pregunta de emancipación y para comparar municipios, perfiles o tipos de vivienda según los datos disponibles.
+Cada grupo deberá construir varios pipelines propios y explicar qué entra y qué sale de cada etapa. Entre las etapas estudiadas que pueden utilizarse están:
+$match
+$project
+$set / $addFields
+$unset
+$group y acumuladores ($sum, $avg, $min, $max, etc.)
+$sort, $limit, $skip, $count
+$unwind
+$lookup
+$facet
+Los indicadores concretos dependerán de las fuentes. A modo de orientación conceptual, podrían relacionar ingresos, precio de vivienda, superficie, municipio, disponibilidad, población, evolución temporal u otras variables. No se proporciona un pipeline modelo.
+9. Índices, explain() y rendimiento
+El equipo deberá identificar consultas relevantes que puedan beneficiarse de índices y justificar su diseño según los campos utilizados en filtros, ordenaciones y rangos.
+Seleccionar al menos una consulta real del proyecto.
+Obtener su plan de ejecución antes de crear el índice.
+Diseñar un índice simple o compuesto adecuado.
+Repetir explain("executionStats").
+Comparar COLLSCAN/IXSCAN, nReturned, totalDocsExamined y totalKeysExamined.
+Explicar por qué el índice mejora esa consulta y qué coste introduce en almacenamiento y escrituras.
+Cuando sea pertinente, el alumnado podrá justificar índices compound siguiendo el criterio ESR y reconocer índices multikey, unique, sparse, partial o TTL. No se valorará crear índices sin una consulta que los justifique.
+10. Replica sets y sharding dentro del proyecto
+El reto puede ejecutarse sobre MongoDB local. No se exige desplegar el proyecto final sobre un clúster distribuido. Sin embargo, el equipo debe ser capaz de explicar cómo cambiaría la solución si necesitara alta disponibilidad o escalado horizontal.
+
+11. Transacciones y consistencia
+Cada equipo deberá revisar su modelo y determinar si existe alguna operación de negocio que afecte a varios documentos o colecciones y que deba ser totalmente atómica.
+El análisis debe distinguir dos situaciones:
+Si todo el cambio puede resolverse dentro de un único documento, se aprovechará la atomicidad documental de MongoDB.
+Si una operación necesita modificar varios documentos y un fallo parcial dejaría datos incoherentes, puede estar justificada una transacción.
+Cuando exista un caso real, deberá implementarse con sesiones y transacciones en PyMongo, contemplando commit/abort y tratamiento de errores. Cuando no exista, el equipo deberá explicar por qué no necesita una transacción y proponer un ejemplo plausible relacionado con su modelo.
+12. Desarrollo profesional con PyMongo
+La solución debe presentarse como un pequeño proyecto Python mantenible, no como un único script desordenado. La estructura exacta queda a elección del equipo, pero debe separar responsabilidades y reutilizar la conexión.
+13. Preguntas analíticas que debería poder responder el sistema
+No se exige que todos los equipos respondan exactamente las mismas preguntas. Cada grupo formulará sus propias preguntas de investigación según sus datos. Como referencia, deberían tener una dificultad comparable a estas:
+¿Qué municipios presentan una relación más favorable entre ingresos y coste de vivienda?
+¿Qué porcentaje del salario se destinaría al alquiler o a la compra en distintos escenarios?
+¿Cómo cambia la accesibilidad según características de la vivienda?
+¿Existen diferencias relevantes entre municipios o territorios?
+¿Qué variables parecen relacionarse con una mayor o menor posibilidad de emancipación?
+¿Cómo cambian los resultados si se filtra por un perfil concreto de persona joven?
+¿Qué limitaciones tienen los datos y cómo afectan a las conclusiones?
+…
+14. Entregables específicos de MongoDB
+15. Mapa de integración de todos los temas de MongoDB
+16. Propuesta de evaluación de la parte MongoDB
+17. Checklist final del equipo
+☐ Hemos utilizado datos reales y podemos explicar su procedencia.
+☐ Nuestro modelo MongoDB está justificado y no es una copia de un ejemplo.
+☐ La carga y limpieza se realizan desde Python/PyMongo.
+☐ Las consultas responden a necesidades reales del análisis.
+☐ Nuestros pipelines generan indicadores útiles para responder al reto.
+☐ Hemos analizado al menos una consulta con explain() y creado un índice justificado.
+☐ Podemos explicar si nuestro modelo necesita o no una transacción.
+☐ Podemos relacionar nuestra solución con replica sets y sharding.
+☐ El código está organizado y puede ejecutarse siguiendo el README.
+☐ Cada integrante puede defender las decisiones técnicas del proyecto.
+☐ Nuestras conclusiones están respaldadas por los datos y reconocen sus limitaciones.
+19. Cierre
+El objetivo final no es que todos los grupos construyan la misma base de datos. El objetivo es que cada equipo sea capaz de transformar fuentes reales y diferentes en una solución MongoDB coherente, eficiente y justificable, y que utilice esa solución para responder con datos a una pregunta real: ¿puede una persona joven independizarse en Euskadi con su salario?

@@ -1,0 +1,112 @@
+{
+  "igualdad": {
+    "n": 3,
+    "sample_keys": [
+      "_id",
+      "anio_fuente",
+      "auditoria",
+      "equipamiento",
+      "es_outlier_iqr",
+      "es_outlier_superficie",
+      "fecha_carga",
+      "fuente",
+      "geo_invalida",
+      "habitaciones",
+      "historico_precios",
+      "id_anuncio",
+      "iqr_excluido",
+      "modalidad",
+      "motivo_exclusion",
+      "origen_resolucion",
+      "portal",
+      "precio_eur",
+      "precio_m2",
+      "precio_m2_calc",
+      "precio_m2_fuera_3_50",
+      "property_fingerprint",
+      "superficie_fuera_10_500",
+      "superficie_m2",
+      "ubicacion"
+    ]
+  },
+  "anidado_dot": {
+    "n": 3,
+    "sample_keys": [
+      "modalidad",
+      "portal",
+      "precio_eur",
+      "ubicacion"
+    ]
+  },
+  "array_elemMatch": {
+    "n": 0,
+    "sample_keys": []
+  },
+  "logica_and": {
+    "n": 3,
+    "sample_keys": [
+      "_id",
+      "anio_fuente",
+      "auditoria",
+      "equipamiento",
+      "es_outlier_iqr",
+      "es_outlier_superficie",
+      "fecha_carga",
+      "fuente",
+      "geo_invalida",
+      "habitaciones",
+      "historico_precios",
+      "id_anuncio",
+      "iqr_excluido",
+      "modalidad",
+      "motivo_exclusion",
+      "origen_resolucion",
+      "portal",
+      "precio_eur",
+      "precio_m2",
+      "precio_m2_calc",
+      "precio_m2_fuera_3_50",
+      "property_fingerprint",
+      "superficie_fuera_10_500",
+      "superficie_m2",
+      "ubicacion"
+    ]
+  },
+  "proyeccion": {
+    "n": 3,
+    "sample_keys": [
+      "modalidad",
+      "precio_eur"
+    ]
+  },
+  "sort": {
+    "n": 3,
+    "sample_keys": [
+      "_id",
+      "anio_fuente",
+      "auditoria",
+      "equipamiento",
+      "es_outlier_iqr",
+      "es_outlier_superficie",
+      "fecha_carga",
+      "fuente",
+      "geo_invalida",
+      "habitaciones",
+      "historico_precios",
+      "id_anuncio",
+      "iqr_excluido",
+      "modalidad",
+      "motivo_exclusion",
+      "origen_resolucion",
+      "portal",
+      "precio_eur",
+      "precio_m2",
+      "precio_m2_calc",
+      "precio_m2_fuera_3_50",
+      "property_fingerprint",
+      "superficie_fuera_10_500",
+      "superficie_m2",
+      "ubicacion"
+    ]
+  }
+}

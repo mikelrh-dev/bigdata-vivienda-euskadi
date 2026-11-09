@@ -1,0 +1,48 @@
+{
+  "data": {
+    "n": 1,
+    "files": [
+      "raw"
+    ],
+    "total_bytes": 0
+  },
+  "raw": {
+    "n": 201,
+    "files": [
+      ".FROZEN",
+      ".gitkeep",
+      "ECVI_cifras_interanuales_es_2025T4.xlsx",
+      "ECVI_es_2026T2.xlsx",
+      "ECVI_otros_inmuebles_2025T4.xlsx",
+      "alquiler_distrito_seccion_original.csv",
+      "alquiler_municipal.csv",
+      "alquiler_municipal.json",
+      "alquiler_municipio_original.csv",
+      "alquiler_seccion.csv",
+      "alquiler_seccion_a_original.csv",
+      "alquiler_seccion_b_original.csv",
+      "alquiler_territorial_original.csv",
+      "anuncios_faltantes_fotocasa_batch1_20261029_230030.json",
+      "anuncios_faltantes_pisos_batch1_20261029_230030.json",
+      "anuncios_fotocasa.csv",
+      "anuncios_fotocasa.json",
+      "anuncios_fotocasa_detalle.json",
+      "anuncios_fotocasa_dirigido_20261029.json",
+      "anuncios_fotocasa_dirigido_20261029_223523.json",
+      "anuncios_fotocasa_enriquecido.json",
+      "anuncios_fotocasa_enriquecido_geo.json",
+      "anuncios_fotocasa_enriquecido_meta.json",
+      "anuncios_fotocasa_geo.json",
+      "anuncios_fotocasa_habitaciones.csv"
+    ],
+    "total_bytes": 703029760
+  },
+  "procesado": {
+    "error": "<HTTPError 404: 'Not Found'>"
+  },
+  "recovery": {
+    "file": "alquiler_distrito_seccion_original.csv",
+    "bytes_read": 300,
+    "preview": "\"Renta media (euros/m2 mes), cuantía media (euros/mes) y superficie construida media (m2) del arren"
+  }
+}

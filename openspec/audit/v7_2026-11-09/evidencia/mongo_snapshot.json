@@ -1,0 +1,146 @@
+{
+  "n_collections": 30,
+  "collections": {
+    "alquiler_municipal": 252,
+    "alquiler_municipal__backup": 252,
+    "anuncios": 594,
+    "anuncios__backup": 594,
+    "anuncios_habitaciones_unificados": 201,
+    "anuncios_habitaciones_unificados_bigdata": 201,
+    "certificados_energeticos": 252,
+    "certificados_energeticos__backup": 252,
+    "ecvi_compraventa": 29,
+    "ecvi_compraventa__backup": 29,
+    "emancipacion_juventud": 1,
+    "emancipacion_juventud__backup": 1,
+    "etxebide_promociones": 406,
+    "etxebide_promociones__backup": 406,
+    "etxebide_solicitudes": 5040,
+    "etxebide_solicitudes__backup": 5040,
+    "indicadores": 252,
+    "indicadores__backup": 252,
+    "municipios": 252,
+    "municipios__backup": 252,
+    "osrm_tiempos": 252,
+    "osrm_tiempos__backup": 252,
+    "udalmap_empleo": 252,
+    "udalmap_empleo__backup": 252,
+    "udalmap_extendido": 252,
+    "udalmap_extendido__backup": 252,
+    "udalmap_indicadores": 252,
+    "udalmap_indicadores__backup": 252,
+    "vpo_municipal": 252,
+    "vpo_municipal__backup": 252
+  },
+  "backups": [
+    "alquiler_municipal__backup",
+    "anuncios__backup",
+    "certificados_energeticos__backup",
+    "ecvi_compraventa__backup",
+    "emancipacion_juventud__backup",
+    "etxebide_promociones__backup",
+    "etxebide_solicitudes__backup",
+    "indicadores__backup",
+    "municipios__backup",
+    "osrm_tiempos__backup",
+    "udalmap_empleo__backup",
+    "udalmap_extendido__backup",
+    "udalmap_indicadores__backup",
+    "vpo_municipal__backup"
+  ],
+  "vivas": [
+    "alquiler_municipal",
+    "anuncios",
+    "anuncios_habitaciones_unificados",
+    "anuncios_habitaciones_unificados_bigdata",
+    "certificados_energeticos",
+    "ecvi_compraventa",
+    "emancipacion_juventud",
+    "etxebide_promociones",
+    "etxebide_solicitudes",
+    "indicadores",
+    "municipios",
+    "osrm_tiempos",
+    "udalmap_empleo",
+    "udalmap_extendido",
+    "udalmap_indicadores",
+    "vpo_municipal"
+  ],
+  "anuncios_total": 594,
+  "anuncios_modalidad": [
+    {
+      "_id": "larga_estancia",
+      "n": 326
+    },
+    {
+      "_id": "temporal",
+      "n": 268
+    }
+  ],
+  "anuncios_sin_precio": 33,
+  "anuncios_sin_superficie": 7,
+  "anuncios_sin_codigo": 0,
+  "anuncios_con_array_equip": 77,
+  "anuncios_con_geo": 424,
+  "dup_portal_id": 0,
+  "dup_fingerprint": 0,
+  "join_anuncios_municipios_por_n_match": [
+    {
+      "_id": 1,
+      "n": 594
+    }
+  ],
+  "explain_indexado": {
+    "stage": "IXSCAN",
+    "nReturned": 8,
+    "totalDocsExamined": 8,
+    "totalKeysExamined": 8
+  },
+  "explain_natural": {
+    "stage": "COLLSCAN",
+    "nReturned": 8,
+    "totalDocsExamined": 594,
+    "totalKeysExamined": 0
+  },
+  "indices_anuncios": [
+    "_id_",
+    "idx_anuncios_ine_modalidad_precio",
+    "idx_anuncios_geo",
+    "idx_anuncios_portal_id",
+    "idx_anuncios_equipamiento"
+  ],
+  "hello_setName": null,
+  "municipios_total": 252,
+  "municipios_sample_keys": [
+    "_id",
+    "anio_fuente",
+    "demanda_social",
+    "demografia",
+    "empleo",
+    "fecha_carga",
+    "fuente",
+    "nombre_canonico",
+    "nombre_normalizado",
+    "territorio",
+    "tiene_alquiler_oficial",
+    "tiene_fianzas_emal",
+    "transporte",
+    "variantes",
+    "vivienda_contexto"
+  ],
+  "alquiler_total": 252,
+  "alquiler_niveles": [
+    {
+      "_id": "comarcal",
+      "n": 93
+    },
+    {
+      "_id": "municipal",
+      "n": 159
+    }
+  ],
+  "vpo_total": 252,
+  "promociones_total": 406,
+  "certificados_total": 252,
+  "_demo_crud_existe": false
+}
