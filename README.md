@@ -266,7 +266,7 @@ completos.
 
 ## ⚠️ Cosas que faltan
 
-- **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`. `storage/hdfs_utils.py` ahora lee `HDFS_URL` y `HDFS_USER` de entorno y sube el bronce sin legacy con estado en `data/_hdfs_state/hdfs_upload_raw.json`.
+- **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`. Flujo vigente vía Kafka: `storage/kafka_raw_producer.py` publica manifiesto y `storage/kafka_hdfs_uploader.py` sube con `InsecureClient` directo (sin pasar por utils).
 - **Kafka:** listo en el broker del clúster centro `10.22.87.215:9092` (`hadoop-master1.tartangalh.eus`), topic `anuncios_inmobiliarios` con 1 partición (RF 1). Productor y consumidor Python en `storage/kafka_raw_producer.py` (publica el manifiesto `{rel,size,sha256}` de cada fichero de `data/raw`) y `storage/kafka_hdfs_uploader.py` (consume y sube a HDFS, descartando por SHA lo que ya coincide). Kafka no escribe en Mongo: Mongo se carga en batch con `storage/load_mongo.py`. Tests offline del pipeline en `tests/test_kafka_pipeline.py` (dobles de `KafkaProducer`/`KafkaConsumer`/`InsecureClient`, sin broker).
 - **Informe y demo:** pendiente. Aggregation Pipeline, indicadores y CSV desde Mongo hechos (`analysis/run_analisis_mongo.py`); falta informe/demo final.
 - **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
