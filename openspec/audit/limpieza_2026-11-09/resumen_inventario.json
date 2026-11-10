@@ -1,0 +1,364 @@
+{
+  "files": 1511,
+  "tracked": 625,
+  "untracked": 886,
+  "bytes": 1186976024,
+  "verdicts": {
+    "borrar_local_opcional": 100,
+    "conservar": 1375,
+    "revisar": 4,
+    "editar_opcional": 2,
+    "mover_a_archive": 1,
+    "editar": 3,
+    "borrar_local": 1,
+    "archivar_o_borrar": 5,
+    "conservar_mientras_haya_legacy": 1,
+    "archivar": 10,
+    "borrar": 7,
+    "migrar_o_archivar": 1,
+    "borrar_o_reescribir": 1
+  },
+  "kinds": {
+    "generado_herramienta": 70,
+    "secreto": 2,
+    "otro": 56,
+    "referencia_duckdb": 2,
+    "documento": 70,
+    "codigo": 133,
+    "editar": 5,
+    "legacy": 285,
+    "dato": 249,
+    "dato_raw": 356,
+    "generado_demo": 30,
+    "revisar": 2,
+    "documento_resuelto": 1,
+    "generado": 1,
+    "residuo_ejercicio": 1,
+    "historico": 124,
+    "legacy_deliberado": 1,
+    "backup_historico": 10,
+    "scratch": 5,
+    "duplicado": 2,
+    "residuo_duckdb": 4,
+    "residuo_activo": 2,
+    "fuera_repo": 100
+  },
+  "duckdb_rows": 61,
+  "candidates": 136,
+  "candidate_bytes": 12008879,
+  "duplicate_groups": 74,
+  "duplicates": [
+    [
+      "analysis/__init__.py",
+      "data/procesado/.gitkeep",
+      "data/raw/.FROZEN",
+      "data/raw/.gitkeep",
+      "data/resultados/.gitkeep",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/compileall.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/diff_check.txt"
+    ],
+    [
+      "archive/data_regen/procesado/alquiler_seccion_resumen.csv",
+      "data/procesado/alquiler_seccion_resumen.csv"
+    ],
+    [
+      "data/procesado/alquiler_municipal_normalizado.json",
+      "data/raw/alquiler_municipal.json"
+    ],
+    [
+      "data/procesado/anuncios_faltantes_fotocasa_batch1_20261029_230030_normalizado.json",
+      "data/raw/anuncios_faltantes_fotocasa_batch1_20261029_230030.json"
+    ],
+    [
+      "data/procesado/anuncios_faltantes_pisos_batch1_20261029_230030_normalizado.json",
+      "data/raw/anuncios_faltantes_pisos_batch1_20261029_230030.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_dirigido_20261029_223523_normalizado.json",
+      "data/raw/anuncios_fotocasa_dirigido_20261029_223523.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_dirigido_20261029_normalizado.json",
+      "data/raw/anuncios_fotocasa_dirigido_20261029.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_enriquecido.csv",
+      "data/raw/anuncios_fotocasa.csv"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_enriquecido_geo_normalizado.json",
+      "data/raw/anuncios_fotocasa_enriquecido_geo.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_enriquecido_meta_normalizado.json",
+      "data/raw/anuncios_fotocasa_enriquecido_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_enriquecido_normalizado.json",
+      "data/raw/anuncios_fotocasa_enriquecido.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_geo_normalizado.json",
+      "data/raw/anuncios_fotocasa_geo.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_habitaciones_geo_normalizado.json",
+      "data/raw/anuncios_fotocasa_habitaciones_geo.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_habitaciones_meta_normalizado.json",
+      "data/raw/anuncios_fotocasa_habitaciones_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_habitaciones_normalizado.json",
+      "data/raw/anuncios_fotocasa_habitaciones.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_meta_normalizado.json",
+      "data/raw/anuncios_fotocasa_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_fotocasa_normalizado.json",
+      "data/raw/anuncios_fotocasa.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_dirigido_20261029_normalizado.json",
+      "data/raw/anuncios_pisos_dirigido_20261029.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_enriquecido_geo_normalizado.json",
+      "data/procesado/anuncios_pisos_enriquecido_meta_normalizado.json",
+      "data/raw/anuncios_pisos_enriquecido_geo.json",
+      "data/raw/anuncios_pisos_enriquecido_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_enriquecido_normalizado.json",
+      "data/raw/anuncios_pisos_enriquecido.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_geo_normalizado.json",
+      "data/procesado/anuncios_pisos_meta_normalizado.json",
+      "data/raw/anuncios_pisos_geo.json",
+      "data/raw/anuncios_pisos_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_habitaciones_geo_normalizado.json",
+      "data/procesado/anuncios_pisos_habitaciones_meta_normalizado.json",
+      "data/raw/anuncios_pisos_habitaciones_geo.json",
+      "data/raw/anuncios_pisos_habitaciones_meta.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_habitaciones_normalizado.json",
+      "data/raw/anuncios_pisos_habitaciones.json"
+    ],
+    [
+      "data/procesado/anuncios_pisos_normalizado.json",
+      "data/raw/anuncios_pisos.json"
+    ],
+    [
+      "data/procesado/anuncios_realtyapi_enriquecido.csv",
+      "data/raw/anuncios_realtyapi.csv"
+    ],
+    [
+      "data/procesado/anuncios_realtyapi_enriquecido.json",
+      "data/procesado/anuncios_realtyapi_normalizado.json",
+      "data/raw/anuncios_realtyapi.json"
+    ],
+    [
+      "data/procesado/dim_municipios_tension.csv",
+      "scratchpad/p1-1_backup_2026-11-07/dim_municipios_tension.csv"
+    ],
+    [
+      "data/procesado/distancias_b5m_gipuzkoa_normalizado.json",
+      "data/raw/distancias_b5m_gipuzkoa.json"
+    ],
+    [
+      "data/procesado/distancias_capitales_252.csv",
+      "data/raw/distancias_capitales_252.csv"
+    ],
+    [
+      "data/procesado/distancias_haversine_252.csv",
+      "data/raw/distancias_haversine_252.csv"
+    ],
+    [
+      "data/procesado/educacion_centros_normalizado.json",
+      "data/raw/educacion_centros.json"
+    ],
+    [
+      "data/procesado/emal_fianzas_normalizado.json",
+      "data/raw/emal_fianzas.json"
+    ],
+    [
+      "data/procesado/etxebide_promociones_normalizado.json",
+      "data/raw/etxebide_promociones.json"
+    ],
+    [
+      "data/procesado/etxebide_solicitudes_normalizado.json",
+      "data/raw/etxebide_solicitudes.json"
+    ],
+    [
+      "data/procesado/eustat_pib_municipal_normalizado.json",
+      "data/raw/eustat_pib_municipal.json"
+    ],
+    [
+      "data/procesado/eustat_poblacion_edad_normalizado.json",
+      "data/raw/eustat_poblacion_edad.json"
+    ],
+    [
+      "data/procesado/eustat_renta_edad_normalizado.json",
+      "data/raw/eustat_renta_edad.json"
+    ],
+    [
+      "data/procesado/eustat_renta_municipal_normalizado.json",
+      "data/raw/eustat_renta_municipal.json"
+    ],
+    [
+      "data/procesado/eustat_tenencia_normalizado.json",
+      "data/raw/eustat_tenencia.json"
+    ],
+    [
+      "data/procesado/ine_69301_normalizado.json",
+      "data/raw/ine_69301.json"
+    ],
+    [
+      "data/procesado/ine_69302_normalizado.json",
+      "data/raw/ine_69302.json"
+    ],
+    [
+      "data/procesado/ine_69303_normalizado.json",
+      "data/raw/ine_69303.json"
+    ],
+    [
+      "data/procesado/ine_69323_normalizado.json",
+      "data/raw/ine_69323.json"
+    ],
+    [
+      "data/procesado/ine_69330_normalizado.json",
+      "data/raw/ine_69330.json"
+    ],
+    [
+      "data/procesado/ine_salarios_decil_normalizado.json",
+      "data/raw/ine_salarios_decil.json"
+    ],
+    [
+      "data/procesado/ine_salarios_edad_normalizado.json",
+      "data/raw/ine_salarios_edad.json"
+    ],
+    [
+      "data/procesado/lanbide_paro_historico_joven_normalizado.json",
+      "data/raw/lanbide_paro_historico_joven.json"
+    ],
+    [
+      "data/procesado/lanbide_paro_juvenil_normalizado.json",
+      "data/raw/lanbide_paro_juvenil.json"
+    ],
+    [
+      "data/procesado/municipios_euskadi_252.geojson",
+      "data/raw/municipios_euskadi.geojson"
+    ],
+    [
+      "data/procesado/municipios_gipuzkoa_lista_normalizado.json",
+      "data/raw/municipios_gipuzkoa_lista.json"
+    ],
+    [
+      "data/procesado/renta_municipal_referencia.csv",
+      "data/raw/renta_municipal_referencia.csv"
+    ],
+    [
+      "data/procesado/salud_centros_normalizado.json",
+      "data/raw/salud_centros.json"
+    ],
+    [
+      "data/procesado/transporte_paradas_municipio_normalizado.json",
+      "data/raw/transporte_paradas_municipio.json"
+    ],
+    [
+      "data/procesado/udalmap_empleo_normalizado.json",
+      "data/raw/udalmap_empleo.json"
+    ],
+    [
+      "data/procesado/udalmap_extendido_normalizado.json",
+      "data/raw/udalmap_extendido.json"
+    ],
+    [
+      "data/procesado/udalmap_indicadores_adicionales_normalizado.json",
+      "data/raw/udalmap_indicadores_adicionales.json"
+    ],
+    [
+      "data/raw/distancias_capitales.csv",
+      "data/raw/legacy_obsoleto_no_usar/distancias_capitales.csv"
+    ],
+    [
+      "data/raw/eustat_renta_municipal.csv",
+      "data/raw/legacy_obsoleto_no_usar/eustat_renta_municipal.csv"
+    ],
+    [
+      "data/raw/gtfs/gtfs_ekialdebus.zip",
+      "data/raw/gtfs/lurraldebus_ekialdebus.zip"
+    ],
+    [
+      "data/raw/legacy_obsoleto_no_usar/udalmap_empleo.csv",
+      "data/raw/udalmap_empleo.csv"
+    ],
+    [
+      "data/resultados/A1_distribucion_esfuerzo_por_TH.png",
+      "data/resultados/anexo/g1_esfuerzo_por_territorio.png"
+    ],
+    [
+      "demo-kpi/out.mp4",
+      "demo-kpi/renders/demo-kpi_2026-11-04_23-14-07.mp4"
+    ],
+    [
+      "demo-mapa/.hyperframes/artifacts/checks/01faae84-5aee-4300-9ffe-2816c2b83a6d.json",
+      "demo-mapa/.hyperframes/artifacts/checks/07294512-beec-4116-9682-75582c161709.json"
+    ],
+    [
+      "demo-mapa/.hyperframes/artifacts/checks/0334a28d-7253-4322-81a2-80f019a5e6be.json",
+      "demo-mapa/.hyperframes/artifacts/checks/c8ddcd9c-837a-4c48-ba82-50c04a548a67.json"
+    ],
+    [
+      "demo-mapa/out.mp4",
+      "demo-mapa/renders/demo-mapa_2026-11-04_23-29-58.mp4"
+    ],
+    [
+      "docs/.obsidian/app.json",
+      "docs/.obsidian/appearance.json",
+      "vaultVivienda/.obsidian/app.json",
+      "vaultVivienda/.obsidian/appearance.json"
+    ],
+    [
+      "docs/.obsidian/core-plugins.json",
+      "vaultVivienda/.obsidian/core-plugins.json"
+    ],
+    [
+      "docs/archive/argon/plan_silver_sin_tocar_raw.md",
+      "docs/archive/plan_silver_sin_tocar_raw.md"
+    ],
+    [
+      "openspec/audit/evidencia/2026-11-08/gate_offline.txt",
+      "openspec/audit/v7_2026-11-09/evidencia/gate_offline.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/gate_offline.txt"
+    ],
+    [
+      "openspec/audit/evidencia/2026-11-08/verificar_fase_datos.txt",
+      "openspec/audit/v7_2026-11-09/evidencia/fase_datos.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/fase_datos.txt"
+    ],
+    [
+      "openspec/audit/v7_2026-11-09/evidencia/gobernanza.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/gobernanza.txt"
+    ],
+    [
+      "openspec/audit/v7_2026-11-09/evidencia/pytest.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/pytest_suite.txt"
+    ],
+    [
+      "openspec/audit/v7_2026-11-09/evidencia/staleness.txt",
+      "openspec/audit/v8_2026-11-09/evidencia/dinamica/run_all_check.txt"
+    ],
+    [
+      "scratchpad/sha1.txt",
+      "scratchpad/sha2.txt"
+    ]
+  ]
+}

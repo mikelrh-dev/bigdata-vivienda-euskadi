@@ -238,9 +238,6 @@ EXCLUIDOS: dict[str, str] = {
     "generar_fotocasa_dirigido_informe.py": "informe de captura dirigida",
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
     "validar_renta.py": "Justificación firmada 2026-11-05: no es transformación ETL silver (no declara in/out proc); es QA bajo demanda; se mantiene fuera del orquestador para no alterar manifest 353/184 ni el gate 130.",
-    "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
-    "generar_dashboard_visual.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo en analysis/run_analisis_mongo.py)",
-    "generar_dashboard_completo.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo; G literal->conteos Mongo)",
     "generar_figuras_N.py": "genera PNG P0 N1,N2,N3,N7 y H2 desde CSV sin Mongo vivo (evidencia visual, no silver)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }
