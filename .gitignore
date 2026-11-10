@@ -87,3 +87,7 @@ docs/presentacion/preview_*.png
 
 # Archivo local (resguardo; no versionado)
 /archive/
+
+# Metadatos locales de desarrollo (no versionados)
+/Makefile
+/AGENT.md
