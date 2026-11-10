@@ -1372,7 +1372,7 @@ Salida literal:
       353 docs/raw_manifest_sha256.txt
       184 data/procesado/manifest_sha256.txt
       537 total
-Conclusión: 54 passed test_contrato + 3 passed test_kafka (Future 759), manifest 353/184 OK, data/raw intacto. Ficheros fixer: storage/kafka_producer.py, tests/test_kafka.py, scripts/publish_adapter.py, scripts/gate_bloque2.py, scripts/hdfs_recuperacion_un_fichero.py, openspec proposal/verify-report, docs/trazabilidad_vm.md. Sin git add/commit/push, sin HDFS escritura, sin data/raw tocado.
+Conclusión: 54 passed test_contrato + 3 passed test_kafka (Future 759), manifest 353/184 OK, data/raw intacto. Ficheros fixer: storage/kafka_producer.py, tests/test_kafka.py, scripts/publish_adapter.py, scripts/gate_bloque2.py, scripts/hdfs_recuperacion_un_fichero.py, openspec proposal/verify-report, openspec/archive/2026-11-10-docs/trazabilidad_vm.md. Sin git add/commit/push, sin HDFS escritura, sin data/raw tocado.
 
 ### 2026-11-05 Bloque 3 explain antes/después COLLSCAN→IXSCAN totalDocsExamined 1 (tarea 1.1, INDICES-01)
 
@@ -1417,7 +1417,7 @@ Salida literal:
     252
     252
     252
-Conclusión: 15 colecciones con backups 252/252, anuncios 759, municipios 252, geo 424 Point reales (resto None por falta de silver). Documentado en docs/modelo_mongodb.md (backups vía replace_collection staging+backup+rename, nunca drop() directo; geo 2dsphere sparse).
+Conclusión: 15 colecciones con backups 252/252, anuncios 759, municipios 252, geo 424 Point reales (resto None por falta de silver). Documentado en openspec/archive/2026-11-10-docs/modelo_mongodb.md (backups vía replace_collection staging+backup+rename, nunca drop() directo; geo 2dsphere sparse).
 
 ### 2026-11-05 Bloque 3 limpieza canónica $unset y commit/abort solo test (tareas 3.1/3.3, LIMPIEZA-01/TRANSACCIONES-01)
 

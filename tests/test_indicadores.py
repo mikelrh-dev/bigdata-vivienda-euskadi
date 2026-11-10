@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MATRIZ = ROOT / "docs" / "matriz_indicadores.md"
+MATRIZ = ROOT / "openspec" / "archive" / "2026-11-10-docs" / "matriz_indicadores.md"
 
 
 def _indicadores_no_legacy() -> list[str]:

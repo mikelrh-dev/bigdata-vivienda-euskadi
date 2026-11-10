@@ -1,8 +1,8 @@
 # Guion Tema 8 (1 página)
 
-> Para la defensa completa de 12 minutos con reparto por persona: `docs/guion_defensa_12min.md`.
+> Para la defensa completa de 12 minutos con reparto por persona: `openspec/archive/2026-11-10-docs/guion_defensa_12min.md`.
 
-Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline: la demo no depende de la red del centro. La evidencia HDFS/Kafka es la verificada en vivo el 2026-11-09 (352 ficheros raw canónicos en `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`; topic `vivienda_euskadi` 1 partición RF 1, grupo `hdfs_centro`, lag 0; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06); hoy `10.22.87.215` no es alcanzable y el gate offline usa el manifest local de 354 SHA con 2 alias legacy.
+Entrada: `README.md` O1-O4, `openspec/archive/2026-11-10-docs/conclusiones_municipios.md`, `openspec/archive/2026-11-10-docs/matriz_indicadores.md`. Presentacion offline: la demo no depende de la red del centro. La evidencia HDFS/Kafka es la verificada en vivo el 2026-11-09 (352 ficheros raw canónicos en `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`; topic `vivienda_euskadi` 1 partición RF 1, grupo `hdfs_centro`, lag 0; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06); hoy `10.22.87.215` no es alcanzable y el gate offline usa el manifest local de 354 SHA con 2 alias legacy.
 
 ## Tema 8: embedding, índices, atomicidad
 
@@ -16,7 +16,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 2. **O2 (municipios robustos?)**: solo 4 con n>=30: **Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39**. Advertencia: **Getxo 50 vs Vitoria-Gasteiz 39 = 11 anuncios (no 1, tras re-resolucion pisos)**; Barakaldo (n=6) queda fuera por n<30. Tier B 10-29 = 3 (Sopela 19, Zarautz 15, Santurtzi 11, solo indicativo, temporal!=larga); Tier C 1-9 = 57 sin precio municipal; Tier D 0 = 188 sin dato (+ contexto oficial). Nivel (tipología 4/54/194) es ortogonal a Tier (confianza 4/3/57/188): son ejes ortogonales, no intercambiables.
 3. **O3 (trabajo + vivienda)**: paro Lanbide Mongo + precio m2 oficial; r(conteo parados jóvenes, alquiler) ~0,39 (conteos, no tasa), sin trade-off simple.
 4. **O4 (limitaciones)**: proxy de renta, 93 IDW solo sensibilidad, 4 robustos, emancipacion solo CAE, mezcla de anos 2024/2026. VPO: flujo oficial 251/252 (Usansolo sin dato); stock historico sin fuente.
-5. **Pipeline reproducible**: 11 pipelines (antes 10) + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`): dos ejecuciones del mismo estado dan la misma huella (ver salida de `run_analisis_mongo`) y los mismos 8 CSV `mongo_*` (doble SHA identico, `EXPORTS_8`) y 28+8 PNG (28 resultados + 8 anexo desde los 11 pipelines; antes 12 únicos / 13 emitidos de DuckDB) (ver `docs/matriz_indicadores.md`).
+5. **Pipeline reproducible**: 11 pipelines (antes 10) + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`): dos ejecuciones del mismo estado dan la misma huella (ver salida de `run_analisis_mongo`) y los mismos 8 CSV `mongo_*` (doble SHA identico, `EXPORTS_8`) y 28+8 PNG (28 resultados + 8 anexo desde los 11 pipelines; antes 12 únicos / 13 emitidos de DuckDB) (ver `openspec/archive/2026-11-10-docs/matriz_indicadores.md`).
 6. **Los 10 criterios** (detalle abajo): raw inmutable, silver utf-8-sig, esfuerzo 18-34, robustos n>=30, pipelines con huella, performance explain, tests, trazabilidad, cobertura 159+IDW, cadena HDFS+Kafka.
 7. **Integridad**: `scripts/gate_extremo_a_extremo.py --offline` (354 SHA + 188 silver + lag 0) y `transform/run_all.py --check` (34/34 OK) y `scripts/verificar_gobernanza.py` (50 cabeceras, 46 con ID, 42 scripts / 34 DAG, 188, 11 pipelines).
 8. **Tests**: `pytest tests -q` = 235 passed + 2 skipped (237 collected), sin `data/raw` en `git status`. CI en rama `master` (`.github/workflows/quality-gate.yml` push a `master` + `pull_request` + `workflow_dispatch` vivo manual `GATE_LIVE=1`); antes disparaba en `main` y no corría en `master`. Anuncios vigentes 594 (843 raw → 594 tras dedup + cuarentena 45; 759 histórico pre-v5).
@@ -38,7 +38,7 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 
 ## FAQ oral (para la defensa)
 
-- **Replica sets**: MongoDB local es standalone sin replica set. La atomicidad de un documento no lo exige; la transacción multi-documento commit/abort sí. No forzamos replica set sobre el standalone; solo sonda en `vivienda_euskadi_test` (ver `docs/modelo_mongodb.md`).
+- **Replica sets**: MongoDB local es standalone sin replica set. La atomicidad de un documento no lo exige; la transacción multi-documento commit/abort sí. No forzamos replica set sobre el standalone; solo sonda en `vivienda_euskadi_test` (ver `openspec/archive/2026-11-10-docs/modelo_mongodb.md`).
 - **Shard key**: candidato conceptual `codigo_ine` (distribución por municipio) frente a `portal` (baja cardinalidad, skew); a esta escala no shardeamos (594 anuncios, 252 municipios). No hay sharding implementado.
 - **ESR**: Equality, Sort, Range. El índice `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` respeta ese orden para la consulta real de `explain_before_after`.
 - **Costes**: índice ESR + `portal_id` cobertura y 2dsphere sparse; 24 índices en 16 vivas (16 `_id` + 8 de negocio) tras restaurar con `ensure_indexes()`. El coste de escritura se asume frente a evitar un COLLSCAN de 594 por consulta. Los 8 PNG de anexo se conservan sin coste extra salvo disco.

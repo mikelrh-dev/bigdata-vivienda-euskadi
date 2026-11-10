@@ -132,7 +132,7 @@ y tensión/paro en SHOULD por silver según `auditoria_lagunas_silver.csv`.)
 #### Scenario: CSV canónicos con huella
 
 - GIVEN los 5 indicadores calculados
-- WHEN se resumen los resultados en `docs/matriz_indicadores.md`
+- WHEN se resumen los resultados en `openspec/archive/2026-11-10-docs/matriz_indicadores.md`
 - THEN constan los CSV 253 y 253 filas y 3 automáticos con huella
 - AND regenerar reproduce los mismos resultados
 
@@ -175,7 +175,7 @@ consultas PyMongo, nunca de números tecleados a mano.
 
 ### Requirement: CONCLUSION-01 — Guion Tema 8 de 1 página con 10 criterios y lagunas
 
-El sistema SHALL redactar en `docs/guion_defensa.md` un guion Tema 8 de 1
+El sistema SHALL redactar en `openspec/archive/2026-11-10-docs/guion_defensa.md` un guion Tema 8 de 1
 página centrado en embedding, índices y atomicidad, con la cadena offline
 HDFS centro + Kafka pid 1832. SHALL documentar los 10 criterios y las lagunas,
 y MUST NOT dejar 16-29 sin marcar: 16-29 SHALL marcarse legacy y el canónico
@@ -188,7 +188,7 @@ advertencia de muestra pequeña.)
 
 #### Scenario: Guion de 1 página con cadena actual
 
-- GIVEN `docs/guion_defensa.md`
+- GIVEN `openspec/archive/2026-11-10-docs/guion_defensa.md`
 - WHEN se revisa el guion Tema 8
 - THEN tiene 1 página con embedding, índices, atomicidad y HDFS centro + Kafka pid 1832
 - AND constan los 10 criterios y las lagunas documentadas
@@ -206,19 +206,19 @@ El sistema SHALL compare 4 municipios robustos —Bilbao 204, Donostia 126,
 Getxo 50, Vitoria-Gasteiz 39 anuncios (valores reales post re-resolución
 2026-11-07; el baseline pre-change era 173/113/40/39)— con paro Lanbide no nulo o silver
 justificado, y SHALL documentar la matriz O1-O4 en
-`docs/conclusiones_municipios.md` con mediana 26,61 (oficial 18-34) y 25,2%
+`openspec/archive/2026-11-10-docs/conclusiones_municipios.md` con mediana 26,61 (oficial 18-34) y 25,2%
 sobre 30. La matriz SHALL advertir que Getxo 50 vs Vitoria-Gasteiz 39 difiere
 en 11 anuncios y MUST NOT leerse como ranking firme entre esos dos. La
-comparativa SHALL registrarse en `docs/trazabilidad_vm.md` (Fecha/Objetivo/
+comparativa SHALL registrarse en `openspec/archive/2026-11-10-docs/trazabilidad_vm.md` (Fecha/Objetivo/
 Máquina/Comando/Salida/Conclusión) y MUST NOT tocar `data/raw` ni raw HDFS,
 ni crear carpeta nueva, ni subir procesado.
 
 #### Scenario: Cuatro robustos con paro no nulo
 
 - GIVEN los 4 robustos Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39
-- WHEN se genera la comparativa en `docs/conclusiones_municipios.md`
+- WHEN se genera la comparativa en `openspec/archive/2026-11-10-docs/conclusiones_municipios.md`
 - THEN el paro Lanbide no es nulo o consta justificación silver
-- AND la salida está trazada en `docs/trazabilidad_vm.md`
+- AND la salida está trazada en `openspec/archive/2026-11-10-docs/trazabilidad_vm.md`
 
 #### Scenario: Matriz O1-O4 con advertencia Getxo/Vitoria
 
@@ -227,13 +227,13 @@ ni crear carpeta nueva, ni subir procesado.
 - THEN figura la advertencia de 11 anuncios de diferencia
 - AND NO se presenta como ranking firme
 
-El sistema SHALL corregir la cifra stale 759 a 594 (post re-resolución + cuarentena) en los cuatro documentos: `docs/datos_finales_conclusiones_2026-11-05.md`, `docs/informe_final.md`, `data/resultados/README.md` y `docs/presentacion/index.html`. La recarga real es 594 anuncios con 188 municipios en cero (Tier D) y Bilbao 204 como máximo; esas tres cifras (594/188/204) SHALL aparecer unidas en cada uno de los cuatro documentos, con la nota «759 era el pre-change». Ningún documento SHALL afirmar 759 como cifra vigente tras el cambio. La verificación SHALL hacerse con `grep` por documento.
+El sistema SHALL corregir la cifra stale 759 a 594 (post re-resolución + cuarentena) en los cuatro documentos: `openspec/archive/2026-11-10-docs/datos_finales_conclusiones_2026-11-05.md`, `openspec/archive/2026-11-10-docs/informe_final.md`, `data/resultados/README.md` y `docs/presentacion/index.html`. La recarga real es 594 anuncios con 188 municipios en cero (Tier D) y Bilbao 204 como máximo; esas tres cifras (594/188/204) SHALL aparecer unidas en cada uno de los cuatro documentos, con la nota «759 era el pre-change». Ningún documento SHALL afirmar 759 como cifra vigente tras el cambio. La verificación SHALL hacerse con `grep` por documento.
 
 #### Scenario: Los cuatro documentos dicen 594, no 759
 
 - GIVEN Mongo recargado con `anuncios=594` vía `python -m storage.load_mongo`
 - WHEN se verifican los cuatro documentos con `grep -c "594"`
-- THEN cada uno contiene 594/188/204 y no contiene 759 como total vigente (`grep -c "759" docs/informe_final.md` → salida: `0`, salvo nota histórica «759 era el pre-change»)
+- THEN cada uno contiene 594/188/204 y no contiene 759 como total vigente (`grep -c "759" openspec/archive/2026-11-10-docs/informe_final.md` → salida: `0`, salvo nota histórica «759 era el pre-change»)
 - AND `pytest tests -q` sigue en verde tras la sincronización
 
 ### Requirement: CONCLUSION-02 — Tiers A/B/C/D, conciliación 62/252 vs n_precio=7 y ranking n>=30 (M2/M3, extensión 2026-11-07, sustituye L1/L2/L3)
@@ -254,7 +254,7 @@ El sistema SHALL documentar en `data/resultados/README.md` la tabla de conciliac
 
 - GIVEN los 4 Tier A con n≥30
 - WHEN corre `python analysis/run_analisis_mongo.py` desde Mongo
-- THEN `docs/conclusiones_municipios.md` compara solo Tier A con `n_anuncios` real
+- THEN `openspec/archive/2026-11-10-docs/conclusiones_municipios.md` compara solo Tier A con `n_anuncios` real
 - AND salida: 13 PNG + 6 CSV, sin valores tecleados a mano
 
 #### Scenario: Tier B separa modalidades
@@ -293,9 +293,9 @@ El esfuerzo municipal SHALL citarse literalmente «252 contextual sobre 159» y 
 #### Scenario: Frase literal en conclusiones
 
 - GIVEN `esfuerzo_joven_pct_18_34` en 252 municipios
-- WHEN se revisa `docs/conclusiones_municipios.md`
+- WHEN se revisa `openspec/archive/2026-11-10-docs/conclusiones_municipios.md`
 - THEN consta «252 contextual sobre 159»
-- AND `grep -c "252 contextual sobre 159" docs/conclusiones_municipios.md` ≥ 1
+- AND `grep -c "252 contextual sobre 159" openspec/archive/2026-11-10-docs/conclusiones_municipios.md` ≥ 1
 
 #### Scenario: Edge 0-9 anuncios
 

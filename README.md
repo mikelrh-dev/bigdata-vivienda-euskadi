@@ -244,9 +244,9 @@ completos.
 
 - Tests: `.venv/Scripts/python.exe -m pytest tests -q` (235 passed, 2 skipped). Gobernanza: `.venv/Scripts/python.exe scripts/verificar_gobernanza.py` (TODO OK: 50 cabeceras (46 con ID), 42 scripts / 34 DAG, 188 silver, 0 env sin declarar, 11 pipelines). Staleness: `.venv/Scripts/python.exe transform/run_all.py --check` (34/34 OK). Gate offline: `.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline` (OK: 354 SHA + 188 silver + 14 nombres en loader + 0 duplicados + lag 0). FAIL 07 conocido en `scripts/verificar_fase_datos.py` (paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26) documentado sin enmascarar — no se toca data para forzarlo.
 - MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (16 vivas + 14 `__backup` = 30 totales, PyMongo, índices ESR/2dsphere); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (11 pipelines a 8 CSV `mongo_*` + 28+8 PNG; `explain()` COLLSCAN→IXSCAN con `analysis/mongo_indexes.py` `explain_before_after`); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
-- CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4 filas: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39). Ver `docs/modelo_mongodb.md` y `docs/arquitectura_datos.md`.
+- CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4 filas: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39). Ver `openspec/archive/2026-11-10-docs/modelo_mongodb.md` y `openspec/archive/2026-11-10-docs/arquitectura_datos.md`.
 - Manifest de extracción: `data/procesado/_meta/ingestion_manifest.json` (integridad SHA-256)
-- Contrato de datos raw: `docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
+- Contrato de datos raw: `openspec/archive/2026-11-10-docs/contrato_datos_raw.md` — `data/raw/` es inmutable **por diseño**:
   solo `extract/` escribe ahí; `transform/` solo puede hacerlo vía `assert_raw_writable(reason)`
   (lista blanca de 2 scripts). Bloqueado por `tests/test_raw_guardrails.py`, no por convención.
 
@@ -273,7 +273,7 @@ completos.
 
 ## 📖 Documentación
 
-Ver `docs/README.md` para el índice completo de documentos vigentes y `argon/` para la copia de revisión externa.
+Ver `docs/README.md` para el índice de lo que queda en `docs/` (manifest y presentación) y `openspec/archive/2026-11-10-docs/` para la documentación retirada; `argon/` es la copia de revisión externa.
 
 ## 🔁 Flujo extremo a extremo
 
