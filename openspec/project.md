@@ -26,8 +26,8 @@ iniciado salvo la Fase 0).
 | Lenguaje | Python 3.12 (`.venv`) | ✅ |
 | Extracción | `requests`, `beautifulsoup4`, `lxml` | ✅ |
 | Almacenamiento | HDFS (centro) | ✅ |
-| Streaming | Apache Kafka (VM Ubuntu Server, KRaft) | ✅ |
-| Base de datos | MongoDB (Docker Desktop) + PyMongo | ✅ |
+| Streaming | Apache Kafka (clúster centro `10.22.87.215:9092`) | ✅ |
+| Base de datos | MongoDB local (standalone, sin Docker en el repo) + PyMongo | ✅ |
 | Análisis | Aggregation Pipeline de MongoDB | ✅ |
 | Visualización | matplotlib, seaborn (desde silver y Mongo) | ✅ |
 | Contrato | OpenSpec (`openspec/`) | ✅ |
@@ -35,9 +35,10 @@ iniciado salvo la Fase 0).
 ## Recorrido de los datos
 
 ```
-Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
-                         → PyMongo (limpieza) → Aggregation Pipeline
-                         → gráficos + informe
+Fuentes (API + scraping) → raw local inmutable → HDFS (originales)
+                         → Kafka (centro) → HDFS (copia)
+silver (data/procesado) → MongoDB local → PyMongo (limpieza)
+                         → Aggregation Pipeline → gráficos + informe
 ```
 
 ## Layout
