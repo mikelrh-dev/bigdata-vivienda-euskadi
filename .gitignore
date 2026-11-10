@@ -81,3 +81,6 @@ demo-*/snap.json
 
 
 docs/presentacion/preview_*.png
+
+# Freebuff (tool metadata local)
+.freebuff/
