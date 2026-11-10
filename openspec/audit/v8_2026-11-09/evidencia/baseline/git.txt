@@ -1,0 +1,31 @@
+fecha=2026-11-09T19:41:36+01:00
+pwd=/c/Users/mikel/Documents/bigdata-vivienda-euskadi
+python=Python 3.12.10
+git_head=47065f699b5c71244a3d2439c2a74cfb74790a42
+git_branch=master
+=== git status ===
+ M .gitignore
+ M extract/26_vpo_terminadas.py
+ M openspec/changes/2026-11-05-cierre-suficiencia-auditoria/design.md
+ M openspec/changes/2026-11-05-cierre-suficiencia-auditoria/proposal.md
+ M openspec/changes/2026-11-05-cierre-suficiencia-auditoria/specs/vpo-municipal/spec.md
+ M openspec/changes/2026-11-05-cierre-suficiencia-auditoria/tasks.md
+?? openspec/audit/plan_reauditoria_v8_2026-11-09.md
+?? openspec/audit/v8_2026-11-09/
+?? openspec/changes/2026-11-09-vpo-sin-staging/
+=== diff stat ===
+ .gitignore                                         |   1 -
+ extract/26_vpo_terminadas.py                       | 121 +++++++++++++++------
+ .../design.md                                      |   6 +-
+ .../proposal.md                                    |   2 +-
+ .../specs/vpo-municipal/spec.md                    |   2 +-
+ .../tasks.md                                       |   2 +-
+ 6 files changed, 95 insertions(+), 39 deletions(-)
+=== diff check ===
+diff_check_exit=0
+=== log ===
+47065f6 docs: auditoria v7 + gobernanza y docs alineados a vivienda_euskadi
+9382cea feat: crea topic vivienda_euskadi desde codigo y re-subida HDFS
+48c3516 chore: archiva utils HDFS directos y alinea flujo centro hdfs_centro
+72de7ab feat: gate extremo-a-extremo offline + TDD P0P1 + figuras N1 N2 N3 N7 + auditoria v6
+3171d5a feat: SDD loops pisos tier P0P1 graficos habitaciones P1P2 + auditoria v5 - Verify: pytest 177 passed, 1 skipped; manifests 354+188; doble SHA ok

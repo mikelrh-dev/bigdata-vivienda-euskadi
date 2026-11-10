@@ -1,0 +1,20 @@
+PASS 01 manifest integro 354 ficheros
+PASS 02 raw sin derivados legacy limpio
+PASS 03 metadata cubre JSON 61/61
+PASS 04 inventario cubre CSV 129/129
+PASS 05 dim 252 + len5 252
+PASS 06 n_anuncios 594/843 real=594
+FAIL 07 FAIL conocido paro-cero (Aramaio 0.28, Gaintza 1.45, Usansolo 3.26) 3 ceros documentados con tasa no nula (no enmascarados, sin imputación)
+PASS 08 sin brecha ocup-activ 
+PASS 09 canonico preservado 252 mun
+PASS 10 tension cerrada 
+PASS 11 pytest bateria verde ...........................                                              [100%]
+PASS 12 orquestador dry-run []
+PASS 13 pob joven 252 + metodo 252
+PASS 14 tipologia cerrada 
+PASS 15 transform no escribe raw solo lectura
+PASS 16 cobertura auditable 252 mun
+PASS 17 ingestion manifest 354 ficheros (354 ingestion local; 352 raw en HDFS)
+PASS 18 nombres estables registrados 5 con ts
+RESULTADO: PENDIENTE (ver FAIL)
+HUELLA SHA-256: c5c498d3edd47cb27acb7f4df6725a7b0aee96800c25d8144c07de7f3d096729

@@ -1,0 +1,75 @@
+{
+  "raw_before": {
+    "size": 35427,
+    "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+    "mtime_ns": 1793914427304130000
+  },
+  "validar_raw": [
+    272,
+    0.0,
+    62.55
+  ],
+  "same_sha": {
+    "result": "(WindowsPath('C:/Users/mikel/Documents/bigdata-vivienda-euskadi/data/raw/udalmap_vpo_terminadas.csv'), False)",
+    "raw_after": {
+      "size": 35427,
+      "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+      "mtime_ns": 1793914427304130000
+    }
+  },
+  "different_sha": {
+    "systemexit": "raw ya existe con otro SHA (70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706 != 1405de461447e4ef412d51b9ff74424b968461eaeef9bcabfa22d8e3d4a6531b); no se sobrescribe (raw inmutable)",
+    "raw_after": {
+      "size": 35427,
+      "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+      "mtime_ns": 1793914427304130000
+    }
+  },
+  "raw_absent_temp": {
+    "result": "(WindowsPath('C:/Users/mikel/AppData/Local/Temp/tmp1rm_ic03/raw/vpo.csv'), True)",
+    "bytes": 35427,
+    "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706"
+  },
+  "cli_--desde-raw": {
+    "return": 0
+  },
+  "cli_--sin-descargar": {
+    "return": 0
+  },
+  "cli_conflict": {
+    "systemexit": "--promote no aplica con --desde-raw"
+  },
+  "missing_raw": {
+    "systemexit": "falta C:\\Users\\mikel\\AppData\\Local\\Temp\\tmpo268rdub\\missing.csv: ejecuta sin --desde-raw para descargar"
+  },
+  "validar_no_header": {
+    "error": "ValueError(\"falta la cabecera 'Entidad'\")"
+  },
+  "validar_251_codes": {
+    "error": "ValueError('esperados al menos 252 códigos de 5 dígitos, encontrados 251')"
+  },
+  "validar_dup_codes": {
+    "error": "ValueError('esperados al menos 252 códigos de 5 dígitos, encontrados 1')"
+  },
+  "validar_out_of_range": {
+    "error": "ValueError('valor fuera de rango: 101.0..101.0')"
+  },
+  "validar_valid_252": {
+    "result": [
+      252,
+      1.0,
+      1.0
+    ]
+  },
+  "download": {
+    "bytes": 35427,
+    "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+    "igual_raw": true
+  },
+  "raw_after_all": {
+    "size": 35427,
+    "sha": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+    "mtime_ns": 1793914427304130000
+  },
+  "staging_exists": false
+}

@@ -1,0 +1,79 @@
+{
+  "data/raw/udalmap_vpo_terminadas.csv": {
+    "status": 200,
+    "body": {
+      "FileStatus": {
+        "accessTime": 1794238191304,
+        "blockSize": 134217728,
+        "childrenNum": 0,
+        "fileId": 2858146,
+        "group": "iabd",
+        "length": 35427,
+        "modificationTime": 1794238191317,
+        "owner": "iabd-user15",
+        "pathSuffix": "",
+        "permission": "644",
+        "replication": 3,
+        "storagePolicy": 0,
+        "type": "FILE"
+      }
+    }
+  },
+  "data/procesado": {
+    "status": 404,
+    "body": {
+      "RemoteException": {
+        "exception": "FileNotFoundException",
+        "javaClassName": "java.io.FileNotFoundException",
+        "message": "File does not exist: /user/iabd-user15/bigdata_reto/vivienda_euskadi/data/procesado"
+      }
+    }
+  },
+  "data/raw": {
+    "status": 200,
+    "body": {
+      "FileStatus": {
+        "accessTime": 0,
+        "blockSize": 0,
+        "childrenNum": 201,
+        "fileId": 2850772,
+        "group": "iabd",
+        "length": 0,
+        "modificationTime": 1794238191304,
+        "owner": "iabd-user15",
+        "pathSuffix": "",
+        "permission": "755",
+        "replication": 0,
+        "storagePolicy": 0,
+        "type": "DIRECTORY"
+      }
+    }
+  },
+  "raw_list": {
+    "status": 200,
+    "count": 201,
+    "names": [
+      ".FROZEN",
+      "udalmap_vpo_terminadas.csv"
+    ]
+  },
+  "raw_open": {
+    "status": 200,
+    "bytes": 35427,
+    "sha256": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706"
+  },
+  "raw_summary": {
+    "status": 200,
+    "body": {
+      "ContentSummary": {
+        "directoryCount": 6,
+        "fileCount": 352,
+        "length": 895597494,
+        "quota": -1,
+        "spaceConsumed": 2686792482,
+        "spaceQuota": -1,
+        "typeQuota": {}
+      }
+    }
+  }
+}

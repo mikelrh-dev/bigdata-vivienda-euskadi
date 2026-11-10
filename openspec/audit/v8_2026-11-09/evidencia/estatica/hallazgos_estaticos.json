@@ -1,0 +1,1754 @@
+[
+  {
+    "file": "analysis/mongo_aggregations.py",
+    "line": 671,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "analysis/run_analisis_mongo.py",
+    "line": 446,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "ruta.write_bytes(buffer.getvalue())"
+  },
+  {
+    "file": "analysis/run_analisis_mongo.py",
+    "line": 1078,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError):\n                        continue"
+  },
+  {
+    "file": "analysis/run_analisis_mongo.py",
+    "line": 26,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/kafka_2026-11-06/scripts_gate_bloque2.py",
+    "line": 35,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/kafka_2026-11-06/scripts_publish_adapter.py",
+    "line": 28,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/kafka_2026-11-06/storage_kafka_consumer.py",
+    "line": 61,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            pass"
+  },
+  {
+    "file": "archive/kafka_2026-11-06/tests_test_kafka.py",
+    "line": 84,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "coll.delete_many({\"portal\": \"kafka-test\"})"
+  },
+  {
+    "file": "archive/kafka_2026-11-06/tests_test_kafka.py",
+    "line": 109,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "coll.delete_many({\"portal\": \"kafka-test\"})"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/hdfs_recuperacion_un_fichero.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/hdfs_utils.py",
+    "line": 114,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "state_path.write_text(json.dumps(sorted(done), indent=2) + \"\\n\", encoding=\"utf-8\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/hdfs_verify.py",
+    "line": 13,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 120,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"frozen\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 121,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".gitkeep\").write_bytes(b\"\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 122,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"col1,col2\\n1,2\\n\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 123,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"b.json\").write_bytes(b'{\"k\": 1}')"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 124,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"c.zip\").write_bytes(b\"PK\\x03\\x04fake\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 125,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"d.xlsx\").write_bytes(b\"PK fake xlsx\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 126,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"e.geojson\").write_bytes(b'{\"type\":\"FeatureCollection\"}')"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 128,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"html_fotocasa\" / \"x.html\").write_bytes(b\"<html>fotocasa</html>\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 130,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"gtfs\" / \"gt.zip\").write_bytes(b\"gtfs-bytes\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 132,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"shp_euskadi\" / \"m.shp\").write_bytes(b\"shp-bytes\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 133,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"legacy_obsoleto_no_usar\" / \"old.csv\").write_bytes(b\"legacy-no-subir\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 193,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"x\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs.py",
+    "line": 194,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"legacy_obsoleto_no_usar\" / \"y.csv\").write_bytes(b\"legacy\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs_reintentos.py",
+    "line": 78,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"col\\n1\\n\")"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs_reintentos.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "archive/utils_hdfs_directo/test_hdfs_reintentos.py",
+    "line": 24,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT / \"tests\"))"
+  },
+  {
+    "file": "docs/archive/auditoria_avanzada/diagnostico.py",
+    "line": 121,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/audit_full.py",
+    "line": 25,
+    "kind": "bare_except",
+    "evidence": "except: return False"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 128,
+    "kind": "absolute_path",
+    "evidence": "print(\"por portal:\\n\", an.groupby(\"portal\").size().to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 129,
+    "kind": "absolute_path",
+    "evidence": "print(\"por modalidad:\\n\", an.groupby(\"modalidad\").size().to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 133,
+    "kind": "absolute_path",
+    "evidence": "print(\"pm2 describe:\\n\", an[\"pm2\"].describe(percentiles=[.01,.05,.25,.5,.75,.95,.99]).round(2).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 134,
+    "kind": "absolute_path",
+    "evidence": "print(\"precio describe:\\n\", an[\"precio\"].describe(percentiles=[.01,.5,.99]).round(0).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 172,
+    "kind": "absolute_path",
+    "evidence": "print(\"m2 describe:\\n\", alq[\"m2\"].describe(percentiles=[.05,.5,.95]).round(2).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 179,
+    "kind": "absolute_path",
+    "evidence": "print(\"m2 por metodo:\\n\", comp.groupby(\"metodo_imputacion\")[\"m2\"].describe(percentiles=[.5]).round(2).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/auditoria_2026_10_29.py",
+    "line": 180,
+    "kind": "absolute_path",
+    "evidence": "print(\"mes por metodo:\\n\", comp.groupby(\"metodo_imputacion\")[\"mes\"].describe(percentiles=[.5]).round(2).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/gen_inv.py",
+    "line": 109,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "Path(\"docs/inventario_datos.md\").write_text(out, encoding=\"utf-8\")"
+  },
+  {
+    "file": "docs/archive/scratchpad/gen_inv.py",
+    "line": 60,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/gen_inv.py",
+    "line": 55,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/inventory.py",
+    "line": 54,
+    "kind": "bare_except",
+    "evidence": "except: pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/inventory.py",
+    "line": 54,
+    "kind": "silent_except",
+    "evidence": "except: pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/meta_scan2.py",
+    "line": 35,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                pass"
+  },
+  {
+    "file": "docs/archive/scratchpad/meta_scan2.py",
+    "line": 53,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                            continue"
+  },
+  {
+    "file": "docs/archive/scratchpad/reaudit.py",
+    "line": 24,
+    "kind": "absolute_path",
+    "evidence": "print(\"portal counts:\\n\", au['portal'].value_counts() if 'portal' in au else au.get('fuente'))"
+  },
+  {
+    "file": "docs/archive/scratchpad/reaudit.py",
+    "line": 40,
+    "kind": "absolute_path",
+    "evidence": "print(\"top10 counts:\\n\", counts.sort_values(ascending=False).head(10).to_string())"
+  },
+  {
+    "file": "docs/archive/scratchpad/reaudit.py",
+    "line": 44,
+    "kind": "absolute_path",
+    "evidence": "print(\"modalidad counts:\\n\", au['modalidad'].value_counts() if 'modalidad' in au else 'NA')"
+  },
+  {
+    "file": "docs/archive/scratchpad/reaudit.py",
+    "line": 110,
+    "kind": "absolute_path",
+    "evidence": "print(\"tasa_paro describe:\\n\", ud['tasa_paro_aprox_pct'].describe() if 'tasa_paro_aprox_pct' in ud else 'NA')"
+  },
+  {
+    "file": "docs/archive/scratchpad/reaudit.py",
+    "line": 131,
+    "kind": "absolute_path",
+    "evidence": "print(\"nulls:\\n\", gt.isna().sum().to_dict())"
+  },
+  {
+    "file": "docs/presentacion/build_presentacion.py",
+    "line": 249,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "ruta.write_text(svg, encoding=\"utf-8\")"
+  },
+  {
+    "file": "docs/presentacion/build_presentacion.py",
+    "line": 463,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "ruta.write_text(svg, encoding=\"utf-8\")"
+  },
+  {
+    "file": "docs/presentacion/build_presentacion.py",
+    "line": 769,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "(OUT / \"index.html\").write_text(html, encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/01_eustat_api.py",
+    "line": 28,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/02_eustat_alquiler.py",
+    "line": 140,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino.write_text(texto, encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/02_eustat_alquiler.py",
+    "line": 26,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/03_euskadi_emancipacion.py",
+    "line": 45,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino.write_text(texto, encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/03_euskadi_emancipacion.py",
+    "line": 26,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/04_b5m_geo.py",
+    "line": 28,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/05_fotocasa_scraper.py",
+    "line": 53,
+    "kind": "silent_except",
+    "evidence": "except json.JSONDecodeError:\n            continue"
+  },
+  {
+    "file": "extract/05_fotocasa_scraper.py",
+    "line": 177,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino_html.write_text(html, encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/05_fotocasa_scraper.py",
+    "line": 29,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/06_ine_api.py",
+    "line": 34,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/07_ine_salarios.py",
+    "line": 26,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/08_pisos_scraper.py",
+    "line": 31,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/09_fotocasa_dirigido.py",
+    "line": 15,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/09_realtyapi.py",
+    "line": 22,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 48,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError):\n        pass"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 59,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError):\n        pass"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 94,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError):\n        pass"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 64,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError, AttributeError):\n            pass"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 99,
+    "kind": "silent_except",
+    "evidence": "except (TypeError, ValueError, AttributeError):\n            pass"
+  },
+  {
+    "file": "extract/10_opendata_bizilagun_etxebide.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/10_ovj_salario.py",
+    "line": 80,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/10_scraping_faltantes.py",
+    "line": 17,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/11_transporte_gtfs_paradas.py",
+    "line": 272,
+    "kind": "silent_except",
+    "evidence": "except ValueError:\n                continue"
+  },
+  {
+    "file": "extract/11_transporte_gtfs_paradas.py",
+    "line": 28,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/12_enriquecer_json_anidado.py",
+    "line": 17,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/13_scraping_habitaciones.py",
+    "line": 67,
+    "kind": "silent_except",
+    "evidence": "except json.JSONDecodeError:\n            continue"
+  },
+  {
+    "file": "extract/13_scraping_habitaciones.py",
+    "line": 31,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/14_add_metadata_fingerprint.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/15_add_geojson.py",
+    "line": 22,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/16_serpavi_renta.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/17_osrm_tiempos.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/18_lanbide_paro_juvenil.py",
+    "line": 16,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/19_udalmap_indicadores_adicionales.py",
+    "line": 20,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/20_ecvi_compraventa.py",
+    "line": 68,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "destino.write_bytes(r.content)"
+  },
+  {
+    "file": "extract/20_ecvi_compraventa.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/21_lanbide_historico_paro_joven.py",
+    "line": 14,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/24_etxebide_promociones.py",
+    "line": 32,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "CSV_PATH.write_text(texto, encoding=\"utf-8-sig\")"
+  },
+  {
+    "file": "extract/24_etxebide_promociones.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/25_udalmap_extendido.py",
+    "line": 25,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/26_vpo_terminadas.py",
+    "line": 127,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(\n        \"append autorizado 2026-11-05: indicador 73 VPO terminadas, \"\n        \"fuente oficial Open Data Euskadi, validado en memoria\"\n    )"
+  },
+  {
+    "file": "extract/26_vpo_terminadas.py",
+    "line": 132,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "RAW_CSV.write_bytes(payload)"
+  },
+  {
+    "file": "extract/26_vpo_terminadas.py",
+    "line": 124,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(BASE))"
+  },
+  {
+    "file": "extract/_common.py",
+    "line": 211,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino.write_text(\n        json.dumps(datos, ensure_ascii=False, indent=2), encoding=\"utf-8\"\n    )"
+  },
+  {
+    "file": "extract/_common.py",
+    "line": 140,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "destino.write_bytes(resp.content)"
+  },
+  {
+    "file": "extract/educacion_centros.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/euskadi_geo.py",
+    "line": 16,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/fotocasa_detalle.py",
+    "line": 22,
+    "kind": "silent_except",
+    "evidence": "except json.JSONDecodeError:\n            continue"
+  },
+  {
+    "file": "extract/fotocasa_detalle.py",
+    "line": 13,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/generar_ingestion_manifest.py",
+    "line": 58,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "OUT.write_text(json.dumps({\n        \"generado_en\": datetime.now(timezone.utc).isoformat(timespec=\"seconds\"),\n        \"generado_por\": \"extract/generar_ingestion_manifest.py\",\n        \"fuentes_config\": \"config/fuentes.yaml\",\n        \"n_ficher"
+  },
+  {
+    "file": "extract/generar_manifest.py",
+    "line": 59,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "path.write_text(\"\\n\".join(lineas) + \"\\n\", encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/generar_manifest.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(PROJECT_ROOT / \"extract\"))"
+  },
+  {
+    "file": "extract/ine_atlas_renta.py",
+    "line": 69,
+    "kind": "silent_except",
+    "evidence": "except ValueError:\n            continue"
+  },
+  {
+    "file": "extract/ine_atlas_renta.py",
+    "line": 135,
+    "kind": "silent_except",
+    "evidence": "except ValueError:\n            continue"
+  },
+  {
+    "file": "extract/ine_atlas_renta.py",
+    "line": 148,
+    "kind": "silent_except",
+    "evidence": "except ValueError:\n            continue"
+  },
+  {
+    "file": "extract/ine_atlas_renta.py",
+    "line": 21,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/main_ingest.py",
+    "line": 286,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "manifest_path.write_text(\n        json.dumps(todos, ensure_ascii=False, indent=2),\n        encoding=\"utf-8\",\n    )"
+  },
+  {
+    "file": "extract/main_ingest.py",
+    "line": 77,
+    "kind": "silent_except",
+    "evidence": "except OSError:\n            continue"
+  },
+  {
+    "file": "extract/main_ingest.py",
+    "line": 219,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "manifest_path.write_text(\n            json.dumps(todos, ensure_ascii=False, indent=2),\n            encoding=\"utf-8\",\n        )"
+  },
+  {
+    "file": "extract/main_ingest.py",
+    "line": 31,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/normalizar_metadata.py",
+    "line": 135,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "(META_DIR / \"index.json\").write_text(\n            json.dumps({\"n_ficheros\": len(indice),\n                        \"completos\": sum(1 for n in indice if n[\"completa\"]),\n                        \"ficheros\": indice}, ensure_ascii=False, indent=2"
+  },
+  {
+    "file": "extract/normalizar_metadata.py",
+    "line": 133,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "(META_DIR / (norm[\"fichero\"] + \".meta.json\")).write_text(\n                json.dumps(norm, ensure_ascii=False, indent=2), encoding=\"utf-8\")"
+  },
+  {
+    "file": "extract/normalizar_metadata.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(PROJECT_ROOT / \"extract\"))"
+  },
+  {
+    "file": "extract/salud_centros.py",
+    "line": 17,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "extract/udalmap_empleo.py",
+    "line": 16,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "openspec/audit/estres/sondas_estres_2026-10-31.py",
+    "line": 260,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "OUT.write_text(json.dumps(R, indent=2, ensure_ascii=False, default=str), encoding=\"utf-8\")"
+  },
+  {
+    "file": "scratchpad/check_mapa.py",
+    "line": 6,
+    "kind": "bare_except",
+    "evidence": "except: return None"
+  },
+  {
+    "file": "scratchpad/check_mapa2.py",
+    "line": 68,
+    "kind": "bare_except",
+    "evidence": "except: esf=None"
+  },
+  {
+    "file": "scratchpad/check_mapa2.py",
+    "line": 70,
+    "kind": "bare_except",
+    "evidence": "except: n=0"
+  },
+  {
+    "file": "scripts/ensure_topic.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "scripts/run_mongo_pipeline.py",
+    "line": 27,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "scripts/verificar_gobernanza.py",
+    "line": 75,
+    "kind": "todo",
+    "evidence": "print(f\"\\n{'TODO OK' if not ERRORES else 'FALLOS: ' + ', '.join(ERRORES)}\")"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 108,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"superficie_m2\": None},\n        {\"$set\": {\"tiene_superficie\": False, \"calidad_superficie\": \"missing\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 113,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"superficie_m2\": {\"$ne\": None}},\n        {\"$set\": {\"tiene_superficie\": True, \"calidad_superficie\": \"ok\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 119,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"precio_eur\": None},\n        {\"$set\": {\"tiene_precio\": False, \"calidad_precio\": \"missing\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 124,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"precio_eur\": {\"$ne\": None}},\n        {\"$set\": {\"tiene_precio\": True, \"calidad_precio\": \"ok\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 130,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"habitaciones\": None},\n        {\"$set\": {\"tiene_habitaciones\": False}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 138,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "mun.update_many(\n        {\"demografia.renta_joven_estimada_16_29\": None},\n        {\"$set\": {\"demografia.renta_joven_calidad\": \"missing\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 143,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "mun.update_many(\n        {\"demografia.renta_joven_estimada_16_29\": {\"$ne\": None}},\n        {\"$set\": {\"demografia.renta_joven_calidad\": \"ok\"}},\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 150,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "cert.update_many({\"cert_moda\": None}, {\"$set\": {\"calidad_cert\": \"missing\"}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 152,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "cert.update_many({\"cert_moda\": {\"$ne\": None}}, {\"$set\": {\"calidad_cert\": \"ok\"}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 155,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "promo.update_many({\"codigo_ine\": None}, {\"$set\": {\"tiene_codigo_ine\": False}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 157,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "promo.update_many({\"codigo_ine\": {\"$ne\": None}}, {\"$set\": {\"tiene_codigo_ine\": True}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 159,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "promo.update_many({\"num_viviendas\": None}, {\"$set\": {\"calidad_viviendas\": \"missing\"}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 227,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"precio_eur\": {\"$type\": \"string\"}},\n        [{\"$set\": {\"precio_eur\": {\n            \"$convert\": {\"input\": \"$precio_eur\", \"to\": \"decimal\",\n                         \"onError\": None, \"onNull\": None}}}}],\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 236,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "an.update_many(\n        {\"habitaciones\": {\"$ne\": None}},\n        [{\"$set\": {\"habitaciones\": {\n            \"$convert\": {\"input\": \"$habitaciones\", \"to\": \"int\",\n                         \"onError\": \"$habitaciones\", \"onNull\": None}}}}],\n    )"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 313,
+    "kind": "write_or_destructive:drop",
+    "evidence": "coll.drop()"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 319,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "coll.insert_many([{\"nombre\": \"x\", \"precio\": 50}, {\"nombre\": \"y\", \"precio\": 200}])"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 336,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "coll.update_many({}, {\"$unset\": {\"visitas\": \"\"}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 353,
+    "kind": "write_or_destructive:delete_one",
+    "evidence": "coll.delete_one({\"nombre\": \"x\"})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 355,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "coll.delete_many({\"nombre\": {\"$in\": [\"bulk\", \"noexiste\"]}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 358,
+    "kind": "write_or_destructive:drop",
+    "evidence": "coll.drop()"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 397,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "coll.update_many(f, {\"$unset\": unset})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 181,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "an.delete_many({\"_id\": {\"$in\": to_delete}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 197,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "an.delete_many({\"_id\": {\"$in\": to_delete}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 215,
+    "kind": "write_or_destructive:delete_many",
+    "evidence": "al.delete_many({\"_id\": {\"$in\": to_delete}})"
+  },
+  {
+    "file": "storage/clean_mongo.py",
+    "line": 247,
+    "kind": "write_or_destructive:update_many",
+    "evidence": "mun.update_many(\n            {field: {\"$type\": \"string\"}},\n            [{\"$set\": {field: {\"$convert\": {\"input\": f\"${field}\", \"to\": \"bool\",\n                                            \"onError\": False, \"onNull\": None}}}}],\n        )"
+  },
+  {
+    "file": "storage/kafka_hdfs_uploader.py",
+    "line": 165,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                            pass"
+  },
+  {
+    "file": "storage/kafka_hdfs_uploader.py",
+    "line": 30,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "storage/kafka_raw_producer.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "storage/kafka_topic.py",
+    "line": 74,
+    "kind": "silent_except",
+    "evidence": "except TopicAlreadyExistsError:\n        pass"
+  },
+  {
+    "file": "storage/kafka_topic.py",
+    "line": 21,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 231,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"municipios\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 297,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"anuncios\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 330,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"alquiler_municipal\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 364,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"indicadores\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 398,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"ecvi_compraventa\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 415,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"udalmap_indicadores\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 430,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"udalmap_empleo\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 445,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"osrm_tiempos\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 456,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"emancipacion_juventud\", [doc])"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 472,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"etxebide_solicitudes\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 499,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"udalmap_extendido\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 533,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"etxebide_promociones\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 564,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"certificados_energeticos\", docs)"
+  },
+  {
+    "file": "storage/load_mongo.py",
+    "line": 587,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"vpo_municipal\", docs)"
+  },
+  {
+    "file": "storage/mongo.py",
+    "line": 158,
+    "kind": "write_or_destructive:drop",
+    "evidence": "db[staging].drop()"
+  },
+  {
+    "file": "storage/mongo.py",
+    "line": 159,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "db[staging].insert_many(docs)"
+  },
+  {
+    "file": "storage/mongo.py",
+    "line": 161,
+    "kind": "write_or_destructive:drop",
+    "evidence": "db[backup].drop()"
+  },
+  {
+    "file": "tests/test_clean_mongo.py",
+    "line": 40,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "db[\"anuncios\"].insert_many([\n        {\"_id\": \"a1\", \"portal\": \"pisos\", \"id_anuncio\": \"1\",\n         \"ubicacion\": {\"codigo_ine\": \"48020\"}},\n        {\"_id\": \"a2\", \"portal\": \"pisos\", \"id_anuncio\": \"2\",\n         \"ubicacion\": {\"codigo_ine\": 48020}"
+  },
+  {
+    "file": "tests/test_clean_mongo.py",
+    "line": 62,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "db[\"anuncios\"].insert_many([\n        {\"_id\": \"a1\", \"portal\": \"pisos\", \"id_anuncio\": \"1\"},\n        {\"_id\": \"a2\", \"portal\": \"pisos\", \"id_anuncio\": \"1\"},\n        {\"_id\": \"a3\", \"portal\": \"pisos\", \"id_anuncio\": \"2\"},\n    ])"
+  },
+  {
+    "file": "tests/test_clean_mongo.py",
+    "line": 82,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "db[\"anuncios\"].insert_many([\n        {\"_id\": \"f1\", \"portal\": \"pisos\", \"id_anuncio\": \"10\",\n         \"property_fingerprint\": \"fp-mismo\"},\n        {\"_id\": \"f2\", \"portal\": \"fotocasa\", \"id_anuncio\": \"20\",\n         \"property_fingerprint\": \"fp-mis"
+  },
+  {
+    "file": "tests/test_clean_mongo.py",
+    "line": 100,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "db[\"anuncios\"].insert_many([\n        {\"_id\": \"a1\", \"precio_eur\": None, \"habitaciones\": None},\n        {\"_id\": \"a2\", \"habitaciones\": None},\n    ])"
+  },
+  {
+    "file": "tests/test_clean_mongo.py",
+    "line": 21,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_dedup_fingerprint.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_dedup_fingerprint.py",
+    "line": 20,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT / \"transform\"))"
+  },
+  {
+    "file": "tests/test_extremo_a_extremo.py",
+    "line": 42,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "man.write_text(\"\\n\".join(lines) + \"\\n\", encoding=\"utf-8\")"
+  },
+  {
+    "file": "tests/test_extremo_a_extremo.py",
+    "line": 60,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(base / \"fake_000.csv\").write_bytes(b\"adulterado\")"
+  },
+  {
+    "file": "tests/test_extremo_a_extremo.py",
+    "line": 38,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "f.write_bytes(f\"contenido,{i}\\n\".encode())"
+  },
+  {
+    "file": "tests/test_extremo_a_extremo.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_fase_datos.py",
+    "line": 111,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_fase_datos.py",
+    "line": 164,
+    "kind": "absolute_path",
+    "evidence": "assert not mal, \"lecturas sin dtype=str:\\n\" + \"\\n\".join(mal)"
+  },
+  {
+    "file": "tests/test_fase_datos.py",
+    "line": 274,
+    "kind": "absolute_path",
+    "evidence": "assert not mal, \"escrituras sin encoding:\\n\" + \"\\n\".join(mal)"
+  },
+  {
+    "file": "tests/test_integracion_mongo.py",
+    "line": 46,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "coll.insert_many([\n        {\"_id\": \"g1\", \"municipio\": \"48020\", \"precio_eur\": 900},\n        {\"_id\": \"g2\", \"municipio\": \"48020\", \"precio_eur\": 1100},\n    ])"
+  },
+  {
+    "file": "tests/test_integracion_mongo.py",
+    "line": 17,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_kafka_bordes.py",
+    "line": 101,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"x,y\\n1,2\\n\")"
+  },
+  {
+    "file": "tests/test_kafka_bordes.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_kafka_pipeline.py",
+    "line": 132,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"legacy_obsoleto_no_usar\" / \"old.csv\").write_bytes(b\"legacy\")"
+  },
+  {
+    "file": "tests/test_kafka_pipeline.py",
+    "line": 133,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_kafka_pipeline.py",
+    "line": 134,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"b.json\").write_bytes(b'{\"k\": 1}')"
+  },
+  {
+    "file": "tests/test_kafka_pipeline.py",
+    "line": 135,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"x,y\\n1,2\\n\")"
+  },
+  {
+    "file": "tests/test_load_mongo.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 33,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"col1,col2\\n1,2\\n\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 34,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"b.json\").write_bytes(b'{\"k\": 1}')"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 35,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 36,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".gitkeep\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 37,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"ingestion_manifest.json\").write_bytes(b\"{}\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 38,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"manifest_sha256.txt\").write_bytes(b\"legacy\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 81,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"a.csv\").write_bytes(b\"col1,col2\\n9,9\\n\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 90,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \"nuevo.csv\").write_bytes(b\"x\\n\")"
+  },
+  {
+    "file": "tests/test_manifest_sha.py",
+    "line": 21,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_mongo.py",
+    "line": 158,
+    "kind": "write_or_destructive:drop",
+    "evidence": "db[name].drop()"
+  },
+  {
+    "file": "tests/test_mongo.py",
+    "line": 171,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "coll.insert_many([\n            {\"portal\": \"Idealista\", \"id_anuncio\": \"A1\", \"property_fingerprint\": \"fp-a\",\n             \"ubicacion\": {\"codigo_ine\": \"1001\", \"municipio\": \"Vitoria-Gasteiz\"},\n             \"superficie_m2\": None, \"precio_eur\": \""
+  },
+  {
+    "file": "tests/test_mongo.py",
+    "line": 164,
+    "kind": "write_or_destructive:drop",
+    "evidence": "db[name].drop()"
+  },
+  {
+    "file": "tests/test_mongo_consistencia.py",
+    "line": 54,
+    "kind": "write_or_destructive:drop",
+    "evidence": "coll.drop()"
+  },
+  {
+    "file": "tests/test_mongo_consistencia.py",
+    "line": 109,
+    "kind": "write_or_destructive:drop",
+    "evidence": "_db[\"__tx_probe\"].drop()"
+  },
+  {
+    "file": "tests/test_mongo_consistencia.py",
+    "line": 96,
+    "kind": "write_or_destructive:drop",
+    "evidence": "coll.drop()"
+  },
+  {
+    "file": "tests/test_mongo_consistencia.py",
+    "line": 121,
+    "kind": "write_or_destructive:drop",
+    "evidence": "_db[\"__tx_probe\"].drop()"
+  },
+  {
+    "file": "tests/test_mongo_pymongo_pro.py",
+    "line": 72,
+    "kind": "write_or_destructive:drop",
+    "evidence": "_db[_n].drop()"
+  },
+  {
+    "file": "tests/test_mongo_pymongo_pro.py",
+    "line": 74,
+    "kind": "write_or_destructive:insert_many",
+    "evidence": "_db[\"_probe_clean\"].insert_many(\n            [{\"_id\": 1, \"campo_obsoleto\": \"x\", \"keep\": 1}, {\"_id\": 2, \"keep\": 2}]\n        )"
+  },
+  {
+    "file": "tests/test_mongo_pymongo_pro.py",
+    "line": 97,
+    "kind": "write_or_destructive:drop",
+    "evidence": "_db[\"_probe_crud\"].drop()"
+  },
+  {
+    "file": "tests/test_mongo_pymongo_pro.py",
+    "line": 102,
+    "kind": "write_or_destructive:delete_one",
+    "evidence": "_db[\"_probe_crud\"].delete_one({\"_id\": 1})"
+  },
+  {
+    "file": "tests/test_mongo_pymongo_pro.py",
+    "line": 106,
+    "kind": "write_or_destructive:drop",
+    "evidence": "_db[_n].drop()"
+  },
+  {
+    "file": "tests/test_muni_resolve.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_muni_resolve.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT / \"transform\"))"
+  },
+  {
+    "file": "tests/test_pisos_ubicacion_real.py",
+    "line": 261,
+    "kind": "write_or_destructive:replace_collection",
+    "evidence": "replace_collection(\"anuncios__probe\", [])"
+  },
+  {
+    "file": "tests/test_pisos_ubicacion_real.py",
+    "line": 25,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, p)"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 54,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 55,
+    "kind": "raw_guard_call",
+    "evidence": "rg.assert_raw_writable(\"razon valida de escritura raw\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 61,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 62,
+    "kind": "raw_guard_call",
+    "evidence": "rg.assert_raw_writable(\"auditar esta escritura concreta 123\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 73,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "(raw / \".FROZEN\").write_bytes(b\"\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 48,
+    "kind": "raw_guard_call",
+    "evidence": "rg.assert_raw_writable(\"intento sin congelar\")"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 75,
+    "kind": "raw_guard_call",
+    "evidence": "rg.assert_raw_writable(reason)"
+  },
+  {
+    "file": "tests/test_raw_guard_runtime.py",
+    "line": 19,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 143,
+    "kind": "absolute_path",
+    "evidence": "assert not offenders, \"Transforms que escriben en data/raw:\\n\" + \"\\n\".join(offenders)"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 150,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(TRANSFORM_DIR))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 152,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(EXTRACT_DIR))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 154,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 174,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(EXTRACT_DIR))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 176,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 187,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(EXTRACT_DIR))"
+  },
+  {
+    "file": "tests/test_raw_guardrails.py",
+    "line": 189,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(TRANSFORM_DIR))"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 87,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(\"test ok\")"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 89,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(\"\")"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 91,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(None)"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 93,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(\"   \")"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 47,
+    "kind": "absolute_path",
+    "evidence": "assert not errores, \"Integridad raw rota:\\n\" + \"\\n\".join(errores)"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 77,
+    "kind": "absolute_path",
+    "evidence": "assert not missing, \"ficheros sin listar en manifest:\\n\" + \"\\n\".join(sorted(missing))"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 78,
+    "kind": "absolute_path",
+    "evidence": "assert not extra, \"ficheros listados que no existen:\\n\" + \"\\n\".join(sorted(extra))"
+  },
+  {
+    "file": "tests/test_raw_inmutable.py",
+    "line": 85,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT / \"transform\"))"
+  },
+  {
+    "file": "tests/test_run_all.py",
+    "line": 53,
+    "kind": "write_or_destructive:write_bytes",
+    "evidence": "path.write_bytes(b\"x\")"
+  },
+  {
+    "file": "tests/test_run_all.py",
+    "line": 21,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(ROOT))"
+  },
+  {
+    "file": "tests/test_vpo_municipal.py",
+    "line": 12,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(BASE))"
+  },
+  {
+    "file": "transform/_raw_guard.py",
+    "line": 51,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            pass"
+  },
+  {
+    "file": "transform/_raw_guard.py",
+    "line": 95,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            # No interrumpir la operación por un fallo de log; reintentar siguiente.\n            continue"
+  },
+  {
+    "file": "transform/_raw_guard.py",
+    "line": 59,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                pass"
+  },
+  {
+    "file": "transform/_raw_guard.py",
+    "line": 66,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n                pass"
+  },
+  {
+    "file": "transform/aplicar_cobertura_mercado.py",
+    "line": 60,
+    "kind": "write_or_destructive:drop",
+    "evidence": "dim.drop(columns=[\"n_anuncios\", \"n_anuncios_raw\"])"
+  },
+  {
+    "file": "transform/aplicar_cobertura_mercado.py",
+    "line": 63,
+    "kind": "write_or_destructive:drop",
+    "evidence": "dim.drop(columns=[\"n_anuncios\"])"
+  },
+  {
+    "file": "transform/aplicar_cobertura_mercado.py",
+    "line": 29,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(PROJECT_ROOT))"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 137,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "OUT.write_text(\"\".join(lines), encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 56,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 69,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 88,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 127,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "transform/auditoria_duckdb.py",
+    "line": 108,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            pass"
+  },
+  {
+    "file": "transform/completar_alquiler_comarca.py",
+    "line": 57,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n                continue"
+  },
+  {
+    "file": "transform/completar_alquiler_comarca.py",
+    "line": 14,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/completar_alquiler_comarca.py",
+    "line": 15,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "transform/corregir_empleo.py",
+    "line": 82,
+    "kind": "write_or_destructive:drop",
+    "evidence": "df.drop(columns=[\"tasa_lanbide_directa\"])"
+  },
+  {
+    "file": "transform/corregir_empleo.py",
+    "line": 47,
+    "kind": "write_or_destructive:drop",
+    "evidence": "df.drop(columns=[\"tasa_paro_aprox_pct\"])"
+  },
+  {
+    "file": "transform/corregir_empleo.py",
+    "line": 11,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/deduplicar_alquiler_enriquecido.py",
+    "line": 64,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/dim_municipios.py",
+    "line": 18,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/enriquecer_codigo_ine.py",
+    "line": 123,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/enriquecer_codigo_ine.py",
+    "line": 199,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "dest_json.write_text(json.dumps({\"metadata\": {**meta, \"f0_entity_resolution\": \"local sin proxy\"}, \"datos\": regs},\n                             ensure_ascii=False, indent=2), encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/enriquecer_codigo_ine.py",
+    "line": 137,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(reason)"
+  },
+  {
+    "file": "transform/enriquecer_codigo_ine.py",
+    "line": 22,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/enriquecer_codigo_ine.py",
+    "line": 23,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "transform/enriquecer_gtfs_conectividad.py",
+    "line": 79,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n        pass"
+  },
+  {
+    "file": "transform/enriquecer_gtfs_conectividad.py",
+    "line": 107,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, KeyError):\n                        continue"
+  },
+  {
+    "file": "transform/f4_pisos_dirigido.py",
+    "line": 59,
+    "kind": "raw_guard_call",
+    "evidence": "assert_raw_writable(\"f4 directed scrape lot\")"
+  },
+  {
+    "file": "transform/f4_pisos_dirigido.py",
+    "line": 11,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/f4_pisos_dirigido.py",
+    "line": 12,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent))"
+  },
+  {
+    "file": "transform/filtrar_outliers.py",
+    "line": 113,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n            pass"
+  },
+  {
+    "file": "transform/filtrar_outliers.py",
+    "line": 171,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n                pass"
+  },
+  {
+    "file": "transform/filtrar_outliers.py",
+    "line": 188,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n                pass"
+  },
+  {
+    "file": "transform/filtrar_outliers.py",
+    "line": 29,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/generar_anuncios_residencial_filtrado.py",
+    "line": 117,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n                pass"
+  },
+  {
+    "file": "transform/generar_anuncios_residencial_filtrado.py",
+    "line": 133,
+    "kind": "silent_except",
+    "evidence": "except (ValueError, TypeError):\n                pass"
+  },
+  {
+    "file": "transform/generar_distancias.py",
+    "line": 83,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "(PROC_DIR / \"municipios_euskadi_252.geojson\").write_text(json.dumps(out, ensure_ascii=False), encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/generar_distancias.py",
+    "line": 11,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/generar_fotocasa_dirigido_informe.py",
+    "line": 35,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            continue"
+  },
+  {
+    "file": "transform/generar_municipios_faltantes_93.py",
+    "line": 31,
+    "kind": "write_or_destructive:drop",
+    "evidence": "sin.drop(columns=[\"nombre_canonico_dim\"])"
+  },
+  {
+    "file": "transform/muni_resolve.py",
+    "line": 17,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/parsear_secciones.py",
+    "line": 11,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  },
+  {
+    "file": "transform/rescatar_features_nlp.py",
+    "line": 42,
+    "kind": "silent_except",
+    "evidence": "except Exception:\n            pass"
+  },
+  {
+    "file": "transform/run_all.py",
+    "line": 415,
+    "kind": "write_or_destructive:write_text",
+    "evidence": "destino.write_text(json.dumps(manifest, ensure_ascii=False, indent=2),\n                       encoding=\"utf-8\")"
+  },
+  {
+    "file": "transform/unificar_anuncios.py",
+    "line": 432,
+    "kind": "silent_except",
+    "evidence": "except OSError:\n            pass"
+  },
+  {
+    "file": "transform/validar_renta.py",
+    "line": 12,
+    "kind": "sys_path_insert",
+    "evidence": "sys.path.insert(0, str(Path(__file__).resolve().parent.parent / \"extract\"))"
+  }
+]

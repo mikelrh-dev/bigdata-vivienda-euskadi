@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "KAFKA_1",
+    "anuncios_alquiler_reto",
+    "anuncios_eventos",
+    "anuncios_inmobiliarios",
+    "anuncios_vivienda",
+    "claudiaPedidos",
+    "datos_vivienda",
+    "euskadi_vivienda_hdfs_user6",
+    "euskadi_vivienda_prueba_user6",
+    "euskadi_vivienda_user13",
+    "euskadi_vivienda_user6",
+    "pedidos_iabd-user10",
+    "pedidos_iabd-user11",
+    "pedidos_iabd-user12",
+    "pedidos_iabd-user13",
+    "pedidos_iabd-user15",
+    "pedidos_iabd-user16",
+    "pedidos_iabd-user17",
+    "pedidos_iabd-user18",
+    "pedidos_iabd-user19",
+    "pedidos_iabd-user7",
+    "pedidos_iabd-user9",
+    "pedidos_iabd_19",
+    "prueba",
+    "prueba_egoitz",
+    "prueba_inigo",
+    "prueba_jag",
+    "reto-vivienda-iabd-user14",
+    "reto1_archivos_iabd-user11",
+    "reto_municipios_vivienda",
+    "reto_vivienda_iabd_user17",
+    "subscribe",
+    "topic_prueba_inexistente",
+    "vivienda_euskadi",
+    "viviendas"
+  ],
+  "partitions": [
+    0
+  ],
+  "beginning_offsets": {
+    "TopicPartition(topic='vivienda_euskadi', partition=0)": 0
+  },
+  "end_offsets": {
+    "TopicPartition(topic='vivienda_euskadi', partition=0)": 352
+  },
+  "committed": {
+    "TopicPartition(topic='vivienda_euskadi', partition=0)": 352
+  },
+  "ok": true
+}

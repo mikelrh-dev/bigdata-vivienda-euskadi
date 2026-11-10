@@ -1,0 +1,160 @@
+{
+  "raw": {
+    "size": 35427,
+    "sha256": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706",
+    "mtime": 1793914427304130000
+  },
+  "manifest": {
+    "lines": 354,
+    "has_raw": true,
+    "raw_line": "70a2937a3026b01c5e73ff641241c2fad0a77c3b995d2863034fba2da1294706  udalmap_vpo_terminadas.csv"
+  },
+  "raw_files": {
+    "total": 356,
+    "excluded": [
+      ".FROZEN",
+      ".gitkeep"
+    ]
+  },
+  "vpo_silver": {
+    "rows": 252,
+    "cols": [
+      "codigo_ine",
+      "municipio",
+      "vpo_terminadas_por_mil",
+      "anio_fuente",
+      "fuente",
+      "fuente_url"
+    ],
+    "nulls": 1,
+    "min": 0.0,
+    "max": 62.55,
+    "codigos_unicos": 252,
+    "sha256": "cfff40fefd0fbf87565136b0c44471c6f9ddfb9465905adc1594b1ea2484ce87"
+  },
+  "resultados": {
+    "csv": 17,
+    "png": 28,
+    "anexo_png": 8,
+    "csv_names": [
+      "auditoria_lagunas_silver.csv",
+      "bootstrap_robustos.csv",
+      "capa_contexto.csv",
+      "capa_idw.csv",
+      "capa_oficial.csv",
+      "comparativa_3_municipios_mongo.csv",
+      "mongo_accesibilidad_extendida.csv",
+      "mongo_alquiler_por_municipio.csv",
+      "mongo_esfuerzo_por_municipio.csv",
+      "mongo_habitaciones_por_municipio.csv",
+      "mongo_modalidades.csv",
+      "mongo_tier_confianza.csv",
+      "mongo_vpo_por_municipio.csv",
+      "mongo_vpo_terminadas_por_municipio.csv",
+      "ranking_esfuerzo.csv",
+      "sensibilidad_idw.csv",
+      "udalmap_paro.csv"
+    ],
+    "png_names": [
+      "A1_distribucion_esfuerzo_por_TH.png",
+      "A2_pct_inasequibles_por_TH.png",
+      "B_paro_vs_precio.png",
+      "C_vpo_por_estado.png",
+      "D_distancia_vs_precio.png",
+      "dumbbell_esfuerzo_18_24_vs_25_34.png",
+      "E_confort_vs_esfuerzo.png",
+      "F_comparativa_th.png",
+      "g2_renta_vs_alquiler.png",
+      "g3_top10_precio_medio.png",
+      "g4_distribucion_anuncios.png",
+      "g5_esfuerzo_robustos.png",
+      "H10_tension_vs_esfuerzo.png",
+      "H11_imputacion_oficial_idw_por_TH.png",
+      "H13_mediana_precio_m2_winsorizada.png",
+      "H1_ranking_esfuerzo_18_34.png",
+      "H2_tier_confianza_ABCD.png",
+      "H3_esfuerzo_por_sexo.png",
+      "H5_vpo_terminadas_por_mil.png",
+      "H6_habitaciones_mediana_rango.png",
+      "H7_accesibilidad_tiempo_capital.png",
+      "H8_tier_mediana_temporal_vs_larga.png",
+      "hist_esfuerzo_18_34_umbral30.png",
+      "J_tier_confianza_vs_precio.png",
+      "mapa_coroplastico_esfuerzo_18_34.png",
+      "O_ranking_bloqueado_n30.png",
+      "P_oficial_vs_anuncios_por_TH.png",
+      "transporte_oferta_vs_esfuerzo.png"
+    ]
+  },
+  "csv_stats": {
+    "mongo_vpo_terminadas_por_municipio.csv": {
+      "rows": 251,
+      "cols": [
+        "vpo_terminadas_por_mil",
+        "anio_fuente",
+        "codigo_ine",
+        "municipio",
+        "territorio"
+      ],
+      "nulls": 0,
+      "con_dato": 251
+    },
+    "comparativa_3_municipios_mongo.csv": {
+      "rows": 4,
+      "cols": [
+        "codigo_ine",
+        "nombre",
+        "n_anuncios",
+        "tier",
+        "tier_etiqueta",
+        "delta_n_anuncios",
+        "advertencia",
+        "esfuerzo_joven_pct_18_34",
+        "esfuerzo_joven_pct_16_29",
+        "precio_medio_eur",
+        "cuantia_alquiler_mes",
+        "tasa_paro_lanbide_pct"
+      ],
+      "nulls": 1
+    },
+    "mongo_esfuerzo_por_municipio.csv": {
+      "rows": 252,
+      "cols": [
+        "_id",
+        "territorio",
+        "tiene_alquiler_oficial",
+        "n_anuncios",
+        "n_anuncios_filtrados",
+        "precio_medio_eur",
+        "superficie_media_m2",
+        "mediana_precio_m2_winsorizada",
+        "n_larga_estancia",
+        "n_temporal",
+        "tier",
+        "n_precio",
+        "estado",
+        "nombre",
+        "renta_joven",
+        "renta_joven_18_34",
+        "renta_joven_18_24",
+        "renta_joven_25_34",
+        "cuantia_alquiler_mes",
+        "renta_m2_alquiler",
+        "tasa_paro_lanbide_pct",
+        "tension_demanda_social",
+        "tension_categoria",
+        "etxebide_solicitudes_por_mil",
+        "metodo_imputacion",
+        "is_imputed",
+        "esfuerzo_joven_pct",
+        "esfuerzo_joven_pct_18_34",
+        "esfuerzo_joven_pct_18_24",
+        "esfuerzo_joven_pct_25_34",
+        "esfuerzo_joven_pct_16_29",
+        "esfuerzo_alquiler_pct"
+      ],
+      "nulls": 576
+    }
+  },
+  "procesado_files": 191
+}
