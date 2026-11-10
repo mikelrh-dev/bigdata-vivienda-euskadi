@@ -1,0 +1,1524 @@
+{
+  "active_md": 63,
+  "hits": [
+    {
+      "file": "AGENT.md",
+      "line": 4,
+      "pattern": "ixscan_1",
+      "text": "- Python 3.12 (`.venv`); extracción `requests`/`beautifulsoup4`/`lxml`; almacenamiento HDFS centro `http://10.22.87.215:50070` `iabd-user15` (352 ficheros raw canónicos en `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`; manifest local 354 SHA con 2 alias legacy), streaming Kafka clúster "
+    },
+    {
+      "file": "AGENT.md",
+      "line": 9,
+      "pattern": "759",
+      "text": "- Raw inmutable congelado (352 en HDFS, manifest local 354 SHA), silver 188, 238 tests colectados (236 passed, 2 skipped). Gobernanza `scripts/verificar_gobernanza.py` TODO OK: 46 requisitos con ID, 45 scripts en `transform/` con 34 en el DAG, 11 pipelines, 0 env sin declarar (`KAFKA_NUM_PARTITIONS`"
+    },
+    {
+      "file": "AGENT.md",
+      "line": 18,
+      "pattern": "759",
+      "text": "- Archivado Kafka 2026-11-06: `archive/kafka_2026-11-06/` (storage_kafka_*, scripts_publish_adapter/gate_bloque2, tests_test_kafka) — ignorar: la cadena vigente es Windows>Kafka centro>Hadoop (`storage/kafka_raw_producer.py` → `storage/kafka_hdfs_uploader.py`). Datos Kafka borrados: topic `anuncios_"
+    },
+    {
+      "file": "docs/analisis_vault_vs_rubrica.md",
+      "line": 4,
+      "pattern": "759",
+      "text": "> (759 anuncios, 151 tests, 9 pipelines, 28 resultados). La auditoría vigente"
+    },
+    {
+      "file": "docs/analisis_vault_vs_rubrica.md",
+      "line": 23,
+      "pattern": "185",
+      "text": "7. `vault-data/05-Conclusiones/02-limitaciones-y-gaps.md`: 355 raw (353 hash, 351 HDFS sin legacy) / 185 silver."
+    },
+    {
+      "file": "docs/analisis_vault_vs_rubrica.md",
+      "line": 24,
+      "pattern": "759",
+      "text": "8. `vault-data/03-Silver/03-anuncios-limpios.md`: aritmética 471+230+139=840 → 759; RealtyAPI 139."
+    },
+    {
+      "file": "docs/analisis_vault_vs_rubrica.md",
+      "line": 35,
+      "pattern": "173",
+      "text": "- D. Robustos 4 vs 6: 6 antes de unificar, 4 después (Bilbao 173, Donostia 113, Getxo 40, Vitoria 39)."
+    },
+    {
+      "file": "docs/analisis_vault_vs_rubrica.md",
+      "line": 84,
+      "pattern": "759",
+      "text": "- P2. Prueba RA3 de índices, ¿qué enseñas? → B) `explain_before_after`: COLLSCAN 759 examinados → IXSCAN, ESR y coste."
+    },
+    {
+      "file": "docs/arquitectura_datos.md",
+      "line": 57,
+      "pattern": "759",
+      "text": "| 2 | `anuncios_*_enriquecido_geo.json` + RealtyAPI | `transform/unificar_anuncios.py` | `anuncios_unificados.json/.csv` | 594 vigentes post dedup (843 raw → 594; 759 histórico pre-v5), 64 mun |"
+    },
+    {
+      "file": "docs/arquitectura_datos.md",
+      "line": 69,
+      "pattern": "ixscan_1",
+      "text": "- MongoDB hecho vía PyMongo (`storage/load_mongo.py`, `analysis/mongo_aggregations.py`, `analysis/mongo_indexes.py`): 16 vivas (14 negocio + 2 habitaciones `anuncios_habitaciones_unificados` 201 y `anuncios_habitaciones_unificados_bigdata` 201) + 14 `__backup` = 30 totales, 11 pipelines, índices ESR"
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 33,
+      "pattern": "759",
+      "text": "`VERIFICADOS 10/10`, `TOTAL 759`, `MUNICIPIOS 252`,"
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 37,
+      "pattern": "759",
+      "text": "`explain before COLLSCAN nReturned=1 totalDocsExamined=759` →"
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 38,
+      "pattern": "ixscan_1",
+      "text": "`explain after IXSCAN nReturned=1 totalDocsExamined=1`,"
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 42,
+      "pattern": "185",
+      "text": "`G_gaps_limitaciones.png` (tabla literal en `generar_dashboard_completo.py:174-185`)"
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 57,
+      "pattern": "759",
+      "text": "2. `scripts/gate_bloque2.py` → `VERIFICADOS 10/10 + LAG 0 + TOTAL>=759`."
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 58,
+      "pattern": "ixscan_1",
+      "text": "3. `explain COLLSCAN→IXSCAN totalDocsExamined=1` + `pytest 130` + huella `f1e78870`."
+    },
+    {
+      "file": "docs/auditoria_10_10_SDD_2026-11-05.md",
+      "line": 59,
+      "pattern": "173",
+      "text": "4. Tabla 4 robustos (Bilbao 173, Donostia 113, Getxo 40, Vitoria 39) con"
+    },
+    {
+      "file": "docs/datos_finales_conclusiones_2026-11-05.md",
+      "line": 7,
+      "pattern": "759",
+      "text": "759 era el pre-change."
+    },
+    {
+      "file": "docs/datos_finales_conclusiones_2026-11-05.md",
+      "line": 44,
+      "pattern": "10_pipelines",
+      "text": "Suficiente para el reto (5+ indicadores, 10 pipelines, 4 robustos, limitaciones"
+    },
+    {
+      "file": "docs/guion_defensa.md",
+      "line": 10,
+      "pattern": "ixscan_1",
+      "text": "- **Índices**: `anuncios` pasa de COLLSCAN (594 examinados) a IXSCAN (1 examinado) con indice compuesto ESR `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` + cobertura de `portal_id` (`explain_before_after` en `analysis/mongo_indexes.py`, invocado en `analysis/run_analisis_mongo.py`, test `tes"
+    },
+    {
+      "file": "docs/guion_defensa.md",
+      "line": 22,
+      "pattern": "759",
+      "text": "8. **Tests**: `pytest tests -q` = 236 passed + 2 skipped (238 collected), sin `data/raw` en `git status`. CI en rama `master` (`.github/workflows/quality-gate.yml` push a `master` + `pull_request` + `workflow_dispatch` vivo manual `GATE_LIVE=1`); antes disparaba en `main` y no corría en `master`. An"
+    },
+    {
+      "file": "docs/guion_defensa.md",
+      "line": 33,
+      "pattern": "ixscan_1",
+      "text": "| 6 | Performance Mongo (índices/explain) | COLLSCAN 594 -> IXSCAN 1 en `test_indexes_explain` con ESR | Sin indice compuesto el lookup es full scan. |"
+    },
+    {
+      "file": "docs/guion_defensa.md",
+      "line": 45,
+      "pattern": "759",
+      "text": "- **594 vs 759**: 759 es histórico pre-v5; 843 raw → 594 vigente tras re-resolucion pisos + cuarentena de 45 fuera de Euskadi. Usar 759 hoy infla la cobertura."
+    },
+    {
+      "file": "docs/guion_defensa.md",
+      "line": 51,
+      "pattern": "ixscan_1",
+      "text": "Mostrar en orden: `scripts/gate_extremo_a_extremo.py --offline`, `scripts/verificar_gobernanza.py`, `transform/run_all.py --check`, pytest 236+2s, huella de `run_analisis`, explain COLLSCAN 594→IXSCAN 1 y tabla de 4 robustos (Getxo 50 vs Vitoria 39 sin ranking firme; Tier B 10-29 = 3 solo indicativo"
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 35,
+      "pattern": "10_pipelines",
+      "text": "8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 10 pipelines."
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 143,
+      "pattern": "10_pipelines",
+      "text": "Mongo **14 colecciones** → **10 pipelines** → 6 CSV + 12 PNG únicos de 13 emitidos."
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 143,
+      "pattern": "14_collections",
+      "text": "Mongo **14 colecciones** → **10 pipelines** → 6 CSV + 12 PNG únicos de 13 emitidos."
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 171,
+      "pattern": "10_pipelines",
+      "text": "| run_analisis | **10 pipelines**, 6 CSV, **12 PNG únicos de 13 emitidos**, huella reproducible |"
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 175,
+      "pattern": "ixscan_1",
+      "text": "**COLLSCAN 594 examinados** a **IXSCAN 1**. Índice ESR"
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 222,
+      "pattern": "14_collections",
+      "text": "- ¿Por qué 14 colecciones? → una por fuente/frecuencia; los 13 `__backup` no cuentan."
+    },
+    {
+      "file": "docs/guion_defensa_12min.md",
+      "line": 222,
+      "pattern": "13_backup",
+      "text": "- ¿Por qué 14 colecciones? → una por fuente/frecuencia; los 13 `__backup` no cuentan."
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 3,
+      "pattern": "14_collections",
+      "text": "> Actualización 2026-11-05 (cierre-auditoria): 14 colecciones principales (+13 `__backup` posteriores): `municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promocion"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 3,
+      "pattern": "13_backup",
+      "text": "> Actualización 2026-11-05 (cierre-auditoria): 14 colecciones principales (+13 `__backup` posteriores): `municipios/anuncios/alquiler_municipal/indicadores/ecvi_compraventa/udalmap_indicadores/udalmap_empleo/osrm_tiempos/emancipacion_juventud/etxebide_solicitudes/udalmap_extendido/etxebide_promocion"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 8,
+      "pattern": "759",
+      "text": "- Colecciones inspeccionadas: `municipios` (252), `anuncios` (759), `alquiler_municipal` (252), `indicadores` (252), `ecvi_compraventa` (29), `udalmap_indicadores` (252), `udalmap_empleo` (252), `osrm_tiempos` (252), `emancipacion_juventud` (1), `etxebide_solicitudes` (5040), `udalmap_extendido` (25"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 14,
+      "pattern": "173",
+      "text": "- Nota de honestidad: tras deduplicación en Mongo quedan **4 municipios con n≥30 anuncios** (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39). C5/D2/C1/B5/C3/C6/D5/E1-E3/D3 pasan a Responde directamente con las colecciones nuevas. F5 queda Parcial (ECVI por área funcional, no municipal fino)."
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 48,
+      "pattern": "759",
+      "text": "| C4 | Superficie media adecuada | Parcial | `anuncios.superficie_m2`/`habitaciones`; `alquiler_municipal.superficie_media_m2_*` | Solo 83 municipios con anuncios; 737/759 con habitaciones |"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 87,
+      "pattern": "173",
+      "text": "| 48020 | Bilbao | 173 | 37,69 | 60,70 | 1695,59 | 850,00 | 9,71 |"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 94,
+      "pattern": "173",
+      "text": "- **Bilbao (48020, n=173)**: la muestra mas robusta de los tres, con esfuerzo 37,69 % (18-34) y cuantia de 850,00 EUR/mes, la menor. El precio medio de sus anuncios es 1695,59 EUR. Su punto debil frente a los otros dos es el paro Lanbide: 9,71 %, el mas alto de la comparativa. Vivir en Bilbao cuesta"
+    },
+    {
+      "file": "docs/informe_capacidad_mongo.md",
+      "line": 99,
+      "pattern": "173",
+      "text": "- **Muestra pequena**: solo 4 municipios tienen n>=30 anuncios (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39, fuera del top 3). La comparativa es de robustez, no un ranking fino: Getxo, con n=40, es el menos robusto de los tres. No se puede afirmar nada sobre los demas 248 municipios con e"
+    },
+    {
+      "file": "docs/informe_final.md",
+      "line": 26,
+      "pattern": "14_collections",
+      "text": "→  Mongo 14 colecciones  →  10 aggregation pipelines"
+    },
+    {
+      "file": "docs/informe_final.md",
+      "line": 36,
+      "pattern": "759",
+      "text": "como máximo**. Paro Lanbide 252/252 (0 imputadas). 759 era el pre-change."
+    },
+    {
+      "file": "docs/informe_final.md",
+      "line": 144,
+      "pattern": "14_collections",
+      "text": ".venv/Scripts/python.exe -m storage.load_mongo                 # 14 colecciones"
+    },
+    {
+      "file": "docs/informe_final.md",
+      "line": 145,
+      "pattern": "10_pipelines",
+      "text": ".venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 10 pipelines + huella"
+    },
+    {
+      "file": "docs/matriz_indicadores.md",
+      "line": 19,
+      "pattern": "10_pipelines",
+      "text": "- 10 pipelines en `analysis/mongo_aggregations.py`: indicadores, alquiler, modalidades, top esfuerzo, esfuerzo sexo, accesibilidad extendida, udalmap_osrm, vpo promociones, vpo terminadas, tier por municipio."
+    },
+    {
+      "file": "docs/matriz_indicadores.md",
+      "line": 30,
+      "pattern": "vpo_csv_252",
+      "text": "| `data/resultados/mongo_vpo_terminadas_por_municipio.csv` | 252 | `d9a512c82d9c493499b757fbb914b3ee331e0b3e390b59a64c1f4ab6c1f587bb` |"
+    },
+    {
+      "file": "docs/matriz_indicadores.md",
+      "line": 32,
+      "pattern": "173",
+      "text": "Huella agregada de los 9 pipelines originales (`huella_resultados`, SHA-256 con `sort_keys=True`; el 10.º, tier, se añadió después y no entra en esta huella histórica): `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a` (sin cambios: el 6º CSV no altera la huella de pipelines). Verif"
+    },
+    {
+      "file": "docs/metodologia.md",
+      "line": 56,
+      "pattern": "759",
+      "text": "- 251 duplicados/retirados en anuncios unificados (845 crudos → 594; 29,70 %; cadena histórica 845→759→594; 0 duplicados de fingerprint)."
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 11,
+      "pattern": "759",
+      "text": "| `anuncios` | 759 | `ObjectId` | Anuncios unificados (`ubicacion.codigo_ine` + `equipamiento[]`). |"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 40,
+      "pattern": "759",
+      "text": "- Geo: GeoJSON Point en `ubicacion.coordenadas` (índice 2dsphere, sparse): 424 de 759 anuncios con `{\"type\":\"Point\",\"coordinates\":[lon,lat]}` real desde `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`); el resto `None` por falta de silver."
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 111,
+      "pattern": "10_pipelines",
+      "text": "MongoDB hecho: 14 colecciones cargadas con PyMongo (+13 `__backup`) (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 10 pipelines en `analysis/mongo_aggregations.py` (`pipeline_in"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 111,
+      "pattern": "14_collections",
+      "text": "MongoDB hecho: 14 colecciones cargadas con PyMongo (+13 `__backup`) (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 10 pipelines en `analysis/mongo_aggregations.py` (`pipeline_in"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 111,
+      "pattern": "13_backup",
+      "text": "MongoDB hecho: 14 colecciones cargadas con PyMongo (+13 `__backup`) (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 10 pipelines en `analysis/mongo_aggregations.py` (`pipeline_in"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 115,
+      "pattern": "173",
+      "text": "CSVs en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4: Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39). Robustos reales con n mayor o igual a 30: 4 (Bilbao, Do"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 129,
+      "pattern": "759",
+      "text": "- Antes (sin índice ESR): `COLLSCAN`, `nReturned=1`, `totalDocsExamined=759`, `totalKeysExamined=0`."
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 130,
+      "pattern": "ixscan_1",
+      "text": "- Después (con índice ESR): `IXSCAN`, `nReturned=1`, `totalDocsExamined=1`, `totalKeysExamined=1`."
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 132,
+      "pattern": "ixscan_1",
+      "text": "Esto es `COLLSCAN -> IXSCAN` con `totalDocsExamined=1` tras el índice ESR y `nReturned=1` documentado. La transición se reproduce con `explain_before_after()` (elimina el índice, ejecuta `explain(\"executionStats\")`, crea el índice y vuelve a ejecutar `explain`). La salida de `analysis/run_analisis_m"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 140,
+      "pattern": "759",
+      "text": "- Parcial: evaluado y rechazado para índice nuevo sin consulta real. Se evaluó un índice parcial del tipo `{\"precio_eur\": 1}` con `partialFilterExpression: {\"precio_eur\": {\"$ne\": null}}` o `{\"ubicacion.coordenadas\": \"2dsphere\"}` parcial solo para anuncios con geo, pero no se creó índice parcial nuev"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 160,
+      "pattern": "14_collections",
+      "text": "Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, munici"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 160,
+      "pattern": "13_backup",
+      "text": "Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, munici"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 162,
+      "pattern": "759",
+      "text": "Con recuentos medidos el mismo día: `anuncios` 759, `municipios` 252, `indicadores` 252, `municipios__backup` 252 e `indicadores__backup` 252."
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 164,
+      "pattern": "759",
+      "text": "Geo: 424 Point GeoJSON reales en `anuncios.ubicacion.coordenadas` (`{\"type\":\"Point\",\"coordinates\":[lon,lat]}`), el resto `None` por falta de silver. Origen: `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`, 424 de 759). Medición: `db.anuncios.countDocuments({\"ubicacion.coorden"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 170,
+      "pattern": "759",
+      "text": "Atomicidad documental de `marcar_calidad_municipio` (`storage/mongo.py`): la actualización es `find_one_and_update` con `ReturnDocument.AFTER` sobre un único documento, verifica el valor de dominio y devuelve el documento ya actualizado sin estado intermedio. El test `test_atomicidad_documental` lo "
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 172,
+      "pattern": "759",
+      "text": "Sonda commit/abort solo en `vivienda_euskadi_test`: la transacción multidocumento real sí exigiría replica set y no se fuerza; si el servidor standalone la rechaza, la sonda la captura, limpia la colección de prueba y deja prod en 759. Ejemplo plausible que sí justificaría commit/abort con replica s"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 176,
+      "pattern": "759",
+      "text": "Función canónica única `clean_obsolete_fields` en `storage/clean_mongo.py`: `update_many(..., {\"$unset\": {...}})` que retorna `matched_count` / `modified_count` / `deleted_count`; mismo contrato en ambas colecciones (`anuncios` y `municipios`). `$unset` no borra documentos (`deleted_count=0`, 759 in"
+    },
+    {
+      "file": "docs/modelo_mongodb.md",
+      "line": 180,
+      "pattern": "10_pipelines",
+      "text": "5 pipelines a CSV canónico en `data/resultados/` reutilizando los 10 pipelines de `analysis/mongo_aggregations.py` con `$group`/`$lookup`/`$unwind` donde los datos lo permiten, sin reimplementar agregaciones en el exportador:"
+    },
+    {
+      "file": "docs/pendiente_duckdb_pymongo_2026-11-05.md",
+      "line": 6,
+      "pattern": "185",
+      "text": "- HTML (`dashboard.html`, `dashboard_completo.html`, `mapa_esquema_silver.html`) manuales (P-05). `G_gaps_limitaciones.png` tabla literal en `generar_dashboard_completo.py:174-185`."
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 84,
+      "pattern": "173",
+      "text": "| Municipio robusto (4) | Ranking detallado de €/m², esfuerzo, comparación bilateral (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39) |"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 91,
+      "pattern": "173",
+      "text": "| Ranking fino | anuncios con n≥30 | ⚠️ solo 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 99,
+      "pattern": "10_pipelines",
+      "text": "Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 10 pipelines), las puntuaciones mejoran:"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 99,
+      "pattern": "14_collections",
+      "text": "Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 10 pipelines), las puntuaciones mejoran:"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 99,
+      "pattern": "13_backup",
+      "text": "Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 10 pipelines), las puntuaciones mejoran:"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 120,
+      "pattern": "173",
+      "text": "Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gaste"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 120,
+      "pattern": "10_pipelines",
+      "text": "Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gaste"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 120,
+      "pattern": "14_collections",
+      "text": "Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gaste"
+    },
+    {
+      "file": "docs/preguntas_analisis_profesional.md",
+      "line": 120,
+      "pattern": "13_backup",
+      "text": "Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gaste"
+    },
+    {
+      "file": "docs/reglas_limpieza.md",
+      "line": 54,
+      "pattern": "759",
+      "text": "`n_anuncios_raw`. Total: 843 crudos → 759 únicos."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 279,
+      "pattern": "759",
+      "text": "Conclusión: topic anuncios_inmobiliarios 3 particiones, offsets 0/0/1, sin grupo anuncios creado. Mensaje previo en p2/o0 sin portal/id_anuncio (manual), será descartado por el consumidor; no afecta a los 759. Sin cron, sin console-producer."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 281,
+      "pattern": "759",
+      "text": "### 2026-11-05 Bloque 2 Kafka productor Python 759 (paso 6, tarea 2.2)"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 284,
+      "pattern": "759",
+      "text": "Objetivo: publicar los 759 anuncios con clave portal:id_anuncio, topic/partition/offset via callback"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 293,
+      "pattern": "759",
+      "text": "Salida literal (759 Publicado + 2 líneas finales, exit 0):"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 755,
+      "pattern": "173",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=0 offset=173"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 767,
+      "pattern": "185",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=0 offset=185"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 816,
+      "pattern": "173",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=2 offset=173"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 828,
+      "pattern": "185",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=2 offset=185"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 856,
+      "pattern": "173",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=1 offset=173"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 868,
+      "pattern": "185",
+      "text": "Publicado topic=anuncios_inmobiliarios partition=1 offset=185"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1053,
+      "pattern": "759",
+      "text": "Publicados 759 anuncios en anuncios_inmobiliarios"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1054,
+      "pattern": "759",
+      "text": "ADAPTER_PUBLICADOS 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1055,
+      "pattern": "759",
+      "text": "Conclusión: 759 publicados con metadata topic/partition/offset. Offsets tras producir: anuncios_inmobiliarios:0:257 anuncios_inmobiliarios:1:261 anuncios_inmobiliarios:2:242 (suma 760 = 759 nuevos + 1 previo). Grupo anuncios aún no creado (GroupIdNotFoundException esperado)."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1057,
+      "pattern": "759",
+      "text": "### 2026-11-05 Bloque 2 Kafka consumidor Python 759 (paso 6, tarea 2.3)"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1063,
+      "pattern": "759",
+      "text": "timeout 180 .venv/Scripts/python.exe -c \"import sys; sys.path.insert(0, '.'); from storage.kafka_consumer import consume; n=consume(group_id='anuncios', max_messages=759); print(f'CONSUME_RET {n}')\""
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1067,
+      "pattern": "759",
+      "text": "Procesados: 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1068,
+      "pattern": "759",
+      "text": "CONSUME_RET 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1077,
+      "pattern": "759",
+      "text": "COUNT 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1079,
+      "pattern": "759",
+      "text": "Conclusión: Procesados 759, mensaje previo sin portal/id_anuncio descartado y no contado. Mongo anuncios 759 (upsert sin duplicar), municipios 252. Offsets log-end 257/261/242 suma 760, grupo anuncios lag 0, offsets >=759. Desviación honesta: entrada `python -m storage.kafka_consumer` sin límite blo"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1139,
+      "pattern": "759",
+      "text": "Conclusión: Procesados 10, lag 0, offsets grupo = log-end 260/265/245. Mongo seguirá en 759 por upsert idempotente (mismos 10 ya existentes)."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1149,
+      "pattern": "759",
+      "text": "TOTAL 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1173,
+      "pattern": "759",
+      "text": "Conclusión: 10/10 consultables por codigo_ine (cada consulta portal+id+codigo_ine devuelve 1), total anuncios 759, municipios 252, huella SHA e32c3d3de196f169b86304d46295e0e621b5372a3809948f360fbaf81dbfaf25. Gate PASS."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1211,
+      "pattern": "759",
+      "text": "Conclusión: base 260/265/245 lag 0 (759+previo+10 previos), topic 3 particiones. Sin escritura."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1289,
+      "pattern": "759",
+      "text": "Conclusión: Procesados 10, lag 0, offsets grupo = log-end 263/269/248. Mongo 759 por upsert idempotente."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1346,
+      "pattern": "759",
+      "text": "TOTAL 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1357,
+      "pattern": "759",
+      "text": "Conclusión: GATE PASS, 10/10 por codigo_ine, huella e32c3d3...faf25, TOTAL 759, MUNICIPIOS 252, lag 0. HDFS leg solo LISTSTATUS, cero escrituras. Dos intentos previos del script fallaron en lag_report (assign/subscribe y seek_to_end) tras produce+consume; corregidos y re-ejecutados hasta PASS."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1375,
+      "pattern": "759",
+      "text": "Conclusión: 54 passed test_contrato + 3 passed test_kafka (Future 759), manifest 353/184 OK, data/raw intacto. Ficheros fixer: storage/kafka_producer.py, tests/test_kafka.py, scripts/publish_adapter.py, scripts/gate_bloque2.py, scripts/hdfs_recuperacion_un_fichero.py, openspec proposal/verify-report"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1377,
+      "pattern": "ixscan_1",
+      "text": "### 2026-11-05 Bloque 3 explain antes/después COLLSCAN→IXSCAN totalDocsExamined 1 (tarea 1.1, INDICES-01)"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1380,
+      "pattern": "ixscan_1",
+      "text": "Objetivo: ejecutar `explain_before_after()` sin índice ESR y con él; guardar COLLSCAN antes e IXSCAN después con `nReturned`/`totalDocsExamined=1`"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1386,
+      "pattern": "759",
+      "text": "{'after': {'executionTimeMillis': 8, 'nReturned': 1, 'stage': 'IXSCAN', 'totalDocsExamined': 1, 'totalKeysExamined': 1}, 'before': {'executionTimeMillis': 1, 'nReturned': 1, 'stage': 'COLLSCAN', 'totalDocsExamined': 759, 'totalKeysExamined': 0}, 'filtro': {'modalidad': 'larga_estancia', 'precio_eur'"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1386,
+      "pattern": "ixscan_1",
+      "text": "{'after': {'executionTimeMillis': 8, 'nReturned': 1, 'stage': 'IXSCAN', 'totalDocsExamined': 1, 'totalKeysExamined': 1}, 'before': {'executionTimeMillis': 1, 'nReturned': 1, 'stage': 'COLLSCAN', 'totalDocsExamined': 759, 'totalKeysExamined': 0}, 'filtro': {'modalidad': 'larga_estancia', 'precio_eur'"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1387,
+      "pattern": "759",
+      "text": "explain before: stage=COLLSCAN nReturned=1 totalDocsExamined=759 totalKeysExamined=0"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1388,
+      "pattern": "ixscan_1",
+      "text": "explain after: stage=IXSCAN nReturned=1 totalDocsExamined=1 totalKeysExamined=1"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1399,
+      "pattern": "759",
+      "text": "Conclusión: COLLSCAN (759 examinados) → IXSCAN (totalDocsExamined=1, nReturned=1) con filtro ubicacion.codigo_ine=48001 + modalidad=larga_estancia + precio_eur $lte Decimal128(1000) e índice ESR {ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}. `run_analisis_mongo.py` imprime las dos líneas expla"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1399,
+      "pattern": "ixscan_1",
+      "text": "Conclusión: COLLSCAN (759 examinados) → IXSCAN (totalDocsExamined=1, nReturned=1) con filtro ubicacion.codigo_ine=48001 + modalidad=larga_estancia + precio_eur $lte Decimal128(1000) e índice ESR {ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}. `run_analisis_mongo.py` imprime las dos líneas expla"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1415,
+      "pattern": "759",
+      "text": "759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1420,
+      "pattern": "759",
+      "text": "Conclusión: 15 colecciones con backups 252/252, anuncios 759, municipios 252, geo 424 Point reales (resto None por falta de silver). Documentado en docs/modelo_mongodb.md (backups vía replace_collection staging+backup+rename, nunca drop() directo; geo 2dsphere sparse)."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1425,
+      "pattern": "759",
+      "text": "Objetivo: verificar función canónica única con update_many $unset (matched/modified/deleted) en ambas colecciones solo sobre test DB y sonda commit/abort solo en test con prod 759 invariante sin MONGO_ALLOW_DESTRUCTIVE"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1435,
+      "pattern": "759",
+      "text": "Conclusión: clean_obsolete_fields (update_many $unset) devuelve matched/modified/deleted en anuncios y municipios solo sobre vivienda_euskadi_test; sonda commit/abort aborta o es rechazada en standalone sin tocar prod (759 invariante, MONGO_ALLOW_DESTRUCTIVE sin definir)."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1450,
+      "pattern": "759",
+      "text": "explain before: stage=COLLSCAN nReturned=1 totalDocsExamined=759 totalKeysExamined=0"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1451,
+      "pattern": "ixscan_1",
+      "text": "explain after: stage=IXSCAN nReturned=1 totalDocsExamined=1 totalKeysExamined=1"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1466,
+      "pattern": "759",
+      "text": "759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1467,
+      "pattern": "759",
+      "text": "Conclusión: 130 passed, 5 CSV (252/252/2 + 252/322), manifest 353/184 intactos, data/raw intacto, anuncios 759, cero escrituras HDFS (no se tocó data/raw local ni raw HDFS, no carpeta nueva, no subida procesado)."
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1531,
+      "pattern": "759",
+      "text": "TOTAL 759"
+    },
+    {
+      "file": "docs/trazabilidad_vm.md",
+      "line": 1534,
+      "pattern": "759",
+      "text": "Conclusión: broker vivo pid 1817 en 9093/9094, topic 3 particiones RF=1, gate GATE PASS con 10/10 verificados por codigo_ine, lag 0, total 759 y municipios 252. INTEGRACION-01 y KAFKA-01 acreditados en vivo. Limitación documentada: min.insync.replicas=2 con RF=1 (no bloqueó por upsert idempotente)."
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/design.md",
+      "line": 24,
+      "pattern": "staging",
+      "text": "El CSV nuevo se descarga en memoria, se parsea y valida ahí. Solo si cumple (252 municipios, rango, códigos de 5 dígitos) se promueve a `data/raw/` con `assert_raw_writable(reason)` y se regeneran manifests. No se crea `data/staging/`."
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/proposal.md",
+      "line": 62,
+      "pattern": "759",
+      "text": "| Recarga de Mongo altera prod local | Med | `replace_collection` ya usado por el proyecto; verificar conteos 252/759/5040 |"
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/tasks.md",
+      "line": 44,
+      "pattern": "759",
+      "text": "- [x] 3.3 Mongo recargado: 252/759/5040/406 + 252 VPO."
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/tasks.md",
+      "line": 56,
+      "pattern": "185",
+      "text": "- [x] 4.5 Contadores raw/silver (354/185), ingestion manifest y docs."
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/tasks.md",
+      "line": 75,
+      "pattern": "136_tests",
+      "text": "- [x] 7.1 `pytest` 136 passed, manifests 354/185 con 0 errores,"
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/tasks.md",
+      "line": 75,
+      "pattern": "185",
+      "text": "- [x] 7.1 `pytest` 136 passed, manifests 354/185 con 0 errores,"
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/verify-report.md",
+      "line": 22,
+      "pattern": "759",
+      "text": "86 duplicados (845→759, 10,18 %), 15 colecciones (entonces), 130 tests,"
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/verify-report.md",
+      "line": 62,
+      "pattern": "185",
+      "text": "`vpo_municipal` = 252 documentos. Manifest: 354 raw / 185 silver, 0 errores."
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/verify-report.md",
+      "line": 82,
+      "pattern": "136_tests",
+      "text": "136 passed"
+    },
+    {
+      "file": "openspec/changes/2026-11-05-cierre-suficiencia-auditoria/verify-report.md",
+      "line": 86,
+      "pattern": "185",
+      "text": "OK: data/procesado/manifest_sha256.txt (185 entradas, 0 errores)"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/proposal.md",
+      "line": 6,
+      "pattern": "173",
+      "text": "- Baseline: L1 4 robustos ≥30 sin pisos (Bilbao 173, Donostia 113, Getxo 40, Vitoria 39); L2 16 con 10-29. Eustat 252/252, Lanbide 249/252 intactos."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/specs/mongodb-y-analisis/spec.md",
+      "line": 15,
+      "pattern": "759",
+      "text": "- GIVEN `anuncios` con 759 documentos"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/specs/mongodb-y-analisis/spec.md",
+      "line": 17,
+      "pattern": "759",
+      "text": "- THEN existe `anuncios__backup` con 759 previos"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/specs/presentacion-de-resultados/spec.md",
+      "line": 11,
+      "pattern": "173",
+      "text": "El sistema SHALL clasificar municipios por `n_anuncios` post re-resolución y SHALL NOT presentar ranking municipal 1-16. L1 (n≥30): Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39 — comparación firme. L2 (10-29): solo indicativo, separando temporal vs larga estancia, con min-max + mediana y `"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 12,
+      "pattern": "185",
+      "text": "| 6. Sync docs (README, tipología, guion, precio 80/252, manifest 185 vs 188) | 3 h | Low | Todo valor de Mongo, nunca tecleado; defensa honesta L1/L2/L3 |"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 67,
+      "pattern": "173",
+      "text": "**Description:** Con el parche de T2 integrado, re-ejecuta en orden estricto el writers de `data/procesado/dim_municipios.csv`: primero `transform/unificar_anuncios.py` (reconstruye `anuncios_unificados.csv` con pisos re-resueltos y cuarentena), después `transform/aplicar_cobertura_mercado.py` (base"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 92,
+      "pattern": "759",
+      "text": "**Description:** Recarga Mongo con el silver re-resuelto vía `storage/load_mongo.py` (staging + `<name>__backup` + rename atómico, recreando índices con `ensure_indexes`; nunca `drop()` directo; si staging vacío, aborta sin tocar la colección original con 759 documentos). Después regenera `data/resu"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 95,
+      "pattern": "759",
+      "text": "- [x] Colección original preservada: existe `anuncios__backup` con los 759 documentos previos; rename atómico verificado; si staging está vacío, la carga aborta y Mongo no pierde datos."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 101,
+      "pattern": "759",
+      "text": "- Comando: `python storage/load_mongo.py` → salida esperada: `loaded anuncios: <N> localidades...` (o conteos por colección) y generación de `anuncios__backup` con 759 docs; `mongosh --eval \"db.anuncios.countDocuments()\"` devuelve el total post-recarga y `db.getCollectionNames()` incluye `anuncios__"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 134,
+      "pattern": "185",
+      "text": "## 6. Sync docs: README Nivel2/3 66/182, tipología, guion con falsación exterior/no-ascensor, precio solo 80/252, manifest 185 vs 188"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 136,
+      "pattern": "173",
+      "text": "**Description:** Sincroniza la documentación pública con los conteos reales post re-resolución (valores de T3/T4/T5, derivados de Mongo y `data/procesado/`, nunca tecleados a mano desde el informe pitch): README con Nivel2/3 = **66/182** y los 4 municipios L1 (Bilbao 173, Donostia 113, Getxo 40, Vit"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 136,
+      "pattern": "185",
+      "text": "**Description:** Sincroniza la documentación pública con los conteos reales post re-resolución (valores de T3/T4/T5, derivados de Mongo y `data/procesado/`, nunca tecleados a mano desde el informe pitch): README con Nivel2/3 = **66/182** y los 4 municipios L1 (Bilbao 173, Donostia 113, Getxo 40, Vit"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 142,
+      "pattern": "185",
+      "text": "- [x] Manifest: nota 185 vs 188 cerrada (archivos extra identificados en §Sync) en README o `docs/raw_manifest_sha256.txt` según evidencia de apply."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 146,
+      "pattern": "173",
+      "text": "- Comando: `grep -n \"66\\|182\\|Nivel2\\|Nivel3\\|173\\|113\\|40\\|39\" README.md` → salida esperada: línea de O2 con los 4 L1 n≥30 y Nivel2 (66) / Nivel3 (182) coherentes con T3; `grep -v \"125\\|41\\|205\"` no muestra conteos del baseline como si fueran actuales."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 152,
+      "pattern": "185",
+      "text": "**Files:** `README.md`, `docs/conclusiones_municipios.md`, `docs/guion_defensa.md`, `docs/guion_defensa_12min.md`, `docs/metodologia.md` / `docs/diccionario_columnas.md` (solo si citan tipología), `docs/raw_manifest_sha256.txt` (aclaración 185 vs 188), evidencia en `data/procesado/dim_municipios.csv"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/tasks.md",
+      "line": 154,
+      "pattern": "185",
+      "text": "**Estimacion:** 3 h (M, bajo riesgo técnico). El riesgo es textual: contradecir T3 con números de memoria. Frenar si T3 no dejó números cerrados o si manifest 185 vs 188 no se distingue en apply."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 17,
+      "pattern": "759",
+      "text": "Los 5 gates delegados **pasan en fuente primaria** (pytest 166/1, doble SHA, conteos dim/esfuerzo/Mongo-anuncios, manifests, no-Docker/Kafka→HDFS). Hay **P1 abiertos no cubiertos por test** que deben resolverse antes de `sdd-archive`: (1) `indicadores` en Mongo sin refrescar (suma 759 vs 594) por `d"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 116,
+      "pattern": "759",
+      "text": "| L1 4: Bilbao 204 Donostia 126 Getxo 50 Vitoria 39 | dim + esfuerzo exactos | PASS en dim/esfuerzo; **FAIL en `indicadores` (173/113/40/39, suma 759) → P1-1** |"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 116,
+      "pattern": "173",
+      "text": "| L1 4: Bilbao 204 Donostia 126 Getxo 50 Vitoria 39 | dim + esfuerzo exactos | PASS en dim/esfuerzo; **FAIL en `indicadores` (173/113/40/39, suma 759) → P1-1** |"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 122,
+      "pattern": "759",
+      "text": "**P1-1 (indicadores stale):** `storage/load_mongo.py:98,317-348` `load_indicadores()` lee `dim_municipios_enriquecido.csv`, que **no fue regenerado** (`ls -l`: enriquecido 2026-11-05 22:32 vs dim/anuncios 2026-11-07 15:23; no tracked en git). Suma `indicadores.n_anuncios=759` (Bilbao 173) vs `anunci"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 122,
+      "pattern": "173",
+      "text": "**P1-1 (indicadores stale):** `storage/load_mongo.py:98,317-348` `load_indicadores()` lee `dim_municipios_enriquecido.csv`, que **no fue regenerado** (`ls -l`: enriquecido 2026-11-05 22:32 vs dim/anuncios 2026-11-07 15:23; no tracked en git). Suma `indicadores.n_anuncios=759` (Bilbao 173) vs `anunci"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 161,
+      "pattern": "759",
+      "text": "| CARGA-SEGURA-01 (mongodb/spec.md:9-18) | 1 (backup 759) | `mongo.py:152-163` staging+backup+rename; Mongo `anuncios__backup=594` presente; `test_backup_presente_sin_perdidas` PASSED (acepta 594 actual, 759 antes). Spec aún dice «759 previos»; real backup 594 post-recarga (P2-3) | COMPLIANT |"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 193,
+      "pattern": "759",
+      "text": "- **P1-1 Indicadores stale:** `indicadores` suma 759 (Bilbao 173) vs real 594 (Bilbao 204). Causa: `dim_municipios_enriquecido.csv` (2026-11-05, no tracked) no regenerado tras T3; `load_indicadores` (`storage/load_mongo.py:317-348`) lo consume. Fix: regenerar gold (`construir_dim_gold` + cadena rent"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 193,
+      "pattern": "173",
+      "text": "- **P1-1 Indicadores stale:** `indicadores` suma 759 (Bilbao 173) vs real 594 (Bilbao 204). Causa: `dim_municipios_enriquecido.csv` (2026-11-05, no tracked) no regenerado tras T3; `load_indicadores` (`storage/load_mongo.py:317-348`) lo consume. Fix: regenerar gold (`construir_dim_gold` + cadena rent"
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 197,
+      "pattern": "173",
+      "text": "- **P2-1 Spec stale vs docs reales:** `presentacion/spec.md:11` aún Bilbao 173/Donostia 113/Getxo 40/Vitoria 39 y L2=16; real 204/126/50/39 y L2=3 (docs sí sincronizados). Sincronizar spec o anotar «valores reales post T3» en archive."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 199,
+      "pattern": "759",
+      "text": "- **P2-3 Backup 759 vs 594:** spec CARGA-SEGURA dice «759 previos»; backup real es 594 (post-recarga). Actualizar texto archive: 759 era pre-change, 594 es post re-resolución+cuarentena."
+    },
+    {
+      "file": "openspec/changes/2026-11-07-pisos-re-resolver-ubicacion/verify-report.md",
+      "line": 216,
+      "pattern": "759",
+      "text": "**Pre-existencia:** sin fallos de test no aplica stash. Suite verde en primer pase (166/1). La discrepancia P1-1 se probó por **diff** (`dim` 594 vs `enriquecido` 759 + fechas `ls -l` + `load_indicadores` lee enriquecido), no por stash clean-tree (árbol ocupacionalmente sucio por el propio change: 1"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/design.md",
+      "line": 5,
+      "pattern": "staging",
+      "text": "`extract/26_vpo_terminadas.py` descargaba a `data/staging/vpo/indicator.csv`,"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/design.md",
+      "line": 64,
+      "pattern": "staging",
+      "text": "2. Borrar `data/staging/`."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/proposal.md",
+      "line": 5,
+      "pattern": "staging",
+      "text": "`data/staging/vpo/indicator.csv` es una copia byte a byte de"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/proposal.md",
+      "line": 18,
+      "pattern": "staging",
+      "text": "- Se elimina `data/staging/` y su entrada en `.gitignore`."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/specs/vpo-sin-staging/spec.md",
+      "line": 8,
+      "pattern": "staging",
+      "text": "escribir en `data/raw/`. SHALL NOT crear ni usar `data/staging/`."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/specs/vpo-sin-staging/spec.md",
+      "line": 15,
+      "pattern": "staging",
+      "text": "- AND no escribe en `data/raw/` ni crea `data/staging/`"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/tasks.md",
+      "line": 22,
+      "pattern": "staging",
+      "text": "- [x] 2.3 Eliminar `data/staging/` y su entrada en `.gitignore`."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/tasks.md",
+      "line": 23,
+      "pattern": "staging",
+      "text": "- Acceptance: `find data/staging` no devuelve nada."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/tasks.md",
+      "line": 24,
+      "pattern": "staging",
+      "text": "- Verify: `git check-ignore data/staging` no devuelve coincidencia."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/tasks.md",
+      "line": 25,
+      "pattern": "staging",
+      "text": "- Files: `.gitignore`, `data/staging/`."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/tasks.md",
+      "line": 29,
+      "pattern": "staging",
+      "text": "- Verify: `rg \"se descarga a .*data/staging|GIVEN el CSV validado en .*data/staging\" openspec/changes/2026-11-05-cierre-suficiencia-auditoria` (sin coincidencias)."
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/verify-report.md",
+      "line": 5,
+      "pattern": "staging",
+      "text": "Alcance: eliminar `data/staging/` del flujo del indicador 73 sin alterar"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/verify-report.md",
+      "line": 13,
+      "pattern": "staging",
+      "text": "| `.gitignore` | Eliminada la entrada `data/staging/` |"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/verify-report.md",
+      "line": 14,
+      "pattern": "staging",
+      "text": "| `data/staging/` | Eliminado (solo contenía `vpo/indicator.csv`, 35.427 B) |"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/verify-report.md",
+      "line": 27,
+      "pattern": "staging",
+      "text": "| `data/staging` | Existía con 1 CSV | **Eliminado** |"
+    },
+    {
+      "file": "openspec/changes/2026-11-09-vpo-sin-staging/verify-report.md",
+      "line": 28,
+      "pattern": "staging",
+      "text": "| `.gitignore` | Ignoraba `data/staging/` | **Sin entrada** |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 5,
+      "pattern": "759",
+      "text": "Cerrar el bloque 2 del plan `plan/PLAN_10.md` (pasos 5, 6 y 7) sin regresión: dejar HDFS procesado listo en local con `--dry-run` sin subirlo hasta autorización de la profesora, ejecutar productor/consumidor Kafka Python contra el broker vivo de la VM con los 759 anuncios reales, y encadenar un gate"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 14,
+      "pattern": "759",
+      "text": "| Kafka vivo | Python con 759 reales (elegido) vs console-producer/consumer | Console solo prueba el transporte; Python demuestra producer/consumer, claves `portal:id_anuncio`, callback con metadata y upsert, que es lo que exige KAFKA-01 |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 15,
+      "pattern": "759",
+      "text": "| Gate e2e | 10 anuncios de prueba con upsert (elegido) vs re-publicar los 759 | 10 basta para demostrar el flujo completo sin duplicar ni cargar la colección; el upsert por `portal`/`id_anuncio` garantiza idempotencia |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 16,
+      "pattern": "759",
+      "text": "| Orden de ejecución | HDFS dry-run → Kafka 759 → gate 10 (elegido) vs gate primero | El gate depende del topic con datos y de MongoDB reachable; verificar por capas evita diagnosticar a ciegas |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 21,
+      "pattern": "759",
+      "text": "data/procesado/anuncios_unificados.csv (759)"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 41,
+      "pattern": "759",
+      "text": "| `storage/kafka_producer.py` | Use | Publica 759 con metadata (topic/partition/offset) |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/design.md",
+      "line": 56,
+      "pattern": "759",
+      "text": "| Kafka 759 | Productor publica con metadata | 759 enviados, offsets ≥ 759, grupo describe |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 18,
+      "pattern": "759",
+      "text": "los 759 anuncios, con upsert sin duplicar y reporte de procesados."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 38,
+      "pattern": "759",
+      "text": "evidencia en vivo de SHOULD a SHALL con datos reales (dry-run HDFS, 759 en"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 54,
+      "pattern": "759",
+      "text": "| Topic `anuncios_inmobiliarios` (VM 192.168.201.162:9094) | Modified | 759 anuncios por productor Python |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 63,
+      "pattern": "759",
+      "text": "| Upsert duplica o pierde anuncios si la clave no es estable | Med | Upsert por clave estable; verificar conteo 759 antes y después |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 77,
+      "pattern": "759",
+      "text": "- MongoDB localhost:27017: 252 municipios, 759 anuncios."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 84,
+      "pattern": "759",
+      "text": "- [x] Kafka Python: 759 enviados y 759 procesados, offsets mínimos 759."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/proposal.md",
+      "line": 86,
+      "pattern": "759",
+      "text": "anuncios totales al menos 759."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/specs/almacenamiento-y-streaming/spec.md",
+      "line": 30,
+      "pattern": "759",
+      "text": "sobre el broker real que procesen los 759 anuncios. El consumidor SHALL"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/specs/almacenamiento-y-streaming/spec.md",
+      "line": 37,
+      "pattern": "759",
+      "text": "- GIVEN los 759 anuncios extraídos"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/specs/almacenamiento-y-streaming/spec.md",
+      "line": 44,
+      "pattern": "759",
+      "text": "- GIVEN el topic con 759 mensajes"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/specs/almacenamiento-y-streaming/spec.md",
+      "line": 47,
+      "pattern": "759",
+      "text": "- AND reporta 759 procesados"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/tasks.md",
+      "line": 23,
+      "pattern": "759",
+      "text": "| 1 | HDFS dry-run + Kafka 759 + gate 10 | `pytest tests/test_contrato.py -q` | Comandos Kafka/HDFS por tarea | Solo `docs/trazabilidad_vm.md` |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/tasks.md",
+      "line": 31,
+      "pattern": "759",
+      "text": "## Phase 2: Kafka Python con 759 reales (paso 6)"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/tasks.md",
+      "line": 34,
+      "pattern": "759",
+      "text": "- [x] 2.2 Ejecutar productor con metadata: `storage/kafka_producer.py` sobre 759 (clave `portal:id_anuncio`). Aceptación: 759 enviados con `topic/partition/offset`. Verificación: `python -m storage.kafka_producer` + `kafka-get-offsets` >= 759."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/tasks.md",
+      "line": 35,
+      "pattern": "759",
+      "text": "- [x] 2.3 Ejecutar consumidor con upsert: grupo `anuncios`, commit manual, upsert por `portal`/`id_anuncio`. Aceptación: 759 procesados sin duplicar. Verificación: `python -m storage.kafka_consumer` + `kafka-consumer-groups.sh --group anuncios --describe`."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/tasks.md",
+      "line": 40,
+      "pattern": "759",
+      "text": "- [x] 3.2 Consumir con upsert sin duplicar. Aceptación: Mongo >= 759 y los 10 recuperables. Verificación: `python -m storage.kafka_consumer` + conteo en `anuncios`."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 12,
+      "pattern": "759",
+      "text": "local con dry-run sin subir, Kafka Python vivo con 759, gate con 10 de"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 89,
+      "pattern": "759",
+      "text": "... (759 líneas Publicado, literal completa en trazabilidad)"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 90,
+      "pattern": "759",
+      "text": "Publicados 759 anuncios en anuncios_inmobiliarios"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 91,
+      "pattern": "759",
+      "text": "ADAPTER_PUBLICADOS 759"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 94,
+      "pattern": "759",
+      "text": "Offsets tras producir: `0:257 1:261 2:242` (suma 760 = 759 nuevos + 1"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 98,
+      "pattern": "759",
+      "text": "Consumidor (tarea 2.3): `consume(group_id='anuncios', max_messages=759)`"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 104,
+      "pattern": "759",
+      "text": "Procesados: 759"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 105,
+      "pattern": "759",
+      "text": "CONSUME_RET 759"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 109,
+      "pattern": "759",
+      "text": "Mongo: `anuncios 759`, `municipios 252` — upsert sin duplicar"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 110,
+      "pattern": "759",
+      "text": "(759 antes → 759 después). Desviación honesta: `python -m"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 139,
+      "pattern": "759",
+      "text": "`759`, `municipios 252`, huella:"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 206,
+      "pattern": "759",
+      "text": "`add_callback/add_errback` (759). Adapter versionado en"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 209,
+      "pattern": "759",
+      "text": "`e32c3d3…faf25`, 759/252, lag 0). HDFS SHA de 1 fichero cerrado."
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 217,
+      "pattern": "759",
+      "text": "| KAFKA-01 El productor publica anuncios | 759 con precio y municipio | 759 `Publicado topic/partition/offset` + Future `add_callback/add_errback` (fixes 2026-11-05, adapter/gate versionados) | PASS |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 218,
+      "pattern": "759",
+      "text": "| KAFKA-01 El consumidor procesa los mensajes | 759 procesados | `Procesados: 759`, Mongo 759 | PASS |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 219,
+      "pattern": "759",
+      "text": "| KAFKA-01 El consumidor no duplica | Segundo pase no duplica | 759→759 tras 759, luego 10→759 | PASS |"
+    },
+    {
+      "file": "openspec/changes/bloque-2-integracion-hdfs-kafka/verify-report.md",
+      "line": 220,
+      "pattern": "759",
+      "text": "| INTEGRACION-01 El flujo extremo a extremo | 10 consultables por `codigo_ine` | 10/10, huella `e32c3d3…faf25`, 759/252, lag 0 (`scripts/gate_bloque2.py` PASS) | PASS |"
+    },
+    {
+      "file": "openspec/changes/fase-mongodb/design.md",
+      "line": 26,
+      "pattern": "759",
+      "text": "- `anuncios`: 759 anuncios, `_id = ObjectId`, índice único `(portal, id_anuncio)`."
+    },
+    {
+      "file": "openspec/changes/fase-mongodb/tasks.md",
+      "line": 20,
+      "pattern": "759",
+      "text": "- Aceptación: re-ejecutar no duplica; conteos esperados (252, 759, 252/1569, 252)."
+    },
+    {
+      "file": "openspec/changes/fase-mongodb/verify-report.md",
+      "line": 10,
+      "pattern": "759",
+      "text": "- Colecciones cargadas: municipios 252, anuncios 759, alquiler_municipal 252, indicadores 252."
+    },
+    {
+      "file": "openspec/changes/gate-extremo-a-extremo-offline/proposal.md",
+      "line": 17,
+      "pattern": "14_collections",
+      "text": "- Umbrales: manifiesto 354 SHA, silver 188, 14 colecciones, 0 duplicados en"
+    },
+    {
+      "file": "openspec/changes/gate-extremo-a-extremo-offline/spec.md",
+      "line": 67,
+      "pattern": "14_collections",
+      "text": "14 colecciones esperadas, 0 duplicados en reintentos (idempotencia) y"
+    },
+    {
+      "file": "openspec/changes/gate-extremo-a-extremo-offline/spec.md",
+      "line": 72,
+      "pattern": "14_collections",
+      "text": "- GIVEN manifiestos locales y lista de 14 colecciones"
+    },
+    {
+      "file": "openspec/changes/gate-extremo-a-extremo-offline/specs/gate-extremo-a-extremo/spec.md",
+      "line": 42,
+      "pattern": "14_collections",
+      "text": "14 colecciones esperadas, 0 duplicados en reintentos y lag 0."
+    },
+    {
+      "file": "openspec/changes/gate-extremo-a-extremo-offline/tasks.md",
+      "line": 35,
+      "pattern": "14_collections",
+      "text": "- [x] 1.2 Añadir chequeo umbrales: 354 SHA raw, 188 silver, 14 colecciones, 0 duplicados, lag 0"
+    },
+    {
+      "file": "openspec/project.md",
+      "line": 6,
+      "pattern": "136_tests",
+      "text": "**Estado:** Raw inmutable congelado (manifest 354 = 356 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 185), 136 tests colectados (136 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro"
+    },
+    {
+      "file": "openspec/project.md",
+      "line": 6,
+      "pattern": "185",
+      "text": "**Estado:** Raw inmutable congelado (manifest 354 = 356 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 185), 136 tests colectados (136 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro"
+    },
+    {
+      "file": "openspec/project.md",
+      "line": 68,
+      "pattern": "759",
+      "text": "| Fotocasa | Scraping | No | 759 anuncios unificados, 83 municipios |"
+    },
+    {
+      "file": "openspec/project.md",
+      "line": 79,
+      "pattern": "185",
+      "text": "| 4. Limpieza y transformación | ✅ silver regenerado (188 archivos, manifest 185), transforms v2 |"
+    },
+    {
+      "file": "openspec/specs/contrato-reto/spec.md",
+      "line": 246,
+      "pattern": "173",
+      "text": "- Sección 12, cursores (docx líneas 172-173): find() no devuelve lista,"
+    },
+    {
+      "file": "openspec/specs/contrato-reto/spec.md",
+      "line": 284,
+      "pattern": "173",
+      "text": "| PYMONGO-PRO-01 | docx líneas 159-177, 172-173 cursores | Tema 8 sección 12 |"
+    },
+    {
+      "file": "openspec/specs/extraccion-datos/spec.md",
+      "line": 246,
+      "pattern": "759",
+      "text": "El sistema SHALL actualizar `scripts/verificar_fase_datos.py`: el check 06 SHALL esperar `594/843` (`n_anuncios`/`n_anuncios_raw`) en `dim_municipios.csv`, no `759/843`. El check 07 SHALL listar como FAIL conocido los ceros de paro con valor no nulo —Aramaio 0.28, Gaintza 1.45, Usansolo 3.26 (`paro_"
+    },
+    {
+      "file": "openspec/specs/extraccion-datos/spec.md",
+      "line": 257,
+      "pattern": "759",
+      "text": "- AND `grep -c \"759/843\" scripts/verificar_fase_datos.py` → `0`"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 58,
+      "pattern": "136_tests",
+      "text": "- AND `pytest tests` sigue en 136 passed"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 255,
+      "pattern": "759",
+      "text": "anuncio-por-municipio y SHALL mantener los 759 anuncios tras limpio."
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 263,
+      "pattern": "759",
+      "text": "- AND el recuento sigue en 759"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 394,
+      "pattern": "759",
+      "text": "los 424 Point GeoJSON de 759 anuncios desde silver, y SHALL verificarlo con"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 399,
+      "pattern": "759",
+      "text": "- GIVEN `vivienda_euskadi` con 759 anuncios y 252 municipios"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 407,
+      "pattern": "136_tests",
+      "text": "pasar con 136 tests."
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 414,
+      "pattern": "136_tests",
+      "text": "- AND `pytest tests -q` reporta 136 passed"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 416,
+      "pattern": "759",
+      "text": "#### Scenario: Recarga pisos re-resueltos (759→594)"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 418,
+      "pattern": "759",
+      "text": "- GIVEN `anuncios` pre-change con 759 documentos"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 420,
+      "pattern": "759",
+      "text": "- THEN `anuncios=594` y `anuncios__backup=594` post-recarga (759 era el pre-change; 594 es el post re-resolución+cuarentena)"
+    },
+    {
+      "file": "openspec/specs/mongodb-y-analisis/spec.md",
+      "line": 422,
+      "pattern": "759",
+      "text": "- AND `indicadores.n_anuncios` suma 594 (Bilbao 204), no 759: se regenera la cadena `generar_analisis_variables_base → calcular_renta_joven → calcular_tension_social → construir_dim_gold` antes de recargar"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 207,
+      "pattern": "173",
+      "text": "2026-11-07; el baseline pre-change era 173/113/40/39)— con paro Lanbide no nulo o silver"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 230,
+      "pattern": "759",
+      "text": "El sistema SHALL corregir la cifra stale 759 a 594 (post re-resolución + cuarentena) en los cuatro documentos: `docs/datos_finales_conclusiones_2026-11-05.md`, `docs/informe_final.md`, `data/resultados/README.md` y `docs/presentacion/index.html`. La recarga real es 594 anuncios con 188 municipios en"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 232,
+      "pattern": "759",
+      "text": "#### Scenario: Los cuatro documentos dicen 594, no 759"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 236,
+      "pattern": "759",
+      "text": "- THEN cada uno contiene 594/188/204 y no contiene 759 como total vigente (`grep -c \"759\" docs/informe_final.md` → salida: `0`, salvo nota histórica «759 era el pre-change»)"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 367,
+      "pattern": "759",
+      "text": "### Requirement: DOCS-01 — 759→594 y frase ortogonal"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 369,
+      "pattern": "759",
+      "text": "El sistema SHALL corregir 759→594 en el docstring de `decor_trama` (`docs/presentacion/build_presentacion.py:218`) y en `docs/presentacion/README.md:62` (trama). SHALL constar la frase ortogonal: Nivel es tipología (`4/54/194`) y Tier es confianza por `n_anuncios` (`4/3/57/188`); son ejes ortogonale"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 375,
+      "pattern": "759",
+      "text": "- THEN `grep -c \"594\"` ≥ 1 en cada uno y 759 no figura como cifra vigente"
+    },
+    {
+      "file": "openspec/specs/presentacion-de-resultados/spec.md",
+      "line": 423,
+      "pattern": "185",
+      "text": "| Q6 | ¿Cómo cambian los resultados si se filtra por un perfil concreto de persona joven? (docx línea 185) | `CONCLUSION-01` + `AUTOMATIZACION-ANALISIS-01` | SHALL (ya cumple) |"
+    },
+    {
+      "file": "README.md",
+      "line": 138,
+      "pattern": "185",
+      "text": "| Archivos silver | 188 (manifest 188: excluidos `.gitkeep`/`ingestion_manifest.json`/manifest; antes 185 como historia) |"
+    },
+    {
+      "file": "README.md",
+      "line": 139,
+      "pattern": "759",
+      "text": "| Anuncios unificados | 594 vigentes post re-resolucion pisos (843 raw → 594 tras dedup + cuarentena 45; 759 es la cifra histórica pre-v5, no vigente) (326 larga estancia + 268 temporal) en 64 municipios |"
+    },
+    {
+      "file": "README.md",
+      "line": 272,
+      "pattern": "759",
+      "text": "- **Kafka:** listo en el broker del clúster centro `10.22.87.215:9092`, topic vigente `vivienda_euskadi` con 1 partición (RF 1, justificado: single node sin alta disponibilidad, upsert idempotente; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06, datos Kafka borrados, colección `vivienda_e"
+    },
+    {
+      "file": "README.md",
+      "line": 287,
+      "pattern": "ixscan_1",
+      "text": "- **Índices ESR + explain:** la consulta `ubicacion.codigo_ine` + `modalidad` + `precio_eur` pasa de COLLSCAN (594 examinados) a IXSCAN (1 examinado) con el índice compuesto ESR `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` en `analysis/mongo_indexes.py`; `explain_before_after()` lo demuestr"
+    }
+  ],
+  "missing_links": []
+}

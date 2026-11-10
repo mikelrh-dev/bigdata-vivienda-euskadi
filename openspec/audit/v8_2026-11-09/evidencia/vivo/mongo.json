@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "collections_count": 30,
+  "collections": [
+    "alquiler_municipal",
+    "alquiler_municipal__backup",
+    "anuncios",
+    "anuncios__backup",
+    "anuncios_habitaciones_unificados",
+    "anuncios_habitaciones_unificados_bigdata",
+    "certificados_energeticos",
+    "certificados_energeticos__backup",
+    "ecvi_compraventa",
+    "ecvi_compraventa__backup",
+    "emancipacion_juventud",
+    "emancipacion_juventud__backup",
+    "etxebide_promociones",
+    "etxebide_promociones__backup",
+    "etxebide_solicitudes",
+    "etxebide_solicitudes__backup",
+    "indicadores",
+    "indicadores__backup",
+    "municipios",
+    "municipios__backup",
+    "osrm_tiempos",
+    "osrm_tiempos__backup",
+    "udalmap_empleo",
+    "udalmap_empleo__backup",
+    "udalmap_extendido",
+    "udalmap_extendido__backup",
+    "udalmap_indicadores",
+    "udalmap_indicadores__backup",
+    "vpo_municipal",
+    "vpo_municipal__backup"
+  ],
+  "counts": {
+    "alquiler_municipal": 252,
+    "anuncios": 594,
+    "anuncios_habitaciones_unificados": 201,
+    "anuncios_habitaciones_unificados_bigdata": 201,
+    "certificados_energeticos": 252,
+    "ecvi_compraventa": 29,
+    "emancipacion_juventud": 1,
+    "etxebide_promociones": 406,
+    "etxebide_solicitudes": 5040,
+    "indicadores": 252,
+    "municipios": 252,
+    "osrm_tiempos": 252,
+    "udalmap_empleo": 252,
+    "udalmap_extendido": 252,
+    "udalmap_indicadores": 252,
+    "vpo_municipal": 252
+  },
+  "vpo": {
+    "count": 252,
+    "con_dato": 251,
+    "sin_dato": 1
+  },
+  "anuncios": {
+    "count": 594
+  },
+  "indexes_anuncios": [
+    "_id_",
+    "idx_anuncios_ine_modalidad_precio",
+    "idx_anuncios_geo",
+    "idx_anuncios_portal_id",
+    "idx_anuncios_equipamiento"
+  ],
+  "explain": {
+    "filter": {
+      "ubicacion.codigo_ine": "48020",
+      "modalidad": "larga_estancia",
+      "precio_eur": {
+        "$gt": 0
+      }
+    },
+    "winningStage": "FETCH",
+    "totalDocsExamined": 68,
+    "nReturned": 68
+  },
+  "vpo_sample": [
+    {
+      "_id": "01001",
+      "municipio": "Alegría-Dulantzi",
+      "vpo_terminadas_por_mil": 0.0
+    },
+    {
+      "_id": "01002",
+      "municipio": "Amurrio",
+      "vpo_terminadas_por_mil": 0.0
+    }
+  ]
+}

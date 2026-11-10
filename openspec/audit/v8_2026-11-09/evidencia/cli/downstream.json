@@ -1,0 +1,17 @@
+{
+  "return": 0,
+  "rows": 252,
+  "bytes": 51904,
+  "sha": "cfff40fefd0fbf87565136b0c44471c6f9ddfb9465905adc1594b1ea2484ce87",
+  "same_as_prod": true,
+  "prod_before": {
+    "size": 51904,
+    "sha": "cfff40fefd0fbf87565136b0c44471c6f9ddfb9465905adc1594b1ea2484ce87",
+    "mtime_ns": 1794069114051231700
+  },
+  "prod_after": {
+    "size": 51904,
+    "sha": "cfff40fefd0fbf87565136b0c44471c6f9ddfb9465905adc1594b1ea2484ce87",
+    "mtime_ns": 1794069114051231700
+  }
+}

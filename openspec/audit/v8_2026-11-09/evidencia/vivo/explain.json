@@ -1,0 +1,170 @@
+{
+  "explainVersion": "1",
+  "queryPlanner": {
+    "namespace": "vivienda_euskadi.anuncios",
+    "parsedQuery": {
+      "$and": [
+        {
+          "modalidad": {
+            "$eq": "larga_estancia"
+          }
+        },
+        {
+          "ubicacion.codigo_ine": {
+            "$eq": "48020"
+          }
+        },
+        {
+          "precio_eur": {
+            "$gt": 0
+          }
+        }
+      ]
+    },
+    "indexFilterSet": false,
+    "queryHash": "B37F05B0",
+    "planCacheShapeHash": "B37F05B0",
+    "planCacheKey": "B0026EFF",
+    "optimizationTimeMillis": 0,
+    "optimizationTimeMicros": 559,
+    "maxIndexedOrSolutionsReached": false,
+    "maxIndexedAndSolutionsReached": false,
+    "maxScansToExplodeReached": false,
+    "prunedSimilarIndexes": false,
+    "winningPlan": {
+      "isCached": false,
+      "stage": "FETCH",
+      "nss": "vivienda_euskadi.anuncios",
+      "inputStage": {
+        "stage": "IXSCAN",
+        "nss": "vivienda_euskadi.anuncios",
+        "keyPattern": {
+          "ubicacion.codigo_ine": 1,
+          "modalidad": 1,
+          "precio_eur": 1
+        },
+        "indexName": "idx_anuncios_ine_modalidad_precio",
+        "isMultiKey": false,
+        "multiKeyPaths": {
+          "ubicacion.codigo_ine": [],
+          "modalidad": [],
+          "precio_eur": []
+        },
+        "isUnique": false,
+        "isSparse": false,
+        "isPartial": false,
+        "indexVersion": 2,
+        "direction": "forward",
+        "indexBounds": {
+          "ubicacion.codigo_ine": [
+            "[\"48020\", \"48020\"]"
+          ],
+          "modalidad": [
+            "[\"larga_estancia\", \"larga_estancia\"]"
+          ],
+          "precio_eur": [
+            "(0, inf]"
+          ]
+        }
+      }
+    },
+    "rejectedPlans": []
+  },
+  "executionStats": {
+    "executionSuccess": true,
+    "nReturned": 68,
+    "executionTimeMillis": 0,
+    "executionTimeMicros": 998,
+    "totalKeysExamined": 68,
+    "totalDocsExamined": 68,
+    "executionStages": {
+      "isCached": false,
+      "stage": "FETCH",
+      "nReturned": 68,
+      "executionTimeMillisEstimate": 0,
+      "works": 69,
+      "advanced": 68,
+      "needTime": 0,
+      "needYield": 0,
+      "saveState": 0,
+      "restoreState": 0,
+      "isEOF": 1,
+      "nss": "vivienda_euskadi.anuncios",
+      "docsExamined": 68,
+      "alreadyHasObj": 0,
+      "inputStage": {
+        "stage": "IXSCAN",
+        "nReturned": 68,
+        "executionTimeMillisEstimate": 0,
+        "works": 69,
+        "advanced": 68,
+        "needTime": 0,
+        "needYield": 0,
+        "saveState": 0,
+        "restoreState": 0,
+        "isEOF": 1,
+        "nss": "vivienda_euskadi.anuncios",
+        "keyPattern": {
+          "ubicacion.codigo_ine": 1,
+          "modalidad": 1,
+          "precio_eur": 1
+        },
+        "indexName": "idx_anuncios_ine_modalidad_precio",
+        "isMultiKey": false,
+        "multiKeyPaths": {
+          "ubicacion.codigo_ine": [],
+          "modalidad": [],
+          "precio_eur": []
+        },
+        "isUnique": false,
+        "isSparse": false,
+        "isPartial": false,
+        "indexVersion": 2,
+        "direction": "forward",
+        "indexBounds": {
+          "ubicacion.codigo_ine": [
+            "[\"48020\", \"48020\"]"
+          ],
+          "modalidad": [
+            "[\"larga_estancia\", \"larga_estancia\"]"
+          ],
+          "precio_eur": [
+            "(0, inf]"
+          ]
+        },
+        "keysExamined": 68,
+        "seeks": 1,
+        "dupsTested": 0,
+        "dupsDropped": 0,
+        "peakTrackedMemBytes": 0
+      }
+    },
+    "allPlansExecution": []
+  },
+  "queryShapeHash": "E3B7D378085BB78A08C16238112A77ADF7C27890C59CFBE302F7F67892EA5139",
+  "command": {
+    "find": "anuncios",
+    "filter": {
+      "ubicacion.codigo_ine": "48020",
+      "modalidad": "larga_estancia",
+      "precio_eur": {
+        "$gt": 0
+      }
+    },
+    "$db": "vivienda_euskadi"
+  },
+  "serverInfo": {
+    "host": "CyberGhost",
+    "port": 27017,
+    "version": "9.0.2",
+    "gitVersion": "c4d309807b94ac30edcca32e35e88a9598eadfc8"
+  },
+  "serverParameters": {
+    "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+    "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+    "internalQueryProhibitBlockingMergeOnMongoS": 0,
+    "internalQueryFrameworkControl": "trySbeRestricted",
+    "internalQueryPlannerIgnoreIndexWithCollationForRegex": 1
+  },
+  "ok": 1.0
+}

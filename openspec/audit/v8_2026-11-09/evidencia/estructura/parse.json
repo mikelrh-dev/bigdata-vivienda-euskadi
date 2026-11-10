@@ -1,0 +1,1911 @@
+{
+  "json": [
+    ".atl/.skill-registry.cache.json",
+    "demo-kpi/hyperframes.json",
+    "demo-kpi/meta.json",
+    "demo-kpi/package.json",
+    "demo-mapa/hyperframes.json",
+    "demo-mapa/meta.json",
+    "demo-mapa/package.json",
+    "scratchpad/mapa_norm.json",
+    "data/procesado/alquiler_municipal_enriquecido.json",
+    "data/procesado/alquiler_municipal_normalizado.json",
+    "data/procesado/anuncios_faltantes_fotocasa_batch1_20261029_230030_normalizado.json",
+    "data/procesado/anuncios_faltantes_pisos_batch1_20261029_230030_normalizado.json",
+    "data/procesado/anuncios_fotocasa_detalle_normalizado.json",
+    "data/procesado/anuncios_fotocasa_dirigido_20261029_223523_normalizado.json",
+    "data/procesado/anuncios_fotocasa_dirigido_20261029_normalizado.json",
+    "data/procesado/anuncios_fotocasa_enriquecido.json",
+    "data/procesado/anuncios_fotocasa_enriquecido_geo_normalizado.json",
+    "data/procesado/anuncios_fotocasa_enriquecido_meta_normalizado.json",
+    "data/procesado/anuncios_fotocasa_enriquecido_normalizado.json",
+    "data/procesado/anuncios_fotocasa_filtrado.json",
+    "data/procesado/anuncios_fotocasa_geo_normalizado.json",
+    "data/procesado/anuncios_fotocasa_habitaciones_geo_normalizado.json",
+    "data/procesado/anuncios_fotocasa_habitaciones_meta_normalizado.json",
+    "data/procesado/anuncios_fotocasa_habitaciones_normalizado.json",
+    "data/procesado/anuncios_fotocasa_meta_normalizado.json",
+    "data/procesado/anuncios_fotocasa_normalizado.json",
+    "data/procesado/anuncios_pisos_dirigido.json",
+    "data/procesado/anuncios_pisos_dirigido_20261029_normalizado.json",
+    "data/procesado/anuncios_pisos_enriquecido.json",
+    "data/procesado/anuncios_pisos_enriquecido_geo_normalizado.json",
+    "data/procesado/anuncios_pisos_enriquecido_meta_normalizado.json",
+    "data/procesado/anuncios_pisos_enriquecido_normalizado.json",
+    "data/procesado/anuncios_pisos_filtrado.json",
+    "data/procesado/anuncios_pisos_geo_normalizado.json",
+    "data/procesado/anuncios_pisos_habitaciones_geo_normalizado.json",
+    "data/procesado/anuncios_pisos_habitaciones_meta_normalizado.json",
+    "data/procesado/anuncios_pisos_habitaciones_normalizado.json",
+    "data/procesado/anuncios_pisos_meta_normalizado.json",
+    "data/procesado/anuncios_pisos_normalizado.json",
+    "data/procesado/anuncios_realtyapi_enriquecido.json",
+    "data/procesado/anuncios_realtyapi_normalizado.json",
+    "data/procesado/anuncios_unificados.json",
+    "data/procesado/b5m_catalogo_normalizado.json",
+    "data/procesado/cuarentena_pisos.json",
+    "data/procesado/dedup_report.json",
+    "data/procesado/dim_municipios.json",
+    "data/procesado/dim_municipios_normalizado.json",
+    "data/procesado/distancias_b5m_gipuzkoa_normalizado.json",
+    "data/procesado/distancias_municipios_normalizado.json",
+    "data/procesado/ecvi_compraventa_limpio.json",
+    "data/procesado/educacion_centros_normalizado.json",
+    "data/procesado/emal_fianzas_ampliado_normalizado.json",
+    "data/procesado/emal_fianzas_normalizado.json",
+    "data/procesado/emancipacion_juventud_resumen_normalizado.json",
+    "data/procesado/etxebide_promociones_normalizado.json",
+    "data/procesado/etxebide_solicitudes_normalizado.json",
+    "data/procesado/eustat_demografia_renta_252.json",
+    "data/procesado/eustat_pib_municipal_normalizado.json",
+    "data/procesado/eustat_poblacion_edad_normalizado.json",
+    "data/procesado/eustat_renta_edad_normalizado.json",
+    "data/procesado/eustat_renta_municipal_normalizado.json",
+    "data/procesado/eustat_tenencia_normalizado.json",
+    "data/procesado/f4_pisos_objetivo.json",
+    "data/procesado/ine_69301_normalizado.json",
+    "data/procesado/ine_69302_normalizado.json",
+    "data/procesado/ine_69303_normalizado.json",
+    "data/procesado/ine_69323_normalizado.json",
+    "data/procesado/ine_69330_normalizado.json",
+    "data/procesado/ine_atlas_renta_normalizado.json",
+    "data/procesado/ine_salarios_decil_normalizado.json",
+    "data/procesado/ine_salarios_edad_normalizado.json",
+    "data/procesado/lanbide_paro_historico_joven_normalizado.json",
+    "data/procesado/lanbide_paro_juvenil_normalizado.json",
+    "data/procesado/municipios_gipuzkoa_lista_normalizado.json",
+    "data/procesado/osrm_tiempos_capitales_normalizado.json",
+    "data/procesado/ovj_salario_joven_2024_normalizado.json",
+    "data/procesado/renta_municipal_completa_normalizado.json",
+    "data/procesado/run_manifest.json",
+    "data/procesado/salud_centros_normalizado.json",
+    "data/procesado/serpavi_renta_municipal_normalizado.json",
+    "data/procesado/transporte_paradas_municipio_normalizado.json",
+    "data/procesado/udalmap_empleo_corregido.json",
+    "data/procesado/udalmap_empleo_corregido_normalizado.json",
+    "data/procesado/udalmap_empleo_normalizado.json",
+    "data/procesado/udalmap_extendido_normalizado.json",
+    "data/procesado/udalmap_indicadores_adicionales_normalizado.json",
+    "data/raw/alquiler_municipal.json",
+    "data/raw/anuncios_faltantes_fotocasa_batch1_20261029_230030.json",
+    "data/raw/anuncios_faltantes_pisos_batch1_20261029_230030.json",
+    "data/raw/anuncios_fotocasa.json",
+    "data/raw/anuncios_fotocasa_detalle.json",
+    "data/raw/anuncios_fotocasa_dirigido_20261029.json",
+    "data/raw/anuncios_fotocasa_dirigido_20261029_223523.json",
+    "data/raw/anuncios_fotocasa_enriquecido.json",
+    "data/raw/anuncios_fotocasa_enriquecido_geo.json",
+    "data/raw/anuncios_fotocasa_enriquecido_meta.json",
+    "data/raw/anuncios_fotocasa_geo.json",
+    "data/raw/anuncios_fotocasa_habitaciones.json",
+    "data/raw/anuncios_fotocasa_habitaciones_geo.json",
+    "data/raw/anuncios_fotocasa_habitaciones_meta.json",
+    "data/raw/anuncios_fotocasa_meta.json",
+    "data/raw/anuncios_pisos.json",
+    "data/raw/anuncios_pisos_dirigido_20261029.json",
+    "data/raw/anuncios_pisos_enriquecido.json",
+    "data/raw/anuncios_pisos_enriquecido_geo.json",
+    "data/raw/anuncios_pisos_enriquecido_meta.json",
+    "data/raw/anuncios_pisos_geo.json",
+    "data/raw/anuncios_pisos_habitaciones.json",
+    "data/raw/anuncios_pisos_habitaciones_geo.json",
+    "data/raw/anuncios_pisos_habitaciones_meta.json",
+    "data/raw/anuncios_pisos_meta.json",
+    "data/raw/anuncios_realtyapi.json",
+    "data/raw/b5m_catalogo.json",
+    "data/raw/dim_municipios.json",
+    "data/raw/distancias_b5m_gipuzkoa.json",
+    "data/raw/distancias_municipios.json",
+    "data/raw/educacion_centros.json",
+    "data/raw/emal_fianzas.json",
+    "data/raw/emal_fianzas_ampliado.json",
+    "data/raw/emancipacion_juventud_resumen.json",
+    "data/raw/etxebide_promociones.json",
+    "data/raw/etxebide_solicitudes.json",
+    "data/raw/eustat_pib_municipal.json",
+    "data/raw/eustat_poblacion_edad.json",
+    "data/raw/eustat_renta_edad.json",
+    "data/raw/eustat_renta_municipal.json",
+    "data/raw/eustat_tenencia.json",
+    "data/raw/ine_69301.json",
+    "data/raw/ine_69302.json",
+    "data/raw/ine_69303.json",
+    "data/raw/ine_69323.json",
+    "data/raw/ine_69330.json",
+    "data/raw/ine_atlas_renta.json",
+    "data/raw/ine_salarios_decil.json",
+    "data/raw/ine_salarios_edad.json",
+    "data/raw/lanbide_paro_historico_joven.json",
+    "data/raw/lanbide_paro_juvenil.json",
+    "data/raw/municipios_gipuzkoa_lista.json",
+    "data/raw/osrm_tiempos_capitales.json",
+    "data/raw/ovj_salario_joven_2024.json",
+    "data/raw/renta_municipal_completa.json",
+    "data/raw/salud_centros.json",
+    "data/raw/serpavi_renta_municipal.json",
+    "data/raw/transporte_paradas_municipio.json",
+    "data/raw/udalmap_empleo.json",
+    "data/raw/udalmap_extendido.json",
+    "data/raw/udalmap_indicadores_adicionales.json",
+    "data/procesado/_meta/alquiler_municipal.json.meta.json",
+    "data/procesado/_meta/anuncios_faltantes_fotocasa_batch1_20261029_230030.json.meta.json",
+    "data/procesado/_meta/anuncios_faltantes_pisos_batch1_20261029_230030.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_detalle.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_dirigido_20261029.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_dirigido_20261029_223523.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_enriquecido.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_enriquecido_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_enriquecido_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_habitaciones.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_habitaciones_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_habitaciones_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_fotocasa_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_dirigido_20261029.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_enriquecido.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_enriquecido_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_enriquecido_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_habitaciones.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_habitaciones_geo.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_habitaciones_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_pisos_meta.json.meta.json",
+    "data/procesado/_meta/anuncios_realtyapi.json.meta.json",
+    "data/procesado/_meta/b5m_catalogo.json.meta.json",
+    "data/procesado/_meta/csvs_index.json",
+    "data/procesado/_meta/dim_municipios.json.meta.json",
+    "data/procesado/_meta/distancias_b5m_gipuzkoa.json.meta.json",
+    "data/procesado/_meta/distancias_municipios.json.meta.json",
+    "data/procesado/_meta/educacion_centros.json.meta.json",
+    "data/procesado/_meta/emal_fianzas.json.meta.json",
+    "data/procesado/_meta/emal_fianzas_ampliado.json.meta.json",
+    "data/procesado/_meta/emancipacion_juventud_resumen.json.meta.json",
+    "data/procesado/_meta/etxebide_promociones.json.meta.json",
+    "data/procesado/_meta/etxebide_solicitudes.json.meta.json",
+    "data/procesado/_meta/eustat_pib_municipal.json.meta.json",
+    "data/procesado/_meta/eustat_poblacion_edad.json.meta.json",
+    "data/procesado/_meta/eustat_renta_edad.json.meta.json",
+    "data/procesado/_meta/eustat_renta_municipal.json.meta.json",
+    "data/procesado/_meta/eustat_tenencia.json.meta.json",
+    "data/procesado/_meta/index.json",
+    "data/procesado/_meta/ine_69301.json.meta.json",
+    "data/procesado/_meta/ine_69302.json.meta.json",
+    "data/procesado/_meta/ine_69303.json.meta.json",
+    "data/procesado/_meta/ine_69323.json.meta.json",
+    "data/procesado/_meta/ine_69330.json.meta.json",
+    "data/procesado/_meta/ine_atlas_renta.json.meta.json",
+    "data/procesado/_meta/ine_salarios_decil.json.meta.json",
+    "data/procesado/_meta/ine_salarios_edad.json.meta.json",
+    "data/procesado/_meta/ingestion_manifest.json",
+    "data/procesado/_meta/lanbide_paro_historico_joven.json.meta.json",
+    "data/procesado/_meta/lanbide_paro_juvenil.json.meta.json",
+    "data/procesado/_meta/municipios_gipuzkoa_lista.json.meta.json",
+    "data/procesado/_meta/nombres_normalizados_map.json",
+    "data/procesado/_meta/osrm_tiempos_capitales.json.meta.json",
+    "data/procesado/_meta/ovj_salario_joven_2024.json.meta.json",
+    "data/procesado/_meta/renta_municipal_completa.json.meta.json",
+    "data/procesado/_meta/salud_centros.json.meta.json",
+    "data/procesado/_meta/serpavi_renta_municipal.json.meta.json",
+    "data/procesado/_meta/transporte_paradas_municipio.json.meta.json",
+    "data/procesado/_meta/udalmap_empleo.json.meta.json",
+    "data/procesado/_meta/udalmap_empleo_corregido.json.meta.json",
+    "data/procesado/_meta/udalmap_extendido.json.meta.json",
+    "data/procesado/_meta/udalmap_indicadores_adicionales.json.meta.json",
+    "demo-kpi/.hyperframes/render-outputs.json",
+    "demo-kpi/.hyperframes/video-state.json",
+    "demo-kpi/.hyperframes/artifacts/checks/141c4e62-a435-4eaf-b2a9-55ad271c30a9.json",
+    "demo-kpi/.hyperframes/artifacts/checks/be8939cc-72b7-40c8-9815-12197ee8c8e4.json",
+    "demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/.capture-owner.json",
+    "demo-mapa/.hyperframes/render-outputs.json",
+    "demo-mapa/.hyperframes/video-state.json",
+    "demo-mapa/.hyperframes/artifacts/checks/01faae84-5aee-4300-9ffe-2816c2b83a6d.json",
+    "demo-mapa/.hyperframes/artifacts/checks/0334a28d-7253-4322-81a2-80f019a5e6be.json",
+    "demo-mapa/.hyperframes/artifacts/checks/07294512-beec-4116-9682-75582c161709.json",
+    "demo-mapa/.hyperframes/artifacts/checks/36e06d8b-a2f8-4f09-bd11-f87cd201684b.json",
+    "demo-mapa/.hyperframes/artifacts/checks/c8ddcd9c-837a-4c48-ba82-50c04a548a67.json",
+    "demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/.capture-owner.json",
+    "docs/.obsidian/app.json",
+    "docs/.obsidian/appearance.json",
+    "docs/.obsidian/core-plugins.json",
+    "docs/.obsidian/workspace.json",
+    "docs/archive/scratchpad/bom.json",
+    "graphify-out/cache/stat-index.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/035612002d4cd7e0ff5933a137882ef57400483034fa6054760a8c3bcdc67a33.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/03dc01766b41c23d9c0632f86c4776a856eb5945bde24b7c4ad89bfcb9f6a643.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/09f07f200f24ea2b4cad1c7fcbd6ee57c7cd2444a7bf4dd810bfb49d5ba30536.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/11cb4616207628cd059268a8508ade1150f636fb46dc0963520a398b39ab7098.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/14e71bf9ba35e8297727d0caaee3da934b345ad9cb34f1df6322cfb3cb85473e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/16d6bb71e0456501cef57786914a1b8a27db26b619420d31be9f90f284cccec1.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/172c887725b2fb98cfc9cf43928dec88d8605564a6ace74e5cea6fab8eb7c8be.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/19cf4db150a7335afacac32591d237a1f299b16643bddc85f5a83c85a73614ae.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1a6f0644b51fe5f57d8f337e121656e0bd88928513d037c4964bf6acbd399c6a.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1ca6f44f39d4c2dfd406023f638f637eafcdb18919546ea79d6521e01fd3589f.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fa7c1bf03b5f00195ee0c923158ef39ea14db06ffe514729328d19f52e84409.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fcd7056031eec608ae2b3f91ab7866a2cbc49ed2dd8f97f66b667b8c4621a7e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fe312511cd5614bf2b754e6acaa7fc76a77f1dd3598dd32519182b690c3d77e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/256da1d2468da2817aef6db7547ff64b3d3f5f21edc55e7cfe1233349656e7c5.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2a452cafd3d4fe631f69346451d7b38cda91ace177143195d0d77f42e007172b.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2d07282dd8d0d0c765a5c8088b17f3454f508670b8c847314a83931f645ac526.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2fba1b33c5010352a1f43cc7c0038c9e4c9ed9d8a600abda1793abce10e2e2f2.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2ff203a6174cbbec28ceb2df2a7afd77bf4aa18a4bbf0f2850d164005a9f309a.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/324f2fc1457b427531460a2d999ca4991a4769154aacae8ab0f9a6529f0a350f.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/36bb2c4f12b19e454cee75f3e31e8e9afb9bf4735fbe363a86e11af3008a98b1.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3c529f84173f1b22ddcbb2f419cdf29ff226729d7acb413fa6badd6d860be407.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3c79e16e9118e4fe2ad086f6bba4c8ce34c2e3ed82a68cde5370e65dacaf70cb.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3f232c1c48eb45137d9cc81536b6fdc8e60a2fd66922c9b6579ad9b60724fce9.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/4edc914c181fec9f782ebdfc0e2584784d05245db5a61fabdb344dc6314731c1.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/5334111c84c9009d4c47a0e4f6274a60012c6856d6a32d8b93e965ee2dbbc814.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/5c54f9537aa3612e22f7794fa0858f8070f90bc076493484f26af434d770cb03.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/60018e41c45624572b4958911995b6afdd83909d1767f11225ed326447712d86.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/6196a5afdec7239c0fe874b81a55cbbf512e80f8ed68b84a0271352916fe8eee.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/64c3e315ef9cb894f336e72fc019fcd788b9a8762ea01ccb5c499d0eca80cf18.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/661651d4cb95b38d3cd866ea352ed3d3859aabf9d770d026906da6c0c3f3dfd8.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/6640cbf38df719fa89a10868576dcf72ce4257b05203188f2eb0e89f5eccabf1.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/69c5190b792a9193d905ee078c333f8080b9d3e961277840dfd0e40d1cde3d57.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/7ea318e8ae9132a5ca710eea285926166b93ed94c85f69483a212a863a93aac9.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/7ec3efc1373bfea52db93fa7b454d4689d94692299107e82d808d1b7c9616c2f.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/88c458d3678645ed69d638441ee3eea7ab67fda6599d5c0ca2caa12302bddb12.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/8997f0df603fbaaff7999c2b2df2515af277a96452f614d8494fee728f505ef3.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/8db96d5614874d102878a9e3db5b1d0727679144d47d5eef584eac86878d5516.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/956ece1a58f898a5cce4de850cedbd2383a945687251cb283a5e16f2122a9e89.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/95f5a7a45616c014b8093b4cf332bb19c103a100c157210e9cf4463bfd8a050f.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/9bfb29540542ec28bd28e1706208dbc2a04c770843169c010e207e03396b796f.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/9cbaf53b449ff50c121cbc2e9f788b5349f24420cd072f4d73f907dcf446a183.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a159bf711307506c3241b6b6e5bab28f051bfa795ab82fd7116f666a029e2bd4.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a32135ba72e8bcd8f0cb1f707cc73baf4927be7a19c048643043a22d57716b63.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a532cd7cf37af67dff6045ddc0a78288b9eb6858330faa8839e52f306d0f47b1.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a7f1309e6fed85a1c8d65940dce55f2de2572655eb380db234dcd26647853a39.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a8142f5d7f49adc32953070174141a9b82a458aeb7924d29770ff3a3abd7f11b.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a98ab458f0a47e716aa98e29f461906139f704efd0d47f384c78edf62588f2e0.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/abd9bfb72d39d18613cfaa31103976d752ea56ecbdff622ccba56acb1ebb3e76.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/bc598ae35fa6966641d8a17dc0b192c3e162306c762743dca838ac2b52fedd31.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/bd10718479815ffd8c9c2194e13c28287a32d570657fab0771e8bb9fecb71b7a.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/cf20c49c993804dee14a2986ebf1457a406370019933889385a527473311e53d.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d18003ac3221ca196ec7424d1b9b19fffe457bdcd8e15efed0cf0bbed3231110.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d2144fd5ad43ec5ae31bc01f69f6e86af4ff0f5537a10a8edd99a84800e26b53.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d3a6af4c0bd1b445e04b70fd2938d782185a7685e4b1658bd5cafc8accc27411.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d810e212f2a055a4af9991f65a2dc84bbea96360a32844023732aa5c3db3b728.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/dd19e0ae315ff54638afa66f58159578efb7f3f7a98b5e210d6d1615e71319df.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/ddda7eb9d5c19608b9f38bc495116330c782c2204f1d4afebe5a3e1eefb5ff04.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/de612ce62387d3197fc88eefa08e4b56e1515582f7ffab558743453a55b6f31e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/ebcd6c0f7c3ecad6bdd781a24526010183bc87cd7757b1f9fc9d5a4f43bffd0e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f2b1c8f0b1d6885d165ffe446197c9c68458442437fb55cbc6634e24a3cdc184.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f54042a22521aeaae60ef1efa63e09cce9b343e5a9f2121895a99067561e007e.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f741f1929863c473eaa50613e8ee0d2c22766e1d7e6185876d5b1f4e54cf067d.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f9de31ea5d1c982cd30e316451030ed463e71bac3aee584e22af023f4a8792dc.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/fac432e9787894987cbe8130d6dd55119cf9031ae5bcabfc24c0295610c92637.json",
+    "graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/fef446f8362902eafa619d5e2c1f69277252fac1cb40dc31a3b6025d9f693fad.json",
+    "graphify-out/cache/semantic/p58e6ae4bea3f/8ad1b662ea8fede0280816803716dd02e8895b6b3b961bee33f579b66cd9e4d9.json",
+    "openspec/audit/estres/resultados_sondas_2026-10-31.json",
+    "openspec/audit/evidencia/2026-11-08/datos_audit.json",
+    "openspec/audit/evidencia/2026-11-08/mongo_audit.json",
+    "openspec/audit/evidencia/2026-11-08/resumen_estatico.json",
+    "openspec/audit/v7_2026-11-09/evidencia/hdfs_live.json",
+    "openspec/audit/v7_2026-11-09/evidencia/hdfs_summary.json",
+    "openspec/audit/v7_2026-11-09/evidencia/infra_probe.json",
+    "openspec/audit/v7_2026-11-09/evidencia/kafka_live.json",
+    "openspec/audit/v7_2026-11-09/evidencia/kafka_offsets.json",
+    "openspec/audit/v7_2026-11-09/evidencia/mongo_snapshot.json",
+    "openspec/audit/v7_2026-11-09/evidencia/pipelines_live.json",
+    "openspec/audit/v7_2026-11-09/evidencia/queries_live.json",
+    "openspec/audit/v7_2026-11-09/evidencia/rubrica_extract.json",
+    "openspec/audit/v8_2026-11-09/evidencia/cli/downstream.json",
+    "openspec/audit/v8_2026-11-09/evidencia/cli/sondas.json",
+    "openspec/audit/v8_2026-11-09/evidencia/datos/datos.json",
+    "openspec/audit/v8_2026-11-09/evidencia/docs/scan.json",
+    "openspec/audit/v8_2026-11-09/evidencia/estatica/hallazgos_estaticos.json",
+    "openspec/audit/v8_2026-11-09/evidencia/vivo/explain.json",
+    "openspec/audit/v8_2026-11-09/evidencia/vivo/hdfs.json",
+    "openspec/audit/v8_2026-11-09/evidencia/vivo/kafka.json",
+    "openspec/audit/v8_2026-11-09/evidencia/vivo/kafka_retry.json",
+    "openspec/audit/v8_2026-11-09/evidencia/vivo/mongo.json",
+    "scratchpad/backup_t3prev/anuncios_unificados.json",
+    "scratchpad/backup_t3prev/dim_municipios.json",
+    "vaultVivienda/.obsidian/app.json",
+    "vaultVivienda/.obsidian/appearance.json",
+    "vaultVivienda/.obsidian/core-plugins.json",
+    "vaultVivienda/.obsidian/workspace.json"
+  ],
+  "yaml": [
+    "config/fuentes.yaml",
+    "config/parametros_estudio.yaml",
+    "openspec/config.yaml",
+    ".github/workflows/quality-gate.yml"
+  ],
+  "csv": [
+    {
+      "file": "archive/data_regen/procesado/alquiler_municipal_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 17
+    },
+    {
+      "file": "archive/data_regen/procesado/alquiler_seccion_resumen.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/procesado/alquiler_municipal_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 20
+    },
+    {
+      "file": "data/procesado/alquiler_municipal_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 18
+    },
+    {
+      "file": "data/procesado/alquiler_seccion.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/procesado/alquiler_seccion_resumen.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/procesado/analisis_variables_base.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 51
+    },
+    {
+      "file": "data/procesado/anuncios_fotocasa_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 26
+    },
+    {
+      "file": "data/procesado/anuncios_fotocasa_filtrado.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 46
+    },
+    {
+      "file": "data/procesado/anuncios_habitaciones_unificados.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/procesado/anuncios_pisos_dirigido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 15
+    },
+    {
+      "file": "data/procesado/anuncios_pisos_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/procesado/anuncios_pisos_filtrado.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 28
+    },
+    {
+      "file": "data/procesado/anuncios_realtyapi_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 17
+    },
+    {
+      "file": "data/procesado/anuncios_unificados.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 21
+    },
+    {
+      "file": "data/procesado/anuncios_vivienda_residencial.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 14
+    },
+    {
+      "file": "data/procesado/anuncios_vivienda_residencial_filtrado.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/procesado/anuncios_vivienda_temporal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 14
+    },
+    {
+      "file": "data/procesado/cert_energetico_moda_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 2
+    },
+    {
+      "file": "data/procesado/cert_energetico_municipal_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/procesado/cobertura_anuncios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/procesado/comparativa_compra_alquiler_af.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/procesado/cuarentena_pisos.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 10
+    },
+    {
+      "file": "data/procesado/dim_municipios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/procesado/dim_municipios_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 94
+    },
+    {
+      "file": "data/procesado/dim_municipios_renta.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 83
+    },
+    {
+      "file": "data/procesado/dim_municipios_tension.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/procesado/distancias_capitales_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/procesado/distancias_haversine_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/procesado/ecvi_compraventa_limpio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/procesado/emancipacion_tier3_93.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 15
+    },
+    {
+      "file": "data/procesado/eustat_demografia_renta_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 10
+    },
+    {
+      "file": "data/procesado/f4_pisos_informe.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/procesado/fotocasa_dirigido_informe.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/procesado/informe_entity_resolution.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/procesado/municipios_faltantes_93.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/procesado/municipio_area_funcional_ecvi.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/procesado/poblacion_joven_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/procesado/pob_rank.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/procesado/renta_municipal_referencia.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/procesado/serpavi_renta_imputado.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/procesado/transporte_paradas_municipio_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/procesado/udalmap_empleo_corregido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 30
+    },
+    {
+      "file": "data/procesado/vpo_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/alquiler_distrito_seccion_original.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/raw/alquiler_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 15
+    },
+    {
+      "file": "data/raw/alquiler_municipio_original.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/raw/alquiler_seccion.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/alquiler_seccion_a_original.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/raw/alquiler_seccion_b_original.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/raw/alquiler_territorial_original.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 1
+    },
+    {
+      "file": "data/raw/anuncios_fotocasa.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 26
+    },
+    {
+      "file": "data/raw/anuncios_fotocasa_habitaciones.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/anuncios_fotocasa_larga.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 26
+    },
+    {
+      "file": "data/raw/anuncios_fotocasa_temporal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 26
+    },
+    {
+      "file": "data/raw/anuncios_pisos.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/anuncios_pisos_busqueda.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 21
+    },
+    {
+      "file": "data/raw/anuncios_pisos_habitaciones.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 16
+    },
+    {
+      "file": "data/raw/anuncios_realtyapi.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 17
+    },
+    {
+      "file": "data/raw/areas_funcionales_municipios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 4
+    },
+    {
+      "file": "data/raw/certificados_energeticos_araba.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 153
+    },
+    {
+      "file": "data/raw/certificados_energeticos_araba_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/certificados_energeticos_bilbao_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/certificados_energeticos_bizkaia.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 153
+    },
+    {
+      "file": "data/raw/certificados_energeticos_bizkaia_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/certificados_energeticos_donostia_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/certificados_energeticos_gipuzkoa.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 153
+    },
+    {
+      "file": "data/raw/certificados_energeticos_gipuzkoa_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/certificados_energeticos_vitoria_completo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 172
+    },
+    {
+      "file": "data/raw/dim_municipios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/distancias_capitales.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/distancias_capitales_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/distancias_haversine_252.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_ndice.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t1_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 13
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t1_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 13
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t1_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 13
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 10
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 63
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t3_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t3_2_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t3_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t3_3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t4_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 93
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t4_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t4_2_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t4_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t4_3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t5_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 37
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t5_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t5_2_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t5_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_cifras_interanuales_es_2025t4_t5_3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_composici_n_de_zonas_y_distrito.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_ndice.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t1_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t1_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t1_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t1_4.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 42
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t2_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t2_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t2_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t3_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t3_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t4_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 24
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t4_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t4_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t5_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 30
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t5_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 29
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t5_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 29
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t6_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 24
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t6_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t6_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 23
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t7_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_es_2026t2_t7_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_ndice.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t1_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t1_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t1_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t2_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t2_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t2_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t3_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t3_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t3_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t4_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t4_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t4_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t5_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t5_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t5_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 19
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t6_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t6_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t6_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t7_1.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 44
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t7_2.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 47
+    },
+    {
+      "file": "data/raw/ecvi_ecvi_otros_inmuebles_2025t4_t7_3.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 45
+    },
+    {
+      "file": "data/raw/educacion_centros.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 20
+    },
+    {
+      "file": "data/raw/emal_fianzas.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/emal_fianzas_ampliado.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 13
+    },
+    {
+      "file": "data/raw/emancipacion_juventud.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/etxebide_indicador_86.csv",
+      "encoding": "latin-1",
+      "delimiter": ";",
+      "columns": 22
+    },
+    {
+      "file": "data/raw/etxebide_promociones.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ";",
+      "columns": 22
+    },
+    {
+      "file": "data/raw/etxebide_solicitudes.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 4
+    },
+    {
+      "file": "data/raw/eustat_pib_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/eustat_poblacion_edad.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/eustat_renta_edad.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/eustat_renta_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/eustat_tenencia.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_69301.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_69302.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_69303.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_69323.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_69330.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/ine_atlas_renta.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/raw/ine_salarios_decil.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/raw/ine_salarios_edad.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/raw/lanbide_paro_historico_joven.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 18
+    },
+    {
+      "file": "data/raw/lanbide_paro_juvenil.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/raw/osrm_tiempos_capitales.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 4
+    },
+    {
+      "file": "data/raw/renta_municipal_completa.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/renta_municipal_referencia.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/raw/salud_centros.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/raw/serpavi_renta_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/raw/transporte_paradas_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/udalmap_empleo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 24
+    },
+    {
+      "file": "data/raw/udalmap_extendido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 14
+    },
+    {
+      "file": "data/raw/udalmap_indicadores_adicionales.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 34
+    },
+    {
+      "file": "data/raw/udalmap_vpo_terminadas.csv",
+      "encoding": "latin-1",
+      "delimiter": ";",
+      "columns": 23
+    },
+    {
+      "file": "data/resultados/auditoria_lagunas_silver.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 16
+    },
+    {
+      "file": "data/resultados/bootstrap_robustos.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/resultados/capa_contexto.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/resultados/capa_idw.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/resultados/capa_oficial.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/resultados/comparativa_3_municipios_mongo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 12
+    },
+    {
+      "file": "data/resultados/mongo_accesibilidad_extendida.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 13
+    },
+    {
+      "file": "data/resultados/mongo_alquiler_por_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/resultados/mongo_esfuerzo_por_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 32
+    },
+    {
+      "file": "data/resultados/mongo_habitaciones_por_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/resultados/mongo_modalidades.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 3
+    },
+    {
+      "file": "data/resultados/mongo_tier_confianza.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 20
+    },
+    {
+      "file": "data/resultados/mongo_vpo_por_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "data/resultados/mongo_vpo_terminadas_por_municipio.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/resultados/ranking_esfuerzo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "data/resultados/sensibilidad_idw.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "data/resultados/udalmap_paro.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "data/raw/legacy_obsoleto_no_usar/distancias_capitales.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 11
+    },
+    {
+      "file": "data/raw/legacy_obsoleto_no_usar/eustat_renta_municipal.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "data/raw/legacy_obsoleto_no_usar/udalmap_empleo.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 24
+    },
+    {
+      "file": "openspec/audit/hallazgos_2026-11-07.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "openspec/audit/hallazgos_v6_2026-11-08.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "openspec/audit/matriz_requisitos_2026-11-07.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 9
+    },
+    {
+      "file": "openspec/audit/v7_2026-11-09/hallazgos_v7.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "openspec/audit/v7_2026-11-09/inventario_funciones.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 16
+    },
+    {
+      "file": "openspec/audit/evidencia/2026-11-08/inventario_archivos.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 8
+    },
+    {
+      "file": "openspec/audit/evidencia/2026-11-08/matriz_requisitos_2026-11-08.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 7
+    },
+    {
+      "file": "openspec/audit/v8_2026-11-09/evidencia/baseline/inventario_archivos.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    },
+    {
+      "file": "openspec/audit/v8_2026-11-09/evidencia/estatica/inventario_funciones.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "scratchpad/backup_t3prev/anuncios_unificados_prev.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 15
+    },
+    {
+      "file": "scratchpad/backup_t3prev/cobertura_anuncios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 5
+    },
+    {
+      "file": "scratchpad/backup_t3prev/dim_municipios_prev.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 10
+    },
+    {
+      "file": "scratchpad/p1-1_backup_2026-11-07/analisis_variables_base.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 51
+    },
+    {
+      "file": "scratchpad/p1-1_backup_2026-11-07/dim_municipios.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 10
+    },
+    {
+      "file": "scratchpad/p1-1_backup_2026-11-07/dim_municipios_enriquecido.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 92
+    },
+    {
+      "file": "scratchpad/p1-1_backup_2026-11-07/dim_municipios_renta.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 83
+    },
+    {
+      "file": "scratchpad/p1-1_backup_2026-11-07/dim_municipios_tension.csv",
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "columns": 6
+    }
+  ],
+  "zip": [
+    {
+      "file": "data/raw/distancias_municipios.zip",
+      "entries": 2
+    },
+    {
+      "file": "data/raw/gtfs/bizkaibus.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/dbus.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/euskotren.zip",
+      "entries": 16
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_alavabus.zip",
+      "entries": 13
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_arrasate.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_bermibusa.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_bilbobus.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_bizkaibus.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_dbus.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_ekialdebus.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_erandio_busa.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_errenteriako_urbanoa.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_etxebarribus.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_euskotren.zip",
+      "entries": 16
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_euskotren_bus.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_funicular_artxanda.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_goierrialdea.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_guipuzkoana.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_hernaniko_hiribusa.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_irunbus.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_kbus.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_la_union.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_lejoan_busa.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_metro_bilbao.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_muittu_manttangorri_lasarte.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_onati.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_pesa.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_pte_colgante.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_renfe_cercanias.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_renfe_media.zip",
+      "entries": 7
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_sopelbus.zip",
+      "entries": 11
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_tbh.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_tolosa.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_tolosaldea.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_tuvisa.zip",
+      "entries": 12
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_udalbus_eibar.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_xorrola_oiartzun.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/gtfs_zarauzko_hiribusa.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_ekialdebus.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_euskotren_bus.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_goierrialdea.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_guipuzkoana.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_pesa.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_tbh.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/lurraldebus_tolosaldea.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/metro_bilbao.zip",
+      "entries": 10
+    },
+    {
+      "file": "data/raw/gtfs/renfe_cercanias.zip",
+      "entries": 8
+    },
+    {
+      "file": "data/raw/gtfs/tuvisa.zip",
+      "entries": 12
+    }
+  ],
+  "html": [
+    "archive/b1.html",
+    "demo-kpi/index.html",
+    "demo-mapa/index.html",
+    "data/resultados/dashboard.html",
+    "data/resultados/dashboard_completo.html",
+    "data/resultados/mapa_esquema_silver.html",
+    "data/raw/html_fotocasa/Abaltzisketa_pagina_1.html",
+    "data/raw/html_fotocasa/Ajangiz_pagina_1.html",
+    "data/raw/html_fotocasa/Albiztur_pagina_1.html",
+    "data/raw/html_fotocasa/Alkiza_pagina_1.html",
+    "data/raw/html_fotocasa/Altzaga_pagina_1.html",
+    "data/raw/html_fotocasa/Altzo_pagina_1.html",
+    "data/raw/html_fotocasa/Amoroto_pagina_1.html",
+    "data/raw/html_fotocasa/araba_alava_pagina_1.html",
+    "data/raw/html_fotocasa/Arakaldo_pagina_1.html",
+    "data/raw/html_fotocasa/Arama_pagina_1.html",
+    "data/raw/html_fotocasa/Arantzazu_pagina_1.html",
+    "data/raw/html_fotocasa/Armiñón_pagina_1.html",
+    "data/raw/html_fotocasa/Arraia-Maeztu_pagina_1.html",
+    "data/raw/html_fotocasa/Arrankudiaga-Zollo_pagina_1.html",
+    "data/raw/html_fotocasa/Arratzua-Ubarrundia_pagina_1.html",
+    "data/raw/html_fotocasa/Arratzu_pagina_1.html",
+    "data/raw/html_fotocasa/Arrieta_pagina_1.html",
+    "data/raw/html_fotocasa/Artea_pagina_1.html",
+    "data/raw/html_fotocasa/Artzentales_pagina_1.html",
+    "data/raw/html_fotocasa/Aulesti_pagina_1.html",
+    "data/raw/html_fotocasa/Añana_pagina_1.html",
+    "data/raw/html_fotocasa/Baliarrain_pagina_1.html",
+    "data/raw/html_fotocasa/Barrundia_pagina_1.html",
+    "data/raw/html_fotocasa/Beizama_pagina_1.html",
+    "data/raw/html_fotocasa/Belauntza_pagina_1.html",
+    "data/raw/html_fotocasa/Berantevilla_pagina_1.html",
+    "data/raw/html_fotocasa/Bernedo_pagina_1.html",
+    "data/raw/html_fotocasa/Bidania-Goiatz_pagina_1.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_1.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_10.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_11.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_12.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_2.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_3.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_4.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_5.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_6.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_7.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_8.html",
+    "data/raw/html_fotocasa/bizkaia_pagina_9.html",
+    "data/raw/html_fotocasa/Elantxobe_pagina_1.html",
+    "data/raw/html_fotocasa/Elciego_pagina_1.html",
+    "data/raw/html_fotocasa/Elduain_pagina_1.html",
+    "data/raw/html_fotocasa/Ereño_pagina_1.html",
+    "data/raw/html_fotocasa/Errezil_pagina_1.html",
+    "data/raw/html_fotocasa/Errigoiti_pagina_1.html",
+    "data/raw/html_fotocasa/Ezkio-Itsaso_pagina_1.html",
+    "data/raw/html_fotocasa/Fruiz_pagina_1.html",
+    "data/raw/html_fotocasa/Gabiria_pagina_1.html",
+    "data/raw/html_fotocasa/Gaintza_pagina_1.html",
+    "data/raw/html_fotocasa/Galdames_pagina_1.html",
+    "data/raw/html_fotocasa/Gamiz-Fika_pagina_1.html",
+    "data/raw/html_fotocasa/Garai_pagina_1.html",
+    "data/raw/html_fotocasa/Gaztelu_pagina_1.html",
+    "data/raw/html_fotocasa/gipuzkoa_pagina_1.html",
+    "data/raw/html_fotocasa/gipuzkoa_pagina_2.html",
+    "data/raw/html_fotocasa/gipuzkoa_pagina_3.html",
+    "data/raw/html_fotocasa/gipuzkoa_pagina_4.html",
+    "data/raw/html_fotocasa/Gizaburuaga_pagina_1.html",
+    "data/raw/html_fotocasa/Hernialde_pagina_1.html",
+    "data/raw/html_fotocasa/Ibarrangelu_pagina_1.html",
+    "data/raw/html_fotocasa/Iruraiz-Gauna_pagina_1.html",
+    "data/raw/html_fotocasa/Ispaster_pagina_1.html",
+    "data/raw/html_fotocasa/Izurtza_pagina_1.html",
+    "data/raw/html_fotocasa/Kortezubi_pagina_1.html",
+    "data/raw/html_fotocasa/Kripan_pagina_1.html",
+    "data/raw/html_fotocasa/Kuartango_pagina_1.html",
+    "data/raw/html_fotocasa/Lagrán_pagina_1.html",
+    "data/raw/html_fotocasa/Lanestosa_pagina_1.html",
+    "data/raw/html_fotocasa/Lantarón_pagina_1.html",
+    "data/raw/html_fotocasa/Larraul_pagina_1.html",
+    "data/raw/html_fotocasa/Laukiz_pagina_1.html",
+    "data/raw/html_fotocasa/Leintz-Gatzaga_pagina_1.html",
+    "data/raw/html_fotocasa/Leza_pagina_1.html",
+    "data/raw/html_fotocasa/Maruri-Jatabe_pagina_1.html",
+    "data/raw/html_fotocasa/Mendata_pagina_1.html",
+    "data/raw/html_fotocasa/Mendexa_pagina_1.html",
+    "data/raw/html_fotocasa/Meñaka_pagina_1.html",
+    "data/raw/html_fotocasa/Morga_pagina_1.html",
+    "data/raw/html_fotocasa/Munitibar-Arbatzegi Gerrikaitz_pagina_1.html",
+    "data/raw/html_fotocasa/Murueta_pagina_1.html",
+    "data/raw/html_fotocasa/Mutiloa_pagina_1.html",
+    "data/raw/html_fotocasa/Muxika_pagina_1.html",
+    "data/raw/html_fotocasa/Nabarniz_pagina_1.html",
+    "data/raw/html_fotocasa/Navaridas_pagina_1.html",
+    "data/raw/html_fotocasa/Orendain_pagina_1.html",
+    "data/raw/html_fotocasa/Orexa_pagina_1.html",
+    "data/raw/html_fotocasa/Peñacerrada-Urizaharra_pagina_1.html",
+    "data/raw/html_fotocasa/Samaniego_pagina_1.html",
+    "data/raw/html_fotocasa/Sukarrieta_pagina_1.html",
+    "data/raw/html_fotocasa/Trucios-Turtzioz_pagina_1.html",
+    "data/raw/html_fotocasa/Ubide_pagina_1.html",
+    "data/raw/html_fotocasa/Usansolo_pagina_1.html",
+    "data/raw/html_fotocasa/Zalduondo_pagina_1.html",
+    "data/raw/html_fotocasa/Zambrana_pagina_1.html",
+    "data/raw/html_fotocasa/Zeberio_pagina_1.html",
+    "data/raw/html_fotocasa/Zerain_pagina_1.html",
+    "data/raw/html_fotocasa/Zigoitia_pagina_1.html",
+    "data/raw/html_fotocasa/Ziortza-Bolibar_pagina_1.html",
+    "data/raw/html_fotocasa/Elburgo/Burgelu_pagina_1.html",
+    "data/raw/html_fotocasa/Moreda de Álava/Moreda Araba_pagina_1.html",
+    "demo-kpi/compositions/kpi-counters.html",
+    "demo-mapa/compositions/pipeline-mapa.html",
+    "docs/presentacion/index.html",
+    "docs/presentacion/index.template.html",
+    "vaultVivienda/notebooklm/NB01-print.html",
+    "vaultVivienda/notebooklm/NB01.html",
+    "vaultVivienda/notebooklm/NB02-print.html",
+    "vaultVivienda/notebooklm/NB02.html"
+  ],
+  "errors": [
+    {
+      "file": "docs/archive/scratchpad/bom.json",
+      "suffix": ".json",
+      "error": "JSONDecodeError('Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)')"
+    }
+  ],
+  "counts": {
+    "json": 327,
+    "yaml": 4,
+    "csv": 207,
+    "zip": 49,
+    "html": 115,
+    "errors": 1
+  }
+}
