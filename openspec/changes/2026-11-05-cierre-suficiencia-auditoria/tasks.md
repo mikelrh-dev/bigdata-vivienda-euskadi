@@ -48,7 +48,7 @@
 
 ## Phase 4: VPO municipal oficial
 
-- [x] 4.1 `extract/26_vpo_terminadas.py` con staging y `--promote`.
+- [x] 4.1 `extract/26_vpo_terminadas.py` con descarga en memoria y `--promote` (sin staging).
 - [x] 4.2 `transform/limpiar_vpo_municipal.py` con filtro a 252 vivos.
 - [x] 4.3 `load_vpo_municipal` en `storage/load_mongo.py`.
 - [x] 4.4 `tests/test_vpo_municipal.py`: 6 tests (252, rango, año, robustos,

@@ -20,10 +20,10 @@ Medición del 2026-11-05 sobre datos reales:
 
 *Consecuencia aceptada:* `esfuerzo_joven_pct`, `_16_29`, `_18_34`, `_18_24`, `_25_34` cambian; la tensión social (percentiles) se recalcula y sus conteos pueden moverse.
 
-### D-02: staging antes de raw
-El CSV nuevo se descarga a `data/staging/vpo/`, se parsea y valida ahí. Solo si cumple (252 municipios, rango, códigos de 5 dígitos) se promueve a `data/raw/` con `assert_raw_writable(reason)` y se regeneran manifests.
+### D-02: validación en memoria antes de raw
+El CSV nuevo se descarga en memoria, se parsea y valida ahí. Solo si cumple (252 municipios, rango, códigos de 5 dígitos) se promueve a `data/raw/` con `assert_raw_writable(reason)` y se regeneran manifests. No se crea `data/staging/`.
 
-*Motivo:* el bronce es la cadena de custodia del proyecto; un parser fallido no debe invalidarla.
+*Motivo:* el bronce es la cadena de custodia del proyecto; un parser fallido no debe invalidarla, y un estado intermedio persistente duplica el raw sin aportar trazabilidad.
 
 ### D-03: colección `vpo_municipal` separada
 No se mezcla con `municipios.vivienda_contexto`: es una fuente nueva con su propio `fuente`, `anio_fuente` y procedencia. Permite citarla en RA3/RA4 sin reescribir el documento de municipios.

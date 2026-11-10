@@ -36,7 +36,7 @@ La auditoría de 2026-11-05 deja el proyecto defendible pero con deuda medida: e
 1. Congelar el estado en rama y regenerar gold/manifests (D1).
 2. Corregir docs con las cifras medidas (D3).
 3. Cambiar `generar_analisis_variables_base.py` a `cuantia_media_eur_mes_mediana`, recorrer la cadena silver, recargar Mongo y regenerar CSV (D2).
-4. Descargar el indicador 73 a `data/staging/`, parsearlo, validarlo y solo entonces promoverlo a raw con guard y manifest (Fase 3).
+4. Descargar el indicador 73 en memoria, parsearlo, validarlo y solo entonces promoverlo a raw con guard y manifest (Fase 3).
 5. Análisis de sensibilidad y bootstrap como scripts de `analysis/` (Fase 5).
 6. Informe final sin cifras tecleadas (Fase 6).
 

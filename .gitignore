@@ -32,17 +32,11 @@ graphify-out/
 # Obsidian
 docs/.obsidian/
 
-# DuckDB UI launcher (local only)
-launch_duckdb_ui.py
-
 # Mermaid URL (temporal)
 scratchpad/mermaid_url.txt
 
 # Argon (radiografía para revisión externa)
 argon/
-
-# Auditoría DuckDB (reporte temporal)
-scratchpad/auditoria_duckdb.md
 
 # Graphify ignore (local config)
 .graphifyignore
@@ -85,6 +79,5 @@ demo-*/snap.json
 !demo-kpi/kpi.webp
 !demo-mapa/*.webp
 
-data/staging/
 
 docs/presentacion/preview_*.png
