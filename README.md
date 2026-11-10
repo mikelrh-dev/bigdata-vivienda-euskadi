@@ -120,12 +120,10 @@ bigdata-vivienda-euskadi/
 ├── transform/         Limpieza y enriquecimiento (42 scripts; 34 en el DAG)
 ├── storage/           PyMongo + HDFS central + Kafka centro (listos)
 ├── analysis/          Aggregation Pipeline (hecho, 11 pipelines en PIPELINE_ORDER) + 8 CSV `mongo_*` desde Mongo
-├── notebooks/         Informe de resultados (pendiente)
 ├── data/raw/          Datos generados (ignorados por git, 356 archivos)
 ├── data/procesado/    Datos normalizados (ignorados por git, 188 archivos, manifest 188)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
-├── docs/              Documentación (índice en docs/README.md)
-└── plan/              Planificación y decisiones
+└── docs/              Documentación (índice en docs/README.md)
 ```
 
 ## 📈 Datos actuales (silver)

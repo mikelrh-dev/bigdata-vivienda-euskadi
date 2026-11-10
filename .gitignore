@@ -84,3 +84,6 @@ docs/presentacion/preview_*.png
 
 # Freebuff (tool metadata local)
 .freebuff/
+
+# Archivo local (resguardo; no versionado)
+/archive/
