@@ -70,10 +70,12 @@
 
 **No hay P0/P1. El proyecto funciona: suite, gate offline, gobernanza, DAG y explain pasan.**
 
+Los residuales que no se corrigen en este cambio (H-08, H-09, H-10, HM-06, DS2-25, R-4, FAIL 07 y menciones históricas) están detallados, con disparador y recomendación, en `pendientes_y_limitaciones_2026-11-10.md`.
+
 | Sev. | Hallazgo | Estado | Impacto / recomendación |
 |---|---|---|---|
-| **P2** | `openspec/project.md:30` dice «MongoDB (Docker Desktop)» y `:38` dibuja `Kafka → MongoDB` | **Abierto (fuera de alcance declarado)** | Contradice `ARQUITECTURA-01` (sin Docker; Kafka→HDFS, nunca Mongo). Riesgo si el tribunal lee el project.md. Corregir en una ronda documental posterior |
-| **P2** | `docs/guion_defensa.md:5` presenta HDFS/Kafka como disponibles («lag 0») | **Abierto (fuera de alcance declarado)** | Hoy no hay red al centro. Añadir la reserva «evidencia histórica v8; revalidación pendiente» antes de la defensa |
+| **P2** | `openspec/project.md:30` decía «MongoDB (Docker Desktop)» y `:38` dibujaba `Kafka → MongoDB` | **Corregido 2026-11-10** | Ahora declara MongoDB local sin Docker y el flujo Kafka→HDFS (`pendientes_y_limitaciones_2026-11-10.md`) |
+| **P2** | `docs/guion_defensa.md:5` presentaba HDFS/Kafka como disponibles («lag 0») | **Corregido 2026-11-10** | Ahora declara la evidencia como histórica v8 y avisa de que hoy el centro no es alcanzable |
 | **P2** | `INDICES-01` del spec principal aún describe «GIVEN el índice eliminado» | **Pendiente de archive** | El delta de este cambio ya fija el hint read-only; el spec principal se sincroniza al archivar el cambio. No afecta al código |
 | **P2** | H-08: `extract/26_vpo_terminadas.py` no regenera el manifest al promover un raw nuevo | **Abierto (P2 diferido)** | Solo afecta a una extracción futura con fuente cambiada; el raw actual está congelado y su SHA verificado |
 | **P2** | H-09: `docs/contrato_datos_raw.md` vs `.FROZEN` de `transform/_raw_guard.py` | **Abierto (P2 diferido)** | Incoherencia documental sobre cómo se marca el raw; no afecta a la ejecución |

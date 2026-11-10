@@ -2,7 +2,7 @@
 
 > Para la defensa completa de 12 minutos con reparto por persona: `docs/guion_defensa_12min.md`.
 
-Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline actual: HDFS centro `http://10.22.87.215:50070` solo lectura (352 ficheros raw canónicos en `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`; manifest local 354 SHA con 2 alias legacy) + Kafka clúster centro `10.22.87.215:9092` topic vigente `vivienda_euskadi` 1 partición RF 1 grupo `hdfs_centro` (lag 0; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06, verificado en `openspec/audit/informe_auditoria_2026-11-06_v2.md`).
+Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indicadores.md`. Presentacion offline: la demo no depende de la red del centro. La evidencia HDFS/Kafka es la verificada en vivo el 2026-11-09 (352 ficheros raw canónicos en `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw`; topic `vivienda_euskadi` 1 partición RF 1, grupo `hdfs_centro`, lag 0; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06); hoy `10.22.87.215` no es alcanzable y el gate offline usa el manifest local de 354 SHA con 2 alias legacy.
 
 ## Tema 8: embedding, índices, atomicidad
 
