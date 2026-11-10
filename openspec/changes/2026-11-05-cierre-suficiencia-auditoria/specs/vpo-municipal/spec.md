@@ -34,7 +34,7 @@ El sistema SHALL integrar el indicador oficial "Viviendas protegidas (VPO) termi
 El sistema SHALL incorporar el fichero nuevo a `data/raw` solo mediante extractor con `assert_raw_writable`, hash en `docs/raw_manifest_sha256.txt` y actualización de los contadores de tests.
 
 #### Scenario: Promoción con guard
-- GIVEN el CSV validado en `data/staging/vpo/`
+- GIVEN el CSV descargado y validado en memoria
 - WHEN se ejecuta `extract/26_vpo_terminadas.py --promote`
 - THEN el fichero queda en `data/raw/` con su hash en el manifest
 - AND `generar_manifest.py --verify` devuelve exit 0
