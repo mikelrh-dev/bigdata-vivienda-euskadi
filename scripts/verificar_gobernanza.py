@@ -2,7 +2,7 @@
 
 Comprueba lo que la auditoría dejó fijado (v6 2026-11-08, valores reales
 contados con Python):
-- 46 cabeceras de requisito con ID numérico único.
+- 50 cabeceras de requisito (46 con ID numérico único + 4 `chart_*`).
 - 42 scripts en transform/ y 34 nodos en el DAG.
 - 188 entradas en el manifiesto silver.
 - 0 variables de entorno usadas sin declarar en .env.example.
@@ -28,21 +28,24 @@ def check(nombre: str, ok: bool, detalle: str) -> None:
         ERRORES.append(nombre)
 
 
-def ids_requisito() -> list[str]:
+def requisitos() -> tuple[list[str], int]:
+    """Devuelve (IDs canónicos, nº de cabeceras `### Requirement:`)."""
     ids: list[str] = []
+    cabeceras = 0
     for spec in sorted((ROOT / "openspec" / "specs").glob("*/spec.md")):
         for line in spec.read_text(encoding="utf-8").splitlines():
             if line.startswith("### Requirement:"):
+                cabeceras += 1
                 match = re.search(r"([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{2})", line)
                 if match:
                     ids.append(match.group(1))
-    return ids
+    return ids, cabeceras
 
 
 def main() -> int:
-    ids = ids_requisito()
-    check("requisitos", len(ids) == 46 and len(set(ids)) == 46,
-          f"{len(ids)} cabeceras, {len(set(ids))} IDs únicos")
+    ids, cabeceras = requisitos()
+    check("requisitos", cabeceras == 50 and len(ids) == 46 and len(set(ids)) == 46,
+          f"{cabeceras} cabeceras, {len(ids)} con ID canónico, {len(set(ids))} únicos")
 
     transform = sorted((ROOT / "transform").glob("*.py"))
     tree = ast.parse((ROOT / "transform" / "run_all.py").read_text(encoding="utf-8-sig"))
@@ -63,6 +66,7 @@ def main() -> int:
             texto = py.read_text(encoding="utf-8", errors="ignore")
             usadas.update(re.findall(r"getenv\(['\"]([A-Z0-9_]+)['\"]", texto))
             usadas.update(re.findall(r"environ\[['\"]([A-Z0-9_]+)['\"]", texto))
+            usadas.update(re.findall(r"environ\.get\(\s*['\"]([A-Z0-9_]+)['\"]", texto))
     declaradas = set(re.findall(r"^([A-Z0-9_]+)=", (ROOT / ".env.example").read_text(encoding="utf-8"), re.M))
     faltan = sorted(usadas - declaradas - {"PYTHONPATH"})
     check("env", not faltan, f"sin declarar: {faltan or 'ninguna'}")

@@ -1,15 +1,31 @@
-"""Tests for real GeoJSON Point in anuncios."""
+"""Tests for real GeoJSON Point in anuncios (aislado de prod).
+
+AISLAMIENTO-01: la carga de anuncios se hace contra ``vivienda_euskadi_test``
+(vía ``get_test_db``), nunca contra la base productiva. El test de geo real
+sigue leyendo los 594 documentos del silver, pero en la base de test.
+"""
 
 from __future__ import annotations
 
 import math
 
+import pytest
+
+from storage import mongo as sm
 from storage.load_mongo import load_anuncios
-from storage.mongo import get_collection, ping
+from storage.mongo import get_collection, get_test_db, ping
 
 
-def test_anuncios_geojson_real():
-    assert ping() is True
+@pytest.fixture()
+def geo_test_db(monkeypatch):
+    """Carga los anuncios del silver en ``vivienda_euskadi_test`` (prod intacta)."""
+    db = get_test_db()
+    monkeypatch.setattr(sm, "get_db", lambda: db)
+    return db
+
+
+@pytest.mark.skipif(not ping(), reason="sin Mongo local: skip separado")
+def test_anuncios_geojson_real(geo_test_db):
     n = load_anuncios()
     assert n >= 500
     coll = get_collection("anuncios")

@@ -51,7 +51,7 @@ relleno en Mongo). Lectura CSV con `dtype=str, encoding=utf-8-sig`.
 
 - **Regla:** `n_anuncios` = anuncios únicos post-dedup por `codigo_ine`
   (`transform/aplicar_cobertura_mercado.py`); el crudo se conserva en
-  `n_anuncios_raw`. Total: 843 crudos → 759 únicos.
+  `n_anuncios_raw`. Total: 843 crudos → 594 vigentes (759 era el pre-v5; 45 en cuarentena fuera de Euskadi).
 - **Mongo:** `{$group: {_id: "$codigo_ine", n_anuncios: {$sum: 1}}}`
   sobre la colección deduplicada por `property_fingerprint`.
 - **Test:** `test_wp12_cobertura_mercado`, `test_wp03_n_anuncios_real`.

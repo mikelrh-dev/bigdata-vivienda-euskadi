@@ -28,6 +28,8 @@ from storage.mongo import (
     ping,
 )
 
+pytestmark = pytest.mark.skipif(not ping(), reason="sin Mongo local: skip separado")
+
 _LOADERS = [
     "load_municipios",
     "load_anuncios",

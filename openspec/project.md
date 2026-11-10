@@ -3,7 +3,7 @@
 _Bootstrap SDD: objetivo, stack, layout, fuentes y estado. El contrato
 de requisitos está en `specs/contrato-reto/spec.md`._
 
-**Estado:** Raw inmutable congelado (manifest 354 = 356 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 185), 136 tests colectados (136 passed), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro, Kafka VM) implementada con tests offline; MongoDB y análisis hechos. Gate extremo a extremo pendiente.
+**Estado:** Raw inmutable congelado (manifest 354 = 356 ficheros recursivos − .FROZEN/.gitkeep), capa silver regenerada (manifest 188), 237 tests colectados (235 passed, 2 skipped), features v2 (IDW, salario ajustado, tensión social, comparativa compra/alquiler por área funcional). Infraestructura (HDFS centro, Kafka centro) implementada con tests offline; MongoDB y análisis hechos. Gate extremo a extremo pendiente.
 **Fecha:** 2026-10-29
 
 ---
@@ -65,19 +65,19 @@ Fuentes (API + scraping) → HDFS (originales) → Kafka (VM) → MongoDB
 | INE wstempus | API JSON | No | 5 tablas; alquiler a `null` en Euskadi |
 | euskadi.eus | CSV | No | Emancipación juvenil, 867 filas |
 | b5m Gipuzkoa | API JSON | No | Límites municipales y distancias |
-| Fotocasa | Scraping | No | 759 anuncios unificados, 83 municipios |
+| Fotocasa | Scraping | No | 594 anuncios unificados, 64 municipios |
 | Idealista Search API | API oficial | **Sí** | Opcional, pendiente de aprobación |
 
 ## Estado por fase
 
 | Fase | Estado |
 |---|---|
-| 0. Entorno y VM | ⚠️ venv y Docker Desktop OK; VM pendiente |
+| 0. Entorno y VM | ✅ venv y Docker Desktop OK; cadena vigente Windows>Kafka centro>HDFS (VM legacy descartada) |
 | 1. Extracción | ✅ scripts 01–26, 356 archivos en `data/raw/` |
 | 2. Kafka | ✅ implementado con tests offline; gate extremo a extremo pendiente |
 | 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
-| 4. Limpieza y transformación | ✅ silver regenerado (188 archivos, manifest 185), transforms v2 |
-| 5. Aggregation Pipeline | ✅ 9 pipelines desde Mongo (5 CSV canónicos) |
+| 4. Limpieza y transformación | ✅ silver regenerado (188 archivos, manifest 188), transforms v2 |
+| 5. Aggregation Pipeline | ✅ 11 pipelines desde Mongo (8 CSV `mongo_*`) |
 | 6. Visualización e informe | ✅ PNG desde silver y CSV desde Mongo; HTML manual; informe pendiente |
 
 ## Reglas del contrato

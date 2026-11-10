@@ -23,8 +23,8 @@ auditoría queda cerrada o declarada:
 
 ```
 356 ficheros raw (354 con hash)  →  188 silver (188 con manifest)
-        →  Mongo 14 colecciones  →  10 aggregation pipelines
-        →  5 CSV canónicos + comparativa + VPO + sensibilidad
+        →  Mongo 16 colecciones vivas  →  11 aggregation pipelines
+        →  8 CSV mongo_* (esfuerzo, alquiler, modalidades, accesibilidad, tier, VPO, VPO terminadas, habitaciones)
 ```
 
 - Raw inmutable con `.FROZEN`, guard y manifest SHA-256.
@@ -139,10 +139,10 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 ```bash
 .venv/Scripts/python.exe transform/run_all.py --check          # exit 0
 .venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 188, 0 errores
-.venv/Scripts/python.exe -m pytest tests -q                    # 177 passed + 1 skipped
+.venv/Scripts/python.exe -m pytest tests -q                    # 235 passed + 2 skipped
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py       # OK 18/18
-.venv/Scripts/python.exe -m storage.load_mongo                 # 14 colecciones
-.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 10 pipelines + huella
+.venv/Scripts/python.exe -m storage.load_mongo                 # 16 colecciones vivas
+.venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 11 pipelines + huella
 .venv/Scripts/python.exe analysis/sensibilidad.py              # IDW + bootstrap
 ```
 

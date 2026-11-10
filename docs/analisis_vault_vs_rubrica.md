@@ -18,7 +18,7 @@ Fuente de verdad: `brief/RETO 1Evaluacion SBD-BDAv2.pdf` (BDA RA1 4 criterios, S
 2. `vault-data/04-Resultados/01-metricas-canonicas.md`: salarios separados (1381/1564 observados OVJ vs 1402 derivado ±15% a ojo).
 3. `vault-tecnico/03-Transformacion/05-alquiler-y-outliers.md`: ratio media-simple 0,353 marcada legacy; canónica ponderada `(2*1599+5*8156+5*20109+5*25609)/17/28170`.
 4. `vault-tecnico/01-Arquitectura/07-modelo-mongo-13-colecciones.md`: "imputado comarcal" → IDW 5 vecinos.
-5. `vault-tecnico/04-Salidas/02-graficos-y-visuales.md`: A-G por `generar_dashboard_completo.py`, g1-g5 por `generar_dashboard_visual.py` (estaba cruzado).
+5. `vault-tecnico/04-Salidas/02-graficos-y-visuales.md`: A-G y g1-g5 se generan ahora desde Mongo (`analysis/run_analisis_mongo.py`); los scripts DuckDB antiguos fueron retirados.
 6. `vault-data/03-Silver/05-variables-base.md`: 16_29 legacy / 18_34 canónico; población estimada etiquetada.
 7. `vault-data/05-Conclusiones/02-limitaciones-y-gaps.md`: 355 raw (353 hash, 351 HDFS sin legacy) / 185 silver.
 8. `vault-data/03-Silver/03-anuncios-limpios.md`: aritmética 471+230+139=840 → 759; RealtyAPI 139.
@@ -32,7 +32,7 @@ Fuente de verdad: `brief/RETO 1Evaluacion SBD-BDAv2.pdf` (BDA RA1 4 criterios, S
 - A. Correlación renta-alquiler 0,2094 vs 0,28: manda 0,2094 Eustat n=159; 0,28 era otra renta (auditoría vieja).
 - B. Ratio renta joven media-simple vs ponderada: manda ponderada por anchura; media-simple legacy.
 - C. Salarios 1381 vs 1402 vs 1564: observados OVJ CAE vs derivado ajustado ±15% (calibración a ojo, P-02 si se presenta como dato).
-- D. Robustos 4 vs 6: 6 antes de unificar, 4 después (Bilbao 173, Donostia 113, Getxo 40, Vitoria 39).
+- D. Robustos 4 vs 6: 6 antes de unificar, 4 después (Bilbao 204, Donostia 126, Getxo 50, Vitoria 39).
 - E. Generadores cruzados + HTML manuales (P-05): PNG auto sí, HTML manual no cuenta para RA4.
 - F. "Imputación comarcal" vs IDW: siempre IDW_5_vecinos; nombre de script histórico.
 - G. Cifras inventario/tests/desfase manifest: usar `find -type f` + fecha; manifests 353 vs 47.
@@ -48,7 +48,7 @@ Fuente de verdad: `brief/RETO 1Evaluacion SBD-BDAv2.pdf` (BDA RA1 4 criterios, S
 - SBD RA3 aggregation: faltaba mapa pipeline→pregunta→etapas (creado, falta pegar entradas/salidas por etapa).
 - SBD RA3 índices: faltaba explain antes/después con números + ESR + coste (nota creada, falta pegar salida real).
 - SBD RA3 consistencia: faltaba nota (creada).
-- RA4 P-05: HTML manuales no son evidencia auto; evidencia válida = 4 CSV.
+- RA4 P-05: HTML manuales no son evidencia auto; evidencia válida = 8 CSV `mongo_*`.
 - Tema 8 §10/§12: faltaban notas (creadas); falta tabla Tema1-8→reto + checklist §17.
 
 ## Puntuación vault 0-10 (tras arreglos)
@@ -81,4 +81,4 @@ P1:
 ## Preguntas quiz pendientes (teachme)
 
 - P1. Si te dicen "tu r=0,28 no cuadra con metodologia.md", ¿qué respondes? → A) 0,2094 canónico Eustat n=159; 0,28 era otra renta vieja.
-- P2. Prueba RA3 de índices, ¿qué enseñas? → B) `explain_before_after`: COLLSCAN 759 examinados → IXSCAN, ESR y coste.
+- P2. Prueba RA3 de índices, ¿qué enseñas? → B) `explain_before_after`: COLLSCAN 594 examinados → IXSCAN 1 (filtro `20069`, 1 doc), ESR y coste.

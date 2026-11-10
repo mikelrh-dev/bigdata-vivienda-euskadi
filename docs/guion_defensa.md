@@ -6,8 +6,8 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 
 ## Tema 8: embedding, índices, atomicidad
 
-- **Embedding**: cada anuncio se almacena embebido en `municipios` (`ubicacion.codigo_ine`, `demografia`, `empleo`, `demanda_social`) con `alquiler_municipal` por `$lookup`; documentos agregados, no referencias sueltas. Mongo local `vivienda_euskadi`: 16 vivas (14 negocio + 2 habitaciones 201+201) + 14 `__backup` = 30 totales.
-- **Índices**: `anuncios` pasa de COLLSCAN (594 examinados) a IXSCAN (1 examinado) con indice compuesto ESR `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` + cobertura de `portal_id` (`explain_before_after` en `analysis/mongo_indexes.py`, invocado en `analysis/run_analisis_mongo.py`, test `test_indexes_explain`). ESR = Equality, Sort, Range en ese orden.
+- **Embedding**: `municipios` embebe `demografia`, `empleo` y `demanda_social` (se leen juntos, cambian poco); **`anuncios` y `etxebide_promociones` se relacionan por referencing mediante `codigo_ine`** (`anuncios.ubicacion.codigo_ine -> municipios._id`), no embebidos. Mongo local `vivienda_euskadi`: 16 vivas (14 negocio + 2 habitaciones 201+201) + 14 `__backup` = 30 totales.
+- **Índices**: `anuncios` pasa de COLLSCAN (594 examinados) a IXSCAN (1 examinado) con el filtro canónico `20069` + `larga_estancia` + `precio_eur <= 1000` (1 doc; `48020` -> 8; `48001` -> 0) y el indice compuesto ESR `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` + cobertura de `portal_id` (`explain_before_after` en `analysis/mongo_indexes.py`, read-only con `hint:{"$natural":1}` en el "antes", invocado en `analysis/run_analisis_mongo.py`, test `test_indexes_explain`). ESR = Equality, Sort, Range en ese orden.
 - **Atomicidad vs transacción**: atomicidad de documento (upsert idempotente en `storage/load_mongo.py`, índice único `(portal, id_anuncio)`) no exige replica set; transacción multi-documento commit/abort sí exigiría replica set y no se fuerza en standalone local (solo sonda en `vivienda_euskadi_test`, prod sigue en 594). El pipeline de analisis solo lee.
 
 ## Recorrido de decisión a gate
@@ -18,8 +18,8 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 4. **O4 (limitaciones)**: proxy de renta, 93 IDW solo sensibilidad, 4 robustos, emancipacion solo CAE, mezcla de anos 2024/2026. VPO: flujo oficial 251/252 (Usansolo sin dato); stock historico sin fuente.
 5. **Pipeline reproducible**: 11 pipelines (antes 10) + orden canonico + `huella_resultados` (SHA-256 `sort_keys=True`): dos ejecuciones del mismo estado dan la misma huella (ver salida de `run_analisis_mongo`) y los mismos 8 CSV `mongo_*` (doble SHA identico, `EXPORTS_8`) y 28+8 PNG (28 resultados + 8 anexo desde los 11 pipelines; antes 12 únicos / 13 emitidos de DuckDB) (ver `docs/matriz_indicadores.md`).
 6. **Los 10 criterios** (detalle abajo): raw inmutable, silver utf-8-sig, esfuerzo 18-34, robustos n>=30, pipelines con huella, performance explain, tests, trazabilidad, cobertura 159+IDW, cadena HDFS+Kafka.
-7. **Integridad**: `scripts/gate_extremo_a_extremo.py --offline` (354 SHA + 188 silver + lag 0) y `transform/run_all.py --check` (34/34 OK) y `scripts/verificar_gobernanza.py` (46 requisitos, 45 scripts / 34 DAG, 188, 11 pipelines).
-8. **Tests**: `pytest tests -q` = 236 passed + 2 skipped (238 collected), sin `data/raw` en `git status`. CI en rama `master` (`.github/workflows/quality-gate.yml` push a `master` + `pull_request` + `workflow_dispatch` vivo manual `GATE_LIVE=1`); antes disparaba en `main` y no corría en `master`. Anuncios vigentes 594 (843 raw → 594 tras dedup + cuarentena 45; 759 histórico pre-v5).
+7. **Integridad**: `scripts/gate_extremo_a_extremo.py --offline` (354 SHA + 188 silver + lag 0) y `transform/run_all.py --check` (34/34 OK) y `scripts/verificar_gobernanza.py` (50 cabeceras, 46 con ID, 42 scripts / 34 DAG, 188, 11 pipelines).
+8. **Tests**: `pytest tests -q` = 235 passed + 2 skipped (237 collected), sin `data/raw` en `git status`. CI en rama `master` (`.github/workflows/quality-gate.yml` push a `master` + `pull_request` + `workflow_dispatch` vivo manual `GATE_LIVE=1`); antes disparaba en `main` y no corría en `master`. Anuncios vigentes 594 (843 raw → 594 tras dedup + cuarentena 45; 759 histórico pre-v5).
 
 ## Los 10 criterios y su laguna
 
@@ -29,9 +29,9 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 | 2 | Silver utf-8-sig y `codigo_ine` 5 digitos | 252 municipios, zfill en transform | Araba 4 digitos rompe joins; sin `utf-8-sig` mojibake. |
 | 3 | Esfuerzo canonico 18-34 | O1 = 26,61% oficial, 25,2% >30, reproducible en Mongo y CSV | Confundir 16-29 (42,9%) con 18-34 invalida O1; 16-29 sigue legacy. |
 | 4 | Robustos n>=30 y sensibles | Bilbao 204, Donostia 126, Getxo 50, Vitoria 39 (diferencia Getxo-Vitoria 11, no 1) | Rankear a Barakaldo 38,49% sin n es el error que visa O2. |
-| 5 | Pipelines y huella reproducible | 11 pipelines (antes 10) + orden canonico + SHA-256 en `run_analisis`; gobernanza 46/45/11 | Sin orden canonico, empates de `$sort` dan huellas distintas. |
-| 6 | Performance Mongo (índices/explain) | COLLSCAN 594 -> IXSCAN 1 en `test_indexes_explain` con ESR | Sin indice compuesto el lookup es full scan. |
-| 7 | Tests y gate | 236 passed + 2 skipped, `run_all --check` 34/34 OK, gobernanza TODO OK, FAIL 07 paro-cero conocido sin enmascarar | Gate rojo = no cierre; no hay cierre parcial. |
+| 5 | Pipelines y huella reproducible | 11 pipelines (antes 10) + orden canonico + SHA-256 en `run_analisis`; gobernanza 50/42/11 (46 con ID) | Sin orden canonico, empates de `$sort` dan huellas distintas. |
+| 6 | Performance Mongo (índices/explain) | COLLSCAN 594 -> IXSCAN 1 con filtro `20069` (1 doc) en `test_indexes_explain` con ESR | Sin indice compuesto el lookup es full scan. |
+| 7 | Tests y gate | 235 passed + 2 skipped, `run_all --check` 34/34 OK, gobernanza TODO OK, FAIL 07 paro-cero conocido sin enmascarar | Gate rojo = no cierre; no hay cierre parcial. |
 | 8 | Trazabilidad de fuentes | 5 indicadores con fuente + pipeline en `matriz_indicadores` | Tasa paro aprox (NaN) o renta como salario real destruye la defensa. |
 | 9 | Cobertura 159 + sensibilidad IDW | Oficial 159 mediana 26,61; con IDW 252 -> 25,37 (47 > 30) | Usar los 252 como si fueran 159 oficiales exagera cobertura. |
 | 10 | Cadena HDFS centro + Kafka centro | HDFS 352 canónicos con SHA igual (manifest 354) + Kafka `vivienda_euskadi` RF1 lag 0 tras recarga de 352 (topic viejo `anuncios_inmobiliarios` eliminado) | Si se promete cadena sin verificarla, la defensa cae por sobreventa. |
@@ -41,14 +41,14 @@ Entrada: `README.md` O1-O4, `docs/conclusiones_municipios.md`, `docs/matriz_indi
 - **Replica sets**: MongoDB local es standalone sin replica set. La atomicidad de un documento no lo exige; la transacción multi-documento commit/abort sí. No forzamos replica set sobre el standalone; solo sonda en `vivienda_euskadi_test` (ver `docs/modelo_mongodb.md`).
 - **Shard key**: candidato conceptual `codigo_ine` (distribución por municipio) frente a `portal` (baja cardinalidad, skew); a esta escala no shardeamos (594 anuncios, 252 municipios). No hay sharding implementado.
 - **ESR**: Equality, Sort, Range. El índice `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}` respeta ese orden para la consulta real de `explain_before_after`.
-- **Costes**: índice ESR + `portal_id` cobertura y 2dsphere sparse; 24 índices en 16 vivas (16 `_id` + 8 de negocio). El coste de escritura se asume frente a evitar un COLLSCAN de 594 por consulta. Los 8 PNG de anexo se conservan sin coste extra salvo disco.
+- **Costes**: índice ESR + `portal_id` cobertura y 2dsphere sparse; 24 índices en 16 vivas (16 `_id` + 8 de negocio) tras restaurar con `ensure_indexes()`. El coste de escritura se asume frente a evitar un COLLSCAN de 594 por consulta. Los 8 PNG de anexo se conservan sin coste extra salvo disco.
 - **594 vs 759**: 759 es histórico pre-v5; 843 raw → 594 vigente tras re-resolucion pisos + cuarentena de 45 fuera de Euskadi. Usar 759 hoy infla la cobertura.
 - **352 vs 354**: 352 ficheros canónicos publicados en HDFS; 354 entradas SHA en manifest local `docs/raw_manifest_sha256.txt` (2 alias legacy no publicados). El gate verifica 354; el canónico citado en defensa es 352. 356 en disco local incluye `.FROZEN`/`.gitkeep`.
 - **Topic viejo vs nuevo**: `anuncios_inmobiliarios` (VM legacy, 3 particiones en demo) eliminado 2026-11-06 con sus datos; vigente `vivienda_euskadi` en `10.22.87.215:9092` 1 partición RF 1 grupo `hdfs_centro` (productor de manifiesto → consumidor que sube a HDFS). RF 1 justificado como single node sin HA.
 
 ## Cierre de sesion
 
-Mostrar en orden: `scripts/gate_extremo_a_extremo.py --offline`, `scripts/verificar_gobernanza.py`, `transform/run_all.py --check`, pytest 236+2s, huella de `run_analisis`, explain COLLSCAN 594→IXSCAN 1 y tabla de 4 robustos (Getxo 50 vs Vitoria 39 sin ranking firme; Tier B 10-29 = 3 solo indicativo). Todo lectura; no se hace commit ni push en la demo.
+Mostrar en orden: `scripts/gate_extremo_a_extremo.py --offline`, `scripts/verificar_gobernanza.py`, `transform/run_all.py --check`, pytest 235+2s, huella de `run_analisis`, explain COLLSCAN 594→IXSCAN 1 con filtro `20069` y tabla de 4 robustos (Getxo 50 vs Vitoria 39 sin ranking firme; Tier B 10-29 = 3 solo indicativo). Todo lectura; no se hace commit ni push en la demo.
 
 ## Falsación (qué nos tumbaría)
 

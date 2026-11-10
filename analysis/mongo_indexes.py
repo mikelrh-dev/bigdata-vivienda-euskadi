@@ -8,7 +8,6 @@ import logging
 from decimal import InvalidOperation
 
 from bson.decimal128 import Decimal128
-from pymongo.errors import OperationFailure
 
 from storage.mongo import get_collection, zfill_ine
 
@@ -41,9 +40,14 @@ def _winning_stage(plan: Any) -> str:
     return stage or "UNKNOWN"
 
 
-def _explain(coll, filtro: dict[str, Any]) -> dict[str, Any]:
+def _explain(coll, filtro: dict[str, Any],
+             hint: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Explain read-only; ``hint`` permite forzar un plan (p. ej. $natural)."""
     db = coll.database
-    exp = db.command("explain", {"find": coll.name, "filter": filtro}, verbosity="executionStats")
+    cmd: dict[str, Any] = {"find": coll.name, "filter": filtro}
+    if hint is not None:
+        cmd["hint"] = hint
+    exp = db.command("explain", cmd, verbosity="executionStats")
     stats = exp.get("executionStats", {})
     plan = exp.get("queryPlanner", {}).get("winningPlan", {})
     stage = _winning_stage(plan)
@@ -94,19 +98,14 @@ def ensure_indexes() -> dict[str, Any]:
     return out
 
 
-def drop_demo_index() -> None:
-    an = get_collection("anuncios")
-    try:
-        an.drop_index("idx_anuncios_ine_modalidad_precio")
-    except OperationFailure as exc:
-        logger.warning("drop_demo_index: índice no presente (%s)", exc)
-    except (TypeError, ValueError) as exc:
-        logger.warning("drop_demo_index: valor inválido (%s)", exc)
-
-
-def explain_before_after(codigo_ine: str = "48001", modalidad: str = "larga_estancia",
+def explain_before_after(codigo_ine: str = "20069", modalidad: str = "larga_estancia",
                          precio_max: Any = 1000) -> dict[str, Any]:
-    """Drop index, explain (COLLSCAN), create index, explain (IXSCAN)."""
+    """Explain read-only COLLSCAN -> IXSCAN sin mutar la base productiva.
+
+    El "antes" fuerza COLLSCAN con ``hint={"$natural": 1}`` (barrido completo,
+    sin dropear el índice); el "después" usa el índice ESR presente, sin
+    recrearlo. Filtro canónico ``20069`` (1 doc); ``48020`` -> 8; ``48001`` -> 0.
+    """
     an = get_collection("anuncios")
     code = zfill_ine(codigo_ine)
     precio = precio_max
@@ -120,36 +119,27 @@ def explain_before_after(codigo_ine: str = "48001", modalidad: str = "larga_esta
         "modalidad": modalidad,
         "precio_eur": {"$lte": precio},
     }
-    # before: ensure index absent
-    drop_demo_index()
-    before = _explain(an, filtro)
-    # create
-    an.create_index(
-        [("ubicacion.codigo_ine", 1), ("modalidad", 1), ("precio_eur", 1)],
-        name="idx_anuncios_ine_modalidad_precio",
-    )
+    before = _explain(an, filtro, hint={"$natural": 1})
     after = _explain(an, filtro)
     return {"filtro": filtro, "before": before, "after": after}
 
 
 def explain_promo_before_after(codigo_ine: str = "48020") -> dict[str, Any]:
-    """Explain para etxebide_promociones por municipio."""
+    """Explain read-only para etxebide_promociones por municipio.
+
+    El "antes" fuerza COLLSCAN con ``hint={"$natural": 1}``; el "después" usa
+    el índice ``idx_promo_ine_estado_tipo`` presente. No dropea ni crea índices.
+    """
     coll = get_collection("etxebide_promociones")
     code = zfill_ine(codigo_ine)
     filtro = {"codigo_ine": code}
-    try:
-        coll.drop_index("idx_promo_ine_estado_tipo")
-    except OperationFailure as exc:
-        logger.warning("explain_promo_before_after: índice no presente (%s)", exc)
-    except (TypeError, ValueError) as exc:
-        logger.warning("explain_promo_before_after: valor inválido (%s)", exc)
-    before = _explain(coll, filtro)
-    coll.create_index([("codigo_ine", 1), ("estado_obra", 1), ("tipologia", 1)], name="idx_promo_ine_estado_tipo")
+    before = _explain(coll, filtro, hint={"$natural": 1})
     after = _explain(coll, filtro)
     return {"filtro": filtro, "before": before, "after": after}
 
 
 def index_report() -> dict[str, Any]:
+    """Estado read-only de índices y explains (no muta prod)."""
     an = get_collection("anuncios")
     return {
         "indexes": [i["name"] for i in an.list_indexes()],
@@ -159,7 +149,7 @@ def index_report() -> dict[str, Any]:
 
 
 def run_all() -> dict[str, Any]:
-    print(ensure_indexes())
+    """Demo read-only del explain: no crea ni dropea índices en prod."""
     res = explain_before_after()
     print(res)
     return res
