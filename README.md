@@ -164,20 +164,6 @@ bigdata-vivienda-euskadi/
 - 28+8 PNG (28 en `data/resultados/` + 8 en `data/resultados/anexo/` generados por `exportar_png_desde_mongo` desde los 11 pipelines; antes 12 únicos / 13 emitidos, cifra histórica de DuckDB). Los de anexo se conservan sin pérdida (g1, H4, G, I, H9, K, L, H12).
 - `README.md` — índice de artefactos.
 
-#### Demo KPI (8,5 s)
-
-<p align="center">
-  <img src="demo-kpi/kpi.webp" width="900" alt="Demo KPI: contador animado de esfuerzo joven en Euskadi" style="border-radius:8px; border:1px solid #30363d;"/>
-</p>
-<p align="center"><em>Demo KPI (8,5 s) — esfuerzo joven y ranking municipal (Bilbao 204 · Donostia 126 · Getxo 50 · Vitoria 39)</em></p>
-
-#### Demo mapa Euskadi (8,5 s)
-
-<p align="center">
-  <img src="demo-mapa/mapa.webp" width="900" alt="Demo mapa Euskadi: choropleth de esfuerzo joven por municipio y top robustos por anuncios" style="border-radius:8px; border:1px solid #30363d;"/>
-</p>
-<p align="center"><em>Demo mapa Euskadi (8,5 s) — pipeline HDFS→Kafka→Mongo + choropleth de 252 municipios y top robustos (Bilbao 204 · Donostia 126 · Getxo 50 · Vitoria 39)</em></p>
-
 ## 🚀 Puesta en marcha
 
 ### 1. Entorno Python
