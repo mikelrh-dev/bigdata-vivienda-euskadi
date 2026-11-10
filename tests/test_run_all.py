@@ -98,3 +98,19 @@ def test_estado_falta_y_sin_declarar(dag):
     assert "b.csv" in detalle
     estado2, _ = ra._estado("sin_salida.py")
     assert estado2 == "SIN-DECLARAR"
+
+
+def test_estado_entrada_inexistente_no_da_falso_ok(dag):
+    """Una entrada declarada que falta no puede reportarse como OK.
+
+    Protege el caso de un arbol sin data/raw (clon o entrega a terceros):
+    `_resolver` devuelve la ruta aunque no exista, asi que el chequeo debe
+    mirar `.exists()` o daría por buena una salida que no se puede reproducir.
+    """
+    proc, raw = dag
+    ahora = time.time()
+    _tocar(proc / "a.csv", ahora - 10)  # salida presente y fresca
+    assert not (raw / "x.csv").exists()  # falta la entrada declarada
+    estado, detalle = ra._estado("a.py")
+    assert estado == "DESACTUALIZADO"
+    assert "x.csv" in detalle

@@ -59,7 +59,9 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "limpiar_ecvi.py": {
         "group": "limpieza_base",
         "in": ["raw:ecvi_compraventa*.csv"],
-        "out": ["proc:ecvi_compraventa_limpio.csv"], "out_glob": []},
+        # El .json es subproducto de auditoria del mismo paso (antes sin declarar).
+        "out": ["proc:ecvi_compraventa_limpio.csv",
+                "proc:ecvi_compraventa_limpio.json"], "out_glob": []},
     "limpiar_eustat_demografia.py": {
         "group": "limpieza_base",
         "in": ["raw:eustat_demografia*.csv"],
@@ -75,10 +77,15 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["raw:alquiler_seccion*.csv"],
         "out": ["proc:alquiler_seccion.csv",
                 "proc:alquiler_seccion_resumen.csv"], "out_glob": []},
+    # Nodo heredado in-place: deduplica un artefacto que ningun otro paso
+    # produce (ver deduplicar_alquiler_enriquecido.py). Se mantiene el nodo
+    # para no alterar el DAG y el script se salta si el fichero no existe, de
+    # modo que un rebuild limpio desde raw no falle por un paso sin productor.
     "deduplicar_alquiler_enriquecido.py": {
         "group": "limpieza_base",
         "in": ["proc:alquiler_municipal_enriquecido.json"],
-        "out": ["proc:alquiler_municipal_enriquecido.json"], "out_glob": []},
+        "out": ["proc:alquiler_municipal_enriquecido.csv",
+                "proc:alquiler_municipal_enriquecido.json"], "out_glob": []},
     # dim_municipios
     "dim_municipios.py": {
         "group": "dim_municipios",
@@ -93,7 +100,11 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "unificar_anuncios.py": {
         "group": "unificacion",
         "in": [],
-        "out": ["proc:anuncios_unificados.csv"],
+        # Cuarentena y dedup_report se escriben en el mismo paso: declararlos los
+        # hace trazables en --check y en run_manifest.json.
+        "out": ["proc:anuncios_unificados.csv",
+                "proc:cuarentena_pisos.csv", "proc:cuarentena_pisos.json",
+                "proc:dedup_report.json"],
         "out_glob": ["proc:anuncios_unificados.json"]},
     "generar_fingerprint.py": {
         "group": "unificacion",
@@ -134,14 +145,16 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "group": "analisis_base",
         "in": ["proc:dim_municipios.csv", "proc:alquiler_municipal_completo.csv",
                "raw:distancias_capitales_252.csv", "raw:renta_municipal_completa.csv",
-               "raw:udalmap_empleo_corregido.csv", "raw:eustat_poblacion_edad.csv",
+               # el codigo lee la copia de PROCESADO (WP-04/C-03), no raw
+               "proc:udalmap_empleo_corregido.csv", "raw:eustat_poblacion_edad.csv",
                "raw:lanbide_paro_juvenil.csv"],
         "out": ["proc:analisis_variables_base.csv"], "out_glob": []},
     # unificacion (lectores: tras los escritores in-place de arriba)
     "filtrar_outliers.py": {
         "group": "unificacion",
         "in": ["proc:anuncios_unificados.csv"],
-        "out": [], "out_glob": ["proc:*_filtrado.json", "proc:*_filtrado.csv"]},
+        "out": ["proc:log_filtrado.txt"],
+        "out_glob": ["proc:*_filtrado.json", "proc:*_filtrado.csv"]},
     # enriquecimiento
     "enriquecer_gtfs_conectividad.py": {
         "group": "enriquecimiento",
@@ -151,15 +164,19 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "enriquecer_codigo_ine.py": {
         "group": "enriquecimiento",
         "in": [],
-        "out": [], "out_glob": ["proc:anuncios_*_enriquecido.csv",
-                                "proc:anuncios_*_enriquecido.json"]},
+        "out": ["proc:informe_entity_resolution.csv"],
+        "out_glob": ["proc:anuncios_*_enriquecido.csv",
+                     "proc:anuncios_*_enriquecido.json"]},
     "generar_cert_energetico_municipal.py": {
         "group": "enriquecimiento",
-        "in": [],
+        # Certificados (raw) + dim ya enriquecida por aplicar_cobertura_mercado.
+        "in": ["raw:certificados_energeticos_*_completo.csv",
+               "proc:dim_municipios.csv"],
         "out": ["proc:cert_energetico_municipal_252.csv"], "out_glob": []},
     "generar_cert_energetico_moda_municipio.py": {
         "group": "enriquecimiento",
-        "in": [],
+        # Depende de la salida municipal: la arista fuerza el orden en el DAG.
+        "in": ["proc:cert_energetico_municipal_252.csv"],
         "out": ["proc:cert_energetico_moda_municipio.csv"], "out_glob": []},
     # gaps93 (tablas auxiliares de los 93 municipios sin serie oficial)
     "generar_municipios_faltantes_93.py": {
@@ -210,7 +227,9 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "out": ["proc:comparativa_compra_alquiler_af.csv"], "out_glob": []},
     "generar_anuncios_residencial_filtrado.py": {
         "group": "analisis",
-        "in": ["proc:anuncios_unificados.csv"],
+        # Lee el residencial de generar_vistas_mercado.py, no el unificado:
+        # declarar el unificado lo colocaba ANTES de su entrada real.
+        "in": ["proc:anuncios_vivienda_residencial.csv"],
         "out": ["proc:anuncios_vivienda_residencial_filtrado.csv"],
         "out_glob": []},
     "generar_vistas_mercado.py": {
@@ -354,8 +373,12 @@ def _estado(script: str) -> tuple[str, str]:
               if p.exists() and p.stat().st_mtime > mtime_out]
     if nuevas:
         return "DESACTUALIZADO", "entradas más nuevas: " + ", ".join(nuevas[:3])
+    # _resolver devuelve siempre [ruta] para refs concretas, exista o no: hay
+    # que comprobar .exists() o el chequeo nunca ve entradas ausentes y da
+    # falso verde delante de un data/raw incompleto (p.ej. un clon sin datos).
     ausentes = [ref for ref in SCRIPTS[script].get("in", [])
-                if not any(ch in ref for ch in ("*", "?", "[")) and not _resolver(ref)]
+                if not any(ch in ref for ch in ("*", "?", "["))
+                and not _resolver(ref)[0].exists()]
     if ausentes:
         return "DESACTUALIZADO", "entradas inexistentes: " + ", ".join(ausentes[:3])
     return "OK", f"{len(salidas)} salidas al día"
@@ -373,6 +396,11 @@ def _run_script(script: Path) -> tuple[int, float]:
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
+            # El hijo escribe UTF-8 (PYTHONUTF8=1); sin encoding explicito el
+            # padre decodifica con el locale (cp1252 en Windows ES) y pierde
+            # stdout/stderr del paso: fallos sin diagnostico.
+            encoding="utf-8",
+            errors="replace",
             env=env,
         )
         rc = proc.returncode

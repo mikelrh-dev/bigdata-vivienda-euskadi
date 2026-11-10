@@ -154,6 +154,8 @@ def _ejecutar_extractor(script: Path) -> tuple[int, list[dict]]:
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         rc = proc.returncode
         if proc.stdout:

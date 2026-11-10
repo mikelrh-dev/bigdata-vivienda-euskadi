@@ -102,13 +102,15 @@ def main() -> int:
     # 11. Pytest bateria fase datos
     r = subprocess.run([sys.executable, "-m", "pytest", "tests/test_fase_datos.py",
                         "tests/test_raw_inmutable.py", "tests/test_raw_guardrails.py",
-                        "-q"], capture_output=True, text=True, cwd=ROOT)
+                        "-q"], capture_output=True, text=True,
+                        encoding="utf-8", errors="replace", cwd=ROOT)
     tail = (r.stdout + r.stderr).strip().splitlines()[-1] if (r.stdout + r.stderr).strip() else ""
     check("11 pytest bateria verde", r.returncode == 0, tail)
 
     # 12. Orquestador declara plan (dry-run)
     r2 = subprocess.run([sys.executable, "transform/run_all.py", "--dry-run"],
-                        capture_output=True, text=True, cwd=ROOT)
+                        capture_output=True, text=True,
+                        encoding="utf-8", errors="replace", cwd=ROOT)
     check("12 orquestador dry-run", r2.returncode == 0,
           [l for l in r2.stdout.splitlines() if "pasos" in l][:1])
 
