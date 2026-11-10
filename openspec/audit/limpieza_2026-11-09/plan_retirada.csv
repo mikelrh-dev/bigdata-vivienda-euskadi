@@ -1,0 +1,137 @@
+﻿accion,origen,destino,bytes,grupo,motivo
+BORRAR,demo-kpi/.hyperframes/artifacts/checks/141c4e62-a435-4eaf-b2a9-55ad271c30a9.json,,2533,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/checks/be8939cc-72b7-40c8-9815-12197ee8c8e4.json,,7985,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/.capture-owner.json,,42,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/contact-sheet.jpg,,104424,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/frame-00-at-2s.png,,68294,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/frame-01-at-8s.png,,76182,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/frame-02-at-15s.png,,80386,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/frame-03-at-22s.png,,91861,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/artifacts/snapshots/e10c00af-e70a-4c58-8099-0cd10823b450/frame-04-at-23.75s.png,,91762,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/history-id,,37,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/render-outputs.json,,67,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/.hyperframes/video-state.json,,10427,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/out.mp4,,767009,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-kpi/renders/demo-kpi_2026-11-04_23-14-07.mp4,,767009,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/checks/01faae84-5aee-4300-9ffe-2816c2b83a6d.json,,40241,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/checks/0334a28d-7253-4322-81a2-80f019a5e6be.json,,31607,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/checks/07294512-beec-4116-9682-75582c161709.json,,40241,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/checks/36e06d8b-a2f8-4f09-bd11-f87cd201684b.json,,36348,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/checks/c8ddcd9c-837a-4c48-ba82-50c04a548a67.json,,31607,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/.capture-owner.json,,42,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/contact-sheet.jpg,,131827,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/frame-00-at-4s.png,,271142,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/frame-01-at-12s.png,,220680,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/frame-02-at-20s.png,,272906,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/artifacts/snapshots/824ffb0b-1eb1-44e3-bbb6-cff569734511/frame-03-at-30s.png,,262711,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/history-id,,37,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/render-outputs.json,,68,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/.hyperframes/video-state.json,,17854,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/out.mp4,,2715355,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,demo-mapa/renders/demo-mapa_2026-11-04_23-29-58.mp4,,2715355,generado_demo,render local ignorado; GIF/WebP versionados se conservan
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/035612002d4cd7e0ff5933a137882ef57400483034fa6054760a8c3bcdc67a33.json,,15320,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/03dc01766b41c23d9c0632f86c4776a856eb5945bde24b7c4ad89bfcb9f6a643.json,,23648,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/09f07f200f24ea2b4cad1c7fcbd6ee57c7cd2444a7bf4dd810bfb49d5ba30536.json,,14010,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/11cb4616207628cd059268a8508ade1150f636fb46dc0963520a398b39ab7098.json,,14607,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/14e71bf9ba35e8297727d0caaee3da934b345ad9cb34f1df6322cfb3cb85473e.json,,33555,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/16d6bb71e0456501cef57786914a1b8a27db26b619420d31be9f90f284cccec1.json,,64338,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/172c887725b2fb98cfc9cf43928dec88d8605564a6ace74e5cea6fab8eb7c8be.json,,14860,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/19cf4db150a7335afacac32591d237a1f299b16643bddc85f5a83c85a73614ae.json,,19815,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1a6f0644b51fe5f57d8f337e121656e0bd88928513d037c4964bf6acbd399c6a.json,,22792,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1ca6f44f39d4c2dfd406023f638f637eafcdb18919546ea79d6521e01fd3589f.json,,10987,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fa7c1bf03b5f00195ee0c923158ef39ea14db06ffe514729328d19f52e84409.json,,21645,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fcd7056031eec608ae2b3f91ab7866a2cbc49ed2dd8f97f66b667b8c4621a7e.json,,20909,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/1fe312511cd5614bf2b754e6acaa7fc76a77f1dd3598dd32519182b690c3d77e.json,,16869,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/256da1d2468da2817aef6db7547ff64b3d3f5f21edc55e7cfe1233349656e7c5.json,,25064,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2a452cafd3d4fe631f69346451d7b38cda91ace177143195d0d77f42e007172b.json,,32091,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2d07282dd8d0d0c765a5c8088b17f3454f508670b8c847314a83931f645ac526.json,,14745,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2fba1b33c5010352a1f43cc7c0038c9e4c9ed9d8a600abda1793abce10e2e2f2.json,,13520,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/2ff203a6174cbbec28ceb2df2a7afd77bf4aa18a4bbf0f2850d164005a9f309a.json,,1010,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/324f2fc1457b427531460a2d999ca4991a4769154aacae8ab0f9a6529f0a350f.json,,14969,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/36bb2c4f12b19e454cee75f3e31e8e9afb9bf4735fbe363a86e11af3008a98b1.json,,9463,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3c529f84173f1b22ddcbb2f419cdf29ff226729d7acb413fa6badd6d860be407.json,,2468,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3c79e16e9118e4fe2ad086f6bba4c8ce34c2e3ed82a68cde5370e65dacaf70cb.json,,36291,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/3f232c1c48eb45137d9cc81536b6fdc8e60a2fd66922c9b6579ad9b60724fce9.json,,6014,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/4edc914c181fec9f782ebdfc0e2584784d05245db5a61fabdb344dc6314731c1.json,,1429,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/5334111c84c9009d4c47a0e4f6274a60012c6856d6a32d8b93e965ee2dbbc814.json,,38341,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/5c54f9537aa3612e22f7794fa0858f8070f90bc076493484f26af434d770cb03.json,,8678,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/60018e41c45624572b4958911995b6afdd83909d1767f11225ed326447712d86.json,,2138,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/6196a5afdec7239c0fe874b81a55cbbf512e80f8ed68b84a0271352916fe8eee.json,,41922,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/64c3e315ef9cb894f336e72fc019fcd788b9a8762ea01ccb5c499d0eca80cf18.json,,13289,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/661651d4cb95b38d3cd866ea352ed3d3859aabf9d770d026906da6c0c3f3dfd8.json,,38430,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/6640cbf38df719fa89a10868576dcf72ce4257b05203188f2eb0e89f5eccabf1.json,,15436,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/69c5190b792a9193d905ee078c333f8080b9d3e961277840dfd0e40d1cde3d57.json,,1802,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/7ea318e8ae9132a5ca710eea285926166b93ed94c85f69483a212a863a93aac9.json,,15294,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/7ec3efc1373bfea52db93fa7b454d4689d94692299107e82d808d1b7c9616c2f.json,,9822,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/88c458d3678645ed69d638441ee3eea7ab67fda6599d5c0ca2caa12302bddb12.json,,11749,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/8997f0df603fbaaff7999c2b2df2515af277a96452f614d8494fee728f505ef3.json,,1054,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/8db96d5614874d102878a9e3db5b1d0727679144d47d5eef584eac86878d5516.json,,2413,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/956ece1a58f898a5cce4de850cedbd2383a945687251cb283a5e16f2122a9e89.json,,20113,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/95f5a7a45616c014b8093b4cf332bb19c103a100c157210e9cf4463bfd8a050f.json,,25966,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/9bfb29540542ec28bd28e1706208dbc2a04c770843169c010e207e03396b796f.json,,20155,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/9cbaf53b449ff50c121cbc2e9f788b5349f24420cd072f4d73f907dcf446a183.json,,2480,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a159bf711307506c3241b6b6e5bab28f051bfa795ab82fd7116f666a029e2bd4.json,,13216,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a32135ba72e8bcd8f0cb1f707cc73baf4927be7a19c048643043a22d57716b63.json,,19795,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a532cd7cf37af67dff6045ddc0a78288b9eb6858330faa8839e52f306d0f47b1.json,,49004,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a7f1309e6fed85a1c8d65940dce55f2de2572655eb380db234dcd26647853a39.json,,6668,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a8142f5d7f49adc32953070174141a9b82a458aeb7924d29770ff3a3abd7f11b.json,,1639,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/a98ab458f0a47e716aa98e29f461906139f704efd0d47f384c78edf62588f2e0.json,,5003,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/abd9bfb72d39d18613cfaa31103976d752ea56ecbdff622ccba56acb1ebb3e76.json,,20682,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/bc598ae35fa6966641d8a17dc0b192c3e162306c762743dca838ac2b52fedd31.json,,10619,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/bd10718479815ffd8c9c2194e13c28287a32d570657fab0771e8bb9fecb71b7a.json,,38102,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/cf20c49c993804dee14a2986ebf1457a406370019933889385a527473311e53d.json,,34030,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d18003ac3221ca196ec7424d1b9b19fffe457bdcd8e15efed0cf0bbed3231110.json,,12646,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d2144fd5ad43ec5ae31bc01f69f6e86af4ff0f5537a10a8edd99a84800e26b53.json,,3844,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d3a6af4c0bd1b445e04b70fd2938d782185a7685e4b1658bd5cafc8accc27411.json,,25860,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/d810e212f2a055a4af9991f65a2dc84bbea96360a32844023732aa5c3db3b728.json,,21437,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/dd19e0ae315ff54638afa66f58159578efb7f3f7a98b5e210d6d1615e71319df.json,,9207,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/ddda7eb9d5c19608b9f38bc495116330c782c2204f1d4afebe5a3e1eefb5ff04.json,,7745,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/de612ce62387d3197fc88eefa08e4b56e1515582f7ffab558743453a55b6f31e.json,,26958,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/ebcd6c0f7c3ecad6bdd781a24526010183bc87cd7757b1f9fc9d5a4f43bffd0e.json,,53674,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f2b1c8f0b1d6885d165ffe446197c9c68458442437fb55cbc6634e24a3cdc184.json,,21797,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f54042a22521aeaae60ef1efa63e09cce9b343e5a9f2121895a99067561e007e.json,,32121,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f741f1929863c473eaa50613e8ee0d2c22766e1d7e6185876d5b1f4e54cf067d.json,,8372,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/f9de31ea5d1c982cd30e316451030ed463e71bac3aee584e22af023f4a8792dc.json,,26269,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/fac432e9787894987cbe8130d6dd55119cf9031ae5bcabfc24c0295610c92637.json,,66057,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/ast/v0.9.97-s29-g7154a062ba57/fef446f8362902eafa619d5e2c1f69277252fac1cb40dc31a3b6025d9f693fad.json,,21400,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/semantic/p58e6ae4bea3f/8ad1b662ea8fede0280816803716dd02e8895b6b3b961bee33f579b66cd9e4d9.json,,260,generado_herramienta,cache o metadato de herramienta
+BORRAR,graphify-out/cache/stat-index.json,,650,generado_herramienta,cache o metadato de herramienta
+BORRAR,logs/raw_guard_audit.log,,13578,generado,log regenerable e ignorado
+BORRAR,requirements-legacy.txt,,178,legacy_deliberado,DuckDB separado del requirements activo
+BORRAR,scratchpad/build_mapa.py,,31894,scratch,prototipo local; sustituido por transform/generar_mapa_esquema.py
+BORRAR,scratchpad/check_mapa.py,,2655,scratch,comprobacion one-off sin referencias
+BORRAR,scratchpad/check_mapa2.py,,3771,scratch,comprobacion one-off sin referencias
+BORRAR,scratchpad/mapa_norm.json,,43159,scratch,salida intermedia del prototipo; ignorada
+BORRAR,scratchpad/prototipo_pisos_ubicacion.py,,12392,scratch,prototipo superado por el flujo transform/test
+BORRAR,scratchpad/sha1.txt,,681,duplicado,duplicado byte a byte de sha2.txt; sin referencias
+BORRAR,scratchpad/sha2.txt,,681,duplicado,duplicado byte a byte de sha1.txt; sin referencias
+BORRAR,scripts/launch_duckdb_ui.py,,1978,residuo_duckdb,"lanzador local de DuckDB UI, ignorado y sin referencias"
+BORRAR,scripts/validar_fuentes_nuevas.py,,1928,residuo_activo,validacion one-off que importa DuckDB; test en suite y dependencia no declarada
+BORRAR,tests/test_fuentes_validacion.py,,627,residuo_activo,ejecuta validar_fuentes_nuevas; mantiene DuckDB como dependencia oculta
+BORRAR,transform/auditoria_duckdb.py,,5018,residuo_duckdb,auditoria one-off; escribe en scratchpad y esta fuera del DAG
+BORRAR,transform/generar_dashboard_completo.py,,9088,residuo_duckdb,sustituido por exportar_png_desde_mongo; conserva literales antiguos
+BORRAR,transform/generar_dashboard_visual.py,,4746,residuo_duckdb,sustituido por exportar_png_desde_mongo; README aun lo invoca
+ARCHIVAR,docs/pendiente_duckdb_pymongo_2026-11-05.md,docs/archive/2026-11/pendiente_duckdb_pymongo_2026-11-05.md,1155,documento_resuelto,"deuda resuelta en 2026-11-05, fuera de archive"
+ARCHIVAR,notebooks/Kafka_Ejercicio.ipynb,archive/notebooks/Kafka_Ejercicio.ipynb,18325,residuo_ejercicio,ejercicio de pedidos HDFS/Kafka ajeno al proyecto
+ARCHIVAR,scratchpad/backup_t3prev/anuncios_unificados.json,archive/scratchpad/backup_t3prev/anuncios_unificados.json,660546,backup_historico,"backup previo a T3, sin uso runtime"
+ARCHIVAR,scratchpad/backup_t3prev/anuncios_unificados_prev.csv,archive/scratchpad/backup_t3prev/anuncios_unificados_prev.csv,137714,backup_historico,"backup previo a T3, sin uso runtime"
+ARCHIVAR,scratchpad/backup_t3prev/cobertura_anuncios.csv,archive/scratchpad/backup_t3prev/cobertura_anuncios.csv,8176,backup_historico,"backup previo a T3, sin uso runtime"
+ARCHIVAR,scratchpad/backup_t3prev/dim_municipios.json,archive/scratchpad/backup_t3prev/dim_municipios.json,93954,backup_historico,"backup previo a T3, sin uso runtime"
+ARCHIVAR,scratchpad/backup_t3prev/dim_municipios_prev.csv,archive/scratchpad/backup_t3prev/dim_municipios_prev.csv,23087,backup_historico,"backup previo a T3, sin uso runtime"
+ARCHIVAR,scratchpad/p1-1_backup_2026-11-07/analisis_variables_base.csv,archive/scratchpad/p1-1_backup_2026-11-07/analisis_variables_base.csv,108204,backup_historico,backup silver citado en cambio archivado
+ARCHIVAR,scratchpad/p1-1_backup_2026-11-07/dim_municipios.csv,archive/scratchpad/p1-1_backup_2026-11-07/dim_municipios.csv,23134,backup_historico,backup silver citado en cambio archivado
+ARCHIVAR,scratchpad/p1-1_backup_2026-11-07/dim_municipios_enriquecido.csv,archive/scratchpad/p1-1_backup_2026-11-07/dim_municipios_enriquecido.csv,268095,backup_historico,backup silver citado en cambio archivado
+ARCHIVAR,scratchpad/p1-1_backup_2026-11-07/dim_municipios_renta.csv,archive/scratchpad/p1-1_backup_2026-11-07/dim_municipios_renta.csv,253506,backup_historico,backup silver citado en cambio archivado
+ARCHIVAR,scratchpad/p1-1_backup_2026-11-07/dim_municipios_tension.csv,archive/scratchpad/p1-1_backup_2026-11-07/dim_municipios_tension.csv,8982,backup_historico,backup silver citado en cambio archivado
+OPCIONAL_BORRAR,.atl/.skill-registry.cache.json,,64,generado_herramienta,cache o metadato de herramienta
+OPCIONAL_BORRAR,.atl/skill-registry.md,,32279,generado_herramienta,cache o metadato de herramienta
+OPCIONAL_BORRAR,.freebuff/project-id,,37,generado_herramienta,cache o metadato de herramienta
+NO_RETIRAR,.gitignore,,1548,referencia_duckdb,menciona DuckDB; decidir historico o activo
+NO_RETIRAR,README.md,,22853,editar,paso 5 invoca dashboards DuckDB; cita cifra historica
+NO_RETIRAR,analysis/run_analisis_mongo.py,,55591,editar,docstring historico menciona DuckDB
+NO_RETIRAR,docs/README.md,,2215,editar,describe G_gaps como tabla literal del generador legacy
+NO_RETIRAR,docs/analisis_vault_vs_rubrica.md,,5865,revisar,analisis que cita generadores legacy
+NO_RETIRAR,docs/auditoria_10_10_SDD_2026-11-05.md,,3580,revisar,documento historico que cita el generador legacy
+NO_RETIRAR,docs/guion_defensa.md,,9834,editar,menciona cifra historica de DuckDB
+NO_RETIRAR,openspec/plan/archive/plan_mejora_silver_pendiente.md,,3061,referencia_duckdb,menciona DuckDB; decidir historico o activo
+NO_RETIRAR,transform/run_all.py,,22105,editar,EXCLUIDOS cita auditoria_duckdb y los dos dashboards
