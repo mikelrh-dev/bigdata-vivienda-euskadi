@@ -73,7 +73,7 @@ silver (data/procesado) → MongoDB local → PyMongo (limpieza)
 
 | Fase | Estado |
 |---|---|
-| 0. Entorno y VM | ✅ venv y Docker Desktop OK; cadena vigente Windows>Kafka centro>HDFS (VM legacy descartada) |
+| 0. Entorno y VM | ✅ venv OK; MongoDB local sin Docker; cadena vigente Windows>Kafka centro>HDFS (VM legacy descartada) |
 | 1. Extracción | ✅ scripts 01–26, 356 archivos en `data/raw/` |
 | 2. Kafka | ✅ implementado con tests offline; gate extremo a extremo pendiente |
 | 3. MongoDB (modelado, PyMongo, consultas) | ✅ |
