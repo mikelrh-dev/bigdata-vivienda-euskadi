@@ -26,7 +26,7 @@ no hay cifras tecleadas en el HTML.
 ## Presentar
 
 Abre `index.html` en Chrome y usa **← →**, **espacio** o clic; **F** para
-pantalla completa. El texto completo está en `docs/guion_defensa_12min.md`.
+pantalla completa. El texto completo está en `openspec/archive/2026-11-10-docs/guion_defensa_12min.md`.
 Añade `?static` a la URL para desactivar las animaciones (capturas y OBS).
 
 ## Exportar PDF

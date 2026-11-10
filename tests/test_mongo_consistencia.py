@@ -3,7 +3,7 @@
 TRANSACCIONES-01 (RA3 Consistencia, nivel 10): el modelo no necesita
 transacción multidocumento; se demuestra con código una operación
 atómica de un único documento (storage/mongo.py:marcar_calidad_municipio)
-y se justifica en docs/modelo_mongodb.md. PYMONGO-PRO-01 (Tema 8 §12):
+y se justifica en openspec/archive/2026-11-10-docs/modelo_mongodb.md. PYMONGO-PRO-01 (Tema 8 §12):
 load_all ya no silencia errores de ensure_indexes.
 
 Todo el trabajo de escritura ocurre en la base de test

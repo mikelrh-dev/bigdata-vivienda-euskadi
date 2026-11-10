@@ -24,7 +24,7 @@ obtener indicadores con Aggregation Pipeline.
 
 ### Requirement: MODELO-01 — Modelo justificado y relaciones
 
-El sistema SHALL responder en `docs/modelo_mongodb.md`, literalmente, las 7
+El sistema SHALL responder en `openspec/archive/2026-11-10-docs/modelo_mongodb.md`, literalmente, las 7
 preguntas docx §5: ¿qué información se consulta normalmente junta?; ¿qué
 información cambia con frecuencia?; ¿qué arrays podrían crecer sin límite?;
 ¿hay información que se repite pero interesa conservar como fotografía
@@ -35,7 +35,7 @@ adecuados para fechas, importes, identificadores, booleanos o arrays?
 
 #### Scenario: Preguntas literales en el doc
 
-- GIVEN `docs/modelo_mongodb.md`
+- GIVEN `openspec/archive/2026-11-10-docs/modelo_mongodb.md`
 - WHEN se revisa el modelado
 - THEN las 7 preguntas aparecen literales con su respuesta
 - AND ≥1 decisión embedding/referencing queda justificada
@@ -302,7 +302,7 @@ El sistema SHALL demostrar con `explain("executionStats")`, para
 Decimal128(1000)`, la transición COLLSCAN → IXSCAN con `nReturned` y
 `totalDocsExamined=1` tras el índice ESR
 `{ubicacion.codigo_ine:1, modalidad:1, precio_eur:1}`, y SHALL documentarlo en
-`docs/modelo_mongodb.md` junto a geo 2dsphere sparse, multikey
+`openspec/archive/2026-11-10-docs/modelo_mongodb.md` junto a geo 2dsphere sparse, multikey
 (`equipamiento`) y parcial.
 (Previously: ESR/geo/multikey/parcial en SHOULD sin evidencia.)
 
@@ -315,7 +315,7 @@ Decimal128(1000)`, la transición COLLSCAN → IXSCAN con `nReturned` y
 
 #### Scenario: Geo, multikey y parcial documentados
 
-- GIVEN `docs/modelo_mongodb.md`
+- GIVEN `openspec/archive/2026-11-10-docs/modelo_mongodb.md`
 - WHEN se revisan los índices
 - THEN constan geo 2dsphere sparse, multikey `equipamiento` y parcial
 - AND cada uno cita su consulta real justificativa

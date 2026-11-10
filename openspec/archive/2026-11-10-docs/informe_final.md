@@ -154,6 +154,6 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 - `data/resultados/comparativa_3_municipios_mongo.csv` (4 filas; nombre histórico)
 - `data/resultados/sensibilidad_idw.csv`
 - `data/resultados/bootstrap_robustos.csv`
-- `docs/datos_finales_conclusiones_2026-11-05.md` (huella y conteos)
-- `docs/diccionario_columnas.md` (qué columna manda)
-- `docs/matriz_indicadores.md` (indicador canónico y pipeline)
+- `openspec/archive/2026-11-10-docs/datos_finales_conclusiones_2026-11-05.md` (huella y conteos)
+- `openspec/archive/2026-11-10-docs/diccionario_columnas.md` (qué columna manda)
+- `openspec/archive/2026-11-10-docs/matriz_indicadores.md` (indicador canónico y pipeline)

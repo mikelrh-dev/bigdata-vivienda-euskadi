@@ -63,10 +63,10 @@ flowchart LR
 
 ## Decisiones clave
 
-- Raw append-only con `_raw_guard` + manifest + `.FROZEN` (contrato en `docs/contrato_datos_raw.md`).
+- Raw append-only con `_raw_guard` + manifest + `.FROZEN` (contrato en `openspec/archive/2026-11-10-docs/contrato_datos_raw.md`).
 - Joins siempre por `codigo_ine` (5 dígitos), nunca por nombre (`muni_resolve.py`).
-- Nulos con flag + método (`R1`, `R6`, `R8`, `R9` en `docs/reglas_limpieza.md`); outliers marcados, no borrados.
-- MongoDB hecho vía PyMongo (`storage/load_mongo.py`, `analysis/mongo_aggregations.py`, `analysis/mongo_indexes.py`): 16 vivas (14 negocio + 2 habitaciones `anuncios_habitaciones_unificados` 201 y `anuncios_habitaciones_unificados_bigdata` 201) + 14 `__backup` = 30 totales, 11 pipelines, índices ESR/2dsphere/multikey con `explain()` read-only COLLSCAN 594 → IXSCAN 1 (filtro `20069`) y CSV/PNG en `data/resultados/`. Ver `docs/modelo_mongodb.md`.
+- Nulos con flag + método (`R1`, `R6`, `R8`, `R9` en `openspec/archive/2026-11-10-docs/reglas_limpieza.md`); outliers marcados, no borrados.
+- MongoDB hecho vía PyMongo (`storage/load_mongo.py`, `analysis/mongo_aggregations.py`, `analysis/mongo_indexes.py`): 16 vivas (14 negocio + 2 habitaciones `anuncios_habitaciones_unificados` 201 y `anuncios_habitaciones_unificados_bigdata` 201) + 14 `__backup` = 30 totales, 11 pipelines, índices ESR/2dsphere/multikey con `explain()` read-only COLLSCAN 594 → IXSCAN 1 (filtro `20069`) y CSV/PNG en `data/resultados/`. Ver `openspec/archive/2026-11-10-docs/modelo_mongodb.md`.
 - HDFS solo-raw por decisión firmada 2026-11-05: solo `data/raw/` en HDFS con recuperación SHA byte-idéntica; `data/procesado/` (188 ficheros) queda en local y no se sube. Kafka centro (broker `10.22.87.215:9092`, topic vigente `vivienda_euskadi` 1 partición RF 1 grupo `hdfs_centro`, lag 0) verificado en `openspec/audit/informe_auditoria_2026-11-06_v2.md`. RF 1 justificado: single node sin alta disponibilidad; la idempotencia es por upsert + descarte SHA, no por replicación. CI en rama `master` (`.github/workflows/quality-gate.yml`); gate vivo solo manual `GATE_LIVE=1`.
 - Atomicidad vs transacción: atomicidad de un documento (upsert idempotente) no exige replica set; transacción multi-documento commit/abort sí exigiría replica set y no se fuerza en el standalone local (solo sonda en `vivienda_euskadi_test`).
 - Limitaciones declaradas: cobertura anuncios 64/252 (4 robustos: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39), Pisos geo aproximada, equipamiento solo RealtyAPI, renta joven = proxy. FAIL 07 paro-cero (Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26) documentado sin enmascarar.

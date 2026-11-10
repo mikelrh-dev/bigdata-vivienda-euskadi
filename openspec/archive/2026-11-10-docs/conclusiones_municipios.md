@@ -49,4 +49,4 @@ Verificacion rapida: `data/resultados/comparativa_3_municipios_mongo.csv` repite
 
 - Esfuerzo 18-34 = `cuantia_media_eur_mes_mediana` x12 / `renta_joven_estimada_18_34` x100; esfuerzo 16-29 legacy usa `renta_joven_estimada_16_29` con el mismo numerador. El pipeline principal es `pipeline_indicadores_municipio` en `analysis/mongo_aggregations.py`.
 - `n_anuncios` y `precio_medio_eur` vienen del `$lookup` a `anuncios` por `ubicacion.codigo_ine`; son foto 2026 (Fotocasa + Pisos + RealtyAPI), no stock oficial.
-- Paro y cuello de botella: cadena offline actual — HDFS centro solo lectura (raw intacto, procesado sin subir) + Kafka VM pid 1832 verificado en `docs/trazabilidad_vm.md`; todas las cifras anteriores salen de CSV regenerados y de Mongo en local (Docker).
+- Paro y cuello de botella: cadena offline actual — HDFS centro solo lectura (raw intacto, procesado sin subir) + Kafka VM pid 1832 verificado en `openspec/archive/2026-11-10-docs/trazabilidad_vm.md`; todas las cifras anteriores salen de CSV regenerados y de Mongo en local (Docker).
