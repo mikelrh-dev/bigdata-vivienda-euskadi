@@ -8,7 +8,7 @@ Fuente silver: `data/procesado/`. Loader: `storage/load_mongo.py`.
 | Colección | Documentos | `_id` | Propósito |
 |---|---|---|---|
 | `municipios` | 252 | `codigo_ine` | Dimensión maestra municipal. |
-| `anuncios` | 759 | `ObjectId` | Anuncios unificados (`ubicacion.codigo_ine` + `equipamiento[]`). |
+| `anuncios` | 594 | `ObjectId` | Anuncios unificados (`ubicacion.codigo_ine` + `equipamiento[]`). |
 | `alquiler_municipal` | 252 | `codigo_ine` | Alquiler oficial Eustat + imputación. |
 | `indicadores` | 252 | `codigo_ine` | Variables analíticas base. |
 | `ecvi_compraventa` | 29 | `{codigo_ine}_{trimestre}` | Compraventa por área funcional (F5). |
@@ -17,7 +17,7 @@ Fuente silver: `data/procesado/`. Loader: `storage/load_mongo.py`.
 | `osrm_tiempos` | 252 | `codigo_ine` | Tiempos OSRM a capitales (D3). |
 | `emancipacion_juventud` | 1 | `resumen` | Emancipación CAE (G4, solo territorial). |
 | `etxebide_solicitudes` | 5040 | `{codigo_ine}_{anio}` | Solicitudes Etxebide (C1). |
-| `udalmap_extendido` | 252 | `codigo_ine` | 6 indicadores alto valor (123/150/30/38/67/15). |
+| `udalmap_extendido` | 252 | `codigo_ine` | 6 indicadores alto valor (252/252 no nulos cada uno). |
 | `etxebide_promociones` | 406 | `ID_PROM_idx` + `codigo_ine` derivado | Promociones VPO por municipio/estado/tipología (C1). Stock histórico no público → "sin dato". |
 | `certificados_energeticos` | 252 | `codigo_ine` | Agregado municipal A-G + moda (C5). |
 
@@ -37,9 +37,11 @@ Fuente silver: `data/procesado/`. Loader: `storage/load_mongo.py`.
 - Booleanos: BSON bool.
 - Fechas: `Date`; años: `int`.
 - Arrays: `equipamiento: [string]`, `historico_precios: [object]`, `variantes: [string]`.
-- Geo: GeoJSON Point en `ubicacion.coordenadas` (índice 2dsphere, sparse): 424 de 759 anuncios con `{"type":"Point","coordinates":[lon,lat]}` real desde `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`); el resto `None` por falta de silver.
+- Geo: GeoJSON Point en `ubicacion.coordenadas` (índice 2dsphere, sparse): 424 de 594 anuncios con `{"type":"Point","coordinates":[lon,lat]}` real desde `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`); el resto `None` por falta de silver.
 
 ## Índices
+
+Presentes en prod tras restaurar con `ensure_indexes()` (idempotente): **24 índices en 16 colecciones vivas** (16 `_id_` + 8 de negocio; 4 de `anuncios`).
 
 - `anuncios`: `{ ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1 }` (ESR).
 - `anuncios`: `{ ubicacion.coordenadas: "2dsphere" }` (sparse).
@@ -52,7 +54,9 @@ Fuente silver: `data/procesado/`. Loader: `storage/load_mongo.py`.
 - `udalmap_extendido`: `{ _id: 1 }` (joins D2/accesibilidad).
 
 Efecto demostrado con `explain("executionStats")` en `analysis/mongo_indexes.py`
-(COLLSCAN -> IXSCAN, reducción de `totalDocsExamined`).
+(COLLSCAN 594 -> IXSCAN 1 con el filtro canónico `20069` + `larga_estancia` +
+`precio_eur <= 1000`; el "antes" fuerza COLLSCAN con `hint:{"$natural":1}` sin
+dropear el índice y el "después" usa el ESR presente, sin recrearlo).
 
 ## Shard key (conceptual)
 
@@ -108,36 +112,36 @@ marcado explícito de nulos y resolución de duplicados, con contadores
 
 ## Pipelines y reproducibilidad (Tema 8, secciones 14 y 16)
 
-MongoDB hecho: 14 colecciones cargadas con PyMongo (+13 `__backup`) (`storage/load_mongo.py` vía `storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()`), 10 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`, `pipeline_vpo_terminadas`, `pipeline_tier_por_municipio`). La coleccion `vpo_municipal` (252) guarda el flujo oficial de VPO terminada del indicador 73; no es stock.
+MongoDB hecho: 16 colecciones vivas cargadas con PyMongo (+14 `__backup` = 30 totales) (`storage/load_mongo.py`), limpieza (`storage/clean_mongo.py`), índices (`analysis/mongo_indexes.py`, ESR/2dsphere/multikey con `explain()` read-only), 11 pipelines en `analysis/mongo_aggregations.py` (`pipeline_indicadores_municipio`, `pipeline_alquiler_por_municipio`, `pipeline_modalidades`, `pipeline_top_municipios_por_esfuerzo`, `pipeline_esfuerzo_por_sexo`, `pipeline_accesibilidad_extendida`, `pipeline_udalmap_extendido_osrm`, `pipeline_vpo_por_municipio`, `pipeline_vpo_terminadas`, `pipeline_tier_por_municipio`, `pipeline_habitaciones_por_municipio`). La coleccion `vpo_municipal` (252) guarda el flujo oficial de VPO terminada del indicador 73; no es stock.
 
 Comandos: `.venv/Scripts/python.exe storage/load_mongo.py`, `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py`, `.venv/Scripts/python.exe analysis/run_analisis_mongo.py`, `.venv/Scripts/python.exe -m pytest tests/test_mongo*.py -q` (en particular `tests/test_mongo_geo.py` y `tests/test_mongo_comparativa.py`).
 
-CSVs en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4: Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39). Robustos reales con n mayor o igual a 30: 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz). GeoJSON: 424 Point en `anuncios.ubicacion.coordenadas` con índice 2dsphere.
+CSVs en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39). Robustos reales con n mayor o igual a 30: 4 (Bilbao, Donostia, Getxo, Vitoria-Gasteiz). GeoJSON: 424 Point en `anuncios.ubicacion.coordenadas` con índice 2dsphere.
 
 ## Evidencia explain antes/después (INDICES-01, Bloque 3)
 
-Consulta real justificativa (ESR):
+Consulta real justificativa (ESR, filtro canónico `20069` -> 1 doc; `48020` -> 8; `48001` -> 0):
 
-- `{"ubicacion.codigo_ine": "48001", "modalidad": "larga_estancia", "precio_eur": {"$lte": "Decimal128(1000)"}}`
+- `{"ubicacion.codigo_ine": "20069", "modalidad": "larga_estancia", "precio_eur": {"$lte": "Decimal128(1000)"}}`
 
-Índice ESR medido (creado en `analysis/mongo_indexes.py:ensure_indexes` y `explain_before_after`):
+Índice ESR presente en prod (restaurado con `analysis/mongo_indexes.py:ensure_indexes`; el explain es read-only y no lo recrea):
 
 - `{"ubicacion.codigo_ine": 1, "modalidad": 1, "precio_eur": 1}` (`idx_anuncios_ine_modalidad_precio`)
 
 Salida registrada (`python -c "from analysis.mongo_indexes import explain_before_after"` y `python analysis/run_analisis_mongo.py`, MongoDB `localhost:27017` `vivienda_euskadi`):
 
-- Antes (sin índice ESR): `COLLSCAN`, `nReturned=1`, `totalDocsExamined=759`, `totalKeysExamined=0`.
-- Después (con índice ESR): `IXSCAN`, `nReturned=1`, `totalDocsExamined=1`, `totalKeysExamined=1`.
+- Antes (COLLSCAN forzado con `hint:{"$natural":1}`, sin dropear): `COLLSCAN`, `nReturned=1`, `totalDocsExamined=594`, `totalKeysExamined=0`.
+- Después (índice ESR presente): `IXSCAN`, `nReturned=1`, `totalDocsExamined=1`, `totalKeysExamined=1`.
 
-Esto es `COLLSCAN -> IXSCAN` con `totalDocsExamined=1` tras el índice ESR y `nReturned=1` documentado. La transición se reproduce con `explain_before_after()` (elimina el índice, ejecuta `explain("executionStats")`, crea el índice y vuelve a ejecutar `explain`). La salida de `analysis/run_analisis_mongo.py` imprime las dos líneas `explain before` / `explain after` y el filtro usado.
+Esto es `COLLSCAN 594 -> IXSCAN 1` con el filtro canónico `20069` y `nReturned=1` documentado. La transición se reproduce con `explain_before_after()` read-only: el "antes" usa `hint:{"$natural":1}` (barrido completo sin dropear el índice) y el "después" usa el ESR presente, sin recrearlo; `list_indexes()` queda idéntico antes/después. La salida de `analysis/run_analisis_mongo.py` imprime las dos líneas `explain before` / `explain after` y el filtro usado.
 
-Se verifica también en `tests/test_mongo_indices.py::test_indexes_explain_totalDocsExamined` (`before.stage == COLLSCAN`, `after.stage == IXSCAN`, `before.totalDocsExamined > after.totalDocsExamined`).
+Se verifica también en `tests/test_mongo_indices.py::test_indexes_explain_totalDocsExamined` (`before.stage == COLLSCAN`, `after.stage == IXSCAN`, `before.totalDocsExamined > after.totalDocsExamined`, `after.nReturned == 1`).
 
 ## Índices geo, multikey y parcial (INDICES-01)
 
 - Geo `2dsphere` sparse: `anuncios: {"ubicacion.coordenadas": "2dsphere"}` (sparse). Consulta real justificativa: `{"ubicacion.coordenadas": {"$near": {"$geometry": {"type": "Point", "coordinates": [-2.94, 43.26]}, "$maxDistance": 5000}}}` (anuncios próximos a un punto, p. ej. Bilbao) y conteos por `{"ubicacion.coordenadas": {"$type": "object"}}`. Sin el índice 2dsphere esa búsqueda `$near` no puede usar índice espacial; con él, `explain` muestra `IXSCAN` sobre la proyección geoespacial. El campo es GeoJSON Point con `coordinates: [lon, lat]` (ver § Tipos BSON y § Backups).
 - Multikey en `equipamiento`: `anuncios: {"equipamiento": 1}` (multikey, porque `equipamiento` es un array de strings). Consulta real justificativa: `{"equipamiento": "exterior"}` o `{"equipamiento": {"$all": [...]}}` / `{"$in": [...]}` (`analysis/mongo_queries.py:anuncios_con_equipamiento`, `anuncios_array_all`). Sin índice multikey, la búsqueda por un elemento del array sería `COLLSCAN`; con él, puede resolver el elemento indexado.
-- Parcial: evaluado y rechazado para índice nuevo sin consulta real. Se evaluó un índice parcial del tipo `{"precio_eur": 1}` con `partialFilterExpression: {"precio_eur": {"$ne": null}}` o `{"ubicacion.coordenadas": "2dsphere"}` parcial solo para anuncios con geo, pero no se creó índice parcial nuevo porque no hay una consulta real medible con `explain` que lo exija sobre el conjunto actual (759 documentos): la consulta ESR y la geo ya quedan cubiertas por el compuesto ESR y el 2dsphere sparse. Decisión: parcial evaluado/rechazado documentado (Known Limits de `design.md`), no índice creado.
+- Parcial: evaluado y rechazado para índice nuevo sin consulta real. Se evaluó un índice parcial del tipo `{"precio_eur": 1}` con `partialFilterExpression: {"precio_eur": {"$ne": null}}` o `{"ubicacion.coordenadas": "2dsphere"}` parcial solo para anuncios con geo, pero no se creó índice parcial nuevo porque no hay una consulta real medible con `explain` que lo exija sobre el conjunto actual (594 documentos): la consulta ESR y la geo ya quedan cubiertas por el compuesto ESR y el 2dsphere sparse. Decisión: parcial evaluado/rechazado documentado (Known Limits de `design.md`), no índice creado.
 
 Palabra clave para búsqueda: `2dsphere` (geo), `multikey` (`equipamiento`), `parcial` (evaluado y rechazado).
 
@@ -157,37 +161,40 @@ Preguntas literales del docx §5 con respuesta justificada. Se vuelcan literalme
 
 Backups vía `replace_collection` (`storage/mongo.py`): staging + `<name>__backup` + rename; nunca `drop()` directo sobre prod. Secuencia exacta en `replace_collection`: limpiar y cargar `__staging` (`<name>__staging`); si ya existe `<name>`, volcarlo a `<name>__backup` con `$out` (previo a nuevo); renombrar `__staging` a `<name>` con `dropTarget=True`. Nunca se hace `drop()` directo sobre la colección productiva (eso dejaría ventana sin datos y perdería el backup). El loader usa `replace_collection` para `municipios`, `alquiler_municipal`, `indicadores` y resto de colecciones municipales; `anuncios` usa upsert por `(portal, id_anuncio)` porque se recarga en batch y el índice único evita duplicados.
 
-Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, municipios__backup, osrm_tiempos, udalmap_empleo, udalmap_extendido, udalmap_indicadores, vpo_municipal` (14 colecciones; además hay 13 `__backup` posteriores que no se listan).
+Listing de lectura pura (sin escrituras, `db.getCollectionNames()` sobre `vivienda_euskadi`, 2026-11-05): `alquiler_municipal, anuncios, certificados_energeticos, ecvi_compraventa, emancipacion_juventud, etxebide_promociones, etxebide_solicitudes, indicadores, indicadores__backup, municipios, municipios__backup, osrm_tiempos, udalmap_empleo, udalmap_extendido, udalmap_indicadores, vpo_municipal` (16 colecciones vivas; además hay 14 `__backup` posteriores que no se listan).
 
-Con recuentos medidos el mismo día: `anuncios` 759, `municipios` 252, `indicadores` 252, `municipios__backup` 252 e `indicadores__backup` 252.
+Con recuentos medidos el mismo día: `anuncios` 594, `municipios` 252, `indicadores` 252, `municipios__backup` 252 e `indicadores__backup` 252.
 
-Geo: 424 Point GeoJSON reales en `anuncios.ubicacion.coordenadas` (`{"type":"Point","coordinates":[lon,lat]}`), el resto `None` por falta de silver. Origen: `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`, 424 de 759). Medición: `db.anuncios.countDocuments({"ubicacion.coordenadas": {"$type": "object"}})` devuelve 424 y `db.anuncios.countDocuments({"ubicacion.coordenadas": null})` devuelve 335. El resto `None` es falta de silver (sin coordenadas), no error: el índice 2dsphere es sparse y admite documentos sin campo geo.
+Geo: 424 Point GeoJSON reales en `anuncios.ubicacion.coordenadas` (`{"type":"Point","coordinates":[lon,lat]}`), el resto `None` por falta de silver. Origen: `anuncios_fotocasa_enriquecido.csv` por `id_anuncio` (portal `fotocasa`, 424 de 594). Medición: `db.anuncios.countDocuments({"ubicacion.coordenadas": {"$type": "object"}})` devuelve 424 y `db.anuncios.countDocuments({"ubicacion.coordenadas": null})` devuelve 170. El resto `None` es falta de silver (sin coordenadas), no error: el índice 2dsphere es sparse y admite documentos sin campo geo.
 
 ## §11 Transacciones — READ justificado en standalone
 
 Máquina: MongoDB local standalone (sin replica set), `localhost:27017`. Decisión READ (docx `§11`, TRANSACCIONES-01): se documenta READ justificado en standalone porque sin replica set no hay commit/abort multidocumento. Forzar replica set sobre un standalone local no se hace en este Bloque: la atomicidad de un documento no lo exige.
 
-Atomicidad documental de `marcar_calidad_municipio` (`storage/mongo.py`): la actualización es `find_one_and_update` con `ReturnDocument.AFTER` sobre un único documento, verifica el valor de dominio y devuelve el documento ya actualizado sin estado intermedio. El test `test_atomicidad_documental` lo verifica en `vivienda_euskadi_test`, con `MONGO_ALLOW_DESTRUCTIVE` sin definir (prod intacta por defecto, conteo 759 invariante).
+Atomicidad documental de `marcar_calidad_municipio` (`storage/mongo.py`): la actualización es `find_one_and_update` con `ReturnDocument.AFTER` sobre un único documento, verifica el valor de dominio y devuelve el documento ya actualizado sin estado intermedio. El test `test_atomicidad_documental` lo verifica en `vivienda_euskadi_test`, con `MONGO_ALLOW_DESTRUCTIVE` sin definir (prod intacta por defecto, conteo 594 invariante).
 
-Sonda commit/abort solo en `vivienda_euskadi_test`: la transacción multidocumento real sí exigiría replica set y no se fuerza; si el servidor standalone la rechaza, la sonda la captura, limpia la colección de prueba y deja prod en 759. Ejemplo plausible que sí justificaría commit/abort con replica set: denormalizar en `municipios` el conteo de anuncios y la fecha de última carga junto con el borrado de anuncios obsoletos en una misma operación de negocio (todo o nada).
+Sonda commit/abort solo en `vivienda_euskadi_test`: la transacción multidocumento real sí exigiría replica set y no se fuerza; si el servidor standalone la rechaza, la sonda la captura, limpia la colección de prueba y deja prod en 594. Ejemplo plausible que sí justificaría commit/abort con replica set: denormalizar en `municipios` el conteo de anuncios y la fecha de última carga junto con el borrado de anuncios obsoletos en una misma operación de negocio (todo o nada).
 
 ## Limpieza canónica (LIMPIEZA-01)
 
-Función canónica única `clean_obsolete_fields` en `storage/clean_mongo.py`: `update_many(..., {"$unset": {...}})` que retorna `matched_count` / `modified_count` / `deleted_count`; mismo contrato en ambas colecciones (`anuncios` y `municipios`). `$unset` no borra documentos (`deleted_count=0`, 759 intacto); el contador se comprueba en test sobre `vivienda_euskadi_test` sin tocar prod por defecto.
+Función canónica única `clean_obsolete_fields` en `storage/clean_mongo.py`: `update_many(..., {"$unset": {...}})` que retorna `matched_count` / `modified_count` / `deleted_count`; mismo contrato en ambas colecciones (`anuncios` y `municipios`). `$unset` no borra documentos (`deleted_count=0`, 594 intacto); el contador se comprueba en test sobre `vivienda_euskadi_test` sin tocar prod por defecto.
 
 ## Agregación a CSV canónico (AGREGACION-01)
 
-5 pipelines a CSV canónico en `data/resultados/` reutilizando los 10 pipelines de `analysis/mongo_aggregations.py` con `$group`/`$lookup`/`$unwind` donde los datos lo permiten, sin reimplementar agregaciones en el exportador:
+8 CSV `mongo_*` en `data/resultados/` reutilizando los 11 pipelines de `analysis/mongo_aggregations.py` con `$group`/`$lookup`/`$unwind` donde los datos lo permiten, sin reimplementar agregaciones en el exportador (`EXPORTS_8`):
 
 - `mongo_esfuerzo_por_municipio.csv` desde `pipeline_indicadores_municipio` (252 filas).
 - `mongo_alquiler_por_municipio.csv` desde `pipeline_alquiler_por_municipio` (252).
 - `mongo_modalidades.csv` desde `pipeline_modalidades` (2).
 - `mongo_accesibilidad_extendida.csv` desde `pipeline_accesibilidad_extendida` (252).
 - `mongo_vpo_por_municipio.csv` desde `pipeline_vpo_por_municipio` (322). `viviendas` queda vacío cuando no hay dato: `NumViviendas` está vacío en 406/406 promociones; no es un stock cero.
+- `mongo_tier_confianza.csv` desde `pipeline_tier_por_municipio` (252).
+- `mongo_vpo_terminadas_por_municipio.csv` desde `pipeline_vpo_terminadas` (251).
+- `mongo_habitaciones_por_municipio.csv` desde `pipeline_habitaciones_por_municipio` (9).
 
-El exportador general es `exportar_cinco_csv` / `exportar_csv` (`analysis/run_analisis_mongo.py`); `exportar_tres_csv` se mantiene por compatibilidad y delega en el general con `EXPORTS_3`.
+El exportador general es `exportar_csv` / `CSV_POR_PIPELINE` con `EXPORTS_8` (`analysis/run_analisis_mongo.py`); `exportar_tres_csv` se mantiene por compatibilidad y delega en el general con `EXPORTS_3`.
 
 ## Excepciones tipadas (PYMONGO-01)
 
-`storage/load_mongo.py:_money`, `storage/clean_mongo.py:_to_decimal` y `analysis/mongo_indexes.py:drop_demo_index` / `explain_*` usan `except (TypeError, ValueError)` con `logger.warning` (más `InvalidOperation` para `Decimal128` y `OperationFailure` para `drop_index`). `DuplicateKeyError` sigue propagándose (no se captura) y `load_all` relanza con mensaje si `ensure_indexes` falla.
+`storage/load_mongo.py:_money`, `storage/clean_mongo.py:_to_decimal` y `analysis/mongo_indexes.py:explain_*` usan `except (TypeError, ValueError)` con `logger.warning` (más `InvalidOperation` para `Decimal128`). `DuplicateKeyError` sigue propagándose (no se captura) y `load_all` relanza con mensaje si `ensure_indexes` falla. El explain es read-only (`hint:{"$natural":1}` en el "antes"); ya no existe `drop_demo_index` ni `create_index` en el camino del demo.
 

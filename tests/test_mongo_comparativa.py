@@ -9,7 +9,20 @@ from __future__ import annotations
 
 import csv
 
+import pytest
+
 from analysis.comparativa_mongo import COLUMNAS, comparativa_tres_robustos
+
+
+def _mongo_ok() -> bool:
+    try:
+        from storage.mongo import ping
+        return ping() is True
+    except Exception:
+        return False
+
+
+pytestmark = pytest.mark.skipif(not _mongo_ok(), reason="sin Mongo local: skip separado")
 
 
 def test_comparativa_tres_robustos_n30(tmp_path) -> None:

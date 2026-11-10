@@ -81,14 +81,14 @@
 | Territorio Histórico (Álava/Bizkaia/Gipuzkoa) | Comparativa de alquiler, paro, renta, VPO por TH |
 | Comarca | Alquiler comarcal para los 93 sin dato; contextos económicos |
 | Municipio (252) | Tipología de mercado + paro + distancia + renta + Udalmap (47 ind.) |
-| Municipio robusto (4) | Ranking detallado de €/m², esfuerzo, comparación bilateral (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39) |
+| Municipio robusto (4) | Ranking detallado de €/m², esfuerzo, comparación bilateral (Bilbao 48020 n 204, Donostia 20069 n 126, Getxo 48044 n 50, Vitoria-Gasteiz 01059 n 39) |
 
 ## Checklist de respuesta (qué datos se necesitan)
 
 | Pregunta | Datos necesarios | Estado |
 |---|---|---|
 | Esfuerzo alquiler/renta | alquiler_municipal (159) + renta (252) | ✅ |
-| Ranking fino | anuncios con n≥30 | ⚠️ solo 4 (Bilbao 173, Donostia 113, Getxo 40, Vitoria-Gasteiz 39) |
+| Ranking fino | anuncios con n≥30 | ⚠️ solo 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) |
 | Trabajo + vivienda barata | paro Lanbide (252) + alquiler | ✅/⚠️ |
 | Mejores posibilidades | tipología + índice compuesto | ✅ |
 | Limitaciones | documentación de gaps | ✅ |
@@ -96,7 +96,7 @@
 
 ## Reevaluación post-Fase 1.5
 
-Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 14 colecciones (+13 `__backup`) y 10 pipelines), las puntuaciones mejoran:
+Tras ejecutar micro-tareas A/B/C (solo datos, antes de MongoDB; MongoDB hoy hecho con 16 colecciones vivas (+14 `__backup`) y 11 pipelines), las puntuaciones mejoran:
 
 | Pregunta | Antes | Después | Motivo |
 |---|---|---|---|
@@ -117,4 +117,4 @@ Limitaciones restantes: F5 (ECVI con mapeo a área funcional, no municipal fino)
 
 ## Conclusión
 
-Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 173, Donostia 20069 n 113, Getxo 48044 n 40, Vitoria-Gasteiz 01059 n 39)** y **"sin dato" explícito** para el resto. El ranking municipal fino y la atribución de emancipación a un municipio concreto **no son defendibles** con la muestra actual. Los indicadores Mongo (14 colecciones + 13 `__backup`, 10 pipelines, CSV en `data/resultados/`) confirman el esfuerzo y la comparativa de 4 municipios (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) vía `analysis/run_analisis_mongo.py`.
+Con los datos actuales se pueden responder profesionalmente las preguntas de **accesibilidad, trabajo+vivienda, mejores posibilidades y limitaciones** a nivel de **tipología, comarca y capitales**, con **4 municipios robustos (Bilbao 48020 n 204, Donostia 20069 n 126, Getxo 48044 n 50, Vitoria-Gasteiz 01059 n 39)** y **"sin dato" explícito** para el resto. El ranking municipal fino y la atribución de emancipación a un municipio concreto **no son defendibles** con la muestra actual. Los indicadores Mongo (16 colecciones vivas + 14 `__backup`, 11 pipelines, CSV en `data/resultados/`) confirman el esfuerzo y la comparativa de 4 municipios (Bilbao, Donostia, Getxo, Vitoria-Gasteiz) vía `analysis/run_analisis_mongo.py`.

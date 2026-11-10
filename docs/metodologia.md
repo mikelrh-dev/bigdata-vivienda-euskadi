@@ -13,7 +13,7 @@
 - RealtyAPI anuncios: 139 (3 municipios).
 - Anuncios unificados: 594 (excluye 155 habitaciones de Fotocasa y 46 de Pisos; cuarentena pisos 45 fuera de Euskadi en `cuarentena_pisos.csv`).
 - Pearson renta vs alquiler: r = 0.2094 (159 municipios con alquiler oficial).
-- Tests: 177 passed, 1 skipped destructivo separado (`pytest tests -q`; Tier A/B/C/D en `tests/test_tier_confianza.py`).
+- Tests: 235 passed, 2 skipped (237 colectados; `pytest tests -q`; Tier A/B/C/D en `tests/test_tier_confianza.py`).
 - Municipios robustos Tier A (n≥30): 4 canónicos (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) — fuerte. Tier B indicativo 10-29 = 3 (Sopela 19, Zarautz 15, Santurtzi 11, temporal!=larga); Tier C sin precio municipal 1-9 = 57; Tier D sin dato 0 = 188. Nivel (tipología 4/54/194) es ortogonal a Tier (confianza 4/3/57/188): Nivel mide estructura del mercado; Tier mide cuánta muestra sustenta la conclusión para ese municipio; son ejes ortogonales, no intercambiables. Tier derivado de n_anuncios real en Mongo (`pipeline_tier_por_municipio`, `mongo_tier_confianza.csv`, 252 filas).
 - Bootstrap robusto (`data/resultados/bootstrap_robustos.csv`): usa `n_larga_solo_vivienda` 67/60/39/37 (Bilbao/Donostia/Getxo/Vitoria-Gasteiz), distinto del `n_anuncios` Tier 204/126/50/39; los dos `n` no se intercambian en textos ni gráficos. IC95 Bilbao 33.75–40.95 y Getxo 27.54–31.77 (10.000 remuestreos); Bilbao y Donostia se solapan, sin orden firme.
 - Salario joven ajustado (mediana): 1.402 € (base 1.381 €; ajuste por riesgo local ±15 %).

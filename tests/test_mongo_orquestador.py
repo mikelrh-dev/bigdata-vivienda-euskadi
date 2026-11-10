@@ -12,6 +12,8 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
+import pytest
+
 from analysis import mongo_aggregations as ma
 from analysis.run_analisis_mongo import (
     EXPORTS_3,
@@ -21,6 +23,17 @@ from analysis.run_analisis_mongo import (
     huella_resultados,
     run_all_estandar,
 )
+
+
+def _mongo_ok() -> bool:
+    try:
+        from storage.mongo import ping
+        return ping() is True
+    except Exception:
+        return False
+
+
+pytestmark = pytest.mark.skipif(not _mongo_ok(), reason="sin Mongo local: skip separado")
 
 
 def _leer_csv(ruta: Path) -> tuple[list[str], list[dict[str, str]]]:

@@ -18,11 +18,15 @@ from analysis import mongo_aggregations as ma
 from analysis import mongo_indexes as mi
 
 
-@pytest.fixture(scope="module", autouse=True)
-def _ensure_data():
-    assert ping(), "MongoDB no responde"
-    # ensure indexes baseline at least exists for query tests
-    yield
+def _mongo_ok() -> bool:
+    try:
+        return ping() is True
+    except Exception:
+        return False
+
+
+# AISLAMIENTO-01: sin Mongo local la suite se salta (nunca escribe en prod).
+pytestmark = pytest.mark.skipif(not _mongo_ok(), reason="sin Mongo local: skip separado")
 
 
 def test_conexion():
@@ -287,15 +291,15 @@ def test_indicador_por_municipio():
 
 
 def test_indexes_explain():
-    res = mi.explain_before_after("48001", "larga_estancia", 1000)
+    # AISLAMIENTO-02: explain read-only con hint $natural; no dropea ni crea índices.
+    res = mi.explain_before_after("20069", "larga_estancia", 1000)
     before = res["before"]["stage"]
     after = res["after"]["stage"]
     assert before == "COLLSCAN"
     assert after == "IXSCAN"
-    # ensure indexes created
-    mi.ensure_indexes()
+    # El índice ESR debe estar presente en prod (restaurado con ensure_indexes).
     names = [i["name"] for i in get_collection("anuncios").list_indexes()]
-    assert "idx_anuncios_portal_id" in names
+    assert "idx_anuncios_ine_modalidad_precio" in names
 
 
 def test_etxebide_promociones_codigo_ine():

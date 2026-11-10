@@ -67,7 +67,7 @@ EXPORTS_3: tuple[tuple[str, str], ...] = (
     ("mongo_modalidades.csv", "pipeline_modalidades"),
 )
 
-# Los 5 CSV canonicos (Bloque 3, AGREGACION-01): reutilizan los 9 pipelines
+# Los CSV canonicos (Bloque 3, AGREGACION-01): reutilizan los 11 pipelines
 # sin reimplementar agregaciones. Fichero -> pipeline origen.
 EXPORTS_5: tuple[tuple[str, str], ...] = (
     ("mongo_esfuerzo_por_municipio.csv", "pipeline_indicadores_municipio"),
@@ -129,7 +129,7 @@ def _orden_canonico(filas: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def run_all_estandar() -> dict[str, list[dict[str, Any]]]:
-    """Ejecuta en orden fijo los 9 pipelines de `mongo_aggregations`.
+    """Ejecuta en orden fijo los 11 pipelines de `mongo_aggregations`.
 
     Devuelve un dict con las 8 claves en el orden de `PIPELINE_ORDER` y
     filas en orden canonico (ver `_orden_canonico`), para que la huella y
@@ -365,9 +365,9 @@ def exportar_cinco_csv(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
 ) -> dict[str, Path]:
-    """Escribe los 5 CSV canonicos (Bloque 3, AGREGACION-01).
+    """Escribe los CSV canonicos (Bloque 3, AGREGACION-01).
 
-    Reutiliza los 9 pipelines sin reimplementar agregaciones; los 3
+    Reutiliza los 11 pipelines sin reimplementar agregaciones; los 3
     historicos mas `pipeline_accesibilidad_extendida` y
     `pipeline_vpo_por_municipio` (con `$group`/`$lookup`/`$unwind` donde
     los datos lo permiten).
@@ -1148,12 +1148,12 @@ def exportar_png_desde_mongo(
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Orquestador de analisis MongoDB: 9 pipelines + 5 CSV"
+        description="Orquestador de analisis MongoDB: 11 pipelines + 8 CSV"
     )
     parser.add_argument(
         "--salida",
         default=str(RESULTADOS_DIR),
-        help="Directorio de salida de los 5 CSV (defecto: data/resultados)",
+        help="Directorio de salida de los 8 CSV (defecto: data/resultados)",
     )
     return parser.parse_args(argv)
 

@@ -32,8 +32,8 @@ técnico cae sobre una conclusión que ya está en pie.
 5. **Los 4 robustos** con n y esfuerzo; Getxo 50/Vitoria 39 (diferencia 11).
 6. **Sensibilidad**: oficial vs IDW vs bootstrap (intervalos).
 7. **Quién queda fuera**: 188 sin anuncios, 93 IDW, falacia ecológica.
-8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 10 pipelines.
-9. **Pruebas**: explain 594→1, 177 tests, gate en `scripts/verificar_fase_datos.py`, huella.
+8. **Arquitectura** en una línea: fuentes → raw → silver → Mongo → 11 pipelines.
+9. **Pruebas**: explain 594→1 (filtro `20069`, 1 doc), 235 passed + 2 skipped, gate en `scripts/verificar_fase_datos.py`, huella.
 10. **Límites y qué haríamos con más datos**.
 
 ## Reparto y tiempos
@@ -140,7 +140,7 @@ lo que se puede afirmar."
 ## 7:40–9:10 · P2 · Cómo se calculó (técnico, comprimido)
 
 - Cadena: `extract/` → **raw 352 en HDFS** (solo `raw`) → silver **188** →
-  Mongo **14 colecciones** → **10 pipelines** → 6 CSV + 12 PNG únicos de 13 emitidos.
+  Mongo **16 colecciones vivas** → **11 pipelines** → 8 CSV + 28+8 PNG.
 - Modelo: **embedding** de demografía/empleo/demanda social en `municipios`
   (se leen juntos, cambian poco); **referencing** por `codigo_ine` para
   `anuncios` y `etxebide_promociones` (crecen sin límite).
@@ -167,12 +167,12 @@ No expliques las 9: tres bastan si cada una responde a una pregunta del reto.
 | Comando | Salida que se lee en voz alta |
 |---|---|
 | manifest | `352` raw en HDFS y `188` silver, **0 errores** |
-| pytest | **177 passed + 1 skipped** |
-| run_analisis | **10 pipelines**, 6 CSV, **12 PNG únicos de 13 emitidos**, huella reproducible |
+| pytest | **235 passed + 2 skipped** |
+| run_analisis | **11 pipelines**, 8 CSV, **28+8 PNG**, huella reproducible |
 | gate | `scripts/verificar_fase_datos.py` (06 PASS 594/843; 07 FAIL conocido paro-cero) |
 
-Índices: la consulta municipio + modalidad + precio ≤1000 pasa de
-**COLLSCAN 594 examinados** a **IXSCAN 1**. Índice ESR
+Índices: la consulta municipio + modalidad + precio ≤1000 con filtro `20069`
+(1 doc) pasa de **COLLSCAN 594 examinados** a **IXSCAN 1**. Índice ESR
 `(codigo_ine, modalidad, precio_eur)`; coste: escrituras y espacio.
 
 Consulta que puedes enseñar (verificada):
@@ -219,7 +219,7 @@ get_collection("municipios").find_one(
 - ¿Y una persona concreta? → renta municipal ≠ individual; falacia ecológica.
 
 **P2 (método y modelo)**
-- ¿Por qué 14 colecciones? → una por fuente/frecuencia; los 13 `__backup` no cuentan.
+- ¿Por qué 16 colecciones vivas? → una por fuente/frecuencia; los 14 `__backup` no cuentan.
 - ¿Qué va embebido y qué referenciado? → ficha municipal vs arrays que crecen.
 - ¿Por qué IDW y no imputar todo? → no inventar precio donde no lo hay.
 
@@ -246,7 +246,7 @@ modelo a 40 s. **Nunca** recortes la respuesta, los 4 robustos ni los límites.
 
 - [ ] Mongo responde (`pipeline_vpo_terminadas` → 251).
 - [ ] `.venv` activo y `pytest -q` verde.
-- [ ] CSV y 12 PNG únicos de 13 emitidos en `data/resultados`.
+- [ ] 8 CSV y 28+8 PNG en `data/resultados`.
 - [ ] Huella `08665d03…c30a` copiada.
 - [ ] Mapa y tabla de robustos abiertos, no buscados en vivo.
 - [ ] `git status` limpio.

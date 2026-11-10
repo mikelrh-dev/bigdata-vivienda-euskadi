@@ -383,7 +383,7 @@ def clean_obsolete_fields(
     Mismo contrato en ambas colecciones (``anuncios`` y ``municipios``):
     retorna ``matched_count`` / ``modified_count`` / ``deleted_count``
     (``deleted_count=0`` porque ``$unset`` no borra documentos; el
-    conteo de documentos queda invariante, p. ej. 759 en prod sin
+    conteo de documentos queda invariante, p. ej. 594 en prod sin
     ``MONGO_ALLOW_DESTRUCTIVE=1``).
 
     ``collection`` permite inyectar otra colección (p. ej. la base de

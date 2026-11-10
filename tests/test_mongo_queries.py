@@ -16,13 +16,10 @@ import pytest
 from analysis import mongo_queries as mq
 from storage.mongo import ping
 
-# Bilbao: 173 anuncios en la carga del 2026-11-06.
+pytestmark = pytest.mark.skipif(not ping(), reason="sin Mongo local: skip separado")
+
+# Bilbao: 204 anuncios en la carga vigente (594 tras re-resolucion pisos).
 MUNICIPIO = "48020"
-
-
-@pytest.fixture(scope="module", autouse=True)
-def _mongo_vivo() -> None:
-    assert ping() is True, "MongoDB no responde en localhost:27017"
 
 
 def test_consulta_por_municipio_devuelve_filas() -> None:

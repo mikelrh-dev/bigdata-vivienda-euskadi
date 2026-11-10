@@ -41,7 +41,7 @@ recarga vigente tras P0/P1 (2026-11-07): **594 anuncios** (326 larga estancia + 
 
 ## Suficiente o corto
 
-Suficiente para el reto (5+ indicadores, 10 pipelines, 4 robustos, limitaciones
+Suficiente para el reto (5+ indicadores, 11 pipelines, 4 robustos, limitaciones
 declaradas). Corto para estudio academico: sin precios en 188 municipios, sin
 stock VPO real, renta estimada como proxy de salario, anuncios 2026 vs
 rentas/paro 2024. Declarar estos 4 huecos es lo que lo hace defendible.

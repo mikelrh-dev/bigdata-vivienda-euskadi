@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
+import pytest
 from bson import ObjectId
 
 from storage import mongo
@@ -43,8 +44,8 @@ def test_mongo_uri_configurable(monkeypatch):
         mongo.get_client.cache_clear()
 
 
+@pytest.mark.skipif(not ping(), reason="sin Mongo local: skip separado")
 def test_anuncios_objectid():
-    assert ping() is True
     coll = get_collection("anuncios")
     doc = coll.find_one()
     assert doc is not None

@@ -185,7 +185,7 @@ La pipeline `pipeline_indicadores_municipio` SHALL calcular la mediana de `preci
 - GIVEN anuncios con `precio_m2` extremos dentro de [3, 50] pero fuera de IQR
 - WHEN corre `python analysis/run_analisis_mongo.py`
 - THEN `mongo_indicadores_municipio.csv` tiene 252 filas y `mediana_precio_m2_winsorizada` no nula donde `n_precio≥1`
-- AND la salida del análisis: `13 PNG + 6 CSV`, doble ejecución con SHA idéntico en los 6 `mongo_*.csv`
+- AND la salida del análisis: `28+8 PNG + 8 CSV`, doble ejecución con SHA idéntico en los 8 `mongo_*.csv`
 
 #### Scenario: Ningún outlier contamina la agregación
 
@@ -252,7 +252,7 @@ El sistema SHALL tratar `data/raw` y HDFS raw (352 ficheros) como inmutables, SH
 
 El sistema SHALL limpiar con `$unset` explícito y SHALL retornar
 `deleted_count`, SHALL exponer una única función canónica
-anuncio-por-municipio y SHALL mantener los 759 anuncios tras limpio.
+anuncio-por-municipio y SHALL mantener los 594 anuncios tras limpio.
 (Previously: `$unset`/`deleted_count` sin función canónica única.)
 
 #### Scenario: Limpieza con contadores
@@ -260,7 +260,7 @@ anuncio-por-municipio y SHALL mantener los 759 anuncios tras limpio.
 - GIVEN anuncios con campos obsoletos
 - WHEN se ejecuta `clean_mongo`
 - THEN aplica `$unset` y el resultado incluye `deleted_count`
-- AND el recuento sigue en 759
+- AND el recuento sigue en 594
 
 #### Scenario: Orden base→enricher con cuarentena (pisos 2026-11-07)
 
@@ -391,12 +391,12 @@ la decisión.
 
 El sistema SHALL garantizar backups de `municipios` e `indicadores` vía
 `replace_collection` (staging + `<name>__backup` + rename), SHALL documentar
-los 424 Point GeoJSON de 759 anuncios desde silver, y SHALL verificarlo con
+los 424 Point GeoJSON de 594 anuncios desde silver, y SHALL verificarlo con
 el listing de 16 colecciones, sin escrituras en prod.
 
 #### Scenario: Backups, geo y listing
 
-- GIVEN `vivienda_euskadi` con 759 anuncios y 252 municipios
+- GIVEN `vivienda_euskadi` con 594 anuncios y 252 municipios
 - WHEN se listan las colecciones y se cuentan los Point
 - THEN hay 16 colecciones, incluidos `municipios__backup` (252 previos) e `indicadores__backup`
 - AND hay 424 Point reales, el resto `None` por falta de silver
@@ -404,7 +404,7 @@ el listing de 16 colecciones, sin escrituras en prod.
 
 El sistema SHALL incluir `validar_renta.py` como paso de
 `transform/run_all.py` o SHALL firmar su exclusión, y `pytest tests` SHALL
-pasar con 136 tests.
+pasar con 237 tests.
 
 #### Scenario: Integración o justificación
 
@@ -436,7 +436,7 @@ pasar con 136 tests.
 - GIVEN municipio con `n_anuncios=0`
 - WHEN se agregan indicadores
 - THEN precio/superficie = `None` y `metodo_imputacion=ninguno` (para precio de anuncios)
-- AND `python analysis/run_analisis_mongo.py` regenera 13 PNG + 6 CSV sin valores imputados
+- AND `python analysis/run_analisis_mongo.py` regenera 28+8 PNG + 8 CSV sin valores imputados
 
 ### Requirement: PISOS-04 — Paro 252/252 desde Lanbide normalizado (M5)
 
