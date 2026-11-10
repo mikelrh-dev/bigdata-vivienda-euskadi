@@ -11,7 +11,6 @@
 | `index.template.html` | Plantilla editable (sistema visual y contenido) |
 | `build_presentacion.py` | Genera HTML y los 10 SVG desde los CSV |
 | `assets/*.svg` | 8 gráficos + 2 capas decorativas (topo y trama) |
-| `shots/*.jpg` | Previsualización de las 10 diapositivas |
 
 ## Regenerar
 
