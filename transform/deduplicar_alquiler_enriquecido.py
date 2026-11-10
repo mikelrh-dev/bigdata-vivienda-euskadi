@@ -38,6 +38,13 @@ def deduplicar_filas(filas: list[dict]) -> list[dict]:
 
 
 def main() -> int:
+    # Nodo heredado sin productor en el pipeline actual: si el artefacto no
+    # existe (rebuild limpio desde raw) no hay nada que deduplicar. Se sale
+    # con 0 para no marcar en rojo un paso que no puede reconstruirse.
+    if not CSV_PATH.exists():
+        print(f"[SKIP] No existe {CSV_PATH.name}: paso heredado sin productor, nada que deduplicar")
+        return 0
+
     # CSV
     with CSV_PATH.open(encoding="utf-8-sig", newline="") as fh:
         reader = csv.DictReader(fh)

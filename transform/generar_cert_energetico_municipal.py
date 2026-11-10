@@ -124,7 +124,8 @@ def main():
         # Rellenar nulos
         for col in ["n_certificados", "cert_A", "cert_B", "cert_C", "cert_D", "cert_E", "cert_F", "cert_G"]:
             merged[col] = merged[col].fillna(0).astype(int)
-        merged["cert_moda"] = merged["cert_moda"].fillna(None)
+        # fillna(None) es un no-op y pandas <3 lo rechaza ("Must specify a fill
+        # 'value' or 'method'"); el NaN del merge ya se serializa como vacio.
         # Seleccionar columnas finales
         out_cols = ["codigo_ine", "municipio", "n_certificados", "cert_moda",
                     "cert_A", "cert_B", "cert_C", "cert_D", "cert_E", "cert_F", "cert_G"]
