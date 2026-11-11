@@ -1,0 +1,27 @@
+# Registro de los lotes raw con timestamp heredado (WP-09).
+#
+# Los 5 lotes del 2026-10-29 conservan el timestamp en silver para no romper la
+# correspondencia raw->silver (dos barridos de Fotocasa tienen contenido
+# distinto y no son fusionables). Este registro es la fuente de verdad del
+# motivo y del nombre canonico futuro; el `nombre_actual` lo deriva
+# transform/generar_nombres_normalizados_map.py del propio nombre del raw.
+#
+# Politica: toda ingesta nueva usa nombres canonicos sin timestamp en raw y
+# silver; esta excepcion esta cerrada.
+
+lotes:
+- origen_raw: anuncios_faltantes_fotocasa_batch1_20261029_230030.json
+  nombre_canonico_futuro: anuncios_faltantes_fotocasa_batch1_normalizado.json
+  motivo: lote dirigido Fotocasa 2026-10-29 23:00 (batch1, 59 anuncios rescate)
+- origen_raw: anuncios_faltantes_pisos_batch1_20261029_230030.json
+  nombre_canonico_futuro: anuncios_faltantes_pisos_batch1_normalizado.json
+  motivo: lote dirigido Pisos 2026-10-29 23:00 (batch1, rescate)
+- origen_raw: anuncios_fotocasa_dirigido_20261029_223523.json
+  nombre_canonico_futuro: anuncios_fotocasa_dirigido_completo_normalizado.json
+  motivo: barrido dirigido Fotocasa 2026-10-29 22:35 (lote completo, 122 KB)
+- origen_raw: anuncios_fotocasa_dirigido_20261029.json
+  nombre_canonico_futuro: anuncios_fotocasa_dirigido_parcial_normalizado.json
+  motivo: 'barrido dirigido Fotocasa 2026-10-29 (lote parcial, 9 KB, distinto contenido: no fusionable con el completo)'
+- origen_raw: anuncios_pisos_dirigido_20261029.json
+  nombre_canonico_futuro: anuncios_pisos_dirigido_normalizado.json
+  motivo: barrido dirigido Pisos 2026-10-29 (lote unico)

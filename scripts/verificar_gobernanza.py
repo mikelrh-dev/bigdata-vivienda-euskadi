@@ -3,8 +3,8 @@
 Comprueba lo que la auditoría dejó fijado (v6 2026-11-08, valores reales
 contados con Python):
 - 50 cabeceras de requisito (46 con ID numérico único + 4 `chart_*`).
-- 42 scripts en transform/ y 34 nodos en el DAG.
-- 188 entradas en el manifiesto silver.
+- 44 scripts en transform/ y 38 nodos en el DAG.
+- 182 entradas en el manifiesto silver (todas con productor declarado).
 - 0 variables de entorno usadas sin declarar en .env.example.
 - 11 pipelines en PIPELINE_ORDER.
 
@@ -53,12 +53,12 @@ def main() -> int:
     for node in tree.body:
         if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "SCRIPTS":
             dag = len(node.value.keys)
-    check("transform", len(transform) == 42 and dag == 34,
+    check("transform", len(transform) == 44 and dag == 38,
           f"{len(transform)} scripts, {dag} nodos DAG")
 
     silver = ROOT / "data" / "procesado" / "manifest_sha256.txt"
     entradas = sum(1 for line in silver.read_text(encoding="utf-8").splitlines() if line.strip())
-    check("silver", entradas == 188, f"{entradas} entradas en manifest_sha256.txt")
+    check("silver", entradas == 182, f"{entradas} entradas en manifest_sha256.txt")
 
     usadas: set[str] = set()
     for carpeta in ("extract", "transform", "storage", "analysis", "scripts"):

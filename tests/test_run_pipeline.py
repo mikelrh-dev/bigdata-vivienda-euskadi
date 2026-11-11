@@ -53,8 +53,10 @@ def test_plan_silver_es_run_all():
 
 def test_plan_quality_en_orden():
     pasos = [p.nombre for p in rp.FASES["quality"].pasos]
-    assert pasos == ["normalizar_metadata", "generar_ingestion_manifest",
-                     "generar_manifest"]
+    assert pasos == ["normalizar_metadata", "nombres_normalizados_map",
+                     "generar_ingestion_manifest", "generar_manifest"]
+    # el manifest hashea la capa: debe ser el ultimo paso
+    assert pasos[-1] == "generar_manifest"
     normalizar = rp.FASES["quality"].pasos[0]
     # rc=1 de normalizar_metadata es aviso de calidad, no fallo de ejecucion
     assert 1 in normalizar.tolerar_rc

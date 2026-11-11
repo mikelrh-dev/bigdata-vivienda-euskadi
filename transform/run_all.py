@@ -243,6 +243,27 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "out": ["proc:anuncios_vivienda_residencial.csv",
                 "proc:anuncios_vivienda_temporal.csv",
                 "proc:anuncios_habitaciones_unificados.csv"], "out_glob": []},
+    # F4 dirigido: la seleccion de objetivos es un input de config/ y el
+    # informe se deriva de los lotes de raw, de modo que ambos son
+    # reproducibles sin red (el scraping en si sigue fuera del DAG).
+    "generar_f4_pisos_objetivo.py": {
+        "group": "f4_dirigido",
+        "in": ["raw:dim_municipios.json"],
+        "out": ["proc:f4_pisos_objetivo.json"], "out_glob": []},
+    "generar_f4_pisos_informe.py": {
+        "group": "f4_dirigido",
+        "in": ["proc:f4_pisos_objetivo.json"],
+        "out": ["proc:f4_pisos_informe.csv"], "out_glob": []},
+    "generar_fotocasa_dirigido_informe.py": {
+        "group": "f4_dirigido",
+        "in": ["proc:f4_pisos_objetivo.json"],
+        "out": ["proc:fotocasa_dirigido_informe.csv"], "out_glob": []},
+    # QA de escala de renta: produce un artefacto silver y lo lee el analisis,
+    # asi que pertenece al DAG (antes estaba fuera para no mover el umbral).
+    "validar_renta.py": {
+        "group": "analisis_base",
+        "in": ["raw:renta_municipal_completa.csv", "proc:dim_municipios.csv"],
+        "out": ["proc:renta_municipal_referencia.csv"], "out_glob": []},
     # resultados (Mongo, canonicos: analysis/run_analisis_mongo.py)
     "generar_mapa_esquema.py": {
         "group": "resultados",
@@ -258,10 +279,8 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
 EXCLUIDOS: dict[str, str] = {
     "run_all.py": "el propio orquestador",
     "f4_pisos_dirigido.py": "captura dirigida manual (escribe en raw con guard)",
-    "generar_f4_pisos_objetivo.py": "genera la lista manual de objetivos de f4",
-    "generar_fotocasa_dirigido_informe.py": "informe de captura dirigida",
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
-    "validar_renta.py": "Justificación firmada 2026-11-05: no es transformación ETL silver (no declara in/out proc); es QA bajo demanda; se mantiene fuera del orquestador para no alterar manifest 353/184 ni el gate 130.",
+    "generar_nombres_normalizados_map.py": "paso de la fase quality (inventario _meta, no silver)",
     "generar_figuras_N.py": "genera PNG P0 N1,N2,N3,N7 y H2 desde CSV sin Mongo vivo (evidencia visual, no silver)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }

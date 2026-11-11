@@ -28,14 +28,30 @@ from muni_resolve import resolver_codigo, resolver_pisos_por_texto  # noqa: E402
 
 
 def _union_csv():
-    """Union dirigido+enriquecido dedup por id_anuncio (universo T1: 263)."""
+    """Universo T1 (263): lotes dirigidos de raw + enriquecido, dedup por id.
+
+    La copia `procesado/anuncios_pisos_dirigido.csv` era un snapshot del
+    scraper sin lector y se retiro; la fuente real de esos anuncios son los
+    lotes inmutables de `data/raw`.
+    """
+    import glob
+    import json
+
     rows: dict[str, dict] = {}
-    for name in ("anuncios_pisos_dirigido.csv", "anuncios_pisos_enriquecido.csv"):
-        with open(PROC / name, encoding="utf-8-sig") as fh:
-            for r in csv.DictReader(fh):
-                _id = (r.get("id_anuncio") or "").strip()
-                if _id and _id not in rows:
-                    rows[_id] = r
+    for path in sorted(glob.glob(str(ROOT / "data" / "raw" / "anuncios_pisos_dirigido_*.json"))):
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        registros = data.get("datos", data) if isinstance(data, dict) else data
+        for r in registros:
+            if not isinstance(r, dict):
+                continue
+            _id = str(r.get("id_anuncio") or "").strip()
+            if _id and _id not in rows:
+                rows[_id] = r
+    with open(PROC / "anuncios_pisos_enriquecido.csv", encoding="utf-8-sig") as fh:
+        for r in csv.DictReader(fh):
+            _id = (r.get("id_anuncio") or "").strip()
+            if _id and _id not in rows:
+                rows[_id] = r
     return rows
 
 
