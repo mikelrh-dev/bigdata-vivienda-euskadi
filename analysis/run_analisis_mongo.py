@@ -43,7 +43,7 @@ from analysis.mongo_aggregations import (
     pipeline_vpo_terminadas,
 )
 
-RESULTADOS_DIR = ROOT / "data" / "resultados"
+from paths import RESULTADOS_DIR  # noqa: E402
 
 # Orden fijo de ejecucion de los 11 pipelines principales.
 PIPELINE_ORDER: tuple[str, ...] = (

@@ -16,14 +16,17 @@ No escribe en data/raw ni en Mongo.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-BASE = Path(__file__).resolve().parents[1]
-RES = BASE / "data" / "resultados"
-PROC = BASE / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+RES = RESULTADOS_DIR
+PROC = PROCESADO_DIR
 
 ROBUSTOS = {
     "48020": "Bilbao",

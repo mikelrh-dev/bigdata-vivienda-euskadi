@@ -11,14 +11,17 @@ from __future__ import annotations
 
 import csv
 import os
+import sys
 from pathlib import Path
 
 import networkx as nx
 from pyvis.network import Network
 
-ROOT = Path(__file__).resolve().parents[1]
-CSV_DIR = ROOT / "data" / "procesado"
-OUT_DIR = ROOT / "data" / "resultados"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+CSV_DIR = PROCESADO_DIR
+OUT_DIR = RESULTADOS_DIR
 OUT_FILE = OUT_DIR / "mapa_esquema_silver.html"
 
 HUBS = ("dim_municipios", "anuncios_unificados")
@@ -124,7 +127,7 @@ def main() -> None:
     net.toggle_physics(True)
     net.force_atlas_2based(gravity=-50, central_gravity=0.01, spring_length=100)
     net.show_buttons(filter_=["physics"])
-    net.show(str(OUT_FILE), notebook=False)
+    OUT_FILE.write_text(net.generate_html(), encoding="utf-8")
 
     # Nodos hub = mayor grado (los dos hubs declarados)
     grados = sorted(g.degree, key=lambda x: (-x[1], x[0]))

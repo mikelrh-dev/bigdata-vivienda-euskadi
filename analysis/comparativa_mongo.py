@@ -12,14 +12,17 @@ Ningun valor se inventa: si falta, queda None.
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import RESULTADOS_DIR  # noqa: E402
 
 from analysis.mongo_aggregations import pipeline_indicadores_municipio
 from storage.mongo import get_collection
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_CSV = ROOT / "data" / "resultados" / "comparativa_3_municipios_mongo.csv"
+DEFAULT_CSV = RESULTADOS_DIR / "comparativa_3_municipios_mongo.csv"
 
 ADVERTENCIA_TIER = "solo Tier A (n>=30: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) sustenta ranking firme; Tier B/C/D (n<30) no ranking"
 ADVERTENCIA_DELTA = ("Getxo 50 vs Vitoria-Gasteiz 39 = 11 anuncios (margen estrecho): "

@@ -12,13 +12,17 @@ Uso: python analysis/auditoria_duckdb.py
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import duckdb
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROC = PROJECT_ROOT / "data" / "procesado"
-OUT = PROJECT_ROOT / "data" / "resultados" / "auditoria_duckdb.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
+OUT = RESULTADOS_DIR / "auditoria_duckdb.md"
+RESULTADOS_DIR.mkdir(parents=True, exist_ok=True)
 
 lines = []
 lines.append("# Auditoria de datos con DuckDB\n")

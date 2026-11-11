@@ -20,6 +20,7 @@ Genera en data/resultados/:
 from __future__ import annotations
 
 import json
+import sys
 import textwrap
 from pathlib import Path
 
@@ -33,10 +34,13 @@ from matplotlib.collections import PatchCollection
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Polygon as MplPolygon
 
-ROOT = Path(__file__).resolve().parent.parent
-RES = ROOT / "data" / "resultados"
-PROC = ROOT / "data" / "procesado"
-PARAMS = ROOT / "config" / "parametros_estudio.yaml"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, PROJECT_ROOT, RESULTADOS_DIR  # noqa: E402
+
+RES = RESULTADOS_DIR
+PROC = PROCESADO_DIR
+PARAMS = PROJECT_ROOT / "config" / "parametros_estudio.yaml"
+RES.mkdir(parents=True, exist_ok=True)
 
 
 def _umbrales() -> tuple[float, float]:

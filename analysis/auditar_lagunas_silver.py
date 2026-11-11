@@ -9,13 +9,16 @@ inconsistentes; N/A cuando no aplica).
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
-CSV_DIR = ROOT / "data" / "procesado"
-OUT_DIR = ROOT / "data" / "resultados"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+CSV_DIR = PROCESADO_DIR
+OUT_DIR = RESULTADOS_DIR
 OUT_FILE = OUT_DIR / "auditoria_lagunas_silver.csv"
 
 MUNS_TOTAL = 252

@@ -5,6 +5,7 @@ Regenerable con: python analysis/generar_dashboard_completo.py
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import duckdb
@@ -13,12 +14,19 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROC = PROJECT_ROOT / "data" / "procesado"
-OUT = PROJECT_ROOT / "data" / "resultados"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
+OUT = RESULTADOS_DIR
 OUT.mkdir(parents=True, exist_ok=True)
 
 sns.set_theme(style="whitegrid", palette="muted")
+
+
+def _q(sql):
+    """Ejecuta SQL sustituyendo ``data/procesado`` por la ruta real."""
+    return duckdb.query(sql.replace("data/procesado", PROC.as_posix())).df()
 
 
 def _save(fig, name):
@@ -30,7 +38,7 @@ def _save(fig, name):
 
 
 def g_A1_esfuerzo_territorio():
-    df = duckdb.query("""
+    df = _q("""
         SELECT territorio, esfuerzo_min_pct, esfuerzo_max_pct
         FROM read_csv('data/procesado/dim_municipios_enriquecido.csv')
     """).df()
@@ -48,7 +56,7 @@ def g_A1_esfuerzo_territorio():
 
 
 def g_A2_municipios_inasequibles():
-    df = duckdb.query("""
+    df = _q("""
         SELECT territorio,
                SUM(CASE WHEN esfuerzo_min_pct > 30 THEN 1 ELSE 0 END) AS n_inaseq,
                COUNT(*) AS n_total
@@ -67,7 +75,7 @@ def g_A2_municipios_inasequibles():
 
 
 def g_B_paro_vs_precio():
-    df = duckdb.query("""
+    df = _q("""
         SELECT a.nombre_canonico AS municipio, a.tasa_paro_lanbide_pct, b.precio_medio, a.territorio
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
         JOIN (
@@ -87,7 +95,7 @@ def g_B_paro_vs_precio():
 
 
 def g_C_vpo_antiguedad():
-    df = duckdb.query("""
+    df = _q("""
         SELECT a.territorio,
                AVG(b.vpo_terminadas_por_mil) AS vpo_media,
                AVG(a.antiguedad_media_anyos) AS antiguedad_media
@@ -109,7 +117,7 @@ def g_C_vpo_antiguedad():
 
 
 def g_D_distancia_precio():
-    df = duckdb.query("""
+    df = _q("""
         SELECT nombre_canonico, territorio, dist_centroide_comarca_km,
                renta_media_eur_m2_media, tipologia_mercado
         FROM read_csv('data/procesado/analisis_variables_base.csv')
@@ -125,7 +133,7 @@ def g_D_distancia_precio():
 
 
 def g_E_demografia():
-    df = duckdb.query("""
+    df = _q("""
         SELECT a.territorio,
                AVG(CAST(b.poblacion_total AS DOUBLE)) AS pob_total
         FROM read_csv('data/procesado/analisis_variables_base.csv') a
@@ -146,7 +154,7 @@ def g_E_demografia():
 
 
 def g_F_comparativa_th():
-    df = duckdb.query("""
+    df = _q("""
         SELECT territorio,
                AVG(renta_media_eur_m2_media) AS precio_medio,
                AVG(tasa_paro_lanbide_pct) AS paro_medio,

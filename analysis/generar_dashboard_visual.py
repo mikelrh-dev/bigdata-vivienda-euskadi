@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import base64
 import io
+import sys
 from pathlib import Path
 
 import duckdb
@@ -15,12 +16,19 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROC = PROJECT_ROOT / "data" / "procesado"
-OUT = PROJECT_ROOT / "data" / "resultados"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RESULTADOS_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
+OUT = RESULTADOS_DIR
 OUT.mkdir(parents=True, exist_ok=True)
 
 sns.set_theme(style="whitegrid", palette="muted")
+
+
+def _q(sql):
+    """Ejecuta SQL sustituyendo ``data/procesado`` por la ruta real."""
+    return duckdb.query(sql.replace("data/procesado", PROC.as_posix())).df()
 
 
 def _save(fig, name):
@@ -32,7 +40,7 @@ def _save(fig, name):
 
 
 def g1_esfuerzo_territorio():
-    df = duckdb.query("""
+    df = _q("""
         SELECT territorio, esfuerzo_min_pct, esfuerzo_max_pct
         FROM read_csv('data/procesado/dim_municipios_enriquecido.csv')
     """).df()
@@ -50,7 +58,7 @@ def g1_esfuerzo_territorio():
 
 
 def g2_renta_vs_alquiler():
-    df = duckdb.query("""
+    df = _q("""
         SELECT renta_personal_total_eur, alquiler_anual_calc, territorio, tipologia_mercado
         FROM read_csv('data/procesado/dim_municipios_enriquecido.csv')
         WHERE alquiler_anual_calc IS NOT NULL
@@ -65,7 +73,7 @@ def g2_renta_vs_alquiler():
 
 
 def g3_top10_precio():
-    df = duckdb.query("""
+    df = _q("""
         SELECT municipio, ROUND(MEDIAN(precio_eur),0) AS precio_medio, COUNT(*) AS n
         FROM read_csv('data/procesado/anuncios_vivienda_residencial_filtrado.csv')
         WHERE outlier = FALSE
@@ -82,7 +90,7 @@ def g3_top10_precio():
 
 
 def g4_distribucion_anuncios():
-    df = duckdb.query("""
+    df = _q("""
         SELECT n_anuncios, tipologia_mercado
         FROM read_csv('data/procesado/analisis_variables_base.csv')
     """).df()
@@ -95,7 +103,7 @@ def g4_distribucion_anuncios():
 
 
 def g5_esfuerzo_ranking():
-    df = duckdb.query("""
+    df = _q("""
         SELECT nombre_canonico, territorio, esfuerzo_min_pct, esfuerzo_max_pct, n_anuncios
         FROM read_csv('data/procesado/dim_municipios_enriquecido.csv')
         WHERE n_anuncios >= 30
