@@ -114,11 +114,32 @@ gold     → analysis/run_analisis_mongo.py
 Gobernanza intacta tras el cambio: 42 scripts / 34 nodos / 188 silver / 11 pipelines,
 manifest raw verificado (354, 0 errores), gate offline OK.
 
-**Cobertura real:**
+### Rebuild limpio verificado (borrado + `--fase silver,quality`)
 
-- `procesado`: 178/188 (94,7 %) reproducibles = 114 del DAG + 63 de `quality` +`run_manifest.json`.
-- `resultados`: 54/56 = 52 escritos por `gold` + 2 por `silver` (`auditoria_lagunas_silver.csv`,
-  `mapa_esquema_silver.html`).
+`run_all`: 34/34 scripts, 0 fallos, 435 s. Resultado: **176 ficheros** en `procesado`,
+manifest de 176 entradas, alquiler con 252 filas, `docs/raw_manifest_sha256.txt` sin cambios.
+
+- `procesado`: **176/188** (93,6 %) reproducibles desde raw.
+- `resultados`: **54/56** = 52 escritos por `gold` + 2 por `silver`
+  (`auditoria_lagunas_silver.csv`, `mapa_esquema_silver.html`).
+
+**Los 12 ficheros que un rebuild limpio no reproduce** (y por eso el manifest baja de 188):
+
+| Ficheros | Causa |
+|---|---|
+| `anuncios_pisos_dirigido.csv/.json`, `f4_pisos_informe.csv`, `f4_pisos_objetivo.json`, `fotocasa_dirigido_informe.csv` | F4: captura dirigida (red). N4 |
+| `_meta/acta_ingesta.md`, `_meta/csvs_index.json`, `_meta/nombres_normalizados_map.json` | residuos de la antigua fase de verificación; `verificar_fase_datos.py` los **lee** pero nadie los escribe |
+| `renta_municipal_referencia.csv` | lo produce `transform/validar_renta.py`, excluido del DAG por justificación firmada |
+| `pob_rank.csv` | huérfano sin productor ni consumidor |
+| `_meta/udalmap_empleo_corregido.json.meta.json` | sidecar de un derivado retirado de raw (F-05); su desaparición es correcta |
+| `udalmap_empleo_corregido_normalizado.json` | normalización del mismo derivado retirado (residuo F-05) |
+
+⚠️ **Decisión pendiente de equipo:** `verificar_gobernanza.py` y `gate_extremo_a_extremo.py`
+asertan `silver == 188`, pero un rebuild limpio da 176. El 188 describe el árbol
+contaminado, no el reproducible. Opciones: (a) actualizar el umbral a 176 y declarar
+los 12 como legacy, (b) regenerar los que sí tienen productor (`validar_renta.py` y los
+3 `_meta`) antes de fijar el umbral, (c) dejar F4 fuera y fijar 181. Mientras no se
+decida, el árbol de trabajo se mantiene con los 188 (manifest canónico intacto).
 
 **Bug extra encontrado y corregido:** `analysis/comparativa_mongo.py` fallaba con
 `ModuleNotFoundError: analysis` al ejecutarse como script (la fase gold abortaba en el
