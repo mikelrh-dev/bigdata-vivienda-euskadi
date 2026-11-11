@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import csv
 
 import pytest
 
@@ -33,6 +34,19 @@ def test_cada_paso_declara_salidas(ra) -> None:
 def test_todos_los_scripts_declarados_existen(ra) -> None:
     faltan = [paso.script for paso in ra.PASOS if not _script_path(paso).exists()]
     assert faltan == []
+
+
+def test_inventario_cubre_todos_los_extractores_registrados(ra) -> None:
+    ruta = ROOT / "extract" / "inventario_extractores.csv"
+    with ruta.open(encoding="utf-8-sig", newline="") as fh:
+        filas = list(csv.DictReader(fh))
+    columnas = {
+        "script", "salidas_actuales", "formato_canonico", "consumidores",
+        "red_credenciales", "lento_manual_obsoleto", "menu",
+    }
+    assert columnas <= set(filas[0])
+    scripts = {fila["script"] for fila in filas}
+    assert all(p.script.split("/")[-1] in scripts for p in ra.PASOS if not p.script.startswith("transform/"))
 
 
 def test_anuncios_se_guardan_solo_en_json(ra) -> None:
@@ -102,6 +116,27 @@ def test_seleccionar_missing_excluye_completos(ra, monkeypatch) -> None:
         lambda paso: ("completo", 1, 1) if paso.id == "a" else ("pendiente", 0, 1),
     )
     assert [p.id for p in ra.seleccionar(None, missing=True, force=False)] == ["b"]
+
+
+def test_missing_excluye_lentos_y_scrapers_por_defecto(ra, monkeypatch) -> None:
+    pasos = (
+        ra.Paso("rapido", "a.py", ("a.csv",)),
+        ra.Paso("lento", "b.py", ("b.csv",), lento=True),
+        ra.Paso("scraper", "c.py", ("c.json",), scraper=True),
+    )
+    monkeypatch.setattr(ra, "PASOS", pasos)
+    monkeypatch.setattr(ra, "POR_ID", {p.id: p for p in pasos})
+    monkeypatch.setattr(ra, "estado", lambda paso: ("pendiente", 0, 1))
+    assert [p.id for p in ra.seleccionar(None, missing=True, force=False)] == ["rapido"]
+    assert [p.id for p in ra.seleccionar("scraper", missing=True, force=False)] == ["scraper"]
+
+
+def test_aliases_check_y_run(ra, monkeypatch, capsys) -> None:
+    monkeypatch.setattr(ra, "listar", lambda: print("CHECK_OK"))
+    assert ra.main(["--check"]) == 0
+    assert "CHECK_OK" in capsys.readouterr().out
+    monkeypatch.setattr(ra, "seleccionar", lambda *a, **k: [])
+    assert ra.main(["--run"]) == 0
 
 
 def test_ejecutar_aisla_fallos_y_sigue(ra, tmp_path: Path, monkeypatch) -> None:

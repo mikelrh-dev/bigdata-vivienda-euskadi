@@ -7,7 +7,9 @@ proceso: si uno falla, los demás siguen.
 Uso:
     python extract/run_all.py            # menú (sin TTY: solo pendientes)
     python extract/run_all.py --list     # estado de cada extractor
+    python extract/run_all.py --check    # alias de --list
     python extract/run_all.py --missing  # ejecutar solo lo pendiente
+    python extract/run_all.py --run      # alias de --missing
     python extract/run_all.py --force    # regenerar todo
     python extract/run_all.py --only id1,id2
 """
@@ -39,6 +41,9 @@ class Paso:
     salidas: tuple[str, ...]
     lento: bool = False
     nota: str = ""
+    credenciales: tuple[str, ...] = ()
+    activo: bool = True
+    scraper: bool = False
 
 
 # El orden de esta lista es el orden de ejecución. `dim-municipios` no es un
@@ -68,7 +73,7 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True),
     Paso("fotocasa", "05_fotocasa_scraper.py", (
         "anuncios_fotocasa.json",
-    ), lento=True, nota="scraper"),
+    ), lento=True, nota="scraper", scraper=True),
     Paso("ine", "06_ine_api.py", (
         "ine_69301.json",
         "ine_69302.json",
@@ -82,10 +87,10 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True),
     Paso("pisos", "08_pisos_scraper.py", (
         "anuncios_pisos.json",
-    ), lento=True, nota="scraper"),
+    ), lento=True, nota="scraper", scraper=True),
     Paso("realtyapi", "09_realtyapi.py", (
         "anuncios_realtyapi.json",
-    ), lento=True, nota="API con clave"),
+    ), lento=True, nota="API con clave", credenciales=("REALTYAPI_KEY",)),
     Paso("opendata-etxebide", "10_opendata_bizilagun_etxebide.py", (
         "emal_barrios_municipios_2016_2025.xlsx",
         "emal_fianzas.csv",
@@ -101,20 +106,20 @@ PASOS: tuple[Paso, ...] = (
     )),
     Paso("fotocasa-dirigido", "09_fotocasa_dirigido.py", (
         "anuncios_fotocasa_dirigido_*.json",
-    ), lento=True, nota="scraper dirigido"),
+    ), lento=True, nota="scraper dirigido", scraper=True),
     Paso("ovj-salario", "10_ovj_salario.py", (
         "ovj_salario_joven_2024.json",
     )),
     Paso("faltantes", "10_scraping_faltantes.py", (
         "anuncios_faltantes_*_batch*.json",
-    ), lento=True, nota="scraper dirigido"),
+    ), lento=True, nota="scraper dirigido", scraper=True),
     Paso("transporte", "11_transporte_gtfs_paradas.py", (
         "transporte_paradas_municipio.csv",
     ), lento=True),
     Paso("habitaciones", "13_scraping_habitaciones.py", (
         "anuncios_fotocasa_habitaciones.json",
         "anuncios_pisos_habitaciones.json",
-    ), lento=True, nota="scraper"),
+    ), lento=True, nota="scraper", scraper=True),
     Paso("serpavi", "16_serpavi_renta.py", (
         "serpavi_renta_municipal.xlsx",
         "serpavi_renta_municipal.csv",
@@ -161,7 +166,7 @@ PASOS: tuple[Paso, ...] = (
     )),
     Paso("fotocasa-detalle", "fotocasa_detalle.py", (
         "anuncios_fotocasa_detalle.json",
-    ), lento=True, nota="scraper detalle"),
+    ), lento=True, nota="scraper detalle", scraper=True),
     Paso("ine-atlas", "ine_atlas_renta.py", (
         "ine_atlas_renta.csv",
         "renta_municipal_completa.csv",
@@ -171,7 +176,7 @@ PASOS: tuple[Paso, ...] = (
     )),
     Paso("f4-dirigido", "f4_pisos_dirigido.py", (
         "anuncios_pisos_dirigido.json",
-    ), lento=True, nota="scraper dirigido"),
+    ), lento=True, nota="scraper dirigido", scraper=True),
 )
 
 POR_ID = {paso.id: paso for paso in PASOS}
@@ -212,7 +217,9 @@ def listar() -> None:
         print(f"{paso.id:22} {nombre:10} {detalle:>9}  {lento:5} {paso.script}")
 
 
-def seleccionar(only: str | None, missing: bool, force: bool) -> list[Paso]:
+def seleccionar(
+    only: str | None, missing: bool, force: bool, incluir_lentos: bool = False
+) -> list[Paso]:
     if only:
         pedidos = [x.strip() for x in only.split(",") if x.strip()]
         desconocidos = [x for x in pedidos if x not in POR_ID]
@@ -222,10 +229,17 @@ def seleccionar(only: str | None, missing: bool, force: bool) -> list[Paso]:
                 "Usa --list para ver los ids."
             )
         pedidos_set = set(pedidos)
+        inactivos = [p.id for p in PASOS if p.id in pedidos_set and not p.activo]
+        if inactivos:
+            raise SystemExit(f"Extractor inactivo: {', '.join(inactivos)}")
         return [p for p in PASOS if p.id in pedidos_set]
     if force:
-        return list(PASOS)
-    return [p for p in PASOS if estado(p)[0] != "completo"]
+        return [p for p in PASOS if p.activo]
+    return [
+        p for p in PASOS
+        if p.activo and estado(p)[0] != "completo"
+        and (incluir_lentos or not (p.lento or p.scraper))
+    ]
 
 
 def _ejecutar(paso: Paso, log) -> bool:
@@ -307,7 +321,7 @@ def menu() -> int:
         print(f"Aviso: {RAW_DIR} ya tiene contenido. Regenerar sobrescribe salidas.")
     print()
     print("1) Ejecutar solo lo pendiente")
-    print("2) Regenerar todo")
+    print("2) Regenerar todo (incluye lentos y scrapers)")
     print("3) Salir")
     try:
         opcion = input("\nOpción [1]: ").strip() or "1"
@@ -324,18 +338,18 @@ def menu() -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Ejecuta los extractores.")
     grupo = parser.add_mutually_exclusive_group()
-    grupo.add_argument("--list", action="store_true", help="mostrar estado y salir")
-    grupo.add_argument("--missing", action="store_true", help="solo lo pendiente")
+    grupo.add_argument("--list", "--check", dest="check", action="store_true", help="mostrar estado y salir")
+    grupo.add_argument("--missing", "--run", dest="run", action="store_true", help="ejecutar pendientes (excluye lentos/scrapers)")
     grupo.add_argument("--force", action="store_true", help="regenerar todo")
     grupo.add_argument("--only", metavar="ID[,ID]", help="ejecutar solo estos ids")
     args = parser.parse_args(argv)
 
-    if args.list:
+    if args.check:
         listar()
         return 0
 
-    if args.missing or args.force or args.only:
-        pasos = seleccionar(args.only, args.missing, args.force)
+    if args.run or args.force or args.only:
+        pasos = seleccionar(args.only, args.run, args.force)
         if not pasos:
             print("No hay nada pendiente.")
             return 0

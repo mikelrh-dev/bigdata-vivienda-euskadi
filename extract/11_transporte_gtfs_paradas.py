@@ -343,6 +343,7 @@ def main() -> int:
         "url": "https://opendata.euskadi.eus/transport/moveuskadi/data-index-gtfs.json",
         "metodo_asignacion": "point-in-polygon (shapely)" if HAS_SHAPELY else "por nombre de stop",
         "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+        "n_registros": len(filas_salida),
         "n_operadores": len(operadores),
         "n_municipios": len(filas_salida),
         "total_stops_leidos": total_stops,
