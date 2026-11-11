@@ -124,7 +124,10 @@ def main() -> None:
     net.toggle_physics(True)
     net.force_atlas_2based(gravity=-50, central_gravity=0.01, spring_length=100)
     net.show_buttons(filter_=["physics"])
-    net.show(str(OUT_FILE), notebook=False)
+    # pyvis 0.3.2 escribe con la encoding del locale: en Windows (cp1252) falla
+    # con caracteres no representables y dejaba el HTML vacio. Se genera en
+    # memoria y se escribe siempre en UTF-8, igual que el resto de la capa.
+    OUT_FILE.write_text(net.generate_html(notebook=False), encoding="utf-8")
 
     # Nodos hub = mayor grado (los dos hubs declarados)
     grados = sorted(g.degree, key=lambda x: (-x[1], x[0]))
