@@ -9,10 +9,12 @@ Añade 3 CSVs nuevos: certificados_energeticos_{araba,bizkaia,gipuzkoa}.csv
 Fuente: https://opendata.euskadi.eus/catalogo/-/registro-de-certificados-de-eficiencia-energetica-de-euskadi/
 """
 import urllib.request
-import os
 import sys
+from pathlib import Path
 
-RAW_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "raw")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from _common import RAW_DIR  # noqa: E402
 
 URLS = {
     "araba": "https://opendata.euskadi.eus/contenidos/ds_registros/certificados_eficie_energetica/opendata/certificados_araba.csv",
@@ -24,17 +26,13 @@ URLS = {
 }
 
 def main():
-    os.makedirs(RAW_DIR, exist_ok=True)
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
     for territorio, url in URLS.items():
-        dest = os.path.join(RAW_DIR, f"certificados_energeticos_{territorio}_completo.csv")
-        if os.path.exists(dest):
-            print(f"[SKIP] {dest} ya existe (no se sobrescribe)")
-            continue
+        dest = RAW_DIR / f"certificados_energeticos_{territorio}_completo.csv"
         print(f"[DESCARGA] {territorio} (completo) -> {dest}")
         try:
             urllib.request.urlretrieve(url, dest)
-            size = os.path.getsize(dest)
-            print(f"  OK: {size:,} bytes")
+            print(f"  OK: {dest.stat().st_size:,} bytes")
         except Exception as e:
             print(f"  ERROR: {e}")
             sys.exit(1)

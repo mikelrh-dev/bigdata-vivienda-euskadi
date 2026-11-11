@@ -8,15 +8,18 @@ Uso:
 from __future__ import annotations
 
 import re
+import sys
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
 
-RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw" \
-    if (Path(__file__).resolve().parent.parent / "data").exists() \
-    else Path(__file__).resolve().parent / "data" / "raw"
+try:
+    from extract._common import RAW_DIR
+except ModuleNotFoundError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from _common import RAW_DIR  # noqa: E402
 
 
 def norm(texto: str) -> str:
@@ -41,11 +44,7 @@ MANUAL_MAP = {
 
 @lru_cache(maxsize=1)
 def cargar_dim() -> pd.DataFrame:
-    try:
-        from extract._common import RAW_DIR as _RAW
-    except ModuleNotFoundError:
-        from _common import RAW_DIR as _RAW  # noqa: E402
-    dim = pd.read_csv(_RAW / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
+    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
     dim["codigo_ine"] = dim["codigo_ine"].str.zfill(5)
     return dim
 

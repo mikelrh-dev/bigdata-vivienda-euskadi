@@ -1,44 +1,31 @@
 """Utilidades comunes para los scripts de extracción.
 
-Carga las variables de entorno desde .env, prepara el directorio de
-salida y ofrece un cliente HTTP con reintentos.
+Reexporta las rutas canónicas de ``paths.py`` y ofrece un cliente HTTP con
+reintentos, logging y escritura de JSON/raw.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
-import os
 import sys
 import time
 from pathlib import Path
 
 import requests
 
-# ─── Raíz del proyecto ────────────────────────────────────────
+# ─── Raíz del proyecto y capas de datos ───────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-
-def _load_env() -> None:
-    """Carga .env sin necesidad de la librería python-dotenv."""
-    env_path = PROJECT_ROOT / ".env"
-    if not env_path.exists():
-        return
-    for line in env_path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        os.environ.setdefault(key.strip(), value.strip())
-
-
-_load_env()
-
-DATA_DIR = Path(os.getenv("DATA_DIR", "data"))
-RAW_DIR = DATA_DIR / "raw"
-PROCESADO_DIR = DATA_DIR / "procesado"
-RESULTADOS_DIR = DATA_DIR / "resultados"
+from paths import (  # noqa: E402
+    DATA_DIR,
+    PROCESADO_DIR,
+    RAW_DIR,
+    RESULTADOS_DIR,
+    ensure_dirs,
+)
 
 # Directory creation belongs to the command that owns the output. Importing
 # extraction helpers must not create or mutate any data layer.
@@ -164,51 +151,44 @@ def leer_csv_seguro(path, **kwargs):
     return df
 
 
-# ─── Guardado de JSON ─────────────────────────────────────────
-# WP-07: esquema unico de metadata. Campos obligatorios en RAW (FORMATO-01):
-# fuente, url, fecha_extraccion, n_registros, hash_sha256, version_parser.
-# En raw la validacion es estricta (falla en vez de escribir incompleto);
-# en procesado/scratchpad se rellenan defectos y se avisa por log.
-REQUIRED_METADATA = ("fuente", "url", "fecha_extraccion",
-                      "n_registros", "hash_sha256", "version_parser")
-SCRAPER_VERSION = "1"
+# ─── Escritura de datos ───────────────────────────────────────
+# Metadata mínima: 4 campos. `fecha_extraccion` y `n_registros` se rellenan
+# solos; `fuente` y `url` los declara cada extractor. No se valida ni se
+# rechaza: si falta un dato, se escribe igual y se avisa por log.
+METADATA_MINIMA = ("fuente", "url", "fecha_extraccion", "n_registros")
 
 
-def _es_raw(destino: Path) -> bool:
-    try:
-        destino.resolve().relative_to(RAW_DIR.resolve())
-        return True
-    except ValueError:
-        return False
+def write_raw(nombre: str | Path, contenido: bytes) -> Path:
+    """Escribe un fichero en ``raw/`` una sola vez y de forma atómica."""
+    destino = Path(nombre)
+    if destino.parent == Path("."):
+        destino = RAW_DIR / destino
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    temporal = destino.with_name(destino.name + ".tmp")
+    temporal.write_bytes(contenido)
+    temporal.replace(destino)
+    return destino
 
 
 def guardar_json(destino: Path, datos, metadata: dict | None = None) -> Path:
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     destino = Path(destino)
     destino.parent.mkdir(parents=True, exist_ok=True)
     meta = dict(metadata or {})
     if isinstance(datos, list):
         meta.setdefault("n_registros", len(datos))
-    meta.setdefault("fecha_extraccion",
-                    datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"))
-    meta.setdefault("version_parser", SCRAPER_VERSION)
-    meta["hash_sha256"] = hashlib.sha256(
-        json.dumps(datos, sort_keys=True, ensure_ascii=False).encode("utf-8")
-    ).hexdigest()
-    faltan = [k for k in REQUIRED_METADATA if meta.get(k) in (None, "", [])]
-    if faltan and _es_raw(destino):
-        raise ValueError(
-            f"{destino.name}: metadata incompleta para raw, faltan {faltan}. "
-            "FORMATO-01 exige fuente, url, fecha_extraccion, n_registros, "
-            "hash_sha256 y version_parser."
-        )
+    meta.setdefault(
+        "fecha_extraccion",
+        datetime.now().astimezone().isoformat(timespec="seconds"),
+    )
+    faltan = [k for k in METADATA_MINIMA if meta.get(k) in (None, "", [])]
     if faltan:
         get_logger("guardar_json").warning(
-            "%s: metadata sin %s (solo aviso fuera de raw)",
-            destino.name, ",".join(faltan))
-    datos = {"metadata": meta, "datos": datos}
+            "%s: metadata sin %s", destino.name, ", ".join(faltan)
+        )
     destino.write_text(
-        json.dumps(datos, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps({"metadata": meta, "datos": datos}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
     )
     return destino

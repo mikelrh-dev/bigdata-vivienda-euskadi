@@ -12,12 +12,15 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = PROJECT_ROOT / "data" / "raw"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from _common import RAW_DIR  # noqa: E402
+
 URL = "https://www.irekia.euskadi.eus/es/news/105137"
 OUT = RAW_DIR / "ovj_salario_joven_2024.json"
 

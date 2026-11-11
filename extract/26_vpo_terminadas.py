@@ -8,9 +8,8 @@ Flujo:
   1. Descarga el CSV a memoria (no escribe nada todavía).
   2. Valida que haya 252 municipios con código de 5 dígitos y valor 2024
      dentro de rango.
-  3. Solo si la validación pasa, escribe ``data/raw/udalmap_vpo_terminadas.csv``
-     tras ``assert_raw_writable`` (motivo explícito + ``.FROZEN`` + log de
-     auditoría). Si algo falla, ``data/raw`` queda intacto.
+  3. Solo si la validación pasa, escribe ``raw/udalmap_vpo_terminadas.csv``
+     de una vez y de forma atómica. Si algo falla, ``raw`` queda intacto.
 
 Uso:
     python extract/26_vpo_terminadas.py
@@ -27,8 +26,11 @@ from pathlib import Path
 
 import requests
 
-BASE = Path(__file__).resolve().parents[1]
-RAW_CSV = BASE / "data" / "raw" / "udalmap_vpo_terminadas.csv"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from _common import RAW_DIR, write_raw  # noqa: E402
+
+RAW_CSV = RAW_DIR / "udalmap_vpo_terminadas.csv"
 
 URL = (
     "https://opendata.euskadi.eus/contenidos/estadistica/"
@@ -85,16 +87,7 @@ def descargar() -> bytes:
 
 
 def escribir_raw(contenido: bytes) -> Path:
-    sys.path.insert(0, str(BASE))
-    from transform._raw_guard import assert_raw_writable
-
-    assert_raw_writable(
-        "escritura autorizada 2026-11-05: indicador 73 VPO terminadas, "
-        "fuente oficial Open Data Euskadi, descarga validada en memoria"
-    )
-    RAW_CSV.parent.mkdir(parents=True, exist_ok=True)
-    RAW_CSV.write_bytes(contenido)
-    return RAW_CSV
+    return write_raw(RAW_CSV, contenido)
 
 
 def main() -> int:

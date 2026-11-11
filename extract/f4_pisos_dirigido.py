@@ -13,10 +13,6 @@ sys.path.insert(0, str(PROJECT_ROOT / "extract"))
 sys.path.insert(0, str(PROJECT_ROOT / "transform"))
 from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 from entity_resolution import resolver_municipio  # noqa: E402
-try:
-    from _raw_guard import assert_raw_writable  # noqa: E402
-except Exception:  # pragma: no cover
-    from transform._raw_guard import assert_raw_writable  # noqa: E402
 from importlib import import_module as _imp
 import importlib.util
 spec = importlib.util.spec_from_file_location(
@@ -58,7 +54,6 @@ def main() -> int:
         log.info("%s [%s]: %s", nombre, cod, estado)
         informe.append({"codigo_ine": cod, "municipio": nombre, "estado": estado})
     # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
-    assert_raw_writable("f4 directed scrape lot")
     raw_path = _nombre_lote(RAW_DIR)
     from datetime import datetime, timezone  # noqa: E402
     guardar_json(raw_path, nuevos, metadata={

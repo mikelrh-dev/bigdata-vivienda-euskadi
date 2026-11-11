@@ -4,7 +4,7 @@
 # Salida: data/raw/areas_funcionales_municipios.csv (nueva fuente raw).
 
 import json
-import os
+import sys
 import tempfile
 import urllib.request
 import zipfile
@@ -13,11 +13,12 @@ from pathlib import Path
 import shapefile
 from pyproj import Transformer
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from _common import RAW_DIR as RAW  # noqa: E402
+
 TMP = Path(tempfile.gettempdir()) / "geo_areas"
 TMP.mkdir(parents=True, exist_ok=True)
-RAW.mkdir(parents=True, exist_ok=True)
 
 URL = "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/AREAS_FUNCIONALES_5000_ETRS89.zip"
 ZIP_PATH = TMP / "areas.zip"
@@ -117,6 +118,7 @@ def main():
         })
 
     import csv
+    RAW.mkdir(parents=True, exist_ok=True)
     dest = RAW / "areas_funcionales_municipios.csv"
     with open(dest, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=["codigo_ine", "nombre", "area_funcional", "cod_area_funcional"])
