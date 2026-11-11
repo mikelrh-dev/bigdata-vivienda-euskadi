@@ -77,13 +77,14 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["raw:alquiler_seccion*.csv"],
         "out": ["proc:alquiler_seccion.csv",
                 "proc:alquiler_seccion_resumen.csv"], "out_glob": []},
-    # Nodo heredado in-place: deduplica un artefacto que ningun otro paso
-    # produce (ver deduplicar_alquiler_enriquecido.py). Se mantiene el nodo
-    # para no alterar el DAG y el script se salta si el fichero no existe, de
-    # modo que un rebuild limpio desde raw no falle por un paso sin productor.
+    # Nodo in-place sobre la pareja que produce enriquecer_codigo_ine.py.
+    # Declarar la arista es lo que garantiza que la dedup corra DESPUES del
+    # enriquecimiento; sin ella el nodo se ordenaba por su grupo
+    # (limpieza_base) y saltaba en un rebuild limpio.
     "deduplicar_alquiler_enriquecido.py": {
         "group": "limpieza_base",
-        "in": ["proc:alquiler_municipal_enriquecido.json"],
+        "in": ["proc:alquiler_municipal_enriquecido.csv",
+               "proc:alquiler_municipal_enriquecido.json"],
         "out": ["proc:alquiler_municipal_enriquecido.csv",
                 "proc:alquiler_municipal_enriquecido.json"], "out_glob": []},
     # dim_municipios
@@ -164,7 +165,11 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "enriquecer_codigo_ine.py": {
         "group": "enriquecimiento",
         "in": [],
-        "out": ["proc:informe_entity_resolution.csv"],
+        # El alquiler no encaja en el glob anuncios_*: se declara explicito para
+        # que deduplicar_alquiler_enriquecido tenga productor real en el DAG.
+        "out": ["proc:informe_entity_resolution.csv",
+                "proc:alquiler_municipal_enriquecido.csv",
+                "proc:alquiler_municipal_enriquecido.json"],
         "out_glob": ["proc:anuncios_*_enriquecido.csv",
                      "proc:anuncios_*_enriquecido.json"]},
     "generar_cert_energetico_municipal.py": {
@@ -306,13 +311,31 @@ def _orden_topologico(scripts: list[str]) -> list[str]:
     """Kahn sobre productor->consumidor por nombre de fichero.
 
     productor[fichero] = script que lo declara en ``out`` (concreto, no glob);
-    si varios scripts escriben el mismo fichero, se respeta el orden de grupo.
+    si varios scripts escriben el mismo fichero, se prefiere uno que no sea
+    in-place (in != out) y, en su defecto, se respeta el orden de grupo.
     Los bucles sobre el mismo script (in == out) se ignoran.
     """
-    productor: dict[str, str] = {}
+    productores: dict[str, list[str]] = {}
     for s in scripts:
         for r in SCRIPTS[s].get("out", []):
-            productor.setdefault(r, s)
+            if s not in productores.setdefault(r, []):
+                productores[r].append(s)
+
+    def _fuente(ref: str, consumidor: str) -> str | None:
+        """Productor real de ``ref`` para ``consumidor``, si existe.
+
+        Un nodo in-place (el propio fichero en su ``in``) no es fuente: si
+        solo él lo declara, no hay arista y el orden de grupo decide.
+        """
+        candidatos = productores.get(ref, [])
+        for p in candidatos:
+            if p != consumidor and ref not in SCRIPTS[p].get("in", []):
+                return p
+        for p in candidatos:
+            if p != consumidor:
+                return p
+        return None
+
     aristas: dict[str, set[str]] = {s: set() for s in scripts}
     grado: dict[str, int] = {s: 0 for s in scripts}
     for s in scripts:
@@ -321,8 +344,8 @@ def _orden_topologico(scripts: list[str]) -> list[str]:
             if any(ch in patron for ch in ("*", "?", "[")):
                 continue  # los globs no ordenan
             nombre = f"{base}:{patron}"
-            prod = productor.get(nombre)
-            if prod and prod != s and s not in aristas[prod]:
+            prod = _fuente(nombre, s)
+            if prod and s not in aristas[prod]:
                 aristas[prod].add(s)
                 grado[s] += 1
     orden, pendientes = [], list(scripts)  # estable: respeta el orden dado

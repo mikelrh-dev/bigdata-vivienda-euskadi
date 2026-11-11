@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -38,12 +39,16 @@ def deduplicar_filas(filas: list[dict]) -> list[dict]:
 
 
 def main() -> int:
-    # Nodo heredado sin productor en el pipeline actual: si el artefacto no
-    # existe (rebuild limpio desde raw) no hay nada que deduplicar. Se sale
-    # con 0 para no marcar en rojo un paso que no puede reconstruirse.
+    # El productor es transform/enriquecer_codigo_ine.py (declarado en
+    # run_all.SCRIPTS). Si falta, el DAG esta roto: fallar en vez de saltar.
     if not CSV_PATH.exists():
-        print(f"[SKIP] No existe {CSV_PATH.name}: paso heredado sin productor, nada que deduplicar")
-        return 0
+        print(
+            f"[ERROR] No existe {CSV_PATH}. "
+            "Ejecuta antes transform/enriquecer_codigo_ine.py "
+            "(o `python scripts/run_pipeline.py --fase silver`).",
+            file=sys.stderr,
+        )
+        return 1
 
     # CSV
     with CSV_PATH.open(encoding="utf-8-sig", newline="") as fh:
@@ -58,18 +63,24 @@ def main() -> int:
         w.writerows(filas)
     print(f"CSV: {antes} -> {len(filas)}")
 
-    # JSON
-    if JSON_PATH.exists():
-        data = json.loads(JSON_PATH.read_text(encoding="utf-8"))
-        datos = data.get("datos", [])
-        antes_j = len(datos)
-        datos = deduplicar_filas(datos)
-        data["datos"] = datos
-        if isinstance(data.get("metadata"), dict):
-            data["metadata"]["n_registros"] = len(datos)
-            data["metadata"]["n_municipios"] = len({d.get("codigo_ine") for d in datos})
-        JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"JSON: {antes_j} -> {len(datos)}")
+    # JSON (misma pareja in-place: si falta, el enriquecimiento no se completo)
+    if not JSON_PATH.exists():
+        print(
+            f"[ERROR] No existe {JSON_PATH}. "
+            "Ejecuta antes transform/enriquecer_codigo_ine.py.",
+            file=sys.stderr,
+        )
+        return 1
+    data = json.loads(JSON_PATH.read_text(encoding="utf-8"))
+    datos = data.get("datos", [])
+    antes_j = len(datos)
+    datos = deduplicar_filas(datos)
+    data["datos"] = datos
+    if isinstance(data.get("metadata"), dict):
+        data["metadata"]["n_registros"] = len(datos)
+        data["metadata"]["n_municipios"] = len({d.get("codigo_ine") for d in datos})
+    JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"JSON: {antes_j} -> {len(datos)}")
     return 0
 
 
