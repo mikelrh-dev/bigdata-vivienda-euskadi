@@ -13,7 +13,7 @@ Genera en data/resultados/:
   dumbbell_esfuerzo_18_24_vs_25_34.png (N3, dumbbell top20 joven)
   transporte_oferta_vs_esfuerzo.png (N7, scatter oferta vs esfuerzo)
   H2_tier_confianza_ABCD.png (H2 regenerado, layout expandido)
-  F_comparativa_TH.png, H8_tier_mediana_temporal_vs_larga.png,
+  F_comparativa_th.png, H8_tier_mediana_temporal_vs_larga.png,
   J_tier_confianza_vs_precio.png, P_oficial_vs_anuncios_por_TH.png
   (títulos/ejes con €/mes vs €/m2 y Territorio Histórico (TH))
 """
@@ -275,7 +275,7 @@ def regenerar_F() -> Path:
     ax.set_title("Cuantia media alquiler por Territorio Histórico (TH) — €/mes (Mongo)")
     ax.set_ylabel("€/mes (cuantía media)")
     fig.tight_layout()
-    out = RES / "F_comparativa_TH.png"
+    out = RES / "F_comparativa_th.png"
     fig.savefig(out, dpi=150, facecolor="white")
     plt.close(fig)
     print(f"OK F: {out} ({out.stat().st_size} bytes)")

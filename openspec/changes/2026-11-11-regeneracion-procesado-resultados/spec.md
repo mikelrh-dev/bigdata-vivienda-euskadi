@@ -140,6 +140,26 @@ frente al árbol previo (176 reproducibles + 6 recuperados).
   Cambian solo `auditoria_lagunas_silver.csv` y `mapa_esquema_silver.html`, que auditan
   silver y por tanto reflejan el paso de 188 a 182 ficheros (correcto, no regresión).
 
+### Gold reconstruida desde cero (verificado)
+
+`rm -rf data/resultados` + `--fase gold`: 4/4 pasos OK y **52 artefactos con SHA-256
+idéntico** a la ejecución estable. Los 4 que no aparecen no los produce `gold`: 2 son de
+`silver` (`auditoria_lagunas_silver.csv`, `mapa_esquema_silver.html`) y 2 no tienen
+productor (`dashboard.html`, `dashboard_completo.html`).
+
+Tres defectos que solo se ven al reconstruir de verdad, ya corregidos:
+
+| Defecto | Efecto | Corrección |
+|---|---|---|
+| La figura O leía `bootstrap_robustos.csv`, que escribe `sensibilidad.py` **después** | desde cero salía sin IC ("IC pendiente") y cambiaba al re-ejecutar | si falta, `run_analisis_mongo` calcula el bootstrap inline |
+| `F_comparativa_TH.png` vs `F_comparativa_th.png` | en Windows es el mismo fichero; en Linux serían dos, uno huérfano | nombre único `F_comparativa_th.png` en los dos generadores |
+| `generar_mapa_esquema.py` escribía con el locale vía pyvis | en Windows (cp1252) fallaba y dejaba un HTML de 0 bytes | se genera en memoria y se escribe en UTF-8 |
+
+**Pérdida declarada:** `dashboard.html`, `dashboard_completo.html` y el `README.md` local
+de `resultados` no están versionados ni tienen productor, así que al borrar la carpeta
+para probar el cold start no se pueden recuperar. Los dos dashboards ya figuraban como
+deuda (2/56); el README era documentación local no regenerable.
+
 ### Guardarraíl nuevo
 
 `tests/test_reproducibilidad_silver.py` sustituye el número mágico por la invariante:
@@ -162,7 +182,9 @@ segundo paso). Ahora ancla la raíz en `sys.path`; cubierto por test de regresi�
 
 ## 10. Fuera de alcance (deuda declarada)
 
-- `dashboard.html`, `dashboard_completo.html`: sin productor (2/56 de `resultados`).
+- `dashboard.html`, `dashboard_completo.html`: sin productor (2/56 de `resultados`);
+  ya no están presentes tras el rebuild desde cero.
+- `data/resultados/README.md`: documentación local, no versionada ni regenerable.
 - Scraping F4 (`transform/f4_pisos_dirigido.py`): requiere red; su lote nuevo sigue
   escribiendo en `raw` con guard. Ya no condiciona la reproducibilidad.
 - 21 derivados dentro de `raw` y ciclo `extract → dim_municipios`.

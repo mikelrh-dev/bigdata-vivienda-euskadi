@@ -594,7 +594,7 @@ def exportar_png_desde_mongo(
     if labels:
         ax.bar(labels, vals)
     ax.set_title("Cuantia media alquiler por Territorio Histórico (TH) — €/mes (Mongo)")
-    _save(fig, "F_comparativa_TH.png")
+    _save(fig, "F_comparativa_th.png")
 
     # ANEXO: G gaps (tabla, no gráfico) — se escribe en anexo/.
     n_imp = sum(1 for d in ind if d.get("is_imputed"))
@@ -1080,6 +1080,23 @@ def exportar_png_desde_mongo(
                     ic_map[nom] = (lo, hi)
     except Exception as exc:
         print(f"O bootstrap: no leido ({exc!r})")
+    if not ic_map:
+        # bootstrap_robustos.csv lo escribe analysis/sensibilidad.py, que en la
+        # fase gold corre DESPUES de este paso: en un rebuild desde cero aun no
+        # existe y la figura O saldria sin IC (distinta segun el orden). Se
+        # calcula aqui para que la capa sea identica venga de donde venga.
+        try:
+            from analysis.sensibilidad import bootstrap_robustos
+            for fila in bootstrap_robustos().to_dict("records"):
+                nom = str(fila.get("municipio") or "")
+                try:
+                    ic_map[nom] = (float(fila["ic95_inf"]), float(fila["ic95_sup"]))
+                except (KeyError, TypeError, ValueError):
+                    continue
+            if ic_map:
+                print(f"O bootstrap: calculado inline ({len(ic_map)} municipios)")
+        except Exception as exc:
+            print(f"O bootstrap: no disponible ({exc!r})")
     o_rank = [(str(d.get("nombre") or d.get("_id")), _fnum(d.get("esfuerzo_joven_pct_18_34")),
                int(d.get("n_anuncios") or 0)) for d in top]
     o_rank = [t for t in o_rank if t[1] is not None]
