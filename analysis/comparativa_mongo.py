@@ -12,13 +12,18 @@ Ningun valor se inventa: si falta, queda None.
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
 from typing import Any
 
-from analysis.mongo_aggregations import pipeline_indicadores_municipio
-from storage.mongo import get_collection
-
+# Ejecutado como script (python analysis/comparativa_mongo.py) sys.path[0] es
+# analysis/, asi que el paquete `analysis` no se resolveria: anclar la raiz.
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from analysis.mongo_aggregations import pipeline_indicadores_municipio  # noqa: E402
+from storage.mongo import get_collection  # noqa: E402
 DEFAULT_CSV = ROOT / "data" / "resultados" / "comparativa_3_municipios_mongo.csv"
 
 ADVERTENCIA_TIER = "solo Tier A (n>=30: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) sustenta ranking firme; Tier B/C/D (n<30) no ranking"
