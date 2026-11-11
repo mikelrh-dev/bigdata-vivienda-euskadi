@@ -5,12 +5,15 @@ sin dato) y les asigna territorio, poblacion (Eustat 2025) y tipologia de mercad
 
 Regla bronce: solo lectura de raw/procesado existentes; escribe en procesado.
 """
+import sys
 import pandas as pd
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw"
-PROC = BASE / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 # 1. Municipios sin alquiler directo
 alq = pd.read_csv(PROC / "alquiler_municipal_completo.csv", dtype=str, encoding="utf-8-sig")

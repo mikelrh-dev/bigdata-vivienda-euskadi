@@ -11,12 +11,15 @@ El orden de columnas reproduce el historico: dim + columnas solo-renta
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROC = PROJECT_ROOT / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
 
 
 def main() -> int:

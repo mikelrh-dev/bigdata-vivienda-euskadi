@@ -13,14 +13,17 @@ from __future__ import annotations
 import glob
 import json
 import os
+import sys
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW = os.path.join(BASE, "data", "raw")
-PROC = os.path.join(BASE, "data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+PROC = str(PROCESADO_DIR)
 
 
 def main() -> int:
-    dim_path = os.path.join(RAW, "dim_municipios.json")
+    dim_path = os.path.join(PROC, "dim_municipios.json")
     nombres = {}
     if os.path.exists(dim_path):
         dim = json.loads(open(dim_path, encoding="utf-8").read())

@@ -11,13 +11,12 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger  # noqa: E402
+from _common import PROCESADO_DIR, RAW_DIR, get_logger  # noqa: E402
 
 log = get_logger("completar_alquiler_comarca")
 
-PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR = PROCESADO_DIR
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 K_VECINOS = 5
@@ -25,7 +24,7 @@ POTENCIA = 2.0
 
 
 def _cargar_dim() -> dict[str, dict]:
-    dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
+    dim = json.loads((PROC_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
     regs = dim.get("datos", dim) if isinstance(dim, dict) else dim
     return {r["codigo_ine"]: r for r in regs}
 

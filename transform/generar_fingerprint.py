@@ -1,8 +1,11 @@
 """Genera property_fingerprint (sha256) en anuncios_unificados.json."""
 from __future__ import annotations
-import hashlib, json, os
+import hashlib, json, os, sys
 
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR  # noqa: E402
+
+OUT = str(PROCESADO_DIR)
 path = os.path.join(OUT, "anuncios_unificados.json")
 
 with open(path, encoding="utf-8") as f:

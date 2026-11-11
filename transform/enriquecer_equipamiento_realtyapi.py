@@ -1,8 +1,11 @@
 """Enriquece equipamiento de anuncios RealtyAPI en anuncios_unificados.json (post-proceso)."""
 from __future__ import annotations
-import json, os, re
+import json, os, re, sys
 
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+OUT = str(PROCESADO_DIR)
 path = os.path.join(OUT, "anuncios_unificados.json")
 with open(path, encoding="utf-8") as f:
     data = json.load(f)
@@ -12,7 +15,7 @@ keywords = ["ascensor", "terraza", "parking", "garaje", "balcon", "balcón",
             "aire acondicionado", "amueblado", "exterior", "interior", "dúplex", "duplex", "ático", "atico"]
 
 # load realtyapi raw for descripcion/exterior
-raw_path = os.path.join("data", "raw", "anuncios_realtyapi.json")
+raw_path = str(RAW_DIR / "anuncios_realtyapi.json")
 with open(raw_path, encoding="utf-8") as f:
     raw = json.load(f)["datos"]
 raw_map = {str(r.get("id_anuncio")): r for r in raw}

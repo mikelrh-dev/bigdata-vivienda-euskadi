@@ -19,10 +19,13 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROC = os.path.join(BASE, "data", "procesado")
-RAW = os.path.join(BASE, "data", "raw")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+PROC = str(PROCESADO_DIR)
+RAW = str(RAW_DIR)
 
 
 def _validar(obj, nombres) -> list[str]:
@@ -41,7 +44,7 @@ def _validar(obj, nombres) -> list[str]:
 
 
 def main() -> int:
-    dim_path = os.path.join(RAW, "dim_municipios.json")
+    dim_path = os.path.join(PROC, "dim_municipios.json")
     if not os.path.exists(dim_path):
         print(f"[ERROR] No existe {dim_path}")
         return 1

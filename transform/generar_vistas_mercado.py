@@ -12,11 +12,14 @@ from __future__ import annotations
 
 import csv
 import json
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-PROC = ROOT / "data" / "procesado"
-RAW = ROOT / "data" / "raw"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
+RAW = RAW_DIR
 
 
 def _valid_codes() -> set:

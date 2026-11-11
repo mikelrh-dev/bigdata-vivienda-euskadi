@@ -1,9 +1,12 @@
 """Enriquece conectividad GTFS: expediciones diarias, tren/metro, paradas por 1000 hab."""
 from __future__ import annotations
-import csv, json, os, zipfile, datetime
+import csv, json, os, sys, zipfile, datetime
 
-RAW = os.path.join("data", "raw")
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+OUT = str(PROCESADO_DIR)
 GTFS_DIR = os.path.join(RAW, "gtfs")
 
 def point_in_ring(lon, lat, ring):

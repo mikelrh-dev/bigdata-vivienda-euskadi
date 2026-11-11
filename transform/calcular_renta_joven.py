@@ -20,14 +20,17 @@ No toca raw.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
 import numpy as np
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW = PROJECT_ROOT / "data" / "raw"
-PROC = PROJECT_ROOT / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 
 def _ratio_fiscal_desde_eustat() -> tuple[float, str]:

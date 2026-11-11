@@ -25,11 +25,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
-from transform.dim_municipios import tier_de_n  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR  # noqa: E402
+from dim_municipios import tier_de_n  # noqa: E402
 
-PROC = PROJECT_ROOT / "data" / "procesado"
+PROC = PROCESADO_DIR
 
 
 def _es_verdadero(serie: pd.Series) -> pd.Series:

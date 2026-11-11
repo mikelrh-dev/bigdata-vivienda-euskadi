@@ -1,9 +1,12 @@
 """Limpieza básica de ECVI: extrae precio total y €/m² para último trimestre (2026T2)."""
 from __future__ import annotations
-import csv, json, os
+import csv, json, os, sys
 
-RAW = os.path.join("data", "raw")
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+OUT = str(PROCESADO_DIR)
 
 def read_ecvi(path):
     with open(path, encoding="utf-8-sig", newline="") as f:

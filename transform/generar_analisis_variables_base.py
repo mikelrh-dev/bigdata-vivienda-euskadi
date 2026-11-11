@@ -3,12 +3,15 @@
 # Basado en scratchpad/analysis.py, adaptado para leer de raw/procesado.
 # Regla bronce: solo lectura; escribe en procesado.
 
+import sys
 import pandas as pd
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw"
-PROC = BASE / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 
 def _ratios_18_34_desde_eustat() -> tuple[dict, str]:
@@ -66,7 +69,7 @@ def loadcsv(path):
 dim = loadcsv(PROC / "dim_municipios.csv")
 rc = loadcsv(RAW / "renta_municipal_completa.csv")
 alq = loadcsv(PROC / "alquiler_municipal_completo.csv")
-dc = loadcsv(RAW / "distancias_capitales_252.csv")
+dc = loadcsv(PROC / "distancias_capitales_252.csv")
 # WP-04/C-03: se lee la copia de PROCESADO, no el duplicado congelado de raw.
 ud = loadcsv(PROC / "udalmap_empleo_corregido.csv")
 

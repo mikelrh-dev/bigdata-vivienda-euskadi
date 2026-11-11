@@ -1,11 +1,14 @@
 """Unifica anuncios de Fotocasa, Pisos y RealtyAPI en esquema único para MongoDB."""
 from __future__ import annotations
-import json, os, glob as _glob, hashlib
+import json, os, sys, glob as _glob, hashlib
 import pandas as pd
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
 from muni_resolve import resolver_codigo, resolver_pisos_por_texto
 
-RAW = os.path.join("data", "raw")
-OUT = os.path.join("data", "procesado")
+RAW = str(RAW_DIR)
+OUT = str(PROCESADO_DIR)
 
 REQUIRED_KEYS = ("precio_eur", "municipio")
 
@@ -63,7 +66,7 @@ def deduplicar_fingerprint(recs):
 
 
 def load_json(name):
-    with open(os.path.join(RAW, name), encoding="utf-8") as f:
+    with open(os.path.join(OUT, name), encoding="utf-8") as f:
         payload = json.load(f)
     if isinstance(payload, dict) and "datos" in payload:
         return payload["datos"]
@@ -258,9 +261,9 @@ def transform_realtyapi(items):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    fc = load_json("anuncios_fotocasa_enriquecido_geo.json")
-    pis = load_json("anuncios_pisos_enriquecido_geo.json")
-    ra = load_json("anuncios_realtyapi.json")
+    fc = load_json("anuncios_fotocasa_enriquecido.json")
+    pis = load_json("anuncios_pisos_enriquecido.json")
+    ra = load_json("anuncios_realtyapi_enriquecido.json")
     recs = []
     fc_recs = transform_fotocasa(fc)
     for r in fc_recs:
@@ -360,8 +363,6 @@ def main():
     before_q = len(recs)
     dropped = {"codigo_ine_null": 0, "codigo_ine_no_dim": 0, "superficie_lt_10": 0, "pm2_gt_100": 0}
     dim_path = os.path.join(OUT, "dim_municipios.csv")
-    if not os.path.exists(dim_path):
-        dim_path = os.path.join(RAW, "dim_municipios.csv")
     _dim = pd.read_csv(dim_path, dtype=str, encoding="utf-8-sig")
     valid_codes = set(_dim["codigo_ine"].astype(str).str.strip().str.zfill(5))
     cleaned = []

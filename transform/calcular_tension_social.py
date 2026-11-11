@@ -11,14 +11,17 @@ dim_municipios_enriquecido.csv desde aqui.
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW = PROJECT_ROOT / "data" / "raw"
-PROC = PROJECT_ROOT / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 
 def _percentil(series: pd.Series) -> pd.Series:

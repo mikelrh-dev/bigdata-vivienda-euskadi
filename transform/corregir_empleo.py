@@ -8,13 +8,13 @@ Genera data/raw/udalmap_empleo_corregido.csv/.json.
 from __future__ import annotations
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR, get_logger, guardar_json  # noqa: E402
 log = get_logger("f2_empleo")
 NOTA = ("tasa_paro_aprox_pct invalidada (cociente con distinta base). Usar "
         "tasa_paro_lanbide_pct (ind.13 Udalmap, paro registrado 16-64). "
         "U1: vivienda/movilidad/renta de contraste (Etxebide, VPO, commuting).")
-PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR = PROCESADO_DIR
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 PCT_100 = ["tasa_actividad_pct", "tasa_ocupacion_pct", "tasa_paro_lanbide_pct",
            "tasa_ocupacion_juvenil_16_24_pct", "trabaja_fuera_pct",

@@ -8,11 +8,13 @@ Genera data/raw/alquiler_seccion.csv (con codigo_ine) y resumen por municipio.
 from __future__ import annotations
 import csv, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR, get_logger  # noqa: E402
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger  # noqa: E402
 from entity_resolution import resolver_municipio  # noqa: E402
 log = get_logger("v4_secciones")
-PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR = PROCESADO_DIR
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 METS = ["renta_media_eur_m2_media", "renta_media_eur_m2_mediana", "renta_media_eur_m2_p25",
         "renta_media_eur_m2_p75", "cuantia_media_eur_mes_media", "cuantia_media_eur_mes_mediana",

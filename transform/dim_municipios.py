@@ -15,11 +15,11 @@ import sys
 import unicodedata
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: E402
 
 log = get_logger("dim_municipios")
-PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR = PROCESADO_DIR
 
 
 def _leer_json(ruta: Path) -> list[dict]:

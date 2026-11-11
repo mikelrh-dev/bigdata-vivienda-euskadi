@@ -14,17 +14,17 @@ from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
 from entity_resolution import norm, MANUAL_MAP  # noqa: E402
 
-RAW = os.path.join("data", "raw")
+RAW = str(RAW_DIR)
 
 
 def _load_dim():
-    # WP-16: dim canonica en procesado; raw solo fallback historico.
-    _src = os.path.join("data", "procesado", "dim_municipios.csv")
-    if not os.path.exists(_src):
-        _src = os.path.join(RAW, "dim_municipios.csv")
+    _src = str(PROCESADO_DIR / "dim_municipios.csv")
     dim = pd.read_csv(_src, dtype=str, encoding="utf-8-sig")
     dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     code2name = dict(zip(dim["codigo_ine"], dim["nombre_canonico"]))

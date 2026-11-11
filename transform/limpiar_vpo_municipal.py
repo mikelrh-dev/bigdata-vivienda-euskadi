@@ -12,14 +12,17 @@ no un stock de viviendas.
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw" / "udalmap_vpo_terminadas.csv"
-DIM = BASE / "data" / "procesado" / "dim_municipios.csv"
-PROC = BASE / "data" / "procesado" / "vpo_municipal.csv"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR / "udalmap_vpo_terminadas.csv"
+DIM = PROCESADO_DIR / "dim_municipios.csv"
+PROC = PROCESADO_DIR / "vpo_municipal.csv"
 
 ANIO = "2024"
 FUENTE = "Open Data Euskadi - Udalmap indicador 73 (VPO terminadas ultimo quinquenio)"

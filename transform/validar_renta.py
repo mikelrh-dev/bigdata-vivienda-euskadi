@@ -9,11 +9,11 @@ Genera data/procesado/renta_municipal_referencia.csv (procesado, no raw):
 from __future__ import annotations
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR, get_logger  # noqa: E402
 log = get_logger("f1_renta")
 
-PROC_DIR = RAW_DIR.parent / "procesado"
+PROC_DIR = PROCESADO_DIR
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 def main() -> int:

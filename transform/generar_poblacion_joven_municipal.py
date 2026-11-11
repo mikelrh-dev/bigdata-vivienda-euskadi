@@ -16,12 +16,15 @@
 # Documentado como estimacion, no dato real.
 # Regla bronce: solo lectura; escribe en procesado.
 
+import sys
 import pandas as pd
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw"
-PROC = BASE / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 pob = pd.read_csv(RAW / "eustat_poblacion_edad.csv", dtype=str, encoding="utf-8-sig")
 # WP-11: fallback explicito de periodo (2025/01/01 -> max disponible).

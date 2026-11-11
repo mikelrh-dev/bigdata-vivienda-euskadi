@@ -1,10 +1,13 @@
 """Desglosa Eustat Renta y Población en dataset demográfico limpio por municipio (252 filas)."""
 from __future__ import annotations
-import json, os, unicodedata
+import json, os, sys, unicodedata
 import pandas as pd
 
-RAW = os.path.join("data", "raw")
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+OUT = str(PROCESADO_DIR)
 
 def norm(s):
     s = str(s).strip().lower()
@@ -14,7 +17,7 @@ def norm(s):
 def main():
     os.makedirs(OUT, exist_ok=True)
     # dim municipios para mapeo nombre -> codigo_ine
-    dim = pd.read_csv(os.path.join(RAW, "dim_municipios.csv"), dtype=str, encoding="utf-8-sig")
+    dim = pd.read_csv(os.path.join(OUT, "dim_municipios.csv"), dtype=str, encoding="utf-8-sig")
     dim["key"] = dim["nombre_canonico"].apply(norm)
     name2code = dict(zip(dim["key"], dim["codigo_ine"].astype(str).str.zfill(5)))
 

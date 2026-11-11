@@ -1,10 +1,13 @@
 """Normaliza codigo_ine en todos los JSON crudos de data/raw/."""
 from __future__ import annotations
-import json, os, glob
+import json, os, glob, sys
 from datetime import datetime
 
-RAW = os.path.join("data", "raw")
-OUT = os.path.join("data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+OUT = str(PROCESADO_DIR)
 
 # Fecha por defecto documentada cuando no hay mtime disponible.
 FECHA_DEFAULT = "1970-01-01T00:00:00"

@@ -12,12 +12,15 @@ Filtrado: solo Tipo edificio que contenga 'Vivienda'.
 Agregación: moda de Calificación energética + distribución A-G por municipio.
 """
 import os
+import sys
 import pandas as pd
 import numpy as np
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW = os.path.join(BASE, "data", "raw")
-PROC = os.path.join(BASE, "data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = str(RAW_DIR)
+PROC = str(PROCESADO_DIR)
 
 TERRITORIOS = ["araba", "bizkaia", "gipuzkoa", "bilbao", "donostia", "vitoria"]
 

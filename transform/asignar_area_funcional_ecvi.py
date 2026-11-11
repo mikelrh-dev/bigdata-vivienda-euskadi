@@ -2,12 +2,15 @@
 # Cruza municipio -> area funcional (GeoEuskadi) con ECVI compraventa.
 # Regla bronce: solo lectura; escribe en procesado.
 
+import sys
 import pandas as pd
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[1]
-RAW = BASE / "data" / "raw"
-PROC = BASE / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+RAW = RAW_DIR
+PROC = PROCESADO_DIR
 
 # 1. Correspondencia municipio -> area funcional
 afm = pd.read_csv(RAW / "areas_funcionales_municipios.csv", dtype=str, encoding="utf-8-sig")

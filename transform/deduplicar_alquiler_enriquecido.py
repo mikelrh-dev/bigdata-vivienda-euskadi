@@ -8,10 +8,13 @@ from __future__ import annotations
 
 import csv
 import json
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-PROC = ROOT / "data" / "procesado"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR  # noqa: E402
+
+PROC = PROCESADO_DIR
 CSV_PATH = PROC / "alquiler_municipal_enriquecido.csv"
 JSON_PATH = PROC / "alquiler_municipal_enriquecido.json"
 

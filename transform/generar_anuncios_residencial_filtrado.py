@@ -15,11 +15,14 @@ excluidos_iqr_precio_medio/habitaciones_int).
 from __future__ import annotations
 
 import os
+import sys
 import math
 import pandas as pd
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROC = os.path.join(BASE, "data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR  # noqa: E402
+
+PROC = str(PROCESADO_DIR)
 
 PRECIO_M2_MIN = 3.0
 PRECIO_M2_MAX = 50.0

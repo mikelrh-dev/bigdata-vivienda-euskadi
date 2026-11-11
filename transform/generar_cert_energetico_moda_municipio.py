@@ -9,10 +9,13 @@ cert_energetico_moda). Determinista, solo lectura de silver existente.
 from __future__ import annotations
 
 import os
+import sys
 import pandas as pd
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROC = os.path.join(BASE, "data", "procesado")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _common import PROCESADO_DIR  # noqa: E402
+
+PROC = str(PROCESADO_DIR)
 
 
 def main() -> int:

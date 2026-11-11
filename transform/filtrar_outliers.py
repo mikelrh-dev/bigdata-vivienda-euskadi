@@ -25,13 +25,12 @@ import json
 import sys
 from pathlib import Path
 
-# Añadir extract/ al path para importar _common
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import PROCESADO_DIR, RAW_DIR, get_logger, guardar_json  # noqa: E402
 
 log = get_logger("filtrar_outliers")
 
-PROC_DIR = Path(__file__).resolve().parent.parent / "data" / "procesado"
+PROC_DIR = PROCESADO_DIR
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 # Umbrales configurables
