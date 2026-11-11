@@ -54,6 +54,29 @@ def _tocar(path: Path, mtime: float) -> None:
     os.utime(path, (mtime, mtime))
 
 
+def test_deduplicacion_de_alquiler_va_despues_de_su_productor():
+    """La dedup in-place solo tiene sentido tras enriquecer_codigo_ine.
+
+    Regresion F-01: sin la arista, el nodo se ordenaba por grupo
+    (limpieza_base) y en un rebuild limpio no encontraba su entrada.
+    """
+    orden = ra._orden_topologico(list(ra.SCRIPTS))
+    assert "enriquecer_codigo_ine.py" in orden
+    assert "deduplicar_alquiler_enriquecido.py" in orden
+    assert (orden.index("enriquecer_codigo_ine.py")
+            < orden.index("deduplicar_alquiler_enriquecido.py"))
+
+
+def test_alquiler_enriquecido_declarado_en_productor_y_consumidor():
+    """Las salidas/entradas declaran la pareja que se deduplica in-place."""
+    salidas = ra.SCRIPTS["enriquecer_codigo_ine.py"]["out"]
+    entradas = ra.SCRIPTS["deduplicar_alquiler_enriquecido.py"]["in"]
+    for ref in ("proc:alquiler_municipal_enriquecido.csv",
+                "proc:alquiler_municipal_enriquecido.json"):
+        assert ref in salidas
+        assert ref in entradas
+
+
 def test_orden_topologico_respeta_dag(dag):
     """Aunque se pase en orden inverso, el orden sale a,b,c (sin_salida al final relativo)."""
     orden = ra._orden_topologico(["c.py", "b.py", "a.py"])
