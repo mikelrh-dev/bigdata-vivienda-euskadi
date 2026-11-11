@@ -234,10 +234,7 @@ def parsear_etxebide(texto: str) -> list[dict]:
     df = pd.read_csv(
         io.StringIO(csv_texto),
         sep=";",
-        decimal=",",
-        thousands=".",
         dtype=str,  # M-1: todo texto; la conversion numerica es explicita abajo
-
     )
     df.columns = [str(c).strip() for c in df.columns]
     columnas = list(df.columns)
@@ -253,9 +250,16 @@ def parsear_etxebide(texto: str) -> list[dict]:
     largo["codigo_ine"] = largo["codigo_ine"].str.strip().str.zfill(5)
     largo["municipio"] = largo["municipio"].str.strip()
     largo["anio"] = largo["anio"].astype(int)
-    largo["etxebide_solicitudes_por_mil"] = pd.to_numeric(
-        largo["etxebide_solicitudes_por_mil"], errors="coerce"
+    # El origen usa formato español (miles '.', decimales ',') y se lee como
+    # texto, así que se normaliza antes de la conversión numérica explícita.
+    valores = (
+        largo["etxebide_solicitudes_por_mil"]
+        .astype(str)
+        .str.strip()
+        .str.replace(".", "", regex=False)
+        .str.replace(",", ".", regex=False)
     )
+    largo["etxebide_solicitudes_por_mil"] = pd.to_numeric(valores, errors="coerce")
 
     registros: list[dict] = []
     for fila in largo.to_dict(orient="records"):

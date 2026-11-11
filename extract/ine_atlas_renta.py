@@ -29,6 +29,33 @@ INDICADOR = "Renta neta media por hogar"
 # Códigos INE de provincias de Euskadi
 PROVINCIAS_EUSKADI = {"01", "20", "48"}
 
+# Estimacion transparente de la renta joven 16-29 a partir de la renta del
+# hogar: media simple de los tramos Eustat 2024 (18-19, 20-24, 25-29) sobre la
+# renta total de la C.A. de Euskadi (28.170 EUR). No es un salario.
+RENTA_JOVEN_TRAMOS = (1599.0, 8156.0, 20109.0)
+RENTA_TOTAL_CAE = 28170.0
+RATIO_JOVEN_16_29 = sum(RENTA_JOVEN_TRAMOS) / len(RENTA_JOVEN_TRAMOS) / RENTA_TOTAL_CAE
+NOTA_RENTA_JOVEN = (
+    "estimacion_transparente: renta_hogar x "
+    f"{RATIO_JOVEN_16_29:.4f} (Eustat 18-19:1599, 20-24:8156, 25-29:20109 / "
+    "total 28170, 2024). No es salario."
+)
+
+
+def _con_renta_derivada(fila: dict) -> dict:
+    """Añade renta_hogar y la estimacion joven 16-29 a una fila de renta."""
+    renta_hogar = fila.get("renta_atlas")
+    fila["renta_hogar"] = renta_hogar
+    fila["renta_joven_estimada_16_29"] = (
+        round(float(renta_hogar) * RATIO_JOVEN_16_29, 2)
+        if renta_hogar not in (None, "")
+        else None
+    )
+    fila["renta_joven_origen"] = (
+        NOTA_RENTA_JOVEN if fila["renta_joven_estimada_16_29"] is not None else None
+    )
+    return fila
+
 
 def _cargar_dim() -> dict:
     ruta = PROCESADO_DIR / "dim_municipios.json"
@@ -209,8 +236,12 @@ def main() -> int:
                 "anio_fuente": None,
             })
 
+    completa = [_con_renta_derivada(fila) for fila in completa]
+
     csv_path2 = RAW_DIR / "renta_municipal_completa.csv"
-    columnas2 = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen", "renta_eustat", "anio_fuente"]
+    columnas2 = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen",
+                 "renta_eustat", "anio_fuente", "renta_hogar", "renta_joven_estimada_16_29",
+                 "renta_joven_origen"]
     with csv_path2.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=columnas2)
         w.writeheader()

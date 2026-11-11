@@ -112,13 +112,19 @@ def main() -> int:
     eustat = _cargar_eustat()
     log.info("Municipios Eustat: %d", len(eustat))
 
-    # Variantes de Fotocasa
+    # Variantes de Fotocasa (si el scraper no se ha ejecutado, el catálogo se
+    # construye igual con Eustat y el resto de fuentes disponibles).
     import pandas as pd
 
-    fot_mun = sorted({
-        r["municipio"] for r in _leer_json(RAW_DIR / "anuncios_fotocasa.json")
-        if r.get("municipio")
-    })
+    fot_mun = []
+    ruta_fotocasa = RAW_DIR / "anuncios_fotocasa.json"
+    if ruta_fotocasa.exists():
+        fot_mun = sorted({
+            r["municipio"] for r in _leer_json(ruta_fotocasa)
+            if r.get("municipio")
+        })
+    else:
+        log.info("Sin %s: se omite el recuento de anuncios de Fotocasa", ruta_fotocasa.name)
 
     # Variantes de alquiler municipal
     alq = leer_csv_seguro(RAW_DIR / "alquiler_municipal.csv")

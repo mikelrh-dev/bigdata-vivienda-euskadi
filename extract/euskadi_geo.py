@@ -10,15 +10,39 @@ import csv
 import json
 import math
 import sys
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_json, guardar_meta
+from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json, guardar_meta
 
 log = get_logger("euskadi_geo")
 
+URL_MUNICIPIOS = (
+    "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/"
+    "MUNICIPIOS_5000_ETRS89.zip"
+)
 SHP = RAW_DIR / "shp_euskadi" / "MUNICIPIOS_5000_ETRS89.shp"
+
+
+def _asegurar_shp() -> Path:
+    """Devuelve el SHP municipal, descargándolo de GeoEuskadi si falta."""
+    if SHP.exists():
+        return SHP
+    zip_path = SHP.parent / "MUNICIPIOS_5000_ETRS89.zip"
+    log.info("SHP ausente: descargando %s", URL_MUNICIPIOS)
+    Cliente("euskadi_geo").descargar(URL_MUNICIPIOS, zip_path)
+    with zipfile.ZipFile(zip_path) as z:
+        z.extractall(SHP.parent)
+    if SHP.exists():
+        return SHP
+    encontrados = sorted(SHP.parent.rglob("MUNICIPIOS_5000_ETRS89.shp"))
+    if not encontrados:
+        raise FileNotFoundError(
+            f"El ZIP no contiene MUNICIPIOS_5000_ETRS89.shp: {zip_path}"
+        )
+    return encontrados[0]
 
 CAPITALES = {
     "Bilbao": (43.2630, -2.9350),
@@ -40,13 +64,11 @@ def main() -> int:
     import shapefile
     from pyproj import Transformer
 
-    if not SHP.exists():
-        log.error("Falta el SHP. Descarga MUNICIPIOS_5000_ETRS89.zip en data/raw/.")
-        return 1
+    shp_path = _asegurar_shp()
 
     transformer = Transformer.from_crs("EPSG:25830", "EPSG:4326", always_xy=True)
 
-    sf = shapefile.Reader(str(SHP))
+    sf = shapefile.Reader(str(shp_path))
     field_names = [f[0] for f in sf.fields[1:]]
 
     shapes = sf.shapes()
@@ -133,6 +155,40 @@ def main() -> int:
             }
         )
 
+    # Filtrar solo municipios canónicos (dim_municipios), tanto las geometrías
+    # como la tabla de distancias: el SHP trae más polígonos que municipios.
+    dim_path = PROCESADO_DIR / "dim_municipios.json"
+    dim_codigos = set()
+    if dim_path.exists():
+        dim = json.loads(dim_path.read_text(encoding="utf-8"))
+        regs = dim.get("datos", dim) if isinstance(dim, dict) else dim
+        dim_codigos = {r["codigo_ine"] for r in regs}
+    if dim_codigos:
+        features = [f for f in features if f["properties"]["codigo_ine"] in dim_codigos]
+        municipios = [m for m in municipios if m["codigo_ine"] in dim_codigos]
+
+    # El SHP puede repetir un municipio en varios registros: dejar una geometría
+    # y una fila por codigo_ine.
+    vistos_feat: set = set()
+    features_unicas: list[dict] = []
+    for f in features:
+        codigo = f["properties"]["codigo_ine"]
+        if codigo in vistos_feat:
+            continue
+        vistos_feat.add(codigo)
+        features_unicas.append(f)
+    features = features_unicas
+
+    # Deduplicar por codigo_ine (el SHP puede tener múltiples polígonos por municipio)
+    vistos: set = set()
+    unicos: list[dict] = []
+    for m in municipios:
+        if m["codigo_ine"] in vistos:
+            continue
+        vistos.add(m["codigo_ine"])
+        unicos.append(m)
+    municipios = unicos
+
     geojson = {
         "type": "FeatureCollection",
         "crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
@@ -163,26 +219,6 @@ def main() -> int:
         else:
             m["dist_centroide_comarca_km"] = None
 
-    # Filtrar solo municipios canónicos (dim_municipios)
-    dim_path = PROCESADO_DIR / "dim_municipios.json"
-    dim_codigos = set()
-    if dim_path.exists():
-        dim = json.loads(dim_path.read_text(encoding="utf-8"))
-        regs = dim.get("datos", dim) if isinstance(dim, dict) else dim
-        dim_codigos = {r["codigo_ine"] for r in regs}
-    if dim_codigos:
-        municipios = [m for m in municipios if m["codigo_ine"] in dim_codigos]
-
-    # Deduplicar por codigo_ine (el SHP puede tener múltiples polígonos por municipio)
-    vistos: set = set()
-    unicos: list[dict] = []
-    for m in municipios:
-        if m["codigo_ine"] in vistos:
-            continue
-        vistos.add(m["codigo_ine"])
-        unicos.append(m)
-    municipios = unicos
-
     csv_path = RAW_DIR / "distancias_capitales.csv"
     columnas = ["codigo_ine", "nombre", "territorio", "comarca", "centroide_lat", "centroide_lon",
                 "dist_bilbao_km", "dist_donostia_km", "dist_vitoria_km", "capital_mas_cercana",
@@ -194,7 +230,7 @@ def main() -> int:
     log.info("CSV -> %s (%d municipios)", csv_path.name, len(municipios))
     guardar_meta(csv_path, {
         "fuente": "Cartografía municipal de Euskadi (SHP)",
-        "url": str(SHP),
+        "url": str(shp_path),
         "n_registros": len(municipios),
     })
 

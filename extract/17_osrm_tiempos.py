@@ -50,7 +50,7 @@ def _table(coords_batch, dest):
 def main() -> int:
     import pandas as pd
 
-    dim = pd.read_csv(RAW_DIR / "distancias_capitales_252.csv", dtype=str, encoding="utf-8-sig")
+    dim = pd.read_csv(RAW_DIR / "distancias_capitales.csv", dtype=str, encoding="utf-8-sig")
     cods = dim["codigo_ine"].str.zfill(5).tolist()
     coords = list(zip(dim["centroide_lat"].astype(float), dim["centroide_lon"].astype(float)))
 

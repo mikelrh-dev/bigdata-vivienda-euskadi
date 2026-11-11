@@ -151,7 +151,10 @@ def cargar_municipios() -> list[dict]:
         }
         if HAS_SHAPELY and m["geometry"]:
             try:
-                m["geom"] = shape(m["geometry"])  # type: ignore[misc]
+                geom = shape(m["geometry"])  # type: ignore[misc]
+                if not geom.is_valid:
+                    geom = geom.buffer(0)
+                m["geom"] = geom if not geom.is_empty else None
             except Exception:  # noqa: BLE001
                 m["geom"] = None
         else:
@@ -166,8 +169,14 @@ def municipio_por_punto(lat: float, lon: float, municipios: list[dict]) -> dict 
     pt = Point(lon, lat)  # type: ignore[misc]
     for m in municipios:
         geom = m.get("geom")
-        if geom is not None and (geom.contains(pt) or geom.covers(pt)):
-            return m
+        if geom is None:
+            continue
+        try:
+            if geom.contains(pt) or geom.covers(pt):
+                return m
+        except Exception:  # noqa: BLE001
+            # Geometría aún inválida: no debe tumbar el extractor completo.
+            continue
     return None
 
 
