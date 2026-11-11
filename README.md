@@ -105,9 +105,9 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros canónicos de `data/raw` en HDFS; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la recuperación verificada (`scripts/hdfs_recuperacion_un_fichero.py`) y esta excepción declarada, no supuesta. Nota 352 vs 354: el manifest local `docs/raw_manifest_sha256.txt` tiene 354 entradas SHA (incluye 2 alias legacy no publicados en HDFS); el canónico publicado en HDFS es 352. El gate offline (`scripts/gate_extremo_a_extremo.py --offline`) verifica 354 SHA + silver 182.
+> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros canónicos de `data/raw` en HDFS; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la verificación tamaño+SHA del consumidor (`storage/kafka_hdfs_uploader.py`) con la evidencia de `FileStatus` en `openspec/audit/v8_2026-11-09/evidencia/vivo/hdfs.json`, y esta excepción declarada, no supuesta. Nota 352 vs 354: el manifest local `docs/raw_manifest_sha256.txt` tiene 354 entradas SHA (incluye 2 alias legacy no publicados en HDFS); el canónico publicado en HDFS es 352. El gate offline (`scripts/gate_extremo_a_extremo.py --offline`) verifica 354 SHA + silver 182.
 
-Tests del contrato: `259 passed, 2 skipped` (261 collected, ver `pytest tests/ -q`). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md (gobernanza: 50 cabeceras de requisito (46 con ID numérico), 44 scripts en transform/ con 38 en el DAG, 11 pipelines — ver `scripts/verificar_gobernanza.py`).
+Tests del contrato: `262 passed, 2 skipped` (264 collected, ver `pytest tests/ -q`). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md (gobernanza: 50 cabeceras de requisito (46 con ID numérico), 44 scripts en transform/ con 38 en el DAG, 11 pipelines — ver `scripts/verificar_gobernanza.py`).
 
 ## 📁 Estructura
 
@@ -121,7 +121,7 @@ bigdata-vivienda-euskadi/
 ├── storage/           PyMongo + HDFS central + Kafka centro (listos)
 ├── analysis/          Aggregation Pipeline (hecho, 11 pipelines en PIPELINE_ORDER) + 8 CSV `mongo_*` desde Mongo
 ├── data/raw/          Datos generados (ignorados por git, 356 archivos)
-├── data/procesado/    Datos normalizados (ignorados por git, 188 archivos, manifest 188)
+├── data/procesado/    Datos normalizados (ignorados por git, 182 archivos, manifest 182)
 ├── data/resultados/   Indicadores y gráficos (ignorados por git)
 └── docs/              Documentación (índice en docs/README.md)
 ```
@@ -133,7 +133,7 @@ bigdata-vivienda-euskadi/
 | Municipios de referencia | 252 |
 | Archivos raw (bronce) | 356 en disco local; 352 ficheros raw canónicos en HDFS; manifest local 354 SHA en `docs/raw_manifest_sha256.txt` (354 = 352 HDFS + 2 alias legacy no publicados; ver nota 352 vs 354) |
 | Archivos raw por tipo | CSV 129, JSON 61, HTML 101, ZIP 49, XLSX 6, GEOJSON 2, otros 7 |
-| Archivos silver | 188 (manifest 188: excluidos `.gitkeep`/`ingestion_manifest.json`/manifest; antes 185 como historia) |
+| Archivos silver | 182 (manifest 182: excluidos `.gitkeep`/`ingestion_manifest.json`/manifest; reconstruidos desde cero el 2026-11-11; antes 185/188 como historia) |
 | Anuncios unificados | 594 vigentes post re-resolucion pisos (843 raw → 594 tras dedup + cuarentena 45; 759 es la cifra histórica pre-v5, no vigente) (326 larga estancia + 268 temporal) en 64 municipios |
 | Anuncios residenciales | 326 en 53 municipios |
 | Anuncios de habitaciones | 201 en 9 municipios |
@@ -157,10 +157,10 @@ bigdata-vivienda-euskadi/
 
 ## 📊 Artefactos visuales (data/resultados/)
 
-- `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; generado 2026-11-01, verificar tras regeneracion).
+- `mapa_esquema_silver.html` — grafo de relaciones entre 40 CSVs silver en disco (PyVis, hubs: dim_municipios, anuncios_unificados; regenerado 2026-11-11, determinista).
 - `auditoria_lagunas_silver.csv` — profiling de 40 CSVs (filas, nulos, cobertura/252 muns).
-- `dashboard.html` / `dashboard_completo.html` — dashboards estaticos manuales con conclusiones (los generadores DuckDB antiguos fueron retirados; los PNG actuales se generan desde Mongo).
-- NOTA (RA4 / P-05): `dashboard.html`, `dashboard_completo.html` y `mapa_esquema_silver.html` son **manuales** con valores tecleados y **no** son evidencia automática RA4; `G_gaps_limitaciones.png` se genera desde conteos Mongo en `analysis/run_analisis_mongo.py` (imputados/sin anuncios/sin precio), no con literales. La evidencia válida son los 8 CSV `mongo_*` auto generados con PyMongo en `data/resultados/` según AGREGACION-01 (`mongo_esfuerzo_por_municipio.csv`, `mongo_alquiler_por_municipio.csv`, `mongo_modalidades.csv`, `mongo_accesibilidad_extendida.csv`, `mongo_vpo_por_municipio.csv`, `mongo_tier_confianza.csv`, `mongo_vpo_terminadas_por_municipio.csv`, `mongo_habitaciones_por_municipio.csv`; los 6 canónicos de AGREGACION-01 + VPO terminadas adicional + habitaciones; ver `analysis/run_analisis_mongo.py` `EXPORTS_8`).
+- `dashboard.html` / `dashboard_completo.html` — **retirados el 2026-11-11**: eran estáticos y manuales, no versionados y sin generador; su contenido no era evidencia RA4. Los PNG y CSV actuales se generan desde Mongo.
+- NOTA (RA4 / P-05): `mapa_esquema_silver.html` es una visualización de esquema (no un gráfico de datos) y **no** es evidencia automática RA4; `G_gaps_limitaciones.png` se genera desde conteos Mongo en `analysis/run_analisis_mongo.py` (imputados/sin anuncios/sin precio), no con literales. La evidencia válida son los 8 CSV `mongo_*` auto generados con PyMongo en `data/resultados/` según AGREGACION-01 (`mongo_esfuerzo_por_municipio.csv`, `mongo_alquiler_por_municipio.csv`, `mongo_modalidades.csv`, `mongo_accesibilidad_extendida.csv`, `mongo_vpo_por_municipio.csv`, `mongo_tier_confianza.csv`, `mongo_vpo_terminadas_por_municipio.csv`, `mongo_habitaciones_por_municipio.csv`; los 6 canónicos de AGREGACION-01 + VPO terminadas adicional + habitaciones; ver `analysis/run_analisis_mongo.py` `EXPORTS_8`).
 - 28+8 PNG (28 en `data/resultados/` + 8 en `data/resultados/anexo/` generados por `exportar_png_desde_mongo` desde los 11 pipelines; antes 12 únicos / 13 emitidos, cifra histórica de DuckDB). Los de anexo se conservan sin pérdida (g1, H4, G, I, H9, K, L, H12).
 - `README.md` — índice de artefactos.
 

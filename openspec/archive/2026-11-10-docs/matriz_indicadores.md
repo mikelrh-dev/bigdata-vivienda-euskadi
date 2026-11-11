@@ -19,14 +19,17 @@ Archivo legacy (NO cuenta como indicador): `esfuerzo_16_29` se conserva solo por
 - 11 pipelines en `analysis/mongo_aggregations.py`: indicadores, alquiler, modalidades, top esfuerzo, esfuerzo sexo, accesibilidad extendida, udalmap_osrm, vpo promociones, vpo terminadas, tier por municipio, habitaciones por municipio.
 - Imputacion explicita (Bloque 4): `pipeline_indicadores_municipio` preserva `metodo_imputacion` (`oficial` 159 / `IDW_5_vecinos` 93) y deriva `is_imputed` (False oficial, True IDW); ningun calculo rellena con medianas en silencio.
 
-## Huella (2026-11-06, regenerada desde Mongo prod por `analysis/run_analisis_mongo.py`)
+## Huella vigente (2026-11-11, tras rebuild silver 182 y gold desde cero)
+
+Regenerada por `analysis/run_analisis_mongo.py` desde Mongo prod. Sustituye a la huella del
+2026-11-06, que quedo obsoleta al cambiar el silver (182 ficheros) y el canonico 18-34.
 
 | CSV canonico | Lineas | SHA-256 |
 |---|---|---|
-| `data/resultados/mongo_esfuerzo_por_municipio.csv` | 253 | `731d163a956687df1fd1f2fcba1808451de78f4da8ce71676c5e9546ce334c83` |
+| `data/resultados/mongo_esfuerzo_por_municipio.csv` | 253 | `7f813fd61ee6800dacd24a230aaef43a8d97e9dbe1abd0300fa1da5b974f75a3` |
 | `data/resultados/mongo_alquiler_por_municipio.csv` | 253 | `ff39e852d27a754eabb2fe3db76c71c1ac35e8a0cdcd4e799ff9fb7c9798263e` |
-| `data/resultados/mongo_modalidades.csv` | 3 | `71a7292623ac4d1695f63f7649ae551ae2557d4167e20935b0a863c4946731ef` |
-| `data/resultados/comparativa_3_municipios_mongo.csv` (4 robustos) | 5 | `9dc4e8d34d736e6fb74f16a05d064fb249d398b0ceca8b3b7168c3709d3881bb` |
+| `data/resultados/mongo_modalidades.csv` | 3 | `67e8120a311666d8cb7d3522766e8a19da468da34fb578c900d702bf2d81bcf0` |
+| `data/resultados/comparativa_3_municipios_mongo.csv` (4 robustos) | 5 | `08ac700aea28a7295cbf0595e2365bf199316441478ec44ad7c1dd7db4527646` |
 | `data/resultados/mongo_vpo_terminadas_por_municipio.csv` | 252 | `d9a512c82d9c493499b757fbb914b3ee331e0b3e390b59a64c1f4ab6c1f587bb` |
 
-Huella agregada de los 11 pipelines (`huella_resultados`, SHA-256 con `sort_keys=True`; el 10.º, tier, y el 11.º, habitaciones, se añadieron después y la huella histórica no los incluía): `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a`. Verificacion: `wc -l` = 253/253/3, comparativa 5 (cabecera + Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39, `codigo_ine` 5 digitos, paro Lanbide no nulo), terminadas 252 (cabecera + 251 municipios, sin Usansolo). Rango canonico 18-34; 16-29 legacy solo demo.
+Huella agregada **histórica** de los 10 pipelines iniciales (`huella_resultados`, SHA-256 con `sort_keys=True`): `08665d03687bbbde663831de8872d129983252de1881027a2e243bfd86f4c30a`. No se recalcula aquí: el 10.º (tier) y el 11.º (habitaciones) se añadieron después y la huella vigente se imprime al ejecutar `analysis/run_analisis_mongo.py`. Verificacion: `wc -l` = 253/253/3, comparativa 5 (cabecera + Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39, `codigo_ine` 5 digitos, paro Lanbide no nulo), terminadas 252 (cabecera + 251 municipios, sin Usansolo). Rango canonico 18-34; 16-29 legacy solo demo.
