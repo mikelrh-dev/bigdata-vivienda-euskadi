@@ -135,9 +135,9 @@ def resolver_fases(nombres: list[str]) -> list[Fase]:
 
 def preflight(verificar_hash: bool) -> int:
     """Comprueba el terreno antes de ejecutar. Devuelve EXIT_OK o el codigo de fallo."""
-    faltan = [d for d in (RAW_DIR, PROC_DIR) if not d.is_dir()]
-    if faltan:
-        print("[preflight] FALTA " + ", ".join(str(d.relative_to(ROOT)) for d in faltan))
+    # Solo raw es requisito: procesado/resultados son las salidas a reconstruir.
+    if not RAW_DIR.is_dir():
+        print("[preflight] FALTA data/raw: sin materia prima no hay reconstruccion")
         return EXIT_PREFLIGHT
     if not any(RAW_DIR.iterdir()):
         print("[preflight] data/raw esta vacia: no hay nada que reconstruir")
@@ -250,6 +250,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.dry_run:
         return EXIT_OK
+
+    for destino in (PROC_DIR, RES_DIR):
+        if not destino.is_dir():
+            destino.mkdir(parents=True, exist_ok=True)
+            print(f"[preflight] creado {destino.relative_to(ROOT)}")
 
     for fase in fases:  # FASES es global: no arrastrar resumenes previos
         fase.resumen.clear()

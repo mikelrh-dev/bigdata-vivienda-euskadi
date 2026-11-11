@@ -120,6 +120,22 @@ def test_fallo_aborta_la_fase(monkeypatch):
     assert ejecutados == ["run_analisis_mongo"]  # no sigue con comparativa
 
 
+def test_preflight_no_exige_procesado(tmp_path, monkeypatch):
+    """El caso de uso es reconstruir desde cero: procesado puede no existir."""
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "x.csv").write_text("a", encoding="utf-8")
+    monkeypatch.setattr(rp, "RAW_DIR", raw)
+    monkeypatch.setattr(rp, "PROC_DIR", tmp_path / "procesado")
+    assert rp.preflight(verificar_hash=False) == rp.EXIT_OK
+
+
+def test_preflight_falla_sin_raw(tmp_path, monkeypatch):
+    monkeypatch.setattr(rp, "RAW_DIR", tmp_path / "no_existe")
+    monkeypatch.setattr(rp, "PROC_DIR", tmp_path / "procesado")
+    assert rp.preflight(verificar_hash=False) == rp.EXIT_PREFLIGHT
+
+
 def test_comparativa_mongo_importa_lanzada_como_script():
     """gold la ejecuta como script: sys.path[0]=analysis/ y `analysis.*` debe resolver.
 
