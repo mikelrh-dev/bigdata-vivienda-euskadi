@@ -4,7 +4,12 @@ NO reescribe data/raw (congelado). Para cada JSON genera un sidecar en
 data/procesado/_meta/<nombre>.meta.json con los 6 campos obligatorios
 (fuente, url, fecha_extraccion, n_registros, hash_sha256, version_parser),
 normalizando los alias historicos (fecha, n_filas, n_anuncios, n_series...),
-mas data/procesado/_meta/index.json con el estado de cada fichero.
+mas data/procesado/_meta/index.json con el estado de cada fichero y
+_meta/csvs_index.json (inventario de los CSV de raw con filas y SHA-256).
+
+El inventario CSV era antes un snapshot escrito a mano (decia 129 con 126
+reales) y `scripts/verificar_fase_datos.py` lo usa para cuadrar el numero de
+CSV; generarlo aqui lo hace reproducible en cada rebuild.
 
 Uso:
     python extract/normalizar_metadata.py            # genera sidecars + indice
@@ -109,6 +114,23 @@ def _normalizar(ruta: Path) -> tuple[dict, list[str]]:
     return normalizada, faltan
 
 
+def _indice_csv() -> dict:
+    """Inventario reproducible de los CSV de raw (mismo rglob que la verificacion)."""
+    entradas = []
+    for f in sorted(RAW_DIR.rglob("*.csv")):
+        try:
+            with f.open(encoding="utf-8-sig", errors="replace", newline="") as fh:
+                filas = max(sum(1 for _ in fh) - 1, 0)
+        except OSError:
+            filas = 0
+        entradas.append({
+            "fichero": f.name,
+            "filas": filas,
+            "sha256": hashlib.sha256(f.read_bytes()).hexdigest(),
+        })
+    return {"n_csvs": len(entradas), "ficheros": entradas}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Normaliza metadata JSON a esquema unico.")
     ap.add_argument("--check", action="store_true",
@@ -137,6 +159,10 @@ def main() -> int:
                         "completos": sum(1 for n in indice if n["completa"]),
                         "ficheros": indice}, ensure_ascii=False, indent=2),
             encoding="utf-8")
+        csv_index = _indice_csv()
+        (META_DIR / "csvs_index.json").write_text(
+            json.dumps(csv_index, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"CSV: {csv_index['n_csvs']} ficheros inventariados")
 
     completos = sum(1 for n in indice if n["completa"])
     print(f"JSON: {len(indice)} | metadata completa: {completos} | "

@@ -5,7 +5,8 @@ Un solo comando para volver a poblar `data/procesado` y `data/resultados` desde
 
 Fases:
   silver   transform/run_all.py (DAG de 34 nodos)
-  quality  normalizar_metadata + ingestion_manifest + manifest --write
+  quality  normalizar_metadata + nombres_normalizados_map + ingestion_manifest
+           + manifest --write
   mongo    scripts/run_mongo_pipeline.py  (DESTRUCTIVO: exige --allow-mongo-write)
   gold     run_analisis_mongo + comparativa_mongo + sensibilidad + figuras
 
@@ -89,6 +90,7 @@ FASES: dict[str, Fase] = {
             tolerar_rc=(0, 1),
             aviso_por="metadata incompleta en raw (los sidecars se escriben igualmente)",
         ),
+        Paso("nombres_normalizados_map", _py("transform/generar_nombres_normalizados_map.py")),
         Paso("generar_ingestion_manifest", _py("extract/generar_ingestion_manifest.py")),
         Paso("generar_manifest", _py("extract/generar_manifest.py", "--write")),
     )),

@@ -1,7 +1,7 @@
 """E2E gate extremo a extremo offline (hermético, sin red).
 
 Usa tmp_path + fakes para no tocar data/raw ni servicios externos.
-Verifica: umbrales 354/188/14/0/lag 0, guarda --vivo (GATE_LIVE=1)
+Verifica: umbrales 354/182/14/0/lag 0, guarda --vivo (GATE_LIVE=1)
 y que el modo offline nunca intenta red.
 """
 
@@ -45,7 +45,7 @@ def _manifest_tmp(base: Path, n: int) -> tuple[Path, Path]:
 
 def test_umbrales_normativos() -> None:
     assert EXPECTED_RAW == 354
-    assert EXPECTED_SILVER == 188
+    assert EXPECTED_SILVER == 182
     assert len(EXPECTED_COLLECTIONS) == 14
 
 

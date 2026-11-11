@@ -105,9 +105,9 @@ erDiagram
 | 9 | Gráficos desde PyMongo | ✅ Hecha (CSV desde Mongo) |
 | 10 | Informe, arquitectura y demo | 🟡 Parcial (arquitectura actualizada) |
 
-> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros canónicos de `data/raw` en HDFS; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la recuperación verificada (`scripts/hdfs_recuperacion_un_fichero.py`) y esta excepción declarada, no supuesta. Nota 352 vs 354: el manifest local `docs/raw_manifest_sha256.txt` tiene 354 entradas SHA (incluye 2 alias legacy no publicados en HDFS); el canónico publicado en HDFS es 352. El gate offline (`scripts/gate_extremo_a_extremo.py --offline`) verifica 354 SHA + silver 188.
+> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 352 ficheros canónicos de `data/raw` en HDFS; los `procesado` **no** se suben por indicación expresa de la profesora. El criterio BDA «organiza originales **y** procesados» se cubre con la organización de originales, la recuperación verificada (`scripts/hdfs_recuperacion_un_fichero.py`) y esta excepción declarada, no supuesta. Nota 352 vs 354: el manifest local `docs/raw_manifest_sha256.txt` tiene 354 entradas SHA (incluye 2 alias legacy no publicados en HDFS); el canónico publicado en HDFS es 352. El gate offline (`scripts/gate_extremo_a_extremo.py --offline`) verifica 354 SHA + silver 182.
 
-Tests del contrato: `235 passed, 2 skipped` (237 collected, ver `pytest tests/ -q`). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md (gobernanza: 50 cabeceras de requisito (46 con ID numérico), 42 scripts en transform/ con 34 en el DAG, 11 pipelines — ver `scripts/verificar_gobernanza.py`).
+Tests del contrato: `259 passed, 2 skipped` (261 collected, ver `pytest tests/ -q`). P-08 actualizado a rubrica v2: 19 criterios y 21 requisitos vigentes en contrato-reto/spec.md (gobernanza: 50 cabeceras de requisito (46 con ID numérico), 44 scripts en transform/ con 38 en el DAG, 11 pipelines — ver `scripts/verificar_gobernanza.py`).
 
 ## 📁 Estructura
 
@@ -117,7 +117,7 @@ bigdata-vivienda-euskadi/
 ├── config/
 │   └── fuentes.yaml   URLs, IDs, cobertura y notas de cada fuente
 ├── extract/           Extracción API, scraping y descargas directas
-├── transform/         Limpieza y enriquecimiento (42 scripts; 34 en el DAG)
+├── transform/         Limpieza y enriquecimiento (44 scripts; 38 en el DAG)
 ├── storage/           PyMongo + HDFS central + Kafka centro (listos)
 ├── analysis/          Aggregation Pipeline (hecho, 11 pipelines en PIPELINE_ORDER) + 8 CSV `mongo_*` desde Mongo
 ├── data/raw/          Datos generados (ignorados por git, 356 archivos)
@@ -242,7 +242,7 @@ completos.
 
 ## ✅ Verificación
 
-- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (235 passed, 2 skipped). Gobernanza: `.venv/Scripts/python.exe scripts/verificar_gobernanza.py` (TODO OK: 50 cabeceras (46 con ID), 42 scripts / 34 DAG, 188 silver, 0 env sin declarar, 11 pipelines). Staleness: `.venv/Scripts/python.exe transform/run_all.py --check` (34/34 OK). Gate offline: `.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline` (OK: 354 SHA + 188 silver + 14 nombres en loader + 0 duplicados + lag 0). FAIL 07 conocido en `scripts/verificar_fase_datos.py` (paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26) documentado sin enmascarar — no se toca data para forzarlo.
+- Tests: `.venv/Scripts/python.exe -m pytest tests -q` (259 passed, 2 skipped). Gobernanza: `.venv/Scripts/python.exe scripts/verificar_gobernanza.py` (TODO OK: 50 cabeceras (46 con ID), 44 scripts / 38 DAG, 182 silver, 0 env sin declarar, 11 pipelines). Staleness: `.venv/Scripts/python.exe transform/run_all.py --check` (38/38 OK). Gate offline: `.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline` (OK: 354 SHA + 182 silver + 14 nombres en loader + 0 duplicados + lag 0). FAIL 07 conocido en `scripts/verificar_fase_datos.py` (paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26) documentado sin enmascarar — no se toca data para forzarlo.
 - MongoDB: `.venv/Scripts/python.exe storage/load_mongo.py` (16 vivas + 14 `__backup` = 30 totales, PyMongo, índices ESR/2dsphere); `.venv/Scripts/python.exe scripts/run_mongo_pipeline.py` (carga + limpieza + índices + agregación); `.venv/Scripts/python.exe analysis/run_analisis_mongo.py` (11 pipelines a 8 CSV `mongo_*` + 28+8 PNG; `explain()` COLLSCAN→IXSCAN con `analysis/mongo_indexes.py` `explain_before_after`); `.venv/Scripts/python.exe -m pytest tests/test_mongo.py -q` y `.venv/Scripts/python.exe -m pytest tests/test_mongo_geo.py tests/test_mongo_comparativa.py -q`
 - CSVs desde Mongo en `data/resultados/`: `mongo_esfuerzo_por_municipio.csv` (252 filas), `mongo_alquiler_por_municipio.csv` (252), `mongo_modalidades.csv` (2), `comparativa_3_municipios_mongo.csv` (4 filas: Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39). Ver `openspec/archive/2026-11-10-docs/modelo_mongodb.md` y `openspec/archive/2026-11-10-docs/arquitectura_datos.md`.
 - Reconstrucción por capas: `.venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality` (procesado desde raw, sin Mongo) y `--fase gold` (análisis desde Mongo a `data/resultados`). `--fase all` = silver+quality+gold; `--dry-run` lista el plan; `--check` hashea raw; la fase `mongo` exige `--allow-mongo-write`; `--strict` convierte los avisos de metadata incompleta en fallo.
