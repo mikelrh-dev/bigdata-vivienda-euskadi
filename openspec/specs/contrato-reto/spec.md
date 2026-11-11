@@ -9,7 +9,7 @@
 
 ## Trazabilidad de fuentes (revisiones 2026-11-05)
 
-- Fuente primaria PDF (rúbrica v2): `brief/RETO 1Evaluacion SBD-BDAv2.pdf`, revisado el 2026-11-05. Cubre BDA RA1, SBD RA1, SBD RA3 y SBD RA4 con pesos 46,7 % / 13,3 % / 40 % en la 1.ª evaluación. Las tablas de este contrato son transcripción literal del PDF, con referencia de línea tras cada tabla.
+- Fuente primaria PDF (rúbrica v2): `brief/RETO 1Evaluacion SBD-BDAv2.pdf`, revisado el 2026-11-05. Cubre BDA RA1, SBD RA1, SBD RA3 y SBD RA4. Ojo: el PDF solo declara pesos para **SBD** (RA1 46,7 %, RA3 13,3 %, RA4 40 % = 100 % de SBD) y **no declara peso para BDA RA1**; por tanto no existe un porcentaje ponderado único BDA+SBD. Los tres pesos citados son de SBD, no de las cuatro RAs. Las tablas de este contrato son transcripción literal del PDF, con referencia de línea tras cada tabla.
 - Fuente primaria docx (Tema 8, evaluación separada): `brief/Tema_8_MongoDB_Proyecto_Reto_Vivienda.docx`, revisado el 2026-11-05. Sección 16 con pesos Tema 8 (no son pesos v2 y no se suman a 46,7 % / 13,3 % / 40 %). Las secciones 5, 9, 10, 12, 4, 14, 15 y 17 se mapean en la sección "Mapa trazable docx" a requisitos existentes.
 - Extensiones propias: las prohibiciones P-01 a P-08, el canónico 18-34 y `CARGA-SEGURA` siguen vigentes como extensión propia del proyecto. No son requisito v2 ni pesos Tema 8 (ver párrafo `CARGA-SEGURA` en Notas de mapeo, líneas 180-182 sin borrar).
 
@@ -206,6 +206,36 @@ El sistema SHALL mantener: sin Docker; HDFS solo raw 352; Kafka→HDFS, nunca Ka
 | 25 | RA4 Automatización del análisis v2: script de todos los análisis principales | `AUTOMATIZACION-ANALISIS-01` | presentacion-de-resultados |
 | 26 | RA4 Indicadores v2: ≥5 indicadores de 2+ fuentes | `INDICADORES-01` | presentacion-de-resultados |
 | 27 | RA4 Preparación visualización v2: ≥3 conjuntos auto-generados para gráficos | `PREPARACION-VISUALIZACION-01` | presentacion-de-resultados |
+
+### Numeración canónica (crosswalk con el PDF)
+
+La numeración de la tabla anterior **no** es la del PDF: tiene 27 filas y 7 no son criterios v2. Para
+citar en defensa, usar siempre el criterio canónico C1-C19 de la rúbrica:
+
+| Canónico | Criterio | Fila de la tabla anterior |
+|---|---|---|
+| C1 | Extracción: API y scraping | 1 |
+| C2 | HDFS: originales, procesados, recuperación | 2 |
+| C3 | Kafka: productor y consumidor | 3 |
+| C4 | Integración: flujo completo a MongoDB | 4 |
+| C5 | Integración de fuentes (2+ con campo común) | 19 |
+| C6 | Construcción: 2+ colecciones con relación | 20 |
+| C7 | Limpieza y transformación (nulos, duplicados, tipos) | 15-16 |
+| C8 | Automatización carga+limpieza+transformación | 21 |
+| C9 | Modelado + embedding/referencing justificado | 5 |
+| C10 | CRUD + comprobación por código | 6 |
+| C11 | Consultas (anidados/arrays, 2+ condiciones) | 7 |
+| C12 | Aggregation (3+ pipelines, 5 etapas) | 8 |
+| C13 | Índices + explain() | 22 |
+| C14 | Consistencia (atómica o transacción) | 23 |
+| C15 | Datos heterogéneos | 24 |
+| C16 | Automatización del análisis | 25 |
+| C17 | Indicadores (5+, 2+ fuentes) | 26 |
+| C18 | Respuesta al reto (3+ municipios) | 17 |
+| C19 | Preparación para visualización (3+ conjuntos) | 27 |
+
+Las filas **9-12** son criterios RA4 v1 ya superados por la rúbrica v2; las filas **13, 14 y 18** son
+objetivos/requisitos del PDF, no criterios puntuables.
 
 Notas de mapeo (v2): los criterios RA3 (Modelado, CRUD, Consultas,
 Aggregation), RA1 (Limpieza, Transformación) y RA4 (Respuesta) se

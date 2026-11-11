@@ -12,7 +12,7 @@ auditoría queda cerrada o declarada:
 
 | Deuda | Estado |
 |---|---|
-| Manifest silver no verificaba | Cerrada: `--verify` exit 0 (354 raw / 188 silver) |
+| Manifest silver no verificaba | Cerrada: `--verify` exit 0 (354 raw / 182 silver) |
 | Dos definiciones de esfuerzo | Cerrada: mediana canónica en silver, Mongo y CSV |
 | Ocho cifras falsas en docs | Cerrada: VPO, colecciones, tests, duplicados, sin anuncios |
 | VPO "sin dato" | Parcial: flujo oficial integrado; stock sigue sin fuente |
@@ -22,7 +22,7 @@ auditoría queda cerrada o declarada:
 ## 2. Cadena de datos
 
 ```
-356 ficheros raw (354 con hash)  →  188 silver (188 con manifest)
+356 ficheros raw (354 con hash)  →  182 silver (182 con manifest)
         →  Mongo 16 colecciones vivas  →  11 aggregation pipelines
         →  8 CSV mongo_* (esfuerzo, alquiler, modalidades, accesibilidad, tier, VPO, VPO terminadas, habitaciones)
 ```
@@ -138,8 +138,8 @@ mil habitantes. Se integra como colección `vpo_municipal`:
 
 ```bash
 .venv/Scripts/python.exe transform/run_all.py --check          # exit 0
-.venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 188, 0 errores
-.venv/Scripts/python.exe -m pytest tests -q                    # 235 passed + 2 skipped
+.venv/Scripts/python.exe extract/generar_manifest.py --verify  # 354 / 182, 0 errores
+.venv/Scripts/python.exe -m pytest tests -q                    # 262 passed + 2 skipped
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py       # OK 18/18
 .venv/Scripts/python.exe -m storage.load_mongo                 # 16 colecciones vivas
 .venv/Scripts/python.exe analysis/run_analisis_mongo.py        # 11 pipelines + huella
