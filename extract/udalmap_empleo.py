@@ -10,11 +10,10 @@ from __future__ import annotations
 import csv
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("udalmap_empleo")
 
@@ -78,7 +77,7 @@ def _extraer_municipios(data: dict, dim_codigos: set[str]) -> dict[str, float]:
 
 def main() -> int:
     # Cargar códigos canónicos
-    dim_path = RAW_DIR / "dim_municipios.json"
+    dim_path = PROCESADO_DIR / "dim_municipios.json"
     if not dim_path.exists():
         log.error("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
         return 1
@@ -144,17 +143,6 @@ def main() -> int:
             }
         )
 
-    guardar_json(
-        RAW_DIR / "udalmap_empleo.json",
-        registros_out,
-        metadata={
-            "fuente": "Udalmap (api.euskadi.eus) indicadores 8, 10, 13 (paro Lanbide) y 50 (ocupacion juvenil)",
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_municipios": len(registros_out),
-            "n_con_datos": sum(1 for r in registros_out if r["tasa_actividad_pct"] is not None),
-        },
-    )
-
     columnas = ["codigo_ine", "nombre_canonico", "territorio", "tasa_actividad_pct", "tasa_ocupacion_pct",
                 "tasa_paro_aprox_pct", "tasa_paro_lanbide_pct", "tasa_ocupacion_juvenil_16_24_pct",
                 "etxebide_solicitudes_por_mil", "etxebide_adjudicadas_por_100",
@@ -169,6 +157,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(registros_out)
     log.info("CSV -> %s", destino_csv.name)
+    guardar_meta(destino_csv, {
+        "fuente": "Udalmap (api.euskadi.eus) indicadores de empleo",
+        "url": BASE,
+        "n_registros": len(registros_out),
+    })
     return 0
 
 

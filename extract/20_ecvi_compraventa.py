@@ -17,7 +17,7 @@ from pathlib import Path
 from urllib.parse import urljoin
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("ecvi_compraventa")
 
@@ -81,6 +81,11 @@ def main() -> int:
                 csv_name = f"ecvi_{_sanitizar(nombre.replace('.xlsx',''))}_{_sanitizar(sheet)}.csv"
                 csv_path = RAW_DIR / csv_name
                 df.to_csv(csv_path, index=False, header=False, encoding="utf-8-sig")
+                guardar_meta(csv_path, {
+                    "fuente": "ECVI - Estadística de compraventa de inmuebles",
+                    "url": url,
+                    "n_registros": len(df),
+                })
                 log.info("  hoja '%s' -> %s (%s)", sheet, csv_path.name, df.shape)
         except Exception as exc:  # noqa: BLE001
             log.warning("No se pudo parsear %s: %s", nombre, exc)

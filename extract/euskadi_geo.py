@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json
+from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_json, guardar_meta
 
 log = get_logger("euskadi_geo")
 
@@ -164,7 +164,7 @@ def main() -> int:
             m["dist_centroide_comarca_km"] = None
 
     # Filtrar solo municipios canónicos (dim_municipios)
-    dim_path = RAW_DIR / "dim_municipios.json"
+    dim_path = PROCESADO_DIR / "dim_municipios.json"
     dim_codigos = set()
     if dim_path.exists():
         dim = json.loads(dim_path.read_text(encoding="utf-8"))
@@ -192,6 +192,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(municipios)
     log.info("CSV -> %s (%d municipios)", csv_path.name, len(municipios))
+    guardar_meta(csv_path, {
+        "fuente": "Cartografía municipal de Euskadi (SHP)",
+        "url": str(SHP),
+        "n_registros": len(municipios),
+    })
 
     log.info("Municipios procesados: %d", len(municipios))
     return 0

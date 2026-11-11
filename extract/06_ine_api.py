@@ -25,8 +25,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import csv
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -125,28 +123,6 @@ def main() -> int:
                 "n_registros": len(registros),
             },
         )
-
-        # Payload original (respuesta cruda de la API) guardado aparte
-        guardar_json(
-            RAW_DIR / f"ine_{tabla}_raw.json",
-            series,
-            metadata={
-                "fuente": "INE wstempus API (payload original)",
-                "url": f"{BASE_URL}/{tabla}",
-                "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-                "n_series": len(series),
-                "n_registros": len(series),
-            },
-        )
-
-        # CSV con todos los registros de la tabla
-        destino_csv = RAW_DIR / f"ine_{tabla}.csv"
-        with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-            columnas = ["ambito", "indicador", "segmento", "anyo", "valor", "codigo_serie"]
-            escritor = csv.DictWriter(fh, fieldnames=columnas)
-            escritor.writeheader()
-            escritor.writerows(registros)
-        log.info("CSV → %s (%d registros)", destino_csv.name, len(registros))
 
     return 0
 

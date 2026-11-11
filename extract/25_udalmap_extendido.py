@@ -16,8 +16,6 @@ Genera:
 
 from __future__ import annotations
 
-import csv
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -36,7 +34,6 @@ INDICADORES = {
     "15": "rotacion_contractual",
 }
 BASE = "https://api.euskadi.eus/udalmap/indicators/{}"
-CSV_PATH = RAW_DIR / "udalmap_extendido.csv"
 JSON_PATH = RAW_DIR / "udalmap_extendido.json"
 
 
@@ -82,11 +79,6 @@ def main() -> int:
 
     filas_salida = list(pivot.values())
     filas_salida.sort(key=lambda x: x["codigo_ine"])
-
-    import pandas as pd
-    df = pd.DataFrame(filas_salida)
-    df.to_csv(CSV_PATH, index=False, encoding="utf-8-sig")
-    log.info("CSV -> %s (%d municipios)", CSV_PATH.name, len(df))
 
     metadata = {
         "fuente": "Eustat Udalmap (API)",

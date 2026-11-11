@@ -10,13 +10,11 @@ Metodo: descarga programatica (urllib) de XLSX (~68 MB) + pandas.
 """
 from __future__ import annotations
 
-import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("serpavi_renta")
 URL = ("https://cdn.mivau.gob.es/portal-web-mivau/vivienda/serpavi/"
@@ -78,18 +76,11 @@ def main() -> int:
     csv_path = RAW_DIR / "serpavi_renta_municipal.csv"
     out_df.to_csv(csv_path, index=False, encoding="utf-8-sig")
     log.info("CSV -> %s (%d)", csv_path.name, len(out_df))
-
-    regs = out_df.to_dict(orient="records")
-    guardar_json(RAW_DIR / "serpavi_renta_municipal.json", regs,
-                metadata={"fuente": "SERPAVI/MIVAU (Modelo 100, datos tributarios)",
-                          "url": URL,
-                          "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-                          "periodo": "2011-2024 (LOCF)",
-                          "n_municipios": len(out_df),
-                          "n_registros": len(out_df),
-                          "nota": "Renta fiscal (declaraciones), no precio de mercado. "
-                                  "Cubre solo municipios con declaraciones."})
-    log.info("JSON -> serpavi_renta_municipal.json")
+    guardar_meta(csv_path, {
+        "fuente": "SERPAVI/MIVAU",
+        "url": URL,
+        "n_registros": len(out_df),
+    })
     print(out_df["metodo"].value_counts().to_string())
     return 0
 

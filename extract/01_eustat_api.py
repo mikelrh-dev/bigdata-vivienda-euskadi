@@ -22,7 +22,6 @@ import argparse
 import csv
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -31,7 +30,7 @@ from _common import (  # noqa: E402
     RAW_DIR,
     Cliente,
     get_logger,
-    guardar_json,
+    guardar_meta,
 )
 
 log = get_logger("eustat_api")
@@ -118,57 +117,18 @@ def extraer_tabla(cliente: Cliente, clave: str, tabla_id: str) -> dict:
     datos = obtener_datos(cliente, tabla_id)
     filas = tabla_a_filas(meta, datos)
 
-    # JSON con metadatos + datos en bruto + filas traducidas
-    salida_json = RAW_DIR / f"eustat_{clave}.json"
-    guardar_json(
-        salida_json,
-        {
-            "tabla_id": tabla_id,
-            "titulo": meta.get("title"),
-            "variables": [
-                {
-                    "code": v["code"],
-                    "text": v.get("text"),
-                    "values": v.get("values"),
-                    "valueTexts": v.get("valueTexts"),
-                }
-                for v in meta.get("variables", [])
-            ],
-            "columnas": datos.get("columns"),
-            "filas": filas,
-            "payload_original": {
-                "metadatos": meta,
-                "datos": datos,
-            },
-        },
-        metadata={
-            "fuente": "Eustat bankupx API",
-            "url": f"{BASE_URL}/{tabla_id}",
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_filas": len(filas),
-            "n_registros": len(filas),
-        },
-    )
-
-    # Payload original (respuestas crudas GET/POST) guardado aparte
-    guardar_json(
-        RAW_DIR / f"eustat_{clave}_raw.json",
-        {"metadatos": meta, "datos": datos},
-        metadata={
-            "fuente": "Eustat bankupx API (payload original)",
-            "url": f"{BASE_URL}/{tabla_id}",
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_filas": len(filas),
-            "n_registros": len(filas),
-        },
-    )
-
     # CSV legible (solo columnas con etiqueta = las categóricas)
+    salida_csv = RAW_DIR / f"eustat_{clave}.csv"
     if filas:
         columnas = list(filas[0].keys())
-        guardar_csv(filas, RAW_DIR / f"eustat_{clave}.csv", columnas)
+        guardar_csv(filas, salida_csv, columnas)
+        guardar_meta(salida_csv, {
+            "fuente": "Eustat bankupx API",
+            "url": f"{BASE_URL}/{tabla_id}",
+            "n_registros": len(filas),
+        })
 
-    return {"clave": clave, "filas": len(filas), "json": str(salida_json)}
+    return {"clave": clave, "filas": len(filas), "csv": str(salida_csv)}
 
 
 def main() -> int:

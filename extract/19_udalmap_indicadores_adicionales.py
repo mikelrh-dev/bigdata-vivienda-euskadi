@@ -14,11 +14,10 @@ import html
 import json
 import re
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("udalmap_indicadores_adicionales")
 
@@ -103,7 +102,7 @@ def _extraer_ultimo(data: dict, dim_codigos: set[str]) -> dict[str, float]:
 
 
 def main() -> int:
-    dim_path = RAW_DIR / "dim_municipios.json"
+    dim_path = PROCESADO_DIR / "dim_municipios.json"
     if not dim_path.exists():
         log.error("Falta dim_municipios.json.")
         return 1
@@ -140,23 +139,6 @@ def main() -> int:
             fila[etiqueta] = datos[codigo].get(etiqueta)
         registros_out.append(fila)
 
-    guardar_json(
-        RAW_DIR / "udalmap_indicadores_adicionales.json",
-        registros_out,
-        metadata={
-            "fuente": "Udalmap (api.euskadi.eus) indicadores adicionales",
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_municipios": len(registros_out),
-            "indicadores": {
-                ind_id: {
-                    "etiqueta": etiqueta,
-                    "nombre_oficial": nombres_oficiales.get(ind_id),
-                }
-                for ind_id, etiqueta in INDICADORES.items()
-            },
-        },
-    )
-
     columnas = ["codigo_ine", "nombre_canonico", "territorio"] + list(INDICADORES.values())
     destino_csv = RAW_DIR / "udalmap_indicadores_adicionales.csv"
     with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -164,6 +146,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(registros_out)
     log.info("CSV -> %s", destino_csv.name)
+    guardar_meta(destino_csv, {
+        "fuente": "Udalmap (api.euskadi.eus) indicadores adicionales",
+        "url": BASE,
+        "n_registros": len(registros_out),
+    })
     return 0
 
 

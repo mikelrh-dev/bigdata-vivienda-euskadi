@@ -150,37 +150,11 @@ def main(force: bool = False, silver: bool = True, write_raw: bool = False,
     informe = []
     informe.append(_enriquecer_csv(RAW_DIR / "alquiler_municipal.csv", "municipio", 2024,
                                   destino=dest_dir, sufijo=sufijo))
-    informe.append(_enriquecer_json(RAW_DIR / "alquiler_municipal.json", "municipio", 2024,
-                                   destino=dest_dir, sufijo=sufijo))
-    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_fotocasa.csv", "municipio", 2026,
-                                  destino=dest_dir, sufijo=sufijo))
     informe.append(_enriquecer_json(RAW_DIR / "anuncios_fotocasa.json", "municipio", 2026,
                                    destino=dest_dir, sufijo=sufijo))
-    informe.append(_enriquecer_csv(RAW_DIR / "anuncios_pisos.csv", "municipio_busqueda", 2026, es_busqueda=True,
-                                  destino=dest_dir, sufijo=sufijo))
     informe.append(_enriquecer_json(RAW_DIR / "anuncios_pisos.json", "municipio_busqueda", 2026, es_busqueda=True,
                                    destino=dest_dir, sufijo=sufijo))
     # RealtyAPI: preferir municipio_busqueda (canónico), fallback municipio
-    import pandas as pd
-    ruta = RAW_DIR / "anuncios_realtyapi.csv"
-    dest_csv = (dest_dir / ("anuncios_realtyapi" + sufijo + ".csv")) if silver else ruta
-    df = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
-    cods, cans = [], []
-    for _, row in df.iterrows():
-        c, n = resolver_municipio(row.get("municipio_busqueda"))
-        if not c:
-            c, n = resolver_municipio(row.get("municipio"))
-        cods.append(_zfill(c))
-        cans.append(n)
-    df["codigo_ine"] = cods
-    df["nombre_canonico"] = cans
-    if "anio_fuente" not in df.columns:
-        df["anio_fuente"] = 2026
-    if dest_csv == ruta:
-        _backup(ruta)
-    df.to_csv(dest_csv, index=False, encoding="utf-8-sig")
-    informe.append({"fichero": dest_csv.name, "total": len(df), "con_codigo": int(df["codigo_ine"].notna().sum()),
-                    "sin_codigo": int(df["codigo_ine"].isna().sum()), "no_resueltos": ""})
     rj = RAW_DIR / "anuncios_realtyapi.json"
     dest_json = (dest_dir / ("anuncios_realtyapi" + sufijo + ".json")) if silver else rj
     data = json.loads(rj.read_text(encoding="utf-8"))

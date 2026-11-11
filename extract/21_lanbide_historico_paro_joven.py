@@ -1,24 +1,21 @@
 """Normaliza la hoja 'Hoja DATOS' del histórico de Lanbide (paro registrado)
 para extraer paro joven por municipio y periodo.
 
-Entrada: data/raw/lanbide_paro_historico.xlsx (ya descargado).
-Salida: data/raw/lanbide_paro_historico_joven.csv y .json
+Entrada: raw/lanbide_paro_historico.xlsx (ya descargado).
+Salida: raw/lanbide_paro_historico_joven.csv
 """
 from __future__ import annotations
 
-import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("lanbide_historico_paro_joven")
 
 SRC = RAW_DIR / "lanbide_paro_historico.xlsx"
 OUT_CSV = RAW_DIR / "lanbide_paro_historico_joven.csv"
-OUT_JSON = RAW_DIR / "lanbide_paro_historico_joven.json"
 URL = "https://www.lanbide.euskadi.eus/contenidos/estadistica/paro_historico/es_def/adjuntos/Dap_Historico.xlsx"
 
 
@@ -73,29 +70,14 @@ def main() -> int:
         if c not in ("codigo_ine", "municipio"):
             out[c] = pd.to_numeric(out[c], errors="coerce")
 
-    registros = out.to_dict(orient="records")
-    # Convertir NaN a None para JSON
-    for r in registros:
-        for k, v in list(r.items()):
-            if isinstance(v, float) and pd.isna(v):
-                r[k] = None
-
-    guardar_json(
-        OUT_JSON,
-        registros,
-        metadata={
-            "fuente": "Lanbide histórico (lanbide_paro_historico.xlsx, Hoja DATOS)",
-            "url": URL,
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_registros": len(registros),
-            "periodos": sorted({(r.get("anio"), r.get("trimestre")) for r in registros}),
-            "nota": "Paro registrado (Lanbide). Tasa es ratio paro joven / poblacion activa total (no desempleo EPA).",
-        },
-    )
-
     out.to_csv(OUT_CSV, index=False, encoding="utf-8-sig")
     log.info("Guardado %s (%d filas)", OUT_CSV.name, len(out))
-    log.info("Periodos: %s", sorted({(r.get('anio'), r.get('trimestre')) for r in registros})[:5])
+    guardar_meta(OUT_CSV, {
+        "fuente": "Lanbide histórico (Dap_Historico.xlsx, Hoja DATOS)",
+        "url": URL,
+        "n_registros": len(out),
+    })
+    log.info("Periodos: %s", sorted({(r.get("anio"), r.get("trimestre")) for r in out.to_dict("records")})[:5])
     return 0
 
 

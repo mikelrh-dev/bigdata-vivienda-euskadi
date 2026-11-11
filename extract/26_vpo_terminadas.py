@@ -28,7 +28,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, write_raw  # noqa: E402
+from _common import RAW_DIR, guardar_meta, write_raw  # noqa: E402
 
 RAW_CSV = RAW_DIR / "udalmap_vpo_terminadas.csv"
 
@@ -97,6 +97,11 @@ def main() -> int:
     print("el parser filtra a los 252 de dim_municipios")
     print(f"sha256 origen: {_sha256(contenido)}")
     destino = escribir_raw(contenido)
+    guardar_meta(destino, {
+        "fuente": "Open Data Euskadi - Udalmap indicador 73 (VPO terminadas)",
+        "url": URL,
+        "n_registros": n,
+    })
     print(f"raw: {destino} ({destino.stat().st_size} bytes)")
     print(f"sha256 raw: {_sha256(destino.read_bytes())}")
     print(f"escrito: {datetime.now(timezone.utc).isoformat(timespec='seconds')}")

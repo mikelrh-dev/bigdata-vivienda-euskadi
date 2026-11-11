@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("ine_atlas_renta")
 
@@ -31,7 +31,7 @@ PROVINCIAS_EUSKADI = {"01", "20", "48"}
 
 
 def _cargar_dim() -> dict:
-    ruta = RAW_DIR / "dim_municipios.json"
+    ruta = PROCESADO_DIR / "dim_municipios.json"
     if not ruta.exists():
         log.error("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
         sys.exit(1)
@@ -41,12 +41,12 @@ def _cargar_dim() -> dict:
 
 
 def _cargar_eustat() -> dict:
-    ruta = RAW_DIR / "eustat_renta_municipal.json"
+    ruta = RAW_DIR / "eustat_renta_municipal.csv"
     if not ruta.exists():
-        log.warning("No existe eustat_renta_municipal.json. Se procesa solo Atlas.")
+        log.warning("No existe eustat_renta_municipal.csv. Se procesa solo Atlas.")
         return {}
-    data = json.loads(ruta.read_text(encoding="utf-8"))
-    filas = data.get("datos", {}).get("filas", [])
+    with ruta.open(encoding="utf-8-sig", newline="") as fh:
+        filas = list(csv.DictReader(fh))
     renta_col = None
     for k in (filas[0].keys() if filas else []):
         if "euros" in k.lower():
@@ -159,24 +159,8 @@ def main() -> int:
 
     log.info("Filas procesadas: %d | Municipios Euskadi con Atlas: %d | Año max: %d", n_filas, len(atlas), anio_max)
 
-    # Guardar Atlas (todos los municipios de Euskadi, como fuente independiente)
     registros_atlas = sorted(atlas.values(), key=lambda x: x["codigo_ine"])
-    guardar_json(
-        RAW_DIR / "ine_atlas_renta.json",
-        registros_atlas,
-        metadata={
-            "fuente": "INE Atlas de Distribucion de Renta de los Hogares (ADRH), tabla 30824",
-            "indicador": INDICADOR,
-            "crs": None,
-            "fecha_conversion": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
-            "n_registros": len(registros_atlas),
-            "anio_renta": anio_max,
-            "cobertura": "252 municipios de Euskadi (fuente independiente para validacion cruzada)",
-            "nota": "Eustat ya cubre 252/252 municipios; Atlas se usa como fuente independiente (EXTRACCION-02)",
-        },
-    )
 
-    # CSV
     csv_path = RAW_DIR / "ine_atlas_renta.csv"
     columnas = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen"]
     with csv_path.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -184,8 +168,12 @@ def main() -> int:
         w.writeheader()
         w.writerows(registros_atlas)
     log.info("CSV -> %s (%d)", csv_path.name, len(registros_atlas))
+    guardar_meta(csv_path, {
+        "fuente": "INE Atlas de Distribución de Renta de los Hogares (ADRH)",
+        "url": URL_CSV,
+        "n_registros": len(registros_atlas),
+    })
 
-    # Guardar renta_municipal_completa.json (252: Eustat + Atlas)
     completa = []
     for cod, nombre in sorted(dim.items()):
         a = atlas.get(cod)
@@ -221,18 +209,6 @@ def main() -> int:
                 "anio_fuente": None,
             })
 
-    guardar_json(
-        RAW_DIR / "renta_municipal_completa.json",
-        completa,
-        metadata={
-            "fuente": "Eustat (201) + INE Atlas ADRH (51)",
-            "fecha_conversion": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
-            "n_registros": len(completa),
-            "n_eustat": len(eustat_codigos),
-            "n_atlas": len(atlas),
-            "n_sin_renta": sum(1 for c in completa if c["renta_origen"] is None),
-        },
-    )
     csv_path2 = RAW_DIR / "renta_municipal_completa.csv"
     columnas2 = ["codigo_ine", "nombre_canonico", "renta_atlas", "anio_renta", "renta_origen", "renta_eustat", "anio_fuente"]
     with csv_path2.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -240,6 +216,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(completa)
     log.info("CSV -> %s (%d)", csv_path2.name, len(completa))
+    guardar_meta(csv_path2, {
+        "fuente": "Eustat + INE Atlas ADRH",
+        "url": URL_CSV,
+        "n_registros": len(completa),
+    })
 
     log.info("P0 completado: %d municipios con renta (Eustat %d + Atlas %d)", len(completa), len(eustat_codigos), len(atlas))
     return 0

@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 
 # Reutilizar normalizador del scraper principal
 import importlib.util
@@ -44,7 +44,7 @@ def main() -> int:
     parser.add_argument("--max-paginas", type=int, default=MAX_PAG)
     args = parser.parse_args()
 
-    dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
+    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
     regs = dim["datos"] if isinstance(dim, dict) else dim
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
 
@@ -110,14 +110,8 @@ def main() -> int:
         },
     )
     log.info("Lote guardado en raw: %s (%d anuncios)", raw_path.name, len(todos))
-
-    # Keep the per-municipality acquisition report with the raw capture.
-    import csv
-    informe_path = RAW_DIR / f"anuncios_fotocasa_dirigido_{fecha}.csv"
-    with informe_path.open("w", newline="", encoding="utf-8-sig") as fh:
-        w = csv.DictWriter(fh, fieldnames=["codigo_ine", "municipio", "n"])
-        w.writeheader()
-        w.writerows(informe)
+    for fila in informe:
+        log.info("  %s [%s]: %d", fila["municipio"], fila["codigo_ine"], fila["n"])
     return 0 if todos else 1
 
 

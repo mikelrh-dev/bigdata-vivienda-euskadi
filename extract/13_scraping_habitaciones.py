@@ -20,7 +20,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import re
 import sys
@@ -366,20 +365,6 @@ def main() -> int:
                 "max_paginas": max_paginas,
             },
         )
-        columnas_fc = [
-            "codigo_ine", "nombre_canonico", "anio_fuente",
-            "id_anuncio", "precio_eur", "precio_reducido_eur",
-            "municipio", "provincia", "codigo_postal", "barrio", "comarca",
-            "latitud", "longitud", "superficie_m2", "habitaciones", "banos",
-            "municipio_busqueda", "fuente", "url_detalle",
-        ]
-        destino_csv = RAW_DIR / "anuncios_fotocasa_habitaciones.csv"
-        with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-            escritor = csv.DictWriter(fh, fieldnames=columnas_fc, extrasaction="ignore")
-            escritor.writeheader()
-            escritor.writerows(unicos_fc)
-        log.info("CSV fotocasa -> %s", destino_csv.name)
-
     # ── Pisos.com ──
     cliente_pisos = Cliente("pisos", delay=1.5, reintentos=4)
     todos_pisos: list[dict] = []
@@ -411,19 +396,6 @@ def main() -> int:
                 "max_paginas": max_paginas,
             },
         )
-        columnas_pisos = [
-            "codigo_ine", "nombre_canonico", "anio_fuente",
-            "id_anuncio", "precio_eur", "municipio_busqueda", "titulo", "subtitulo",
-            "tipo_inmueble", "superficie_m2", "habitaciones", "banos",
-            "url_detalle", "total_resultados", "es_busqueda_no_ubicacion", "fuente",
-        ]
-        destino_csv = RAW_DIR / "anuncios_pisos_habitaciones.csv"
-        with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-            escritor = csv.DictWriter(fh, fieldnames=columnas_pisos, extrasaction="ignore")
-            escritor.writeheader()
-            escritor.writerows(unicos_pisos)
-        log.info("CSV pisos -> %s", destino_csv.name)
-
     return 0 if (unicos_fc or unicos_pisos) else 1
 
 

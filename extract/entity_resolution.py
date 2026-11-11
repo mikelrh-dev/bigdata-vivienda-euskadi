@@ -1,12 +1,13 @@
 """Entity resolution centralizada: nombre de municipio -> codigo_ine.
 
-Tabla de verdad: data/raw/dim_municipios.csv (252 municipios).
+Tabla de verdad: procesado/dim_municipios.json (252 municipios).
 Uso:
   from entity_resolution import resolver_municipio, cargar_dim
   codigo, canonico = resolver_municipio("Donostia-San Sebastián")
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 import unicodedata
@@ -16,10 +17,10 @@ from pathlib import Path
 import pandas as pd
 
 try:
-    from extract._common import RAW_DIR
+    from extract._common import PROCESADO_DIR
 except ModuleNotFoundError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from _common import RAW_DIR  # noqa: E402
+    from _common import PROCESADO_DIR  # noqa: E402
 
 
 def norm(texto: str) -> str:
@@ -44,8 +45,10 @@ MANUAL_MAP = {
 
 @lru_cache(maxsize=1)
 def cargar_dim() -> pd.DataFrame:
-    dim = pd.read_csv(RAW_DIR / "dim_municipios.csv", dtype=str, encoding="utf-8-sig")
-    dim["codigo_ine"] = dim["codigo_ine"].str.zfill(5)
+    data = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
+    registros = data.get("datos", data) if isinstance(data, dict) else data
+    dim = pd.DataFrame(registros)
+    dim["codigo_ine"] = dim["codigo_ine"].astype(str).str.zfill(5)
     return dim
 
 
@@ -57,9 +60,11 @@ def _mapa() -> dict[str, tuple[str, str]]:
     for _, r in dim.iterrows():
         cod, can = r["codigo_ine"], r["nombre_canonico"]
         mapa[norm(can)] = (cod, can)
-        variantes = str(r.get("variantes", "") or "")
-        for v in variantes.split("|"):
-            v = v.strip()
+        variantes = r.get("variantes", [])
+        if isinstance(variantes, str):
+            variantes = variantes.split("|")
+        for v in variantes or []:
+            v = str(v).strip()
             if v:
                 mapa.setdefault(norm(v), (cod, can))
     # fold manual aliases

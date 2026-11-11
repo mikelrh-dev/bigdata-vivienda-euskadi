@@ -15,7 +15,7 @@ from pyproj import Transformer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR as RAW  # noqa: E402
+from _common import RAW_DIR as RAW, guardar_meta  # noqa: E402
 
 TMP = Path(tempfile.gettempdir()) / "geo_areas"
 TMP.mkdir(parents=True, exist_ok=True)
@@ -126,6 +126,11 @@ def main():
         w.writerows(rows)
 
     print("Generado " + str(dest) + ": " + str(len(rows)) + " filas")
+    guardar_meta(dest, {
+        "fuente": "Open Data Euskadi - Áreas funcionales",
+        "url": URL,
+        "n_registros": len(rows),
+    })
     from collections import Counter
     print(Counter(r["area_funcional"] for r in rows))
     unassigned = [r for r in rows if r["area_funcional"] is None]

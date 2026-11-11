@@ -12,11 +12,10 @@ import csv
 import json
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, get_logger  # noqa: E402
 
 log = get_logger("osrm_tiempos")
 OSRM = "https://router.project-osrm.org/table/v1/driving/"
@@ -81,18 +80,6 @@ def main() -> int:
         for c in cods:
             w.writerow([c] + [resultado[c][f"minutos_{k}"] for k in CAPITALES])
     log.info("CSV -> %s", out_csv.name)
-
-    # Guardar JSON
-    regs = [{"codigo_ine": c, **resultado[c]} for c in cods]
-    guardar_json(RAW_DIR / "osrm_tiempos_capitales.json", regs,
-                metadata={"fuente": "OSRM public API (router.project-osrm.org)",
-                          "url": OSRM,
-                          "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-                          "capitales": list(CAPITALES.keys()),
-                          "n_municipios": len(cods),
-                          "n_registros": len(cods),
-                          "nota": "Minutos de conduccion (sin trafico en tiempo real)."})
-    log.info("JSON -> osrm_tiempos_capitales.json")
     return 0
 
 

@@ -20,12 +20,11 @@ from __future__ import annotations
 import csv
 import io
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("eustat_alquiler")
 
@@ -143,19 +142,6 @@ def main() -> int:
             if clave == "municipio":
                 registros = parsear_municipal(texto)
                 if registros:
-                    guardar_json(
-                        RAW_DIR / "alquiler_municipal.json",
-                        registros,
-                        metadata={
-                            "fuente": "Eustat ExtractorBlob",
-                            "url": url,
-                            "anno": 2024,
-                            "fecha_extraccion": datetime.now().isoformat(
-                                timespec="seconds"
-                            ),
-                            "n_registros": len(registros),
-                        },
-                    )
                     columnas = list(registros[0].keys())
                     destino_csv = RAW_DIR / "alquiler_municipal.csv"
                     with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
@@ -165,6 +151,11 @@ def main() -> int:
                     log.info(
                         "CSV limpio → %s (%d registros)", destino_csv.name, len(registros)
                     )
+                    guardar_meta(destino_csv, {
+                        "fuente": "Eustat ExtractorBlob",
+                        "url": url,
+                        "n_registros": len(registros),
+                    })
                     resultados.append({"tabla": clave, "registros": len(registros)})
                 else:
                     log.warning("No se parsearon registros de %s", clave)

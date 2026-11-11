@@ -21,7 +21,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import csv
 import re
 import sys
 import unicodedata
@@ -240,21 +239,6 @@ def main() -> int:
                 "n_sin_duplicar": len(todos),
             },
         )
-
-        columnas = [
-            "codigo_ine", "nombre_canonico", "anio_fuente",
-            "id_anuncio", "precio_eur", "municipio_busqueda", "titulo", "subtitulo",
-            "tipo_inmueble", "superficie_m2", "habitaciones", "banos",
-            "url_detalle", "total_resultados", "es_busqueda_no_ubicacion",
-        ]
-        destino_csv = RAW_DIR / "anuncios_pisos.csv"
-        with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-            escritor = csv.DictWriter(
-                fh, fieldnames=columnas, extrasaction="ignore"
-            )
-            escritor.writeheader()
-            escritor.writerows(unicos)
-        log.info("CSV -> %s", destino_csv.name)
 
     return 0 if unicos else 1
 

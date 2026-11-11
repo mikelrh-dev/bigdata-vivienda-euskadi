@@ -4,7 +4,7 @@ Genera `dim_municipios` con `codigo_ine` oficial y `nombre_canonico` a partir
 de Eustat, y resuelve las variantes de nombre de todas las fuentes
 (Fotocasa, Pisos.com, RealtyAPI, Eustat Alquiler) hacia ese código.
 
-Salida: data/raw/dim_municipios.json y .csv
+Salida: procesado/dim_municipios.json y .csv
 """
 from __future__ import annotations
 
@@ -20,7 +20,11 @@ from _common import RAW_DIR, get_logger, guardar_json, leer_csv_seguro  # noqa: 
 
 log = get_logger("dim_municipios")
 PROC_DIR = RAW_DIR.parent / "procesado"
-PROC_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _leer_json(ruta: Path) -> list[dict]:
+    data = json.loads(ruta.read_text(encoding="utf-8"))
+    return data.get("datos", data) if isinstance(data, dict) else data
 
 
 def _norm(texto: str) -> str:
@@ -104,14 +108,17 @@ def _cargar_eustat() -> dict[str, dict]:
 
 
 def main() -> int:
+    PROC_DIR.mkdir(parents=True, exist_ok=True)
     eustat = _cargar_eustat()
     log.info("Municipios Eustat: %d", len(eustat))
 
     # Variantes de Fotocasa
     import pandas as pd
 
-    fot = leer_csv_seguro(RAW_DIR / "anuncios_fotocasa.csv")
-    fot_mun = sorted(fot["municipio"].dropna().unique())
+    fot_mun = sorted({
+        r["municipio"] for r in _leer_json(RAW_DIR / "anuncios_fotocasa.json")
+        if r.get("municipio")
+    })
 
     # Variantes de alquiler municipal
     alq = leer_csv_seguro(RAW_DIR / "alquiler_municipal.csv")
@@ -119,9 +126,11 @@ def main() -> int:
 
     # Variantes de Pisos (si existe)
     pisos_mun = []
-    if (RAW_DIR / "anuncios_pisos.csv").exists():
-        pisos = leer_csv_seguro(RAW_DIR / "anuncios_pisos.csv")
-        pisos_mun = sorted(pisos["municipio_busqueda"].dropna().unique())
+    if (RAW_DIR / "anuncios_pisos.json").exists():
+        pisos_mun = sorted({
+            r["municipio_busqueda"] for r in _leer_json(RAW_DIR / "anuncios_pisos.json")
+            if r.get("municipio_busqueda")
+        })
 
     # Construir dim_municipios enriquecido con variantes
     registros = []
@@ -178,21 +187,15 @@ def main() -> int:
 
     # Contar anuncios por codigo_ine en las 3 fuentes
     n_anuncios: dict[str, int] = {}
-    for ruta, col in [
-        (RAW_DIR / "anuncios_fotocasa.csv", "municipio"),
-        (RAW_DIR / "anuncios_pisos.csv", "municipio_busqueda"),
-        (RAW_DIR / "anuncios_realtyapi.csv", "municipio_busqueda"),
-    ]:
+    for ruta in (
+        RAW_DIR / "anuncios_fotocasa.json",
+        RAW_DIR / "anuncios_pisos.json",
+        RAW_DIR / "anuncios_realtyapi.json",
+    ):
         if not ruta.exists():
             continue
         try:
-            dfa = pd.read_csv(ruta, dtype=str, encoding="utf-8-sig")
-            col_eff = col if col in dfa.columns else ("municipio" if "municipio" in dfa.columns else None)
-            if col_eff is None:
-                continue
-            if "codigo_ine" not in dfa.columns:
-                continue
-            for _, row in dfa.iterrows():
+            for row in _leer_json(ruta):
                 c = str(row.get("codigo_ine", "")).strip().zfill(5)
                 if c and c.lower() not in ("nan", "none", ""):
                     n_anuncios[c] = n_anuncios.get(c, 0) + 1
@@ -284,7 +287,7 @@ def main() -> int:
         },
     )
 
-    # Guardar CSV plano (sin listas)
+    # CSV plano (sin listas) para los transform que lo consumen
     csv_path = PROC_DIR / "dim_municipios.csv"
     with csv_path.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)

@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +20,6 @@ from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 log = get_logger("etxebide_promociones")
 
 URL = "https://opendata.euskadi.eus/contenidos/ds_localizaciones/promociones_etxebide/opendata/promociones.csv"
-CSV_PATH = RAW_DIR / "etxebide_promociones.csv"
 JSON_PATH = RAW_DIR / "etxebide_promociones.json"
 
 
@@ -29,8 +27,6 @@ def main() -> int:
     cliente = Cliente("etxebide_promociones", delay=1.0)
     resp = cliente.get(URL)
     texto = resp.content.decode("cp1252")
-    CSV_PATH.write_text(texto, encoding="utf-8-sig")
-    log.info("CSV -> %s (%d bytes)", CSV_PATH.name, len(texto))
 
     reader = csv.DictReader(io.StringIO(texto, newline=""), delimiter=";")
     filas = list(reader)

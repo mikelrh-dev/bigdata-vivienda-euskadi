@@ -13,7 +13,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import csv
 import os
 import sys
 from datetime import datetime
@@ -248,18 +247,6 @@ def main() -> int:
             "n_sin_duplicar": len(todos),
         },
     )
-
-    columnas = [
-        "id_anuncio", "precio_eur", "municipio_busqueda", "municipio",
-        "provincia", "distrito", "barrio", "tipo_inmueble", "superficie_m2",
-        "habitaciones", "banos", "planta", "exterior", "url",
-    ]
-    destino_csv = RAW_DIR / "anuncios_realtyapi.csv"
-    with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-        escritor = csv.DictWriter(fh, fieldnames=columnas, extrasaction="ignore")
-        escritor.writeheader()
-        escritor.writerows(unicos)
-    log.info("CSV → %s", destino_csv.name)
 
     return 0
 

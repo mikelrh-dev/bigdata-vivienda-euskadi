@@ -20,12 +20,11 @@ import csv
 import io
 import sys
 from collections import Counter
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("euskadi_emancipacion")
 
@@ -59,17 +58,12 @@ def main() -> int:
         log.info("  [%3d] %s", cuenta, nombre[:80])
     log.info("Años: %s", annos)
 
-    guardar_json(
-        RAW_DIR / "emancipacion_juventud_resumen.json",
-        {
-            "url": URL,
-            "n_filas": len(filas) - 1,
-            "anno_min": annos[0] if annos else None,
-            "anno_max": annos[-1] if annos else None,
-            "indicadores": dict(indicadores),
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-        },
-    )
+    guardar_meta(destino, {
+        "fuente": "Open Data Euskadi - Emancipación juvenil",
+        "url": URL,
+        "n_registros": max(len(filas) - 1, 0),
+    })
+
     return 0
 
 

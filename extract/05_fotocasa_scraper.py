@@ -19,7 +19,6 @@ Uso:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import re
 import sys
@@ -262,25 +261,6 @@ def main() -> int:
                 "n_sin_duplicar": len(todos),
             },
         )
-
-        # CSV con los campos principales
-        columnas = [
-            "codigo_ine", "nombre_canonico", "anio_fuente",
-            "id_anuncio", "precio_eur", "precio_reducido_eur",
-            "municipio", "provincia", "codigo_postal", "barrio", "comarca",
-            "latitud", "longitud", "superficie_m2", "habitaciones", "banos",
-            "exterior", "ascensor", "parking", "terraza", "trastero",
-            "alquiler_temporal", "tipo_inmueble", "profesional",
-            "publicado", "url_detalle",
-        ]
-        destino_csv = RAW_DIR / "anuncios_fotocasa.csv"
-        with destino_csv.open("w", newline="", encoding="utf-8-sig") as fh:
-            escritor = csv.DictWriter(
-                fh, fieldnames=columnas, extrasaction="ignore"
-            )
-            escritor.writeheader()
-            escritor.writerows(unicos)
-        log.info("CSV -> %s", destino_csv.name)
 
     return 0 if unicos else 1
 

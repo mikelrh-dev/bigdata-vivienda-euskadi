@@ -41,23 +41,23 @@ class Paso:
     nota: str = ""
 
 
-# El orden de esta lista es el orden de ejecución. Los que necesitan
-# `dim_municipios.json` van después de los que alimentan su construcción.
+# El orden de esta lista es el orden de ejecución. `dim-municipios` no es un
+# extractor: es el catálogo que varios extractores necesitan, así que se
+# ejecuta después de las fuentes que lo alimentan y antes de sus consumidores.
 PASOS: tuple[Paso, ...] = (
     Paso("eustat", "01_eustat_api.py", (
-        "eustat_poblacion_edad.json",
-        "eustat_renta_municipal.json",
-        "eustat_renta_edad.json",
-        "eustat_pib_municipal.json",
-        "eustat_tenencia.json",
+        "eustat_poblacion_edad.csv",
+        "eustat_renta_municipal.csv",
+        "eustat_renta_edad.csv",
+        "eustat_pib_municipal.csv",
+        "eustat_tenencia.csv",
     ), lento=True),
     Paso("eustat-alquiler", "02_eustat_alquiler.py", (
-        "alquiler_municipal.json",
+        "alquiler_municipal.csv",
         "alquiler_*_original.csv",
     ), lento=True),
     Paso("emancipacion", "03_euskadi_emancipacion.py", (
         "emancipacion_juventud.csv",
-        "emancipacion_juventud_resumen.json",
     )),
     Paso("b5m", "04_b5m_geo.py", (
         "municipios_gipuzkoa.geojson",
@@ -68,7 +68,6 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True),
     Paso("fotocasa", "05_fotocasa_scraper.py", (
         "anuncios_fotocasa.json",
-        "anuncios_fotocasa.csv",
     ), lento=True, nota="scraper"),
     Paso("ine", "06_ine_api.py", (
         "ine_69301.json",
@@ -83,24 +82,26 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True),
     Paso("pisos", "08_pisos_scraper.py", (
         "anuncios_pisos.json",
-        "anuncios_pisos.csv",
     ), lento=True, nota="scraper"),
-    Paso("fotocasa-dirigido", "09_fotocasa_dirigido.py", (
-        "anuncios_fotocasa_dirigido_*.json",
-        "anuncios_fotocasa_dirigido_*.csv",
-    ), lento=True, nota="scraper dirigido"),
     Paso("realtyapi", "09_realtyapi.py", (
         "anuncios_realtyapi.json",
-        "anuncios_realtyapi.csv",
     ), lento=True, nota="API con clave"),
     Paso("opendata-etxebide", "10_opendata_bizilagun_etxebide.py", (
         "emal_barrios_municipios_2016_2025.xlsx",
-        "emal_fianzas.json",
         "emal_fianzas.csv",
         "etxebide_indicador_86.csv",
-        "etxebide_solicitudes.json",
         "etxebide_solicitudes.csv",
     ), lento=True),
+    Paso("dim-municipios", "transform/dim_municipios.py", (
+        "procesado/dim_municipios.json",
+    ), nota="catálogo (transform)"),
+    Paso("euskadi-geo", "euskadi_geo.py", (
+        "municipios_euskadi.geojson",
+        "distancias_capitales.csv",
+    )),
+    Paso("fotocasa-dirigido", "09_fotocasa_dirigido.py", (
+        "anuncios_fotocasa_dirigido_*.json",
+    ), lento=True, nota="scraper dirigido"),
     Paso("ovj-salario", "10_ovj_salario.py", (
         "ovj_salario_joven_2024.json",
     )),
@@ -109,30 +110,23 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True, nota="scraper dirigido"),
     Paso("transporte", "11_transporte_gtfs_paradas.py", (
         "transporte_paradas_municipio.csv",
-        "transporte_paradas_municipio.json",
     ), lento=True),
     Paso("habitaciones", "13_scraping_habitaciones.py", (
         "anuncios_fotocasa_habitaciones.json",
-        "anuncios_fotocasa_habitaciones.csv",
         "anuncios_pisos_habitaciones.json",
-        "anuncios_pisos_habitaciones.csv",
     ), lento=True, nota="scraper"),
     Paso("serpavi", "16_serpavi_renta.py", (
         "serpavi_renta_municipal.xlsx",
         "serpavi_renta_municipal.csv",
-        "serpavi_renta_municipal.json",
     )),
     Paso("osrm", "17_osrm_tiempos.py", (
         "osrm_tiempos_capitales.csv",
-        "osrm_tiempos_capitales.json",
     ), lento=True),
     Paso("lanbide-juvenil", "18_lanbide_paro_juvenil.py", (
         "lanbide_paro_historico.xlsx",
         "lanbide_paro_juvenil.csv",
-        "lanbide_paro_juvenil.json",
     )),
     Paso("udalmap-adicionales", "19_udalmap_indicadores_adicionales.py", (
-        "udalmap_indicadores_adicionales.json",
         "udalmap_indicadores_adicionales.csv",
     )),
     Paso("ecvi", "20_ecvi_compraventa.py", (
@@ -141,7 +135,6 @@ PASOS: tuple[Paso, ...] = (
     ), lento=True),
     Paso("lanbide-historico", "21_lanbide_historico_paro_joven.py", (
         "lanbide_paro_historico_joven.csv",
-        "lanbide_paro_historico_joven.json",
     )),
     Paso("areas-funcionales", "22_geo_areas_funcionales.py", (
         "areas_funcionales_municipios.csv",
@@ -152,11 +145,9 @@ PASOS: tuple[Paso, ...] = (
         "certificados_energeticos_gipuzkoa_completo.csv",
     ), lento=True),
     Paso("etxebide-promociones", "24_etxebide_promociones.py", (
-        "etxebide_promociones.csv",
         "etxebide_promociones.json",
     ), lento=True),
     Paso("udalmap-extendido", "25_udalmap_extendido.py", (
-        "udalmap_extendido.csv",
         "udalmap_extendido.json",
     ), lento=True),
     Paso("vpo-terminadas", "26_vpo_terminadas.py", (
@@ -164,33 +155,22 @@ PASOS: tuple[Paso, ...] = (
     )),
     Paso("educacion", "educacion_centros.py", (
         "educacion_centros.csv",
-        "educacion_centros.json",
     )),
     Paso("salud", "salud_centros.py", (
         "salud_centros.csv",
-        "salud_centros.json",
-    )),
-    Paso("euskadi-geo", "euskadi_geo.py", (
-        "municipios_euskadi.geojson",
-        "distancias_capitales.csv",
     )),
     Paso("fotocasa-detalle", "fotocasa_detalle.py", (
         "anuncios_fotocasa_detalle.json",
     ), lento=True, nota="scraper detalle"),
     Paso("ine-atlas", "ine_atlas_renta.py", (
-        "ine_atlas_renta.json",
         "ine_atlas_renta.csv",
-        "renta_municipal_completa.json",
         "renta_municipal_completa.csv",
     )),
     Paso("udalmap-empleo", "udalmap_empleo.py", (
-        "udalmap_empleo.json",
         "udalmap_empleo.csv",
     )),
     Paso("f4-dirigido", "f4_pisos_dirigido.py", (
         "anuncios_pisos_dirigido.json",
-        "anuncios_pisos_dirigido.csv",
-        "f4_pisos_informe.csv",
     ), lento=True, nota="scraper dirigido"),
 )
 
@@ -198,9 +178,12 @@ POR_ID = {paso.id: paso for paso in PASOS}
 
 
 def _coincidencias(patron: str) -> list[Path]:
+    base = RAW_DIR
+    if patron.split("/")[0] in {"procesado", "resultados"}:
+        base = RAW_DIR.parent
     if any(c in patron for c in "*?["):
-        return sorted(RAW_DIR.glob(patron))
-    ruta = RAW_DIR / patron
+        return sorted(base.glob(patron))
+    ruta = base / patron
     return [ruta] if ruta.exists() else []
 
 
@@ -246,7 +229,10 @@ def seleccionar(only: str | None, missing: bool, force: bool) -> list[Paso]:
 
 
 def _ejecutar(paso: Paso, log) -> bool:
-    script = PROJECT_ROOT / "extract" / paso.script
+    if "/" in paso.script:
+        script = PROJECT_ROOT / paso.script
+    else:
+        script = PROJECT_ROOT / "extract" / paso.script
     if not script.exists():
         log(f"  ✗ no existe {script}")
         return False

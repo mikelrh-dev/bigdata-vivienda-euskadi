@@ -6,14 +6,12 @@ resultado individual (OK/FALLO + n anuncios). Fusiona con los existentes
 deduplicando por URL.
 """
 from __future__ import annotations
-import csv, json, sys
+import json, sys
 from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "extract"))
 sys.path.insert(0, str(PROJECT_ROOT / "transform"))
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
-from entity_resolution import resolver_municipio  # noqa: E402
-from importlib import import_module as _imp
+from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 import importlib.util
 spec = importlib.util.spec_from_file_location(
     "pisos_mod", Path(__file__).resolve().parent / "08_pisos_scraper.py")
@@ -33,7 +31,7 @@ def _nombre_lote(raw_dir) -> Path:
     return Path(raw_dir) / "anuncios_pisos_dirigido_lote.json"
 
 def main() -> int:
-    dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
+    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
     regs = dim["datos"] if isinstance(dim, dict) else dim
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
     # La selección la prepara el flujo de calidad/transformación; se lee como
@@ -83,17 +81,9 @@ def main() -> int:
     guardar_json(RAW_DIR / "anuncios_pisos_dirigido.json", viejos,
                  metadata={**meta, "f4_nuevos": añadidos,
                            "f4_municipios": len(objetivos)})
-    cols = ["codigo_ine", "nombre_canonico", "anio_fuente", "id_anuncio", "precio_eur",
-            "municipio_busqueda", "titulo", "subtitulo", "tipo_inmueble", "superficie_m2",
-            "habitaciones", "banos", "url_detalle", "total_resultados", "es_busqueda_no_ubicacion"]
-    with open(RAW_DIR / "anuncios_pisos_dirigido.csv", "w", newline="", encoding="utf-8-sig") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
-        w.writeheader(); w.writerows(viejos)
-    with open(RAW_DIR / "f4_pisos_informe.csv", "w", newline="", encoding="utf-8-sig") as fh:
-        w = csv.DictWriter(fh, fieldnames=["codigo_ine", "municipio", "estado"])
-        w.writeheader(); w.writerows(informe)
-    log.info("F4c: %d nuevos (total %d). Informe 1x1 guardado en raw",
-             añadidos, len(viejos))
+    for fila in informe:
+        log.info("  %s [%s]: %s", fila["municipio"], fila["codigo_ine"], fila["estado"])
+    log.info("F4c: %d nuevos (total %d)", añadidos, len(viejos))
     return 0
 
 if __name__ == "__main__":

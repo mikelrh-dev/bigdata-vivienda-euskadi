@@ -13,18 +13,16 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 import math
 import re
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import pandas as pd  # noqa: E402
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger  # noqa: E402
 
 log = get_logger("opendata_bizilagun_etxebide")
 
@@ -293,17 +291,6 @@ def main() -> int:
     cliente.descargar(URL_EMAL, ruta_xlsx)
     _anios, registros_emal = parsear_emal(ruta_xlsx)
 
-    guardar_json(
-        RAW_DIR / "emal_fianzas.json",
-        registros_emal,
-        metadata={
-            "fuente": "EMAL - Estadística del Mercado de Alquiler (Open Data Euskadi)",
-            "url": URL_EMAL,
-            "hojas": ["T2.1", "T2.2", "T2.3"],
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_registros": len(registros_emal),
-        },
-    )
     columnas_emal = [
         "codigo_ine",
         "municipio",
@@ -324,16 +311,6 @@ def main() -> int:
     texto_etx = ruta_etx.read_text(encoding="latin-1")
     registros_etx = parsear_etxebide(texto_etx)
 
-    guardar_json(
-        RAW_DIR / "etxebide_solicitudes.json",
-        registros_etx,
-        metadata={
-            "fuente": "Udalmap indicador 86 - Solicitudes Etxebide (Open Data Euskadi)",
-            "url": URL_ETXEBIDE,
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_registros": len(registros_etx),
-        },
-    )
     columnas_etx = ["codigo_ine", "municipio", "anio", "etxebide_solicitudes_por_mil"]
     _escribir_csv(RAW_DIR / "etxebide_solicitudes.csv", registros_etx, columnas_etx)
     log.info("Etxebide: %d registros", len(registros_etx))

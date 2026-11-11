@@ -68,14 +68,20 @@ def main() -> int:
     # Si no existe, generar a partir del criterio documentado
     print("[INFO] Archivo no existe; generando a partir del criterio documentado")
     avb_path = os.path.join(PROC, "analisis_variables_base.csv")
-    fc_path = os.path.join(RAW, "anuncios_fotocasa.csv")
+    fc_path = os.path.join(RAW, "anuncios_fotocasa.json")
     if not (os.path.exists(avb_path) and os.path.exists(fc_path)):
-        print("[ERROR] Faltan analisis_variables_base.csv o anuncios_fotocasa.csv para generar")
+        print("[ERROR] Faltan analisis_variables_base.csv o anuncios_fotocasa.json para generar")
         return 1
     import pandas as pd
     avb = pd.read_csv(avb_path, dtype=str)
-    fc = pd.read_csv(fc_path, dtype=str)
-    fc_count = fc["codigo_ine"].value_counts().to_dict() if "codigo_ine" in fc.columns else {}
+    with open(fc_path, encoding="utf-8") as fh:
+        fc = json.load(fh)
+    fc = fc.get("datos", fc) if isinstance(fc, dict) else fc
+    fc_count: dict[str, int] = {}
+    for registro in fc:
+        codigo = registro.get("codigo_ine")
+        if codigo:
+            fc_count[codigo] = fc_count.get(codigo, 0) + 1
     candidatos = avb[avb["tipologia_mercado"].isin(["Nivel2_Mercado_Regulado", "Nivel3_Mercado_Rural_Cerrado"])]
     seleccion = [c for c in candidatos["codigo_ine"].tolist() if fc_count.get(c, 0) < 5]
     seleccion = sorted(set(seleccion))

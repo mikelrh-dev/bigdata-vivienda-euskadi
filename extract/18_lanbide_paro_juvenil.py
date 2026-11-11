@@ -8,13 +8,11 @@ Metodo: descarga programatica (requests) de XLSX + pandas.
 """
 from __future__ import annotations
 
-import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("lanbide_paro_juvenil")
 URL = "https://www.lanbide.euskadi.eus/contenidos/estadistica/paro_historico/es_def/adjuntos/Dap_Historico.xlsx"
@@ -55,22 +53,14 @@ def main() -> int:
                              "Total 25-29": "paro_25_29"})
     out["tasa_paro_joven_pct"] = (out["paro_joven_menores_25"] / out["poblacion_activa"].replace(0, pd.NA) * 100).round(2)
 
-    # CSV
     csv_path = RAW_DIR / "lanbide_paro_juvenil.csv"
     out.to_csv(csv_path, index=False, encoding="utf-8-sig")
     log.info("CSV -> %s (%d)", csv_path.name, len(out))
-
-    # JSON
-    regs = out.to_dict(orient="records")
-    guardar_json(RAW_DIR / "lanbide_paro_juvenil.json", regs,
-                metadata={"fuente": "Lanbide Dap_Historico.xlsx",
-                          "url": URL,
-                          "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-                          "periodo": f"{latest} T{tri}",
-                          "n_municipios": len(out),
-                          "n_registros": len(out),
-                          "nota": "paro registrado (no tasa de desempleo). Joven = <20 + 20-24."})
-    log.info("JSON -> lanbide_paro_juvenil.json")
+    guardar_meta(csv_path, {
+        "fuente": "Lanbide Dap_Historico.xlsx",
+        "url": URL,
+        "n_registros": len(out),
+    })
     return 0
 
 

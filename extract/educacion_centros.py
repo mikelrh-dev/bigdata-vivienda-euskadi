@@ -12,11 +12,10 @@ import io
 import json
 import sys
 import unicodedata
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("educacion_centros")
 
@@ -39,7 +38,7 @@ def _norm(s: str) -> str:
 
 
 def _cargar_dim() -> dict[str, dict]:
-    dim_path = RAW_DIR / "dim_municipios.json"
+    dim_path = PROCESADO_DIR / "dim_municipios.json"
     if not dim_path.exists():
         raise FileNotFoundError("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
     data = json.loads(dim_path.read_text(encoding="utf-8"))
@@ -110,25 +109,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(registros_out)
     log.info("CSV -> %s (%d centros)", destino_csv.name, len(registros_out))
-
-    # Guardar JSON
-    guardar_json(
-        RAW_DIR / "educacion_centros.json",
-        registros_out,
-        metadata={
-            "fuente": "Open Data Euskadi - Centros docentes no universitarios",
-            "url": URL,
-            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-            "n_centros": len(registros_out),
-            "n_municipios_cubiertos": len({r["codigo_ine"] for r in registros_out if r["codigo_ine"]}),
-            "n_sin_codigo_ine": sum(1 for r in registros_out if not r["codigo_ine"]),
-        },
-    )
-    log.info(
-        "JSON -> educacion_centros.json (%d centros, %d municipios)",
-        len(registros_out),
-        len({r["codigo_ine"] for r in registros_out if r["codigo_ine"]}),
-    )
+    guardar_meta(destino_csv, {
+        "fuente": "Open Data Euskadi - Centros docentes no universitarios",
+        "url": URL,
+        "n_registros": len(registros_out),
+    })
     return 0
 
 

@@ -152,9 +152,9 @@ def leer_csv_seguro(path, **kwargs):
 
 
 # ─── Escritura de datos ───────────────────────────────────────
-# Metadata mínima: 4 campos. `fecha_extraccion` y `n_registros` se rellenan
-# solos; `fuente` y `url` los declara cada extractor. No se valida ni se
-# rechaza: si falta un dato, se escribe igual y se avisa por log.
+# Metadata mínima: 4 campos. `fecha_extraccion` se rellena sola; `fuente`,
+# `url` y `n_registros` los declara el extractor. No se valida ni se rechaza:
+# si falta un dato, se escribe igual y se avisa por log.
 METADATA_MINIMA = ("fuente", "url", "fecha_extraccion", "n_registros")
 
 
@@ -167,6 +167,29 @@ def write_raw(nombre: str | Path, contenido: bytes) -> Path:
     temporal = destino.with_name(destino.name + ".tmp")
     temporal.write_bytes(contenido)
     temporal.replace(destino)
+    return destino
+
+
+def guardar_meta(ruta_datos: str | Path, metadata: dict) -> Path:
+    """Escribe ``<nombre>.meta.json`` junto a un fichero que no admite metadata.
+
+    Para CSV/XLSX/ZIP: los datos van en su formato y los 4 campos mínimos en
+    un sidecar pequeño, sin duplicar la tabla.
+    """
+    from datetime import datetime
+
+    ruta = Path(ruta_datos)
+    destino = ruta.with_name(ruta.stem + ".meta.json")
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    meta = dict(metadata)
+    desde = datetime.now().astimezone().isoformat(timespec="seconds")
+    meta.setdefault("fecha_extraccion", desde)
+    faltan = [k for k in METADATA_MINIMA if meta.get(k) in (None, "", [])]
+    if faltan:
+        get_logger("guardar_meta").warning(
+            "%s: metadata sin %s", destino.name, ", ".join(faltan)
+        )
+    destino.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return destino
 
 

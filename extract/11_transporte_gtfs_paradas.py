@@ -27,7 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("transporte_gtfs_paradas")
 
@@ -341,9 +341,8 @@ def main() -> int:
         "total_stops_sin_asignar": total_sin_asignar,
         "resumen_operadores": resumen_ops,
     }
-    json_path = RAW_DIR / "transporte_paradas_municipio.json"
-    guardar_json(json_path, filas_salida, metadata=metadata)
-    log.info("JSON -> %s", json_path.name)
+    meta_path = guardar_meta(csv_path, metadata)
+    log.info("Meta -> %s", meta_path.name)
 
     log.info(
         "Resumen: %d stops leídos, %d asignados, %d sin asignar",

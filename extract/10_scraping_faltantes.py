@@ -6,7 +6,6 @@ No sobrescribe archivos existentes.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import unicodedata
 from datetime import datetime
@@ -16,7 +15,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
 
 import importlib.util
 
@@ -54,7 +53,7 @@ def _municipios_faltantes(umbral: int) -> list[tuple[str, str]]:
         df["codigo_ine"] = df["codigo_ine"].astype(str).str.zfill(5)
     counts = df.groupby("codigo_ine").size().to_dict()
     # cargar dim para nombres
-    dim = json.loads((RAW_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
+    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
     regs = dim["datos"] if isinstance(dim, dict) else dim
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
     faltantes = []
