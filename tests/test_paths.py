@@ -12,11 +12,11 @@ def _paths(monkeypatch, data_dir: str) -> object:
     return load_module("paths_under_test", "paths.py")
 
 
-def test_data_dir_por_defecto_fuera_del_repositorio(monkeypatch) -> None:
+def test_data_dir_por_defecto_en_la_raiz_del_repositorio(monkeypatch) -> None:
     monkeypatch.delenv("DATA_DIR", raising=False)
     mod = load_module("paths_default", "paths.py")
-    assert mod.DEFAULT_DATA_DIR == "../data_nuevo"
-    assert mod.DATA_DIR == (ROOT.parent / "data_nuevo").resolve()
+    assert mod.DEFAULT_DATA_DIR == "data"
+    assert mod.DATA_DIR == (ROOT / "data").resolve()
 
 
 def test_data_dir_relativo_se_resuelve_contra_la_raiz(monkeypatch) -> None:

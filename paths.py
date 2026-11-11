@@ -5,7 +5,7 @@ siempre relativo a la raíz del proyecto, nunca al directorio desde el que se
 lanza el script, para que ``python extract/foo.py`` y ``python -m extract.foo``
 apunten al mismo sitio.
 
-Por defecto los datos viven fuera del repositorio, en ``../data_nuevo``.
+Por defecto los datos viven en ``data/`` dentro de la raíz del proyecto.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 ENV_FILE = PROJECT_ROOT / ".env"
-DEFAULT_DATA_DIR = "../data_nuevo"
+DEFAULT_DATA_DIR = "data"
 
 
 def _load_env() -> None:
