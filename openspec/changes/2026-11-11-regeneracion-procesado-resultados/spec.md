@@ -134,6 +134,31 @@ manifest de 176 entradas, alquiler con 252 filas, `docs/raw_manifest_sha256.txt`
 | `_meta/udalmap_empleo_corregido.json.meta.json` | sidecar de un derivado retirado de raw (F-05); su desaparición es correcta |
 | `udalmap_empleo_corregido_normalizado.json` | normalización del mismo derivado retirado (residuo F-05) |
 
+### ¿Importa perder esos 12? No (medido)
+
+1. **No entran en Mongo.** `storage/load_mongo.py` no referencia ninguno de los 12.
+2. **`gold` sale idéntico.** Se movieron los 12 fuera del árbol y se re-ejecutó la fase:
+   4/4 OK y los **56 ficheros de `resultados` con SHA-256 idéntico** (CSV y PNG).
+   Re-ejecutar `gold` dos veces sobre el mismo árbol también da hashes idénticos.
+3. **Los datos F4 reales no se pierden.** Viven en `raw` (inmutable):
+   `anuncios_pisos_dirigido_*.json` (194 ids únicos) y `anuncios_fotocasa_dirigido_*.json`
+   (73), y `unificar_anuncios.py` los integra desde raw (79/194 y 70/73 quedan en el
+   canónico; el resto cae en cuarentena/dedup). Las copias de `procesado` que se pierden
+   las escribe el scraper F4 y **ningún script las lee**.
+4. **Daño colateral acotado:** sin los 12 solo rompe
+   `tests/test_fase_datos.py::test_wp09_mapa_nombres_estables` (lee el mapa de nombres) y
+   los dos umbrales `silver == 188`.
+
+Clasificación de los 12 de cara a decidir:
+
+| Grupo | Nº | Qué hacer |
+|---|---|---|
+| Recuperables offline (`validar_renta.py`, `generar_f4_pisos_objetivo.py`, `generar_fotocasa_dirigido_informe.py`) | 3 | encadenarlos y subir el suelo reproducible a **179** |
+| F4 que exige red (`anuncios_pisos_dirigido.*`, `f4_pisos_informe.csv`) | 3 | N4 o declararlos fuera de baseline |
+| Residuos sin lector ni valor de dato (`_meta/{acta_ingesta.md,csvs_index.json,nombres_normalizados_map.json}`, sidecar y `*_normalizado.json` de `udalmap_empleo_corregido`, `pob_rank.csv` con una sola columna `cod`) | 6 | borrar del árbol canónico |
+
+Baseline propuesto tras limpiar: **179 reproducibles / 182 canónicos** (3 pendientes de red).
+
 ⚠️ **Decisión pendiente de equipo:** `verificar_gobernanza.py` y `gate_extremo_a_extremo.py`
 asertan `silver == 188`, pero un rebuild limpio da 176. El 188 describe el árbol
 contaminado, no el reproducible. Opciones: (a) actualizar el umbral a 176 y declarar
