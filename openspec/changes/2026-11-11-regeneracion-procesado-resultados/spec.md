@@ -106,65 +106,55 @@ gold     → analysis/run_analisis_mongo.py
 |---|---|---|
 | 1. Productor antes de dedup | ✅ | `--dry-run`: 17 `enriquecer_codigo_ine` → 18 `deduplicar` |
 | 2. Dedup sin SKIP | ✅ | enriquecer (253 filas) + dedup → `CSV: 253 -> 252`, rc=0 |
-| 3. Plan quality | ✅ | 3 pasos listados en orden |
-| 4. `quality` real | ✅ | 2 OK + 1 AVISO, `procesado` 188, `docs/raw_manifest_sha256.txt` sin cambios en git |
+| 3. Plan quality | ✅ | 4 pasos listados en orden (manifest al final) |
+| 4. `quality` real | ✅ | 3 OK + 1 AVISO, `procesado` 182, `docs/raw_manifest_sha256.txt` sin cambios en git |
 | 5. Seguridad mongo | ✅ | `--fase mongo` sin flag → rc=2, mensaje en stderr |
-| 6. Tests | ✅ | 25 passed (`test_run_all` + `test_deduplicar_alquiler` + `test_run_pipeline`) |
+| 6. Tests | ✅ | 259 passed, 2 skipped (suite completa) |
 
-Gobernanza intacta tras el cambio: 42 scripts / 34 nodos / 188 silver / 11 pipelines,
-manifest raw verificado (354, 0 errores), gate offline OK.
+Gobernanza actualizada y verificado el nuevo umbral: 44 scripts / 38 nodos / 182 silver /
+11 pipelines, manifest raw 354 (0 errores), gate offline OK.
 
-### Rebuild limpio verificado (borrado + `--fase silver,quality`)
+### Plan R ejecutado: silver reproducible al 100 %
 
-`run_all`: 34/34 scripts, 0 fallos, 435 s. Resultado: **176 ficheros** en `procesado`,
-manifest de 176 entradas, alquiler con 252 filas, `docs/raw_manifest_sha256.txt` sin cambios.
+Tras el rebuild limpio se detectó que el 188 canónico incluía 12 ficheros sin producer
+real. Se aplicó la invariante "cada fichero tiene productor declarado o no existe":
 
-- `procesado`: **176/188** (93,6 %) reproducibles desde raw.
-- `resultados`: **54/56** = 52 escritos por `gold` + 2 por `silver`
-  (`auditoria_lagunas_silver.csv`, `mapa_esquema_silver.html`).
-
-**Los 12 ficheros que un rebuild limpio no reproduce** (y por eso el manifest baja de 188):
-
-| Ficheros | Causa |
-|---|---|
-| `anuncios_pisos_dirigido.csv/.json`, `f4_pisos_informe.csv`, `f4_pisos_objetivo.json`, `fotocasa_dirigido_informe.csv` | F4: captura dirigida (red). N4 |
-| `_meta/acta_ingesta.md`, `_meta/csvs_index.json`, `_meta/nombres_normalizados_map.json` | residuos de la antigua fase de verificación; `verificar_fase_datos.py` los **lee** pero nadie los escribe |
-| `renta_municipal_referencia.csv` | lo produce `transform/validar_renta.py`, excluido del DAG por justificación firmada |
-| `pob_rank.csv` | huérfano sin productor ni consumidor |
-| `_meta/udalmap_empleo_corregido.json.meta.json` | sidecar de un derivado retirado de raw (F-05); su desaparición es correcta |
-| `udalmap_empleo_corregido_normalizado.json` | normalización del mismo derivado retirado (residuo F-05) |
-
-### ¿Importa perder esos 12? No (medido)
-
-1. **No entran en Mongo.** `storage/load_mongo.py` no referencia ninguno de los 12.
-2. **`gold` sale idéntico.** Se movieron los 12 fuera del árbol y se re-ejecutó la fase:
-   4/4 OK y los **56 ficheros de `resultados` con SHA-256 idéntico** (CSV y PNG).
-   Re-ejecutar `gold` dos veces sobre el mismo árbol también da hashes idénticos.
-3. **Los datos F4 reales no se pierden.** Viven en `raw` (inmutable):
-   `anuncios_pisos_dirigido_*.json` (194 ids únicos) y `anuncios_fotocasa_dirigido_*.json`
-   (73), y `unificar_anuncios.py` los integra desde raw (79/194 y 70/73 quedan en el
-   canónico; el resto cae en cuarentena/dedup). Las copias de `procesado` que se pierden
-   las escribe el scraper F4 y **ningún script las lee**.
-4. **Daño colateral acotado:** sin los 12 solo rompe
-   `tests/test_fase_datos.py::test_wp09_mapa_nombres_estables` (lee el mapa de nombres) y
-   los dos umbrales `silver == 188`.
-
-Clasificación de los 12 de cara a decidir:
-
-| Grupo | Nº | Qué hacer |
+| Destino | Ficheros | Cómo |
 |---|---|---|
-| Recuperables offline (`validar_renta.py`, `generar_f4_pisos_objetivo.py`, `generar_fotocasa_dirigido_informe.py`) | 3 | encadenarlos y subir el suelo reproducible a **179** |
-| F4 que exige red (`anuncios_pisos_dirigido.*`, `f4_pisos_informe.csv`) | 3 | N4 o declararlos fuera de baseline |
-| Residuos sin lector ni valor de dato (`_meta/{acta_ingesta.md,csvs_index.json,nombres_normalizados_map.json}`, sidecar y `*_normalizado.json` de `udalmap_empleo_corregido`, `pob_rank.csv` con una sola columna `cod`) | 6 | borrar del árbol canónico |
+| **Borrados** (sin lector ni valor) | `pob_rank.csv`, `anuncios_pisos_dirigido.csv/.json`, `_meta/acta_ingesta.md` | eran snapshots del scraper o documentación obsoleta dentro de la capa de datos |
+| **Con productor offline** | `f4_pisos_objetivo.json`, `f4_pisos_informe.csv`, `fotocasa_dirigido_informe.csv`, `renta_municipal_referencia.csv` | 4 nodos nuevos en el DAG (38 en total) |
+| **Inventarios generados** | `_meta/csvs_index.json`, `_meta/nombres_normalizados_map.json` | `normalizar_metadata` y un paso nuevo de la fase quality |
+| **Residuos F-05** | sidecar y `*_normalizado.json` de `udalmap_empleo_corregido` | ya no se recrean (su raw fue retirado) |
+| **Inputs curados → `config/`** | selección F4 (62 municipios) y registro de los 5 lotes heredados | dejan de ser artefactos que se pueden perder |
 
-Baseline propuesto tras limpiar: **179 reproducibles / 182 canónicos** (3 pendientes de red).
+### Rebuild limpio final (verificado)
 
-⚠️ **Decisión pendiente de equipo:** `verificar_gobernanza.py` y `gate_extremo_a_extremo.py`
-asertan `silver == 188`, pero un rebuild limpio da 176. El 188 describe el árbol
-contaminado, no el reproducible. Opciones: (a) actualizar el umbral a 176 y declarar
-los 12 como legacy, (b) regenerar los que sí tienen productor (`validar_renta.py` y los
-3 `_meta`) antes de fijar el umbral, (c) dejar F4 fuera y fijar 181. Mientras no se
-decida, el árbol de trabajo se mantiene con los 188 (manifest canónico intacto).
+`run_all`: **38/38 scripts, 0 fallos, 382 s**. Resultado: **182 ficheros**, manifest de
+**182 entradas** (`--check`: 0 errores), alquiler con 252 filas, sin faltantes ni sobrantes
+frente al árbol previo (176 reproducibles + 6 recuperados).
+
+- `procesado`: **182/182 = 100 % reproducible desde raw, sin red**.
+- `resultados`: **54/56**; los 2 restantes son `dashboard.html` y `dashboard_completo.html`
+  (sin productor). De los 54, 52 salen de `gold` y 2 de `silver`.
+- `gold` tras el rebuild: 4/4 OK y **54 de 56 hashes idénticos** a la ejecución previa.
+  Cambian solo `auditoria_lagunas_silver.csv` y `mapa_esquema_silver.html`, que auditan
+  silver y por tanto reflejan el paso de 188 a 182 ficheros (correcto, no regresión).
+
+### Guardarraíl nuevo
+
+`tests/test_reproducibilidad_silver.py` sustituye el número mágico por la invariante:
+
+1. toda entrada de `manifest_sha256.txt` casa con un `out`/`out_glob` del DAG o con un
+   artefacto declarado de `quality` (`_meta/*`, `run_manifest.json`);
+2. los 6 residuos retirados no reaparecen.
+
+Si alguien vuelve a dejar un fichero escrito a mano, falla la suite antes de que el
+conteo cambie de significado.
+
+### ¿Y N4?
+
+Ya no hace falta para reproducir: la capa silver se reconstruye sin red. El scraping F4
+es ahora solo un problema de **frescura** de datos (lotes nuevos), no de reconstrucción.
 
 **Bug extra encontrado y corregido:** `analysis/comparativa_mongo.py` fallaba con
 `ModuleNotFoundError: analysis` al ejecutarse como script (la fase gold abortaba en el
@@ -172,10 +162,7 @@ segundo paso). Ahora ancla la raíz en `sys.path`; cubierto por test de regresi�
 
 ## 10. Fuera de alcance (deuda declarada)
 
-- 5 ficheros de F4 que dependen de scraping (`N4`): `anuncios_pisos_dirigido.*`,
-  `f4_pisos_informe.csv`, `f4_pisos_objetivo.json`, `fotocasa_dirigido_informe.csv`.
-- `dashboard.html`, `dashboard_completo.html`: sin productor (2/56).
-- `_meta/{acta_ingesta.md,csvs_index.json,nombres_normalizados_map.json}`: residuos de
-  la antigua fase de verificación, no son datos de pipeline.
-- `pob_rank.csv`, `renta_municipal_referencia.csv`: huérfanos sin consumidor.
+- `dashboard.html`, `dashboard_completo.html`: sin productor (2/56 de `resultados`).
+- Scraping F4 (`transform/f4_pisos_dirigido.py`): requiere red; su lote nuevo sigue
+  escribiendo en `raw` con guard. Ya no condiciona la reproducibilidad.
 - 21 derivados dentro de `raw` y ciclo `extract → dim_municipios`.
