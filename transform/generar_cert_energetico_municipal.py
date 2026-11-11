@@ -124,7 +124,11 @@ def main():
         # Rellenar nulos
         for col in ["n_certificados", "cert_A", "cert_B", "cert_C", "cert_D", "cert_E", "cert_F", "cert_G"]:
             merged[col] = merged[col].fillna(0).astype(int)
-        merged["cert_moda"] = merged["cert_moda"].fillna(None)
+        # pandas no admite fillna(None); conserva los ausentes como None para
+        # que el CSV los serialice como celdas vacías.
+        merged["cert_moda"] = merged["cert_moda"].astype(object).where(
+            merged["cert_moda"].notna(), None
+        )
         # Seleccionar columnas finales
         out_cols = ["codigo_ine", "municipio", "n_certificados", "cert_moda",
                     "cert_A", "cert_B", "cert_C", "cert_D", "cert_E", "cert_F", "cert_G"]

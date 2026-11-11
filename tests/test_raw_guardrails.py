@@ -21,7 +21,6 @@ PROC_DIR = ROOT / "data" / "procesado"
 
 RAW_WRITE_ALLOWLIST = {
     "enriquecer_codigo_ine.py",  # solo con --write-raw --reason
-    "f4_pisos_dirigido.py",      # lot dirigido append-only
 }
 
 WRITE_METHODS = {"to_csv", "to_json", "write_text", "write_bytes"}
@@ -143,11 +142,22 @@ def test_no_transform_writes_raw():
     assert not offenders, "Transforms que escriben en data/raw:\n" + "\n".join(offenders)
 
 
+def test_no_transform_writes_resultados():
+    """Ningún transform escribe en data/resultados (eso es de analysis/)."""
+    offenders = []
+    for path in sorted(TRANSFORM_DIR.glob("*.py")):
+        if path.name.startswith("_"):
+            continue
+        src = _src(path)
+        if re.search(r"['\"]resultados['\"]|data[/\\]resultados", src):
+            offenders.append(path.name)
+    assert not offenders, (
+        "Transforms que apuntan a data/resultados:\n" + "\n".join(offenders))
+
+
 def test_f4_filename_stable():
     """WP-09: _nombre_lote devuelve un nombre estable (sin timestamp); la
     trazabilidad de lotes vive en metadata.run_id, no en el nombre."""
-    if str(TRANSFORM_DIR) not in sys.path:
-        sys.path.insert(0, str(TRANSFORM_DIR))
     if str(EXTRACT_DIR) not in sys.path:
         sys.path.insert(0, str(EXTRACT_DIR))
     if str(ROOT) not in sys.path:

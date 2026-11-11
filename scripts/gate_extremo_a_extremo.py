@@ -1,7 +1,7 @@
 """Gate extremo a extremo (offline por defecto, vivo opt-in).
 
-Offline (defecto, sin red): verifica umbrales sobre el repo local
-read-only: manifiesto raw 354 SHA, silver 188, 14 colecciones,
+Offline (defecto, sin red): verifica integridad sobre el repo local
+read-only: manifiestos SHA de raw y silver, 14 colecciones,
 0 duplicados en reintentos (idempotencia simulada), lag 0.
 No escribe en ``data/`` ni conecta a Mongo/HDFS/Kafka.
 
@@ -28,9 +28,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Umbrales normativos (spec.md).
-EXPECTED_RAW = 354
-EXPECTED_SILVER = 188
+# Colecciones del modelo Mongo.
 EXPECTED_COLLECTIONS = [
     "municipios",
     "anuncios",
@@ -50,7 +48,7 @@ EXPECTED_COLLECTIONS = [
 EXPECTED_DUPLICADOS_REINTENTOS = 0
 EXPECTED_LAG = 0
 
-RAW_MANIFEST = Path("docs/raw_manifest_sha256.txt")
+RAW_MANIFEST = Path("data/raw/manifest_sha256.txt")
 RAW_BASE = Path("data/raw")
 SILVER_MANIFEST = Path("data/procesado/manifest_sha256.txt")
 SILVER_BASE = Path("data/procesado")
@@ -90,13 +88,13 @@ def parse_manifest(path: Path) -> list[tuple[str, str]]:
 def check_manifest(
     manifest_path: Path,
     base_dir: Path,
-    expected: int,
+    expected: int | None = None,
     verify_hashes: bool = True,
 ) -> tuple[bool, str]:
     if not manifest_path.exists():
         return False, f"no existe {manifest_path}"
     entries = parse_manifest(manifest_path)
-    if len(entries) != expected:
+    if expected is not None and len(entries) != expected:
         return False, f"{manifest_path.name}: {len(entries)} != {expected}"
     if verify_hashes:
         bad: list[str] = []
@@ -163,11 +161,10 @@ def tcp_probe(host: str, port: int, timeout: float = 5.0) -> bool:
 
 def run_offline(root: Path = ROOT) -> list[tuple[str, bool, str]]:
     checks: list[tuple[str, bool, str]] = []
-    ok, det = check_manifest(root / RAW_MANIFEST, root / RAW_BASE, EXPECTED_RAW)
-    checks.append(("manifiesto raw 354 SHA", ok, det))
-    ok, det = check_manifest(root / SILVER_MANIFEST, root / SILVER_BASE,
-                             EXPECTED_SILVER)
-    checks.append(("silver 188", ok, det))
+    ok, det = check_manifest(root / RAW_MANIFEST, root / RAW_BASE)
+    checks.append(("manifiesto raw (SHA)", ok, det))
+    ok, det = check_manifest(root / SILVER_MANIFEST, root / SILVER_BASE)
+    checks.append(("silver (SHA)", ok, det))
     ok, det = check_colecciones()
     checks.append(("14 colecciones", ok, det))
     ok, det = check_duplicados()

@@ -297,6 +297,36 @@ def load_anuncios() -> int:
     return replace_collection("anuncios", docs)
 
 
+def load_anuncios_habitaciones() -> int:
+    """Carga la vista separada de anuncios de habitaciones.
+
+    Esta colección alimenta `pipeline_habitaciones_por_municipio`; no se
+    mezcla con `anuncios`, que contiene el dataset unificado de vivienda.
+    """
+    df = _read_csv("anuncios_habitaciones_unificados.csv")
+    docs: list[dict] = []
+    for _, row in df.iterrows():
+        code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
+        docs.append({
+            "portal": to_str(row.get("portal")),
+            "codigo_ine": code,
+            "municipio": to_str(row.get("municipio")),
+            "precio_eur": _money(row.get("precio_eur")),
+            "superficie_m2": to_float(row.get("superficie_m2")),
+            "habitaciones": to_int(row.get("habitaciones")),
+            "url_detalle": to_str(row.get("url_detalle")),
+            "titulo": to_str(row.get("titulo")),
+            "subtitulo": to_str(row.get("subtitulo")),
+            "fuente": "silver anuncios_habitaciones_unificados",
+            "fecha_carga": datetime.now(timezone.utc),
+        })
+    if not docs:
+        return 0
+    return replace_collection("anuncios_habitaciones_unificados", docs)
+
+
 def load_alquiler() -> int:
     df = _read_csv("alquiler_municipal_completo.csv")
     docs = []
@@ -591,6 +621,7 @@ def load_all() -> dict[str, int]:
     result = {
         "municipios": load_municipios(),
         "anuncios": load_anuncios(),
+        "anuncios_habitaciones": load_anuncios_habitaciones(),
         "alquiler_municipal": load_alquiler(),
         "indicadores": load_indicadores(),
         "ecvi_compraventa": load_ecvi(),

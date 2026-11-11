@@ -12,8 +12,9 @@ Uso:
     python transform/run_all.py --dry-run    # muestra el orden sin ejecutar
 
 Reglas:
-- ``in``/``out`` usan prefijos ``raw:`` / ``proc:`` / ``res:`` (data/raw,
-  data/procesado, data/resultados). También se admiten globs en ``out_glob``.
+- ``in``/``out`` usan prefijos ``raw:`` / ``proc:`` (data/raw,
+  data/procesado). Base desconocida es error: evita escribir por accidente en
+  la capa equivocada. También se admiten globs en ``out_glob``.
 - Los scripts sin salidas declaradas conservan su orden relativo y se
   reportan como SIN-DECLARAR en --check (deuda a declarar, no a ocultar).
 - Nodos in-place (aplicar_cobertura_mercado.py: dim->dim,
@@ -40,11 +41,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 os.chdir(PROJECT_ROOT)
 TRANSFORM_DIR = PROJECT_ROOT / "transform"
 PROCESADO_DIR = PROJECT_ROOT / "data" / "procesado"
-RESULTADOS_DIR = PROJECT_ROOT / "data" / "resultados"
 
+# Solo Silver: el DAG no escribe en raw ni en resultados.
 BASES = {"raw": PROJECT_ROOT / "data" / "raw",
-         "proc": PROCESADO_DIR,
-         "res": RESULTADOS_DIR}
+         "proc": PROCESADO_DIR}
 
 # Registro declarativo: script -> {group, in, out, out_glob}.
 # El orden de ejecución se deriva de in/out; el orden escrito aquí solo
@@ -75,10 +75,6 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["raw:alquiler_seccion*.csv"],
         "out": ["proc:alquiler_seccion.csv",
                 "proc:alquiler_seccion_resumen.csv"], "out_glob": []},
-    "deduplicar_alquiler_enriquecido.py": {
-        "group": "limpieza_base",
-        "in": ["proc:alquiler_municipal_enriquecido.json"],
-        "out": ["proc:alquiler_municipal_enriquecido.json"], "out_glob": []},
     # dim_municipios
     "dim_municipios.py": {
         "group": "dim_municipios",
@@ -151,8 +147,18 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
     "enriquecer_codigo_ine.py": {
         "group": "enriquecimiento",
         "in": [],
-        "out": [], "out_glob": ["proc:anuncios_*_enriquecido.csv",
-                                "proc:anuncios_*_enriquecido.json"]},
+        # El alquiler se declara explícitamente porque la deduplicación
+        # posterior consume estos ficheros y los globs no crean aristas en DAG.
+        "out": ["proc:alquiler_municipal_enriquecido.csv",
+                "proc:alquiler_municipal_enriquecido.json"],
+        "out_glob": ["proc:anuncios_*_enriquecido.csv",
+                     "proc:anuncios_*_enriquecido.json"]},
+    "deduplicar_alquiler_enriquecido.py": {
+        "group": "limpieza_base",
+        "in": ["proc:alquiler_municipal_enriquecido.csv",
+               "proc:alquiler_municipal_enriquecido.json"],
+        "out": ["proc:alquiler_municipal_enriquecido.csv",
+                "proc:alquiler_municipal_enriquecido.json"], "out_glob": []},
     "generar_cert_energetico_municipal.py": {
         "group": "enriquecimiento",
         "in": [],
@@ -210,7 +216,7 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "out": ["proc:comparativa_compra_alquiler_af.csv"], "out_glob": []},
     "generar_anuncios_residencial_filtrado.py": {
         "group": "analisis",
-        "in": ["proc:anuncios_unificados.csv"],
+        "in": ["proc:anuncios_vivienda_residencial.csv"],
         "out": ["proc:anuncios_vivienda_residencial_filtrado.csv"],
         "out_glob": []},
     "generar_vistas_mercado.py": {
@@ -219,29 +225,15 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "out": ["proc:anuncios_vivienda_residencial.csv",
                 "proc:anuncios_vivienda_temporal.csv",
                 "proc:anuncios_habitaciones_unificados.csv"], "out_glob": []},
-    # resultados (Mongo, canonicos: analysis/run_analisis_mongo.py)
-    "generar_mapa_esquema.py": {
-        "group": "resultados",
-        "in": [],
-        "out": ["res:mapa_esquema_silver.html"], "out_glob": []},
-    "auditar_lagunas_silver.py": {
-        "group": "resultados",
-        "in": [],
-        "out": ["res:auditoria_lagunas_silver.csv"], "out_glob": []},
 }
 
 # Scripts fuera del pipeline, con motivo obligatorio.
 EXCLUIDOS: dict[str, str] = {
     "run_all.py": "el propio orquestador",
-    "f4_pisos_dirigido.py": "captura dirigida manual (escribe en raw con guard)",
     "generar_f4_pisos_objetivo.py": "genera la lista manual de objetivos de f4",
     "generar_fotocasa_dirigido_informe.py": "informe de captura dirigida",
     "muni_resolve.py": "libreria, no script ejecutable del pipeline",
     "validar_renta.py": "Justificación firmada 2026-11-05: no es transformación ETL silver (no declara in/out proc); es QA bajo demanda; se mantiene fuera del orquestador para no alterar manifest 353/184 ni el gate 130.",
-    "auditoria_duckdb.py": "auditoria bajo demanda (escribe en scratchpad)",
-    "generar_dashboard_visual.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo en analysis/run_analisis_mongo.py)",
-    "generar_dashboard_completo.py": "legacy DuckDB (sustituido por exportar_png_desde_mongo; G literal->conteos Mongo)",
-    "generar_figuras_N.py": "genera PNG P0 N1,N2,N3,N7 y H2 desde CSV sin Mongo vivo (evidencia visual, no silver)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
 }
 
@@ -249,7 +241,12 @@ EXCLUIDOS: dict[str, str] = {
 def _resolver(ref: str) -> list[Path]:
     """Traduce 'base:patron' a rutas (globs solo en el patron, no en la base)."""
     base, _, patron = ref.partition(":")
-    root = BASES.get(base, PROCESADO_DIR)
+    if base not in BASES:
+        raise ValueError(
+            f"base desconocida en {ref!r}: usa una de {sorted(BASES)} para no "
+            "escribir fuera de la capa declarada"
+        )
+    root = BASES[base]
     if any(ch in patron for ch in ("*", "?", "[")):
         return sorted(root.glob(patron))
     return [root / patron]  # exista o no: --check informa si falta
@@ -362,6 +359,8 @@ def _run_script(script: Path) -> tuple[int, float]:
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             env=env,
         )
         rc = proc.returncode

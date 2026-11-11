@@ -48,7 +48,7 @@ def main() -> int:
     # NOTA WP-05: no se calcula brecha_ocupacion_actividad_pct. Las tasas de
     # ocupacion y actividad de Udalmap no comparten base (248/252 dan
     # ocupacion > actividad, imposible por definicion), asi que la resta no
-    # mide ninguna brecha. Ver docs/reglas_limpieza.md.
+    # mide ninguna brecha.
     # WP-04: un 0,00 exacto con muy pocos activos es artefacto, no medicion.
     # Se conserva el valor publicado y la tasa de trabajo queda en NaN.
     p = pd.to_numeric(df["tasa_paro_lanbide_pct"], errors="coerce")

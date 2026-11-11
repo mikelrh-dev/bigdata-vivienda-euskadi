@@ -1,3 +1,0 @@
-# Dependencias legacy (dashboards DuckDB y utilidades fuera de la cadena vigente).
-# La cadena activa (extract -> transform -> Mongo -> CSV/PNG) no importa duckdb.
-duckdb==2.0.0

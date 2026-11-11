@@ -3,7 +3,7 @@
 TRANSACCIONES-01 (RA3 Consistencia, nivel 10): el modelo no necesita
 transacción multidocumento; se demuestra con código una operación
 atómica de un único documento (storage/mongo.py:marcar_calidad_municipio)
-y se justifica en docs/modelo_mongodb.md. PYMONGO-PRO-01 (Tema 8 §12):
+y se justifica en la memoria del proyecto. PYMONGO-PRO-01 (Tema 8 §12):
 load_all ya no silencia errores de ensure_indexes.
 
 Todo el trabajo de escritura ocurre en la base de test
@@ -31,6 +31,7 @@ from storage.mongo import (
 _LOADERS = [
     "load_municipios",
     "load_anuncios",
+    "load_anuncios_habitaciones",
     "load_alquiler",
     "load_indicadores",
     "load_ecvi",
@@ -140,12 +141,13 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
             load_mongo.load_all()
     assert "índices" in caplog.text
 
-    # Camino feliz: sin error de índices, load_all devuelve las 13 colecciones.
+    # Camino feliz: load_all devuelve todas las colecciones cargadas.
     monkeypatch.setattr(mi, "ensure_indexes", lambda: {})
     result = load_mongo.load_all()
     assert set(result) == {
         "municipios",
         "anuncios",
+        "anuncios_habitaciones",
         "alquiler_municipal",
         "indicadores",
         "ecvi_compraventa",

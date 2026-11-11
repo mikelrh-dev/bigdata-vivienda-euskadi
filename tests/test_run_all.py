@@ -34,8 +34,7 @@ def dag(tmp_path, monkeypatch):
     raw = tmp_path / "raw"
     proc.mkdir()
     raw.mkdir()
-    monkeypatch.setattr(ra, "BASES", {"raw": raw, "proc": proc,
-                                       "res": tmp_path / "res"})
+    monkeypatch.setattr(ra, "BASES", {"raw": raw, "proc": proc})
     monkeypatch.setattr(ra, "PROCESADO_DIR", proc)
     monkeypatch.setattr(ra, "SCRIPTS", {
         "a.py": {"group": "g", "in": ["raw:x.csv"],
@@ -62,12 +61,29 @@ def test_orden_topologico_respeta_dag(dag):
     assert orden.index("a.py") < orden.index("b.py") < orden.index("c.py")
 
 
+def test_deduplicacion_de_alquiler_va_despues_de_su_productor():
+    """El glob de enriquecimiento no sustituye declarar sus salidas DAG."""
+    orden = ra._orden_topologico(list(ra.SCRIPTS))
+    productor = orden.index("enriquecer_codigo_ine.py")
+    deduplicador = orden.index("deduplicar_alquiler_enriquecido.py")
+    assert productor < deduplicador
+    assert "proc:alquiler_municipal_enriquecido.csv" in ra.SCRIPTS[
+        "enriquecer_codigo_ine.py"]["out"]
+
+
 def test_salidas_y_entradas_resuelven_prefijos(dag):
     proc, raw = dag
     assert ra._salidas("b.py") == [proc / "b.csv"]
     assert ra._entradas("b.py") == [proc / "a.csv"]
     assert ra._entradas("a.py") == [raw / "x.csv"]
     assert ra._salidas("sin_salida.py") == []
+
+
+def test_dag_solo_resuelve_raw_y_proc():
+    """Sin base 'res': data/resultados pertenece a analysis/, no al DAG Silver."""
+    assert set(ra.BASES) == {"raw", "proc"}
+    with pytest.raises(ValueError):
+        ra._resolver("res:x.csv")
 
 
 def test_estado_ok_cuando_salida_fresca(dag):

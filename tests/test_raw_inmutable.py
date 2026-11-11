@@ -6,7 +6,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
-MANIFEST = ROOT / "docs" / "raw_manifest_sha256.txt"
+MANIFEST = RAW / "manifest_sha256.txt"
 FROZEN = RAW / ".FROZEN"
 
 
@@ -23,7 +23,7 @@ def test_raw_congelado_marker():
 
 
 def test_raw_hashes_manifest():
-    assert MANIFEST.exists(), "Manifest canonical falta: docs/raw_manifest_sha256.txt"
+    assert MANIFEST.exists(), "Manifest canonical falta: data/raw/manifest_sha256.txt"
     lines = [ln for ln in MANIFEST.read_text(encoding="utf-8").splitlines() if ln.strip()]
     assert lines, "Manifest vacio"
     errores = []
@@ -51,7 +51,7 @@ EXCLUDED_FROM_MANIFEST = {
     ".FROZEN",
     ".gitkeep",
     "ingestion_manifest.json",
-    "manifest_sha256.txt",  # copia legacy del manifiesto (auto-referencial)
+    "manifest_sha256.txt",  # el propio manifiesto (auto-referencial)
 }
 
 

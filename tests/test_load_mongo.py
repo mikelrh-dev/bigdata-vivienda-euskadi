@@ -131,3 +131,56 @@ def test_fila_sin_codigo_ine_se_omite(mongo_tmp, tmp_path):
     ])
     assert lm.load_anuncios() == 1
     assert mongo_tmp["anuncios"].count_documents({}) == 1
+
+
+def test_load_anuncios_habitaciones_carga_coleccion_analitica(
+    mongo_tmp, tmp_path,
+):
+    """La vista Silver segregada se carga en la colección leída por el análisis."""
+    path = tmp_path / "anuncios_habitaciones_unificados.csv"
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=[
+            "portal", "codigo_ine", "municipio", "precio_eur",
+            "superficie_m2", "habitaciones", "url_detalle", "titulo",
+            "subtitulo",
+        ])
+        writer.writeheader()
+        writer.writerow({
+            "portal": "fotocasa", "codigo_ine": "48020",
+            "municipio": "Bilbao", "precio_eur": "700",
+            "superficie_m2": "80", "habitaciones": "2",
+            "url_detalle": "https://example.test/1", "titulo": "Habitación",
+            "subtitulo": "",
+        })
+        writer.writerow({
+            "portal": "pisos", "codigo_ine": "20069",
+            "municipio": "Donostia-San Sebastián", "precio_eur": "",
+            "superficie_m2": "", "habitaciones": "1",
+            "url_detalle": "https://example.test/2", "titulo": "Habitación",
+            "subtitulo": "",
+        })
+
+    assert lm.load_anuncios_habitaciones() == 2
+    docs = list(mongo_tmp["anuncios_habitaciones_unificados"].find())
+    assert len(docs) == 2
+    bilbao = next(doc for doc in docs if doc["codigo_ine"] == "48020")
+    assert bilbao["precio_eur"].to_decimal() == 700
+    assert bilbao["habitaciones"] == 2
+    assert mongo_tmp["anuncios"].count_documents({}) == 0
+
+
+def test_load_anuncios_habitaciones_csv_vacio_no_reemplaza(
+    mongo_tmp, tmp_path,
+):
+    """Un Silver vacío no borra accidentalmente la colección existente."""
+    collection = mongo_tmp["anuncios_habitaciones_unificados"]
+    collection.insert_one({"codigo_ine": "48020", "municipio": "Bilbao"})
+    path = tmp_path / "anuncios_habitaciones_unificados.csv"
+    path.write_text(
+        "portal,codigo_ine,municipio,precio_eur,superficie_m2,habitaciones,"
+        "url_detalle,titulo,subtitulo\n",
+        encoding="utf-8",
+    )
+
+    assert lm.load_anuncios_habitaciones() == 0
+    assert collection.count_documents({}) == 1

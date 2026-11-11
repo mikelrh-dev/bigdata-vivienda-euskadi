@@ -237,7 +237,14 @@ def test_wp17_ingestion_manifest():
     import json
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(
         encoding="utf-8"))
-    assert man["n_ficheros"] == len(man["ficheros"]) == 354
+    # El total se deriva del inventario real de raw (mismas exclusiones que el
+    # generador) para que congelar nuevos ficheros no rompa el test.
+    excluidos = {".FROZEN", ".gitkeep", "manifest_sha256.txt"}
+    esperado = sum(
+        1 for p in (ROOT / "data" / "raw").rglob("*")
+        if p.is_file() and p.name not in excluidos
+    )
+    assert man["n_ficheros"] == len(man["ficheros"]) == esperado
     for e in man["ficheros"]:
         assert set(e) >= {"fichero", "bytes", "sha256", "fuente",
                           "url", "fecha_extraccion", "n_registros"}

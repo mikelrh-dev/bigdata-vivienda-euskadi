@@ -84,7 +84,7 @@ def parsear(path: Path = RAW) -> pd.DataFrame:
 
 def main() -> int:
     if not RAW.exists():
-        raise SystemExit(f"falta {RAW}: ejecuta extract/26_vpo_terminadas.py --promote")
+        raise SystemExit(f"falta {RAW}: ejecuta extract/26_vpo_terminadas.py")
     df = parsear()
     if len(df) != 252:
         raise SystemExit(f"esperados 252 municipios, obtenidos {len(df)}")

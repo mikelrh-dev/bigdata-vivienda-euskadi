@@ -40,8 +40,8 @@ RAW_DIR = DATA_DIR / "raw"
 PROCESADO_DIR = DATA_DIR / "procesado"
 RESULTADOS_DIR = DATA_DIR / "resultados"
 
-for _d in (RAW_DIR, PROCESADO_DIR, RESULTADOS_DIR):
-    _d.mkdir(parents=True, exist_ok=True)
+# Directory creation belongs to the command that owns the output. Importing
+# extraction helpers must not create or mutate any data layer.
 
 
 # ─── Logging ──────────────────────────────────────────────────

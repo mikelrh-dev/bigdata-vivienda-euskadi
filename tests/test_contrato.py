@@ -1,8 +1,8 @@
-"""Verificación del contrato OpenSpec con datos reales.
+"""Verificación del contrato del reto con datos reales.
 
-Cada test corresponde a un requisito o prohibición del contrato en
-`openspec/specs/contrato-reto/spec.md`. Un test en rojo significa que el
-proyecto se ha desviado del contrato.
+Cada test corresponde a un criterio de la rúbrica (`brief/RETO
+1Evaluacion SBD-BDAv2.pdf`). Un test en rojo significa que el proyecto
+se ha desviado del contrato.
 
 Uso:
     .venv/Scripts/python.exe -m pytest tests -q
@@ -19,7 +19,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
-SPECS = ROOT / "openspec" / "specs"
 
 # Umbrales observados el 2026-10-23. Si la extracción mejora, se suben.
 MIN_ANUNCIOS = 400
@@ -153,48 +152,6 @@ def test_p07_sin_credenciales_en_el_repositorio():
     prohibidos = [f for f in rastreados if f in {".env", "api.txt"}]
     assert not prohibidos, f"credenciales rastreadas: {prohibidos}"
 
-
-def test_p08_contrato_cubre_los_criterios():
-    """P-08: cada criterio de la rúbrica tiene un requisito asignado."""
-    if not SPECS.exists():
-        pytest.skip("openspec/ no existe")
-    contrato = (SPECS / "contrato-reto" / "spec.md").read_text(encoding="utf-8")
-    for criterio in (
-        "Extracción de datos mediante Python",
-        "Almacenamiento HDFS",
-        "Kafka",
-        "Integración",
-        "Integración de fuentes",
-        "Construcción del conjunto de datos",
-        "Limpieza y transformación con PyMongo",
-        "Automatización",
-        "Modelado MongoDB",
-        "CRUD con PyMongo",
-        "Consultas",
-        "Aggregation Pipeline",
-        "Índices y rendimiento",
-        "Consistencia",
-        "Datos heterogéneos",
-        "Automatización del análisis",
-        "Indicadores",
-        "Respuesta al reto",
-        "Preparación para visualización",
-    ):
-        assert criterio in contrato, f"criterio sin transcribir: {criterio}"
-    # Y cada criterio apunta a un requisito
-    for requisito in (
-        "EXTRACCION-01", "EXTRACCION-02", "HDFS-01", "KAFKA-01", "INTEGRACION-01",
-        "MODELO-01", "PYMONGO-01", "CONSULTAS-01", "AGREGACION-01",
-        "INDICADORES-01", "PREPARACION-VISUALIZACION-01",
-        "AUTOMATIZACION-ANALISIS-01", "DATOS-HETEROGENEOS-01",
-        "CONCLUSION-01", "COMPLEMENTARIOS-01", "FORMATO-01",
-        "LIMPIEZA-01", "TRANSFORM-01", "PYTHON-01",
-        "INDICES-01", "TRANSACCIONES-01",
-    ):
-        assert requisito in contrato, f"requisito sin asignar: {requisito}"
-
-
-# ─── Entity Resolution: capitales cruzan al 100% por codigo_ine ─────
 
 def test_entity_resolution_tres_capitales():
     """MODELO-01: Donostia, Vitoria-Gasteiz y Bilbao cruzan por codigo_ine."""

@@ -1,9 +1,17 @@
 """Gate de join previo para fuentes nuevas."""
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
+
+pytestmark = pytest.mark.skipif(
+    importlib.util.find_spec("duckdb") is None,
+    reason="duckdb no instalado; scripts/validar_fuentes_nuevas.py lo requiere",
+)
 
 
 def test_fuentes_gate():

@@ -26,7 +26,6 @@ fotocasa_mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fotocasa_mod)
 
 log = get_logger("fotocasa_dirigido")
-PROC_DIR = RAW_DIR.parent / "procesado"
 MAX_PAG = 2
 
 
@@ -49,7 +48,9 @@ def main() -> int:
     regs = dim["datos"] if isinstance(dim, dict) else dim
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
 
-    objetivos_path = PROC_DIR / "f4_pisos_objetivo.json"
+    # Optional target list is configuration for this acquisition, kept in raw
+    # for compatibility with the existing frozen dataset. Otherwise use all.
+    objetivos_path = RAW_DIR / "f4_pisos_objetivo.json"
     if objetivos_path.exists():
         objetivos = json.loads(objetivos_path.read_text(encoding="utf-8"))
     else:
@@ -110,9 +111,9 @@ def main() -> int:
     )
     log.info("Lote guardado en raw: %s (%d anuncios)", raw_path.name, len(todos))
 
-    informe_path = PROC_DIR / "fotocasa_dirigido_informe.csv"
+    # Keep the per-municipality acquisition report with the raw capture.
     import csv
-
+    informe_path = RAW_DIR / f"anuncios_fotocasa_dirigido_{fecha}.csv"
     with informe_path.open("w", newline="", encoding="utf-8-sig") as fh:
         w = csv.DictWriter(fh, fieldnames=["codigo_ine", "municipio", "n"])
         w.writeheader()

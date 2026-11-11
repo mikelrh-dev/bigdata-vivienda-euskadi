@@ -1,4 +1,4 @@
-"""Manifest SHA-256 con tmp_path (extract/generar_manifest.py).
+"""Manifest SHA-256 con tmp_path (transform/quality/generar_manifest.py).
 
 Genera un arbol raw sintetico en tmp_path con .FROZEN y
 ingestion_manifest.json, ejecuta _escribir/_verificar del modulo y
@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 _spec = importlib.util.spec_from_file_location(
-    "generar_manifest", ROOT / "extract" / "generar_manifest.py")
+    "generar_manifest", ROOT / "transform" / "quality" / "generar_manifest.py")
 assert _spec is not None and _spec.loader is not None
 gm = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(gm)

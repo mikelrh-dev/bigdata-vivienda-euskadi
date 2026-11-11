@@ -30,7 +30,7 @@ def check(nombre: str, cond: bool, det: str = "") -> None:
 
 def main() -> int:
     # 1. Manifest integro
-    man = (ROOT / "docs" / "raw_manifest_sha256.txt").read_text(encoding="utf-8")
+    man = (RAW / "manifest_sha256.txt").read_text(encoding="utf-8")
     malas, n = [], 0
     for ln in man.splitlines():
         if not ln.strip():
@@ -121,12 +121,10 @@ def main() -> int:
     check("14 tipologia cerrada", set(dim["tipologia_mercado"].unique()) <= {
         "Nivel1_Mercado_Dinamico", "Nivel2_Mercado_Regulado", "Nivel3_Mercado_Rural_Cerrado"})
 
-    # 15. Raw congelado (solo lectura: ningun paso escribe RAW_DIR salvo f4 dirigido)
+    # 15. Raw congelado (ningun paso de transform escribe RAW_DIR)
     import re
     escritores = []
     for py in (ROOT / "transform").glob("*.py"):
-        if py.name == "f4_pisos_dirigido.py":
-            continue
         txt = py.read_text(encoding="utf-8")
         if re.search(r"(RAW_DIR|RAW)\s*/[^=]*\.(to_csv|write_text|open\([^)]*['\"]w)", txt):
             escritores.append(py.name)
@@ -134,8 +132,6 @@ def main() -> int:
             pass  # cubierto por test_wp13
     # chequeo simple: to_csv con destino RAW
     for py in (ROOT / "transform").glob("*.py"):
-        if py.name == "f4_pisos_dirigido.py":
-            continue
         txt = py.read_text(encoding="utf-8")
         if re.search(r"to_csv\(\s*(RAW_DIR|RAW)\b", txt):
             escritores.append(py.name + ":to_csvRAW")
@@ -160,10 +156,10 @@ def main() -> int:
 
     print("RESULTADO:", "OK 18/18" if ok else "PENDIENTE (ver FAIL)")
     # Huella SHA-256 reproducible de los artefactos comprobados (mismo
-    # criterio que check 01 con docs/raw_manifest_sha256.txt). Se emite
+    # criterio que check 01 con data/raw/manifest_sha256.txt). Se emite
     # siempre: con 07 FAIL conocido el resultado sigue siendo PENDIENTE.
     _artefactos = [
-        ROOT / "docs" / "raw_manifest_sha256.txt",
+        RAW / "manifest_sha256.txt",
         PROC / "dim_municipios.csv",
         PROC / "udalmap_empleo_corregido.csv",
         PROC / "_meta" / "ingestion_manifest.json",
