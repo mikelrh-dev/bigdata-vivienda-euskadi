@@ -65,8 +65,10 @@ def test_plan_quality_en_orden():
 def test_plan_gold_respeta_dependencias():
     """Analisis antes de figuras: las figuras leen los CSV generados."""
     pasos = [p.nombre for p in rp.FASES["gold"].pasos]
-    assert pasos == ["run_analisis_mongo", "comparativa_mongo",
+    assert pasos == ["capa_2026", "run_analisis_mongo", "comparativa_mongo",
                      "sensibilidad", "generar_figuras_N"]
+    # la capa 2026 se calcula antes de que las figuras la lean
+    assert pasos.index("capa_2026") < pasos.index("generar_figuras_N")
     assert pasos.index("run_analisis_mongo") < pasos.index("sensibilidad")
 
 
@@ -119,7 +121,7 @@ def test_fallo_aborta_la_fase(monkeypatch):
     monkeypatch.setattr(rp, "preflight", lambda verificar_hash: rp.EXIT_OK)
     monkeypatch.setattr(rp, "_ejecutar", _falla)
     assert rp.main(["--fase", "gold"]) == rp.EXIT_FALLO
-    assert ejecutados == ["run_analisis_mongo"]  # no sigue con comparativa
+    assert ejecutados == ["capa_2026"]  # no sigue con run_analisis_mongo
 
 
 def test_preflight_no_exige_procesado(tmp_path, monkeypatch):
