@@ -60,6 +60,7 @@ specs:
   - almacenamiento-y-streaming
   - mongodb-y-analisis
   - presentacion-de-resultados
+  - comparabilidad
 
 plans:
   - plan/fases.md
