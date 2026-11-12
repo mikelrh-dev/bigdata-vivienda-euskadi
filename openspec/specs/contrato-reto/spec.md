@@ -346,12 +346,14 @@ El sistema **MUST NOT**:
 ## Indicador canónico de esfuerzo (enmienda 2026-11-04, 18-34)
 
 El indicador canónico de esfuerzo joven es `esfuerzo_joven_pct_18_34`
-(`alquiler_anual / renta_joven_estimada_18_34 × 100`, base municipal fiscal),
-donde `renta_joven_estimada_18_34 = renta_municipal_18plus × (renta_media_18_34_CAE / renta_media_18plus_CAE)`
+(`alquiler_anual / renta_joven_estimada_18_34 × 100`), donde
+`renta_joven_estimada_18_34 = renta_hogar_INE_Atlas_2024 × (renta_media_18_34_CAE / renta_media_total_CAE)`
 con ponderación por anchura sobre bandas Eustat CAE 2024 18-19 (2 años),
 20-24 (5), 25-29 (5) y 30-34 (5):
 `ratio_18_34 = (2×1599 + 5×8156 + 5×20109 + 5×25609)/17/28170`.
-Los subgrupos `renta_joven_estimada_18_24` y `renta_joven_estimada_25_34` son
+La base municipal es `renta_hogar` del Atlas de INE 2024 (Bilbao 47.550), no la
+renta personal de Eustat RPF 2024 (28.521), que queda como contraste. Los
+subgrupos `renta_joven_estimada_18_24` y `renta_joven_estimada_25_34` son
 escalares CAE sobre la renta municipal (mismo ratio nacional); el ranking
 municipal por edad es idéntico entre subgrupos y **no** se interpreta como
 renta municipal por edad. `esfuerzo_joven_pct` (base `renta_joven_estimada_16_29`)

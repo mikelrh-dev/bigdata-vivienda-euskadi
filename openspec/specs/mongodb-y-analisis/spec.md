@@ -177,8 +177,22 @@ operadores sin sentido para los datos.
 
 ### Requirement: AGREGACION-01 — Pipeline con mediana winsorizada y exclusión IQR (M1)
 
-La pipeline `pipeline_indicadores_municipio` SHALL calcular la mediana de `precio_m2` con winsorización al percentil 1–99 (los valores extremos se recortan antes de la mediana, no se imputan) y SHALL excluir de la media/preciomedio los valores fuera del rango intercuartílico. Solo entran anuncios con `precio_m2` en [3, 50] y `superficie_m2` en [10, 500] y `habitaciones` entero (ya garantizado por OUTLIER-01 en extracción). `pipeline_tier_por_municipio` SHALL mantener 252 filas con `n_anuncios`, `n_precio`, `min_precio`, `max_precio`, `min_precio_temporal`, `max_precio_temporal`, `mediana_precio_temporal`, `min_precio_larga`, `max_precio_larga`, `mediana_precio_larga`, `n_precio_temporal`, `n_precio_larga` y `esfuerzo_joven_pct_18_34` (nombres canónicos `mediana_precio_temporal` / `mediana_precio_larga`); `analysis/run_analisis_mongo.py` SHALL volcarlos en `mongo_tier_confianza.csv` (252 filas) y `mongo_esfuerzo_por_municipio.csv` sin recomputar ni teclear valores. El ranking de esfuerzo SHALL limitarse a `n_anuncios >= 30` (4 Tier A); `n < 30` SHALL etiquetarse `n_insuficiente` sin ordenación. Temporal y larga SHALL NOT promediarse. El `n` sigue siendo propio de Mongo, nunca de HDFS. La mediana winsorizada se SHALL publicar como `mediana_precio_m2_winsorizada` y la mediana cruda no se SHALL usar para conclusiones.
+La pipeline `pipeline_indicadores_municipio` SHALL calcular la mediana de `precio_m2` con winsorización al percentil 1–99 (los valores extremos se recortan antes de la mediana, no se imputan) y SHALL excluir de la media/preciomedio los valores fuera del rango intercuartílico. Solo entran anuncios con `precio_m2` en [3, 50] y `superficie_m2` en [10, 500] y `habitaciones` entero (ya garantizado por OUTLIER-01 en extracción). `pipeline_tier_por_municipio` SHALL mantener 252 filas con `n_anuncios`, `n_precio`, `min_precio`, `max_precio`, `min_precio_temporal`, `max_precio_temporal`, `mediana_precio_temporal`, `min_precio_larga`, `max_precio_larga`, `mediana_precio_larga`, `n_precio_temporal`, `n_precio_larga` y `esfuerzo_joven_pct_18_34` (nombres canónicos `mediana_precio_temporal` / `mediana_precio_larga`); `analysis/run_analisis_mongo.py` SHALL volcarlos en `mongo_tier_confianza.csv` (252 filas) y `mongo_esfuerzo_por_municipio.csv` sin recomputar ni teclear valores. El ranking de esfuerzo SHALL limitarse a `n_anuncios >= 30` (4 Tier A); `n < 30` SHALL etiquetarse `n_insuficiente` sin ordenación. Temporal y larga SHALL NOT promediarse. El `n` sigue siendo propio de Mongo, nunca de HDFS. La mediana winsorizada se SHALL publicar como `mediana_precio_m2_winsorizada` y la mediana cruda no se SHALL usar para conclusiones. Las figuras A1/A2 y F SHALL usar solo la capa oficial (`metodo_imputacion=oficial`) o etiquetar la IDW; la figura P SHALL declarar que la cuantía oficial 2024 y el precio de anuncio 2026 no son comparables (ratio 1,96; Spearman 0,18).
 (Previously: 5 CSV canónicos sin tier.)
+
+#### Scenario: Capas no mezcladas en A1/A2 y F
+
+- GIVEN `mongo_esfuerzo_por_municipio.csv` (252 filas: 159 oficial + 93 idw)
+- WHEN se generan A1/A2 y F
+- THEN el denominador es 159 oficiales o la IDW va etiquetada
+- AND la mediana oficial no se mezcla con la IDW en la misma barra
+
+#### Scenario: P declara la no comparabilidad
+
+- GIVEN la cuantía oficial 2024 y el precio de anuncio 2026
+- WHEN se dibuja P
+- THEN cada serie declara fuente y vintage
+- AND la nota «no comparable» está presente con ratio 1,96 y Spearman 0,18
 
 #### Scenario: Mediana winsorizada con exclusión IQR
 
@@ -423,13 +437,20 @@ pasar con 237 tests.
 
 ### Requirement: PISOS-03 — Conteos honestos, sin imputación
 
-`n_anuncios` y `n_anuncios_raw` SHALL ser conteos reales de anuncios tras re-resolución (excluidos cuarentena). Precio/superficie SHALL calcularse solo donde hay anuncio; SHALL NOT imputar por IDW ni comarcal. Valores reales post 2026-11-07: suma `n_anuncios=594`, `n_anuncios_raw=843`, L1 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39), L2 3 (Sopela 19, Zarautz 15, Santurtzi 11), zeros 188, precio observable en 62/252.
+`n_anuncios` y `n_anuncios_raw` SHALL ser conteos reales de anuncios tras re-resolución (excluidos cuarentena). Precio/superficie SHALL calcularse solo donde hay anuncio; SHALL NOT imputar por IDW ni comarcal. Valores reales post 2026-11-07: suma `n_anuncios=594`, `n_anuncios_raw=843`, L1 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39), L2 3 (Sopela 19, Zarautz 15, Santurtzi 11), zeros 188, precio observable en 60/252 (7 con `n_precio` en A+B).
 
 | Regla | Conducta |
 |---|---|
 | `n_anuncios` | count real por `codigo_ine` en `dim_municipios` |
 | `n_anuncios_raw` | count pre-limpieza, sin filtrar cuarentena |
 | Sin anuncio | precio/superficie `None`, sin IDW/comarcal |
+
+#### Scenario: Conteos vigentes 64/252 y 60/252
+
+- GIVEN `mongo_esfuerzo_por_municipio.csv` regenerado
+- WHEN se cuentan municipios con `n_anuncios>0` y con `precio_medio_eur` no nulo
+- THEN son 64 y 60 respectivamente
+- AND `grep -rn "83/252" README.md docs/` → 0 coincidencias
 
 #### Scenario: Municipio sin anuncios no inventa precio
 
@@ -476,7 +497,7 @@ Checklist docx §17: verificado por los escenarios existentes (datos reales, mod
 
 ### Requirement: CAPAS-01 — Capas de precio visibles y etiquetadas (M7)
 
-El sistema SHALL publicar tres capas de precio municipal en `data/resultados/` y en el mapa: (1) capa titular oficial Eustat, 159 municipios con precio observable real; (2) capa de sensibilidad IDW, 93 municipios estimados e interpolados; (3) capa de contexto, 252 municipios con el contexto oficial completado vía `transform/completar_alquiler_comarca.py` + `load_mongo` + `run_analisis` (mapa). Cada capa SHALL llevar `metodo_imputacion` (`oficial`/`idw`/`contexto`) e `is_imputed` (`false` solo en la titular). La capa IDW y la de contexto SHALL NOT presentarse nunca como precio municipal real ni mezclarse en la titular. La capa titular SHALL respaldar las conclusiones de precio; la IDW es solo sensibilidad y la de contexto solo contexto.
+El sistema SHALL publicar tres capas de precio municipal en `data/resultados/` y en el mapa: (1) capa titular oficial Eustat, 159 municipios con precio observable real; (2) capa de sensibilidad IDW, 93 municipios estimados e interpolados; (3) capa de contexto, 252 municipios con el contexto oficial completado vía `transform/completar_alquiler_comarca.py` + `load_mongo` + `run_analisis` (mapa). Cada capa SHALL llevar `metodo_imputacion` (`oficial`/`idw`/`contexto`) e `is_imputed` (`false` solo en la titular). La capa IDW y la de contexto SHALL NOT presentarse nunca como precio municipal real ni mezclarse en la titular. La capa titular SHALL respaldar las conclusiones de precio; la IDW es solo sensibilidad y la de contexto solo contexto. Las figuras N1/N2 SHALL dibujar la titular con croma y la IDW con trama o leyenda; el mapa SHALL declarar 159 oficial + 93 IDW + gris sin dato.
 
 | Capa | Municipios | `metodo_imputacion` | `is_imputed` | Uso |
 |---|---|---|---|---|
@@ -489,7 +510,7 @@ El sistema SHALL publicar tres capas de precio municipal en `data/resultados/` y
 - GIVEN `completar_alquiler_comarca` + `load_mongo` + `run_analisis` ejecutados
 - WHEN se corre `python analysis/run_analisis_mongo.py`
 - THEN existen los 3 ficheros de capas (oficial 159, IDW 93, contexto 252) con `metodo_imputacion` e `is_imputed` por fila
-- AND el mapa dibuja la titular como capa principal y las otras como sensibilidad/contexto, con salida: `13 PNG` generados
+- AND el mapa dibuja la titular como capa principal y la IDW con trama o leyenda, declarando 159 oficial + 93 IDW
 
 #### Scenario: La IDW no contamina la capa oficial
 
