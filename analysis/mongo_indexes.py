@@ -95,6 +95,12 @@ def ensure_indexes() -> dict[str, Any]:
     out["certificados_moda"] = str(get_collection("certificados_energeticos").create_index(
         [("cert_moda", 1)], name="idx_cert_moda",
     ))
+    out["esfuerzo_mercado_2026_esfuerzo"] = str(get_collection("esfuerzo_mercado_2026").create_index(
+        [("esfuerzo_mercado_2026_pct_18_34", 1)], name="idx_esfuerzo_2026_pct_18_34",
+    ))
+    out["esfuerzo_mercado_2026_territorio_nombre"] = str(get_collection("esfuerzo_mercado_2026").create_index(
+        [("territorio", 1), ("nombre_canonico", 1)], name="idx_esfuerzo_2026_ter_nombre",
+    ))
     return out
 
 

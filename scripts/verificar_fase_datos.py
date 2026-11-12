@@ -160,7 +160,18 @@ def main() -> int:
     reg = {e["nombre_actual"] for e in mapa["ficheros_con_timestamp_heredado"]}
     check("18 nombres estables registrados", set(con_ts) <= reg, f"{len(con_ts)} con ts")
 
-    print("RESULTADO:", "OK 18/18" if ok else "PENDIENTE (ver FAIL)")
+    # 19. Esfuerzo de mercado 2026: CSV presente, 252 filas, columnas clave
+    em26 = PROC / "esfuerzo_mercado_2026.csv"
+    df_em26 = pd.read_csv(em26, encoding="utf-8-sig", dtype=str)
+    cols_req = {"codigo_ine", "esfuerzo_mercado_2026_pct_18_34", "flag_ipc", "vintage_numerador", "vintage_denominador"}
+    check("19 esfuerzo_mercado_2026 CSV", em26.exists()
+          and len(df_em26) == 252
+          and cols_req <= set(df_em26.columns)
+          and (df_em26["vintage_numerador"] == "2026").all()
+          and (df_em26["vintage_denominador"] == "2024").all(),
+          f"{len(df_em26)} filas, cols={sorted(cols_req & set(df_em26.columns))}")
+
+    print("RESULTADO:", "OK 19/19" if ok else "PENDIENTE (ver FAIL)")
     # Huella SHA-256 reproducible de los artefactos comprobados (mismo
     # criterio que check 01 con docs/raw_manifest_sha256.txt). Se emite
     # siempre: con 07 FAIL conocido el resultado sigue siendo PENDIENTE.

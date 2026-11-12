@@ -1,0 +1,26 @@
+# Tasks: esfuerzo_mercado_2026
+
+## Summary
+8 tasks derived from RF-01..RF-07 and RNF-01..RNF-03.
+
+## Task List
+
+| ID   | Title                                                                 | Files created                                              | Files modified                                                         | Acceptance criteria                                                                                                                                                      | Depends on |
+|------|-----------------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| T-01 | Crear script de descarga IPC INE 2024→2026                            | `scripts/descargar_ipc_ine.py`                             | —                                                                      | Genera `data/raw/ipc_ine_2024_2026.csv` con columnas: `ipc_2024`, `ipc_2026`, `factor`, `fuente`, `fecha`; salida idempotente; usa API INE o fallback documentado.      | —          |
+| T-02 | Crear transform: calcular esfuerzo mercado 2026                       | `transform/calcular_esfuerzo_mercado_2026.py`              | —                                                                      | Lee `anuncios_vivienda_residencial_filtrado.csv` + `ovj_salario_joven_2024.json` + `ipc_ine_2024_2026.csv`; produce `data/procesado/esfuerzo_mercado_2026.csv` (252 filas, 1 por municipio INE zfill5) con campos: precio_anuncio_2026 (medio, mediana, mediana_m2_winsorizada, n_anuncios, n_precio), salario_joven_2026_ipc (18_34, 16_29, factor_ipc, ajustado), esfuerzo_mercado_pct (18_34, 16_29), metadatos (fuentes, fecha, vintage, flag_no_comparable). | T-01       |
+| T-03 | Actualizar manifiesto SHA raw (`docs/raw_manifest_sha256.txt`)        | —                                                          | `docs/raw_manifest_sha256.txt`                                         | Añade entrada SHA-256 de `ipc_ine_2024_2026.csv`; total entradas = 355; `gate_extremo_a_extremo.py` check manifiesto raw pasa.                                          | T-01       |
+| T-04 | Actualizar manifiesto SHA procesado (`data/procesado/manifest_sha256.txt`) | —                                                          | `data/procesado/manifest_sha256.txt`                                   | Añade entrada SHA-256 de `esfuerzo_mercado_2026.csv`; total entradas = 183; `gate_extremo_a_extremo.py` check silver pasa.                                              | T-02       |
+| T-05 | Añadir `load_esfuerzo_mercado_2026()` y registrar en `load_all()`    | —                                                          | `storage/load_mongo.py`                                                | Nueva función `load_esfuerzo_mercado_2026()` lee CSV silver, construye docs con `_id=codigo_ine`, usa `replace_collection("esfuerzo_mercado_2026", docs)` (atómico staging+backup+rename); registrada en `load_all()` dict; carga 252 docs. | T-02       |
+| T-06 | Añadir índices en `ensure_indexes()` para nueva colección            | —                                                          | `analysis/mongo_indexes.py`                                            | `ensure_indexes()` crea índices: `{_id: 1}` (implícito PK), `{territorio: 1}`; sin romper índices existentes; `load_all()` los aplica tras cargar.                       | T-05       |
+| T-07 | Añadir pipeline `pipeline_esfuerzo_mercado_2026()`                    | —                                                          | `analysis/mongo_aggregations.py`                                       | Nueva función `pipeline_esfuerzo_mercado_2026(limit=None)` expone colección con `$lookup` a `municipios` para nombre/territorio, `$project` con 4 grupos (precio, salario_ipc, esfuerzo, metadatos), `$sort` por `_id`; reutiliza lógica M1 (precio_m2 3-50, sup 10-500, IQR, winsorización) sin duplicar. | T-05       |
+| T-08 | Actualizar gates y verificación                                       | —                                                          | `scripts/gate_extremo_a_extremo.py`, `scripts/verificar_fase_datos.py` | Gate: `EXPECTED_SILVER=183`, `EXPECTED_COLLECTIONS` incluye `"esfuerzo_mercado_2026"` (15 total). Verificación: añade check 19 que valida conteo 252, campos obligatorios, esfuerzo calculado, salario_2026 no nulo, flag_no_comparable presente. | T-04, T-05, T-06, T-07 |
+
+## Execution order
+T-01 → T-02 → T-03 → T-04 → T-05 → T-06 → T-07 → T-08
+
+## Risk Level
+Medium
+
+## Ready for Apply
+Yes — the orchestrator should proceed with `sdd-apply` for T-01 through T-08 in order. Each task is independently verifiable and respects the isolation constraint (no changes to `calcular_renta_joven.py`, `municipios` collection, or canonical 2024 effort).
