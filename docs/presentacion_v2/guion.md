@@ -7,9 +7,10 @@
 artefacto. Ninguna cifra de este guion se teclea a mano: todas salen de
 `data/resultados/*.csv` o de Mongo.
 
-> **Cifras congeladas (2026-11-11).** Si algo cambia, se regenera el CSV antes de tocar
+> **Cifras congeladas (2026-11-12).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Las cifras obsoletas que **no** se usan: 188 silver, 235 tests,
 > 54/65/40, 1716/2465/1536/1406 € de precio medio, 62/252 con precio (pre-M1; vigente 60/252).
+> Cifras vigentes: **277 tests** (275 passed, 2 skipped) y **53/53 gold**.
 
 ---
 
@@ -105,7 +106,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
   - **159** municipios con alquiler oficial Eustat · **93** imputados por IDW
   - Tier de confianza: **A 4 · B 3 · C 57 · D 188**
   - **64/252** con anuncio · **201** anuncios de habitación en 9 municipios
-  - **5.040** solicitudes Etxebide · **406** promociones · **60/252** con precio de anuncio
+  - **5.040** registros Etxebide (2005-2024) · **406** promociones · **60/252** con precio de anuncio
 - **Gráficas:** `H2_tier_confianza_ABCD.png` + `H11_imputacion_oficial_idw_por_TH.png`.
 - **Evidencia:** `mongo_tier_confianza.csv`, `mongo_esfuerzo_por_municipio.csv`.
 - **Rúbrica:** C6, C8, C15, C19.
@@ -210,7 +211,8 @@ diapositivas 3, 4 y 9 son las que se estiran).
 - **Evidencia:** `bootstrap_robustos.csv`, `sensibilidad_idw.csv`, `mongo_tier_confianza.csv`.
 - **Rúbrica:** C16, C17, C18.
 - **Nota oral:** «Con bootstrap, los intervalos de Bilbao, Getxo y Donostia se solapan: no
-  hay orden firme entre ellos. El IDW baja la mediana dos puntos y medio, pero no cambia el
+  hay orden firme entre ellos. El IDW baja la mediana un punto y cuarto en el global
+  (a 25,37 %; 23,38 % solo imputados), pero no cambia el
   titular. Dos cosas que descubrimos por el camino: los anuncios temporales no son más caros
   al mes, sino por metro cuadrado — 18,95 frente a 16,67 €/m² en el total, un 13,7 %, y frente
   a 15,38 en Fotocasa, un 23,2 % — porque el piso temporal es más pequeño (80 frente a 92,5 m²);
@@ -258,7 +260,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
   de silver tiene un productor declarado o no existe. Los nulos se marcan, no se rellenan;
   los duplicados se resuelven por portal+id y por huella; los tipos se convierten, incluido
   el `codigo_ine` a cinco dígitos. Y se puede reconstruir de cero: lo hicimos, 182 ficheros
-  y 52 artefactos idénticos.»
+  y 53 artefactos idénticos.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
 
 ## D12 · Modelo Mongo (12:00–12:45)
@@ -309,7 +311,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 
 - **Mensaje:** no es una demo: es un sistema que se reconstruye y que falla cuando debe.
 - **En pantalla:**
-  - **262 tests** (2 skipped) · gobernanza **TODO OK** (44/38/182/11)
+  - **277 tests** (2 skipped) · gobernanza **TODO OK** (44/38/182/11)
   - Gate offline: 354 raw SHA + 182 silver + 14 colecciones + lag 0
   - Rebuild: **182/182** silver y **53/53** gold byte-idénticos
   - **FAIL 07 conocido y visible**: paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26
@@ -317,7 +319,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 - **Evidencia:** `pytest`, `verificar_gobernanza.py`, `gate_extremo_a_extremo.py --offline`,
   `verificar_fase_datos.py`.
 - **Rúbrica:** C8, C16, T6, P-08.
-- **Nota oral:** «Tenemos 262 tests. El gate verifica los 354 SHA del raw y los 182 ficheros
+- **Nota oral:** «Tenemos 277 tests. El gate verifica los 354 SHA del raw y los 182 ficheros
   de silver. Reconstruimos la capa entera desde cero y sale idéntica. Y hay un check que
   falla a propósito: tres municipios con paro cero en el INE y tasa no nula en Lanbide.
   Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.»
@@ -352,7 +354,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 | B1 | Modelado Tema 8 | Las 7 preguntas del docx con respuesta y la decisión embedding/referencing |
 | B2 | Transacciones / sharding | Atómica de documento, por qué no replica set, shard key candidata `codigo_ine` |
 | B3 | CRUD y consultas | `demo_crud_operations` + 30 consultas (dot notation, `$elemMatch`, `$and`) |
-| B4 | Hashes y conteos | 354/182/52 · 594/252 · 4/3/57/188 · 16+14 colecciones |
+| B4 | Hashes y conteos | 354/182/53 · 594/252 · 4/3/57/188 · 16+14 colecciones |
 | B5 | HDFS/Kafka | Evidencia v8, 352 canónicos, topic `vivienda_euskadi`, lag 0, por qué no se revalida hoy |
 | B6 | Habitaciones | `H6_habitaciones_mediana_rango.png`; solo Bilbao 96 y Donostia 66 firmes |
 | B7 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; divergencia por territorio |
