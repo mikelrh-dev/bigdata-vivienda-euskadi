@@ -861,6 +861,37 @@ def exportar_png_desde_mongo(
         _honest("H8_tier_mediana_temporal_vs_larga.png", "H8 Tier mediana (sin datos)",
                 "sin Tier A/B en pipeline_tier_por_municipio")
 
+    # H8b: misma mediana mensual, distinto coste por m2. La mediana de EUR/m2
+    # es la magnitud comparable entre modalidades (el piso temporal es mas
+    # pequeno); se calcula en pipeline_modalidades, no se teclea (P-05).
+    _por_mod = {str(d.get("modalidad")): d for d in mod}
+    _mes_t = _fnum(_por_mod.get("temporal", {}).get("mediana_precio_eur"))
+    _mes_l = _fnum(_por_mod.get("larga_estancia", {}).get("mediana_precio_eur"))
+    _m2_t = _fnum(_por_mod.get("temporal", {}).get("mediana_eur_m2"))
+    _m2_l = _fnum(_por_mod.get("larga_estancia", {}).get("mediana_eur_m2"))
+    if None not in (_mes_t, _mes_l, _m2_t, _m2_l) and _m2_l:
+        fig, (ax_mes, ax_m2) = plt.subplots(1, 2, figsize=(9, 4))
+        etiquetas = ["Temporal", "Larga\nestancia"]
+        colores = ["#0072B2", "#D55E00"]
+        paneles = (
+            (ax_mes, [_mes_t, _mes_l], "Mediana €/mes", "Alquiler mensual"),
+            (ax_m2, [_m2_t, _m2_l], "Mediana €/m²",
+             f"Coste por m² ({(_m2_t / _m2_l - 1) * 100:+.1f} %)".replace(".", ",")),
+        )
+        for ax, vals, ylab, titulo in paneles:
+            ax.bar(etiquetas, vals, color=colores, width=0.55)
+            for i, v in enumerate(vals):
+                txt = f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                ax.text(i, v * 1.02, txt, ha="center", fontsize=9)
+            ax.set_ylabel(ylab)
+            ax.set_title(titulo)
+            ax.set_ylim(0, max(vals) * 1.15)
+        fig.suptitle("H8b Temporal vs larga: mismo mes, distinto m² (Mongo)")
+        _save(fig, "H8b_modalidad_mediana_eur_m2.png")
+    else:
+        _honest("H8b_modalidad_mediana_eur_m2.png", "H8b Modalidad EUR/m2 (sin datos)",
+                "pipeline_modalidades sin mediana_eur_m2")
+
     # ANEXO: H9 modalidades larga vs temporal (duplicada; conservar H8).
     modc = {str(d.get("modalidad")): (int(d.get("n") or 0), _fnum(d.get("precio_medio"))) for d in mod}
     if modc:

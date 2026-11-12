@@ -91,3 +91,8 @@ docs/presentacion/preview_*.png
 # Metadatos locales de desarrollo (no versionados)
 /Makefile
 /AGENT.md
+
+# Configs de agentes y codegraph (locales, no versionados)
+.agents/
+.claude/
+.codegraph/

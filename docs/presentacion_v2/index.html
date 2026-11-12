@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vivienda y emancipación juvenil en Euskadi — defensa</title>
+<style>
+:root{
+  --paper:#F5F4F0;
+  --ink:#121212;
+  --muted:#6E6B66;
+  --rule:#CFCBC3;
+  --accent:#C8451B;
+  --slide-bg:#F5F4F0;
+  --stage-bg:#E7E5DF;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg)}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg)}
+.deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--paper)}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;visibility:hidden;opacity:0;pointer-events:none;background:var(--paper)}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+img,video,canvas,svg{max-width:100%;max-height:100%}
+.deck-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1000}
+
+body{font-family:"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.pad{position:absolute;inset:0;padding:78px 96px 84px;display:flex;flex-direction:column}
+.hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:44px}
+.kicker{font-family:Bahnschrift,"DIN Alternate","Segoe UI",sans-serif;font-size:17px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.pg{font-family:Bahnschrift,"DIN Alternate",monospace;font-size:17px;letter-spacing:.14em;color:var(--muted);font-variant-numeric:tabular-nums}
+h1{font-family:Bahnschrift,"DIN Alternate","Helvetica Neue",sans-serif;font-weight:600;font-size:104px;line-height:.94;letter-spacing:-.03em;margin:0 0 28px}
+h2{font-family:Bahnschrift,"DIN Alternate","Helvetica Neue",sans-serif;font-weight:600;font-size:76px;line-height:.98;letter-spacing:-.025em;margin:0 0 26px}
+h3{font-family:Bahnschrift,"DIN Alternate",sans-serif;font-weight:600;font-size:34px;line-height:1.1;margin:0 0 14px}
+p{margin:0 0 18px}
+.lead{font-size:30px;line-height:1.42;max-width:30ch;color:#262626}
+.small{font-size:21px;line-height:1.45;color:var(--muted)}
+.accent{color:var(--accent)}
+.rule{height:2px;background:var(--ink);border:0;margin:0}
+.ft{margin-top:auto;padding-top:18px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:baseline}
+.proof{font-family:"Cascadia Mono",Consolas,monospace;font-size:14px;letter-spacing:.02em;color:var(--muted)}
+.tag{display:inline-block;width:14px;height:14px;background:var(--accent);margin-right:10px;vertical-align:baseline}
+
+/* portada */
+.cover .pad{padding:96px 110px}
+.cover h1{font-size:104px;max-width:19ch}
+.cover .lead{max-width:none}
+.cover .meta{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-top:2px solid var(--ink);padding-top:22px}
+.cover .meta div{font-size:20px;line-height:1.5}
+.mono{font-family:"Cascadia Mono",Consolas,monospace;font-variant-numeric:tabular-nums}
+
+/* cifras */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;margin-top:26px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:44px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.big{font-family:Bahnschrift,"DIN Alternate",sans-serif;font-size:132px;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.big.sm{font-size:96px}
+.cap{font-size:17px;line-height:1.35;color:var(--muted);margin-top:14px}
+.unit{font-size:44px;letter-spacing:-.02em}
+
+/* figuras */
+.fig{display:flex;flex-direction:column;min-width:0}
+.fig img{width:100%;height:auto;border:1px solid var(--rule);background:#fff}
+.fig .cap{margin-top:12px;font-family:"Cascadia Mono",Consolas,monospace;font-size:14px}
+.fig.map img{max-height:642px;width:auto;max-width:100%;display:block;margin:0 auto}
+.stack{display:flex;flex-direction:column;gap:26px}
+.stack.tight .fig img{max-height:296px;width:auto;max-width:100%;object-fit:contain;align-self:flex-start}
+
+/* tabla */
+table.s{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.s th{font-family:Bahnschrift,"DIN Alternate",sans-serif;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:right;padding:0 12px 12px;border-bottom:2px solid var(--ink);font-weight:500}
+table.s th:first-child{text-align:left}
+table.s td{font-size:30px;padding:16px 12px;border-bottom:1px solid var(--rule);text-align:right}
+table.s td:first-child{text-align:left;font-size:27px}
+table.s tr.hi td{color:var(--accent)}
+table.s td small{font-size:17px;color:var(--muted)}
+
+/* formula */
+.formula{font-family:"Cascadia Mono",Consolas,monospace;font-size:40px;line-height:1.35;border-left:10px solid var(--accent);padding:26px 0 26px 30px;margin:12px 0 30px;background:#fff}
+
+/* cajas / diagrama */
+.box{border:2px solid var(--ink);padding:22px 24px;background:#fff}
+.box .n{font-family:"Cascadia Mono",monospace;font-size:13px;letter-spacing:.12em;color:var(--muted)}
+.box b{display:block;font-family:Bahnschrift,"DIN Alternate",sans-serif;font-size:26px;margin-top:6px}
+.flow{display:flex;align-items:stretch;gap:18px}
+.flow .arrow{align-self:center;font-size:34px;color:var(--accent)}
+.branch{margin-top:34px;border-top:1px dashed var(--rule);padding-top:26px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 26px;font-size:24px}
+.kv dt{font-family:"Cascadia Mono",monospace;color:var(--muted);font-size:18px;letter-spacing:.04em}
+.kv dd{margin:0}
+ul.clean{list-style:none;margin:0;padding:0}
+ul.clean li{position:relative;padding-left:34px;margin-bottom:16px;font-size:25px;line-height:1.35}
+ul.clean li:before{content:"";position:absolute;left:0;top:12px;width:14px;height:14px;background:var(--accent)}
+ul.clean.sq li:before{background:var(--ink)}
+.pill{display:inline-block;font-family:"Cascadia Mono",monospace;font-size:15px;letter-spacing:.08em;border:1px solid var(--ink);padding:6px 12px;margin-right:10px}
+.warn{border:2px solid var(--accent);padding:18px 22px;font-size:22px;line-height:1.35;background:#fff}
+.final{font-family:Bahnschrift,"DIN Alternate",sans-serif;font-size:52px;line-height:1.12;letter-spacing:-.02em;max-width:26ch}
+
+/* chrome */
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);width:0;z-index:1200;transition:width .18s ease}
+.hint{position:fixed;right:18px;bottom:14px;font-family:"Cascadia Mono",monospace;font-size:11px;color:#8b8880;z-index:1000}
+
+@media print{
+  @page{size:1920px 1080px;margin:0}
+  html,body{width:1920px;height:auto;overflow:visible;background:#fff}
+  .deck-viewport{position:static;overflow:visible;background:#fff}
+  .deck-stage{position:static;width:auto;height:auto;transform:none!important;background:none}
+  .slide{position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .deck-controls,.progress,.hint{display:none!important}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.2s!important}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+<div class="deck-viewport">
+  <div class="deck-stage" id="stage">
+
+  <!-- 01 PORTADA -->
+  <section class="slide cover">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Reto SBD + BDA · 2026</span><span class="pg">01 / 15</span></header>
+      <h1>¿Puede una persona joven independizarse en Euskadi con su salario?</h1>
+      <p class="lead">Datos reales · 2024-2026 · 252 municipios</p>
+      <div class="meta">
+        <div><span class="tag"></span>Respuesta, datos y cómo se calculó</div>
+        <div class="mono">Python · MongoDB · HDFS · Kafka</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 RESPUESTA -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">A · La respuesta</span><span class="pg">02 / 15</span></header>
+      <h2>En la mayoría del territorio, justo.<br>En las capitales, no.</h2>
+      <div class="grid4">
+        <div><div class="big">26,61<span class="unit">%</span></div><div class="cap">mediana del esfuerzo joven 18-34 en los 159 municipios con alquiler oficial</div></div>
+        <div><div class="big">40<span class="unit">/159</span></div><div class="cap">superan el umbral del 30 % (25,2 %)</div></div>
+        <div><div class="big sm">37,7<span class="unit">%</span></div><div class="cap">Bilbao · 204 anuncios</div></div>
+        <div><div class="big sm">38,2<span class="unit">%</span></div><div class="cap">Donostia · 126 anuncios</div></div>
+      </div>
+      <p class="lead" style="margin-top:52px;max-width:46ch">Y en <b>188 municipios</b> no hay anuncio: «sin dato», no «asequible».</p>
+      <footer class="ft"><span class="proof">data/resultados/mongo_esfuerzo_por_municipio.csv</span><span class="proof">C18 · C17</span></footer>
+    </div>
+  </section>
+
+  <!-- 03 DATOS: ORIGEN -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">B · Los datos que obtuvimos</span><span class="pg">03 / 15</span></header>
+      <h2>12 familias de fuentes.<br>41 extractores. 594 anuncios vivos.</h2>
+      <div class="grid2" style="margin-top:10px">
+        <div>
+          <ul class="clean">
+            <li><b>356</b> ficheros originales: 129 CSV · 101 HTML · 61 JSON · 49 ZIP · 6 XLSX · 2 GeoJSON</li>
+            <li><b>352</b> canónicos en HDFS con manifest de 354 SHA</li>
+            <li><b>843 anuncios crudos → 594 vigentes</b>: dedup entre portales y 45 en cuarentena fuera de Euskadi</li>
+            <li>API + scraping: Eustat, INE, Fotocasa, Pisos, Etxebide, Lanbide, Udalmap, GTFS, OSRM</li>
+          </ul>
+          <div class="warn" style="margin-top:26px">La cola larga de la derecha es la razón del umbral n≥30: la mayoría de municipios tiene 0-2 anuncios.</div>
+        </div>
+        <div class="fig">
+          <img src="assets/g4_distribucion_anuncios.png" alt="Distribución de anuncios por municipio">
+          <div class="cap">g4 · anuncios por municipio (Mongo)</div>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">config/fuentes.yaml · data/raw · docs/raw_manifest_sha256.txt</span><span class="proof">C1 · C5 · C15</span></footer>
+    </div>
+  </section>
+
+  <!-- 04 DATOS: COBERTURA -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">B · Los datos que obtuvimos</span><span class="pg">04 / 15</span></header>
+      <h2>Sabemos cuánto sabemos.</h2>
+      <div class="grid2">
+        <div>
+          <div class="grid2" style="gap:34px">
+            <div><div class="big sm">159</div><div class="cap">con alquiler oficial Eustat</div></div>
+            <div><div class="big sm">93</div><div class="cap">imputados IDW, solo sensibilidad</div></div>
+            <div><div class="big sm">64</div><div class="cap">con anuncio (de 252)</div></div>
+            <div><div class="big sm">60</div><div class="cap">con precio de anuncio</div></div>
+          </div>
+          <p class="small" style="margin-top:32px">Tier de confianza: <b>A 4 · B 3 · C 57 · D 188</b>.<br>201 habitaciones en 9 municipios · 5.040 solicitudes Etxebide · 406 promociones.</p>
+        </div>
+        <div class="stack tight">
+          <div class="fig"><img src="assets/H2_tier_confianza_ABCD.png" alt="Tier A/B/C/D"><div class="cap">H2 · municipios por Tier (252)</div></div>
+          <div class="fig"><img src="assets/H11_imputacion_oficial_idw_por_TH.png" alt="Oficial vs IDW"><div class="cap">H11 · oficial vs IDW por territorio</div></div>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">mongo_tier_confianza.csv · mongo_esfuerzo_por_municipio.csv</span><span class="proof">C6 · C8 · C19</span></footer>
+    </div>
+  </section>
+
+  <!-- 05 CÓMO SE MIDE -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">B · Los datos que obtuvimos</span><span class="pg">05 / 15</span></header>
+      <h2>Cómo se mide.</h2>
+      <div class="formula">esfuerzo = (alquiler mensual × 12) / renta joven estimada 18-34 × 100</div>
+      <div class="grid3" style="margin-top:20px">
+        <div><h3>Mediana, no media</h3><p class="small">Los alquileres tienen outliers y la media los sigue.</p></div>
+        <div><h3>Umbral 30 %</h3><p class="small">El que usa la literatura de emancipación.</p></div>
+        <div><h3>18-34 es el canónico</h3><p class="small">16-29 queda legacy: 42,9 % de mediana, no comparable.</p></div>
+      </div>
+      <p class="lead" style="margin-top:40px;max-width:52ch">El indicador no es nuestro. Lo que aportamos es calcularlo municipal y decir dónde <b>no</b> se puede calcular.</p>
+      <footer class="ft"><span class="proof">analysis/mongo_aggregations.py · pipeline_indicadores_municipio</span><span class="proof">C17 · JOVEN-18-34</span></footer>
+    </div>
+  </section>
+
+  <!-- 06 MAPA -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · La respuesta en detalle</span><span class="pg">06 / 15</span></header>
+      <h2>El esfuerzo tiene geografía.</h2>
+      <div class="grid2" style="grid-template-columns:1.55fr .75fr;align-items:center">
+        <div class="fig map"><img src="assets/mapa_coroplastico_esfuerzo_18_34.png" alt="Mapa de esfuerzo por municipio"><div class="cap">esfuerzo 18-34 · 252 municipios · gris = sin dato · corte 30 %</div></div>
+        <div>
+          <ul class="clean">
+            <li>Capitales y corredor del Nervión, en la banda alta</li>
+            <li>Interior de Álava y rural, por debajo del 30 %</li>
+            <li>El gris es <b>sin dato</b>, nunca cero</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">mongo_esfuerzo_por_municipio.csv</span><span class="proof">C19 · C18</span></footer>
+    </div>
+  </section>
+
+  <!-- 07 REPARTO -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · La respuesta en detalle</span><span class="pg">07 / 15</span></header>
+      <h2>No es un problema de cuatro municipios.</h2>
+      <div class="grid2" style="grid-template-columns:1.15fr 1fr;align-items:center">
+        <div class="fig"><img src="assets/hist_esfuerzo_18_34_umbral30.png" alt="Distribución del esfuerzo con umbral 30 %"><div class="cap">distribución del esfuerzo 18-34 · línea 30 %</div></div>
+        <div>
+          <div class="grid3">
+            <div><div class="big sm">119</div><div class="cap">&lt; 30 %</div></div>
+            <div><div class="big sm">26</div><div class="cap">30-35 %</div></div>
+            <div><div class="big sm">14</div><div class="cap">&gt; 35 %</div></div>
+          </div>
+          <p class="small" style="margin-top:30px"><b>40 de 159</b> superan el 30 % (25,2 %).<br>Con IDW la mediana baja a 25,37 %; los que superan son 47 de 252.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">data/resultados/mongo_esfuerzo_por_municipio.csv</span><span class="proof">C16 · C19</span></footer>
+    </div>
+  </section>
+
+  <!-- 08 ROBUSTOS -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · La respuesta en detalle</span><span class="pg">08 / 15</span></header>
+      <h2>Cuatro municipios resisten el escrutinio.</h2>
+      <div class="grid2" style="grid-template-columns:1.25fr 1fr;gap:52px;align-items:start">
+        <div>
+          <table class="s">
+            <thead><tr><th>Municipio</th><th>n</th><th>Esfuerzo</th><th>Precio</th><th>Paro</th></tr></thead>
+            <tbody>
+              <tr><td>Bilbao</td><td>204</td><td>37,69 %</td><td>1.704,96 €</td><td>9,71 %</td></tr>
+              <tr><td>Donostia</td><td>126</td><td>38,17 %</td><td>2.247,82 €</td><td>5,82 %</td></tr>
+              <tr><td>Getxo</td><td>50</td><td>28,60 %</td><td>1.578,21 €</td><td>6,40 %</td></tr>
+              <tr><td>Vitoria-Gasteiz</td><td>39</td><td>33,37 %</td><td>1.408,08 €</td><td>8,89 %</td></tr>
+            </tbody>
+          </table>
+          <div class="warn" style="margin-top:28px">Getxo vs Vitoria: <b>11 anuncios</b> de diferencia. Sin ranking firme 3º/4º.<br>Barakaldo: 38,50 % con <b>n=6</b>.</div>
+        </div>
+        <div class="fig"><img src="assets/O_ranking_bloqueado_n30.png" alt="Ranking bloqueado n>=30"><div class="cap">O · ranking bloqueado n≥30 e IC bootstrap</div></div>
+      </div>
+      <footer class="ft"><span class="proof">comparativa_3_municipios_mongo.csv · pipeline_indicadores_municipio</span><span class="proof">C18 · C17</span></footer>
+    </div>
+  </section>
+
+  <!-- 09 INCERTIDUMBRE -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · La respuesta en detalle</span><span class="pg">09 / 15</span></header>
+      <h2>El titular aguanta. El orden fino, no.</h2>
+      <div class="grid2" style="grid-template-columns:.85fr 1.15fr;gap:46px">
+        <div>
+          <div class="kv">
+            <dt>Bootstrap 95 %</dt><dd>Bilbao 33,75-40,95<br>Getxo 27,54-31,77<br>Donostia 32,4-45,8</dd>
+            <dt>IDW 93</dt><dd>mediana 23,38 %</dd>
+            <dt>Temporal</dt><dd>misma mediana mensual (1.500 €), pero 80 vs 92,5 m²</dd>
+            <dt>Por m²</dt><dd>temporal +23,2 % (Fotocasa) · +13,7 % en el total</dd>
+            <dt>Demanda</dt><dd>Etxebide no sigue una recta con el precio</dd>
+          </div>
+          <p class="small" style="margin-top:26px">Los intervalos se solapan: no vendemos un podio, vendemos un umbral.</p>
+        </div>
+        <div class="stack tight">
+          <div class="fig"><img src="assets/H8b_modalidad_mediana_eur_m2.png" alt="Temporal vs larga: mediana mensual y por m²"><div class="cap">H8b · misma mediana €/mes, distinto €/m² (594 anuncios)</div></div>
+          <div class="fig"><img src="assets/H10_tension_vs_esfuerzo.png" alt="Tensión Etxebide vs esfuerzo"><div class="cap">H10 · tensión social vs esfuerzo 18-34</div></div>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">bootstrap_robustos.csv · sensibilidad_idw.csv · mongo_modalidades.csv</span><span class="proof">C16 · C17 · C18</span></footer>
+    </div>
+  </section>
+
+  <!-- 10 ARQUITECTURA -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">D · Cómo se calculó</span><span class="pg">10 / 15</span></header>
+      <h2>Dos ramas sobre los mismos originales.</h2>
+      <div class="flow" style="margin-top:18px">
+        <div class="box"><span class="n">01</span><b>Fuentes</b><div class="small">12 familias · API + scraping</div></div>
+        <div class="arrow">→</div>
+        <div class="box"><span class="n">02</span><b>raw inmutable</b><div class="small">356 ficheros · SHA + .FROZEN</div></div>
+        <div class="arrow">→</div>
+        <div class="box"><span class="n">03</span><b>silver</b><div class="small">182 ficheros · 40 CSV</div></div>
+        <div class="arrow">→</div>
+        <div class="box"><span class="n">04</span><b>Mongo</b><div class="small">16 vivas · PyMongo</div></div>
+        <div class="arrow">→</div>
+        <div class="box"><span class="n">05</span><b>11 pipelines</b><div class="small">CSV + PNG</div></div>
+      </div>
+      <div class="branch">
+        <div class="grid2" style="gap:26px">
+          <div class="box"><span class="n">CONSERVACIÓN</span><b>raw → Kafka → HDFS</b><div class="small">manifiesto con SHA · consumidor que sube · nunca Kafka→Mongo</div></div>
+          <div class="box"><span class="n">EXCEPCIÓN FIRMADA</span><b>HDFS solo raw</b><div class="small">352 canónicos · procesados en local por indicación de la profesora · recuperación por SHA</div></div>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">storage/kafka_hdfs_uploader.py · scripts/hdfs_recuperacion_un_fichero.py</span><span class="proof">C2 · C3 · C4</span></footer>
+    </div>
+  </section>
+
+  <!-- 11 PIPELINE -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">D · Cómo se calculó</span><span class="pg">11 / 15</span></header>
+      <h2>Una orden. Y se puede reconstruir de cero.</h2>
+      <div class="grid2" style="grid-template-columns:1.1fr 1fr">
+        <div>
+          <div class="formula" style="font-size:24px">python scripts/run_pipeline.py --fase silver,quality,gold</div>
+          <div class="grid3" style="margin-top:24px">
+            <div><div class="big sm">182<span class="unit">/182</span></div><div class="cap">silver reconstruidos</div></div>
+            <div><div class="big sm">53<span class="unit">/53</span></div><div class="cap">gold byte a byte</div></div>
+            <div><div class="big sm">38</div><div class="cap">nodos en el DAG</div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Limpieza en Mongo, no a mano</h3>
+          <ul class="clean sq" style="font-size:22px">
+            <li><span class="mono">canonicalize_codigo_ine</span> — 5 dígitos, adiós al join por nombre</li>
+            <li><span class="mono">mark_nulls</span> — se marca, no se rellena</li>
+            <li><span class="mono">resolve_duplicates</span> — portal+id y huella cross-portal</li>
+            <li><span class="mono">convert_types</span> — Decimal128, int, bool</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">scripts/run_pipeline.py · storage/clean_mongo.py · manifests</span><span class="proof">C1 · C7 · C8</span></footer>
+    </div>
+  </section>
+
+  <!-- 12 MODELO -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">D · Cómo se calculó</span><span class="pg">12 / 15</span></header>
+      <h2>Lo que se lee junto se embebe.<br>Lo que crece se referencia.</h2>
+      <div class="grid2" style="margin-top:12px">
+        <div class="box" style="padding:30px">
+          <span class="n">EMBEDDING</span><b>municipios</b>
+          <p class="small" style="margin-top:12px">Se consulta entero y cambia poco: <span class="mono">demografia{}</span>, <span class="mono">empleo{}</span>, <span class="mono">demanda_social{}</span>.</p>
+        </div>
+        <div class="box" style="padding:30px">
+          <span class="n">REFERENCING</span><b>anuncios</b>
+          <p class="small" style="margin-top:12px">Crece cada día: <span class="mono">ubicacion.codigo_ine → municipios._id</span>, con <span class="mono">equipamiento[]</span> e <span class="mono">historico_precios[]</span>.</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:40px;max-width:58ch">No embebemos anuncios en el municipio: duplicaría datos y rompería el límite de 16 MB.</p>
+      <footer class="ft"><span class="proof">openspec/archive/2026-11-10-docs/modelo_mongodb.md · 16 vivas + 14 backup</span><span class="proof">C9 · C6 · T1</span></footer>
+    </div>
+  </section>
+
+  <!-- 13 AGG + ÍNDICES -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">D · Cómo se calculó</span><span class="pg">13 / 15</span></header>
+      <h2>11 pipelines. Un índice. 594 → 1.</h2>
+      <div class="grid2" style="grid-template-columns:1fr 1fr;gap:60px">
+        <div>
+          <ul class="clean sq" style="font-size:23px">
+            <li><b>11 pipelines</b> con 8 etapas: <span class="mono">$match $group $lookup $unwind $project $sort $limit $addFields</span></li>
+            <li><b>30 consultas</b> y CRUD completo con asserts</li>
+            <li>Atomicidad de documento + índice único; transacción multidocumento justificada como innecesaria en standalone</li>
+          </ul>
+        </div>
+        <div>
+          <table class="s">
+            <thead><tr><th>Filtro 20069 + larga + ≤1000</th><th>Docs</th><th>Claves</th></tr></thead>
+            <tbody>
+              <tr><td>Sin índice · COLLSCAN</td><td>594</td><td>0</td></tr>
+              <tr class="hi"><td>Con ESR · IXSCAN</td><td>1</td><td>1</td></tr>
+            </tbody>
+          </table>
+          <p class="small" style="margin-top:22px">Índice <span class="mono">{ubicacion.codigo_ine, modalidad, precio_eur}</span> — orden ESR: igualdad, orden, rango.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">analysis/mongo_aggregations.py · mongo_indexes.py · mongo_queries.py</span><span class="proof">C10-C14 · T2-T5</span></footer>
+    </div>
+  </section>
+
+  <!-- 14 PRUEBAS -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">E · Pruebas y cierre</span><span class="pg">14 / 15</span></header>
+      <h2>No es una demo: falla cuando debe.</h2>
+      <div class="grid4" style="margin-top:8px">
+        <div><div class="big sm">262</div><div class="cap">tests · 2 skipped</div></div>
+        <div><div class="big sm">354</div><div class="cap">SHA del raw verificados</div></div>
+        <div><div class="big sm">182</div><div class="cap">silver verificados</div></div>
+        <div><div class="big sm">53</div><div class="cap">gold byte-idénticos</div></div>
+      </div>
+      <div class="warn" style="margin-top:44px;max-width:70ch">
+        <b>FAIL 07, visible:</b> Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el INE con tasa no nula en Lanbide.
+        Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.
+      </div>
+      <p class="small" style="margin-top:24px">Gobernanza TODO OK · gate offline OK · FAIL 07 es un dato real, no un test roto.</p>
+      <footer class="ft"><span class="proof">pytest · verificar_gobernanza.py · gate_extremo_a_extremo.py --offline</span><span class="proof">C8 · C16 · P-08</span></footer>
+    </div>
+  </section>
+
+  <!-- 15 CIERRE -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">E · Pruebas y cierre</span><span class="pg">15 / 15</span></header>
+      <h2>Lo que sostenemos y lo que no.</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div>
+          <h3><span class="tag"></span>Sostenemos</h3>
+          <ul class="clean" style="font-size:22px">
+            <li>Cuatro municipios con n≥30 y su esfuerzo con intervalo</li>
+            <li>40 de 159 por encima del 30 %</li>
+            <li>Bilbao y Donostia cerca del 38 %</li>
+          </ul>
+        </div>
+        <div>
+          <h3>No sostenemos</h3>
+          <ul class="clean sq" style="font-size:22px">
+            <li>Ranking fino fuera de Tier A</li>
+            <li>Emancipación municipal: solo CAE</li>
+            <li>Precio donde no hay anuncio · procesados en HDFS</li>
+          </ul>
+        </div>
+      </div>
+      <p class="final" style="margin-top:46px">En la mayoría del territorio, justo; en las capitales, no; y en 188 municipios no lo sabemos.</p>
+      <footer class="ft"><span class="proof">Nos tumbaría: fuente independiente con n≥30 que mueva &gt;10 % el precio; un piso en cuarentena que sí esté en Euskadi</span><span class="proof">C18 · C19</span></footer>
+    </div>
+  </section>
+
+  <!-- B1 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B1 Modelado</span><span class="pg">B1 / 8</span></header>
+      <h2>Las 7 preguntas del Tema 8.</h2>
+      <div class="grid2" style="font-size:21px;line-height:1.45">
+        <div>
+          <p><b>1.</b> ¿Qué se consulta junto? Municipio + demografía + empleo + demanda social → embebido.</p>
+          <p><b>2.</b> ¿Qué cambia? Anuncios y precios → colección propia.</p>
+          <p><b>3.</b> ¿Arrays sin límite? <span class="mono">historico_precios[]</span> acotado; anuncios fuera.</p>
+          <p><b>4.</b> ¿Fotografía histórica? Precio por fecha dentro del anuncio.</p>
+        </div>
+        <div>
+          <p><b>5.</b> ¿Relaciones? Municipio 1:N anuncios; 1:1 alquiler/indicadores; N:M promociones.</p>
+          <p><b>6.</b> ¿Campo común? <span class="mono">codigo_ine</span> a 5 dígitos, nunca el nombre.</p>
+          <p><b>7.</b> ¿Tipos BSON? Decimal128 para dinero, int para conteos, date para fechas, 2dsphere para geo.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">openspec/archive/2026-11-10-docs/modelo_mongodb.md</span><span class="proof">C9 · T1</span></footer>
+    </div>
+  </section>
+
+  <!-- B2 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B2 Consistencia</span><span class="pg">B2 / 8</span></header>
+      <h2>Transacción, réplica y shard key.</h2>
+      <ul class="clean" style="font-size:24px;max-width:70ch">
+        <li>Mongo local es <b>standalone</b>. La atomicidad de un documento no exige replica set.</li>
+        <li>La transacción multidocumento sí lo exigiría; <b>no la forzamos</b> porque no hay operación que la necesite.</li>
+        <li>Idempotencia real: upsert + índice único <span class="mono">(portal, id_anuncio)</span> + descarte por SHA.</li>
+        <li>Shard key candidata: <span class="mono">codigo_ine</span>; a esta escala (594 anuncios) no se sharbea.</li>
+      </ul>
+      <footer class="ft"><span class="proof">storage/mongo.py · tests/test_mongo_consistencia.py</span><span class="proof">C14 · T5</span></footer>
+    </div>
+  </section>
+
+  <!-- B3 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B3 CRUD y consultas</span><span class="pg">B3 / 8</span></header>
+      <h2>30 consultas y CRUD con asserts.</h2>
+      <div class="grid2" style="font-size:21px;line-height:1.5">
+        <div>
+          <p><b>Consultas:</b> igualdad, <span class="mono">dot notation</span>, <span class="mono">$all</span>, <span class="mono">$elemMatch</span>, <span class="mono">$size</span>, <span class="mono">$exists</span>, <span class="mono">$type</span>, regex, comparación, <span class="mono">$and</span>, <span class="mono">$or</span>, proyección, sort/limit, paginación.</p>
+          <p><b>CRUD:</b> insert_one, insert_many, find, update_one, find_one_and_update, upsert, <span class="mono">$unset/$rename/$pull</span>, bulk_write, delete_one/many.</p>
+        </div>
+        <div>
+          <p class="small">Cada operación se comprueba por código: <span class="mono">inserted_id</span>, <span class="mono">matched_count</span>, <span class="mono">modified_count</span>, <span class="mono">deleted_count</span>.</p>
+          <p class="small">Nada se edita a mano en Mongo: la carga es staging + backup + rename atómico.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">analysis/mongo_queries.py · storage/clean_mongo.py · tests/test_mongo.py</span><span class="proof">C10 · C11</span></footer>
+    </div>
+  </section>
+
+  <!-- B4 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B4 Conteos</span><span class="pg">B4 / 8</span></header>
+      <h2>Los números, en crudo.</h2>
+      <div class="grid3" style="font-size:23px;line-height:1.7">
+        <div><b>Datos</b><br>356 raw · 354 SHA<br>352 HDFS · 182 silver<br>40 CSV silver<br>594 anuncios (326/268)<br>64 municipios con anuncio<br>201 habitaciones / 9<br>5.040 Etxebide · 406 promos</div>
+        <div><b>Indicador</b><br>159 oficiales · 93 IDW<br>mediana 26,61 %<br>40/159 &gt; 30 %<br>119 / 26 / 14<br>Tier A4 B3 C57 D188<br>60/252 con precio</div>
+        <div><b>Sistema</b><br>16 vivas + 14 backup<br>11 pipelines · 8 etapas<br>24 índices<br>262 tests · 2 skipped<br>182/182 · 52/52<br>COLLSCAN 594 → IXSCAN 1</div>
+      </div>
+      <footer class="ft"><span class="proof">manifests · Mongo · gobernanza</span><span class="proof">C8 · C16</span></footer>
+    </div>
+  </section>
+
+  <!-- B5 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B5 HDFS y Kafka</span><span class="pg">B5 / 8</span></header>
+      <h2>Lo que está verificado y lo que hoy no.</h2>
+      <ul class="clean" style="font-size:23px;max-width:74ch">
+        <li><b>Verificado en vivo (2026-11-09):</b> 352 ficheros en HDFS, topic <span class="mono">vivienda_euskadi</span>, grupo <span class="mono">hdfs_centro</span>, 352 committed, lag 0.</li>
+        <li><b>Hoy:</b> el centro no es alcanzable; el gate offline verifica los 354 SHA locales y lo declara <span class="mono">PENDA-01</span>.</li>
+        <li><b>Recuperación:</b> <span class="mono">scripts/hdfs_recuperacion_un_fichero.py</span> descarga un raw y compara tamaño+SHA; 6 tests offline; pendiente corrida real.</li>
+        <li><b>Excepción:</b> procesados no se suben, por indicación de la profesora.</li>
+      </ul>
+      <footer class="ft"><span class="proof">openspec/audit/v8_2026-11-09/evidencia/vivo/hdfs.json</span><span class="proof">C2 · C3</span></footer>
+    </div>
+  </section>
+
+  <!-- B6 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B6 Habitaciones</span><span class="pg">B6 / 8</span></header>
+      <h2>Habitación vs vivienda entera.</h2>
+      <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
+        <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Habitaciones mediana y rango"><div class="cap">H6 · mediana con min-max y n_precio</div></div>
+        <div>
+          <p class="small"><b>201</b> anuncios en <b>9</b> municipios.</p>
+          <p class="small">Solo Bilbao (96) y Donostia (66) sostienen comparación firme; el resto es indicativo.</p>
+          <p class="small">No se agregan con vivienda entera: son productos distintos.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">mongo_habitaciones_por_municipio.csv</span><span class="proof">C15 · C19</span></footer>
+    </div>
+  </section>
+
+  <!-- B7 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 8</span></header>
+      <h2>El alquiler oficial y el de anuncio no son lo mismo.</h2>
+      <div class="grid2" style="grid-template-columns:1.45fr .55fr;align-items:center">
+        <div class="fig"><img src="assets/P_oficial_vs_anuncios_por_TH.png" alt="Cuantía oficial vs anuncios por territorio"><div class="cap">P · cuantía oficial vs anuncios por TH (n y cobertura)</div></div>
+        <p class="small">El anuncio mide oferta publicada; el oficial, alquiler efectivo. Se usan para cosas distintas y no se mezclan en el indicador.</p>
+      </div>
+      <footer class="ft"><span class="proof">mongo_alquiler_por_municipio.csv · mongo_esfuerzo_por_municipio.csv</span><span class="proof">C15 · C17</span></footer>
+    </div>
+  </section>
+
+  <!-- B8 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B8 VPO</span><span class="pg">B8 / 8</span></header>
+      <h2>VPO: flujo, no stock.</h2>
+      <div class="grid2" style="grid-template-columns:1.35fr .65fr;align-items:center">
+        <div class="fig"><img src="assets/C_vpo_por_estado.png" alt="VPO por estado"><div class="cap">C · promociones por estado y tipo</div></div>
+        <div>
+          <p class="small"><b>406</b> promociones en 77 municipios.</p>
+          <p class="small">Flujo de terminadas: <b>251/252</b> municipios; Usansolo sin dato.</p>
+          <p class="small">El stock no es público: no se inventa.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">mongo_vpo_por_municipio.csv · mongo_vpo_terminadas_por_municipio.csv</span><span class="proof">C17</span></footer>
+    </div>
+  </section>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var bar = document.getElementById('bar');
+  var i = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    var x = (window.innerWidth - 1920 * s) / 2;
+    var y = (window.innerHeight - 1080 * s) / 2;
+    stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+  }
+
+  function show(n) {
+    i = Math.max(0, Math.min(n, slides.length - 1));
+    slides.forEach(function (el, k) { el.classList.toggle('active', k === i); });
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function next() { show(i + 1); }
+  function prev() { show(i - 1); }
+
+  window.addEventListener('resize', fit);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  document.addEventListener('click', function (e) {
+    if (e.clientX < window.innerWidth * 0.25) prev(); else next();
+  });
+
+  var start = parseInt((location.hash || '#1').slice(1), 10);
+  fit();
+  show(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+<div class="hint">← → · clic para avanzar · Ctrl+P para PDF</div>
+</body>
+</html>

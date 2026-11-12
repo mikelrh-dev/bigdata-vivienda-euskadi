@@ -343,6 +343,12 @@ def test_modalidades_pipeline():
     res = ma.pipeline_modalidades()
     assert isinstance(res, list)
     assert len(res) >= 1
+    # H8b: la mediana EUR/m2 se calcula en el pipeline, sin teclear (P-05).
+    for fila in res:
+        assert {"mediana_precio_eur", "mediana_eur_m2", "n_eur_m2"} <= set(fila)
+        mediana_m2 = fila["mediana_eur_m2"]
+        assert float(getattr(mediana_m2, "to_decimal", lambda: mediana_m2)()) > 0
+        assert 0 < int(fila["n_eur_m2"]) <= int(fila["n"])
 
 
 def test_zfill_float():

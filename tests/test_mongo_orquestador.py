@@ -91,9 +91,11 @@ def test_preparacion_visualizacion_tres_conjuntos(tmp_path: Path) -> None:
     assert set(cab_alquiler) == set(
         ma.pipeline_alquiler_por_municipio()[0].keys()
     )
-    assert cab_modalidades == ["modalidad", "n", "precio_medio"] or set(
-        cab_modalidades
-    ) == {"modalidad", "n", "precio_medio"}
+    assert set(cab_modalidades) == set(ma.pipeline_modalidades()[0].keys())
+    assert {
+        "modalidad", "n", "precio_medio", "n_precio", "mediana_precio_eur",
+        "n_eur_m2", "mediana_eur_m2",
+    } <= set(cab_modalidades)
     # Coincidencia con los pipelines en memoria: conteos y una fila clave.
     assert len(filas_esfuerzo) == len(resultados["pipeline_indicadores_municipio"])
     assert len(filas_alquiler) == len(resultados["pipeline_alquiler_por_municipio"])
