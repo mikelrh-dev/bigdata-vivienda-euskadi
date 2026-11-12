@@ -38,14 +38,14 @@ QUALITY = (
     "_meta/csvs_index.json",
     "_meta/nombres_normalizados_map.json",
     "_meta/*.meta.json",
-    "run_manifest.json",  # subproducto del propio run_all
 )
+# `run_manifest.json` (timings y rc de cada nodo) queda fuera del manifiesto a
+# proposito: no es dato, lleva reloj y romperia la igualdad byte a byte.
 
 # Artefactos de la capa de analisis (gold) que se escriben junto a silver por
 # herencia historica. No salen de un nodo del DAG, sino de un script de
 # analysis/: se declara el productor y el test comprueba que sigue existiendo.
 ANALISIS = {
-    "brecha_esfuerzo_2024_2026.csv": "analysis/calcular_brecha_esfuerzo_2024_2026.py",
     "premium_oferta_2026.csv": "analysis/calibrar_premium_oferta.py",
     "comparacion_esfuerzo_2024_2026.csv": "analysis/comparar_esfuerzo_2024_2026_misma_base.py",
     "comparacion_esfuerzo_2024_2026_resumen.csv": "analysis/comparar_esfuerzo_2024_2026_misma_base.py",

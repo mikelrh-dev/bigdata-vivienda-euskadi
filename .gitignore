@@ -96,3 +96,6 @@ docs/presentacion/preview_*.png
 .agents/
 .claude/
 .codegraph/
+
+# copias locales de data (no se versionan)
+_backups/

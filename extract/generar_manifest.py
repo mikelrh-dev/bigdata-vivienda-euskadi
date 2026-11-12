@@ -8,7 +8,8 @@ Uso:
     python extract/generar_manifest.py --verify   # exit 0 si todo coincide
 
 --verify falla (exit 1) si falta algun fichero, sobra alguno no listado
-o algun hash no coincide. Excluye .FROZEN, .gitkeep, ingestion_manifest.json
+o algun hash no coincide. Excluye .FROZEN, .gitkeep, ingestion_manifest.json,
+run_manifest.json
 y, en raw, la copia legacy manifest_sha256.txt (pendiente de eliminar).
 """
 
@@ -27,7 +28,10 @@ PROC_DIR = PROJECT_ROOT / "data" / "procesado"
 CANONICAL = PROJECT_ROOT / "docs" / "raw_manifest_sha256.txt"
 SILVER = PROC_DIR / "manifest_sha256.txt"
 
-EXCLUIDOS = {".FROZEN", ".gitkeep", "ingestion_manifest.json", "manifest_sha256.txt"}
+# run_manifest.json guarda tiempos y rc de cada nodo: no es dato y nunca seria
+# identico entre dos ejecuciones, asi que no puede entrar en el manifiesto.
+EXCLUIDOS = {".FROZEN", ".gitkeep", "ingestion_manifest.json", "manifest_sha256.txt",
+            "run_manifest.json"}
 
 
 def _sha256(path: Path) -> str:

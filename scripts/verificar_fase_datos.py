@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROC = ROOT / "data" / "procesado"
+RES = ROOT / "data" / "resultados"
 
 import pandas as pd  # noqa: E402
 
@@ -178,7 +179,7 @@ def main() -> int:
           and {"codigo_ine", "tipo_de_vivienda", "esfuerzo_mercado_2026_pct_18_34"} <= set(df_em26_tipo.columns),
           f"{len(df_em26_tipo)} filas")
 
-    brecha = PROC / "brecha_esfuerzo_2024_2026.csv"
+    brecha = RES / "brecha_esfuerzo_2024_2026.csv"
     df_brecha = pd.read_csv(brecha, encoding="utf-8-sig", dtype=str)
     check("21 brecha_esfuerzo_2024_2026 CSV", brecha.exists()
           and len(df_brecha) > 0
