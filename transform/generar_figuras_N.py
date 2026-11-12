@@ -52,54 +52,81 @@ def _umbrales() -> tuple[float, float]:
 
 
 def generar_N1() -> Path:
-    """N1: coroplético esfuerzo 18-34 por municipio (252, verde-ámbar-rojo)."""
+    """N1: coroplético esfuerzo 18-34 con capas separadas.
+
+    Oficial (159) con croma; IDW (93) con trama; sin dato en gris.
+    """
     df = pd.read_csv(RES / "mongo_esfuerzo_por_municipio.csv", dtype=str, encoding="utf-8-sig")
     df["_id"] = pd.to_numeric(df["_id"], errors="coerce")
     df["esfuerzo_joven_pct_18_34"] = pd.to_numeric(df["esfuerzo_joven_pct_18_34"], errors="coerce")
+    df["codigo5"] = df["_id"].astype("Int64").astype(str).str.zfill(5)
+    esfuerzo = dict(zip(df["codigo5"], df["esfuerzo_joven_pct_18_34"]))
+    metodo = dict(zip(df["codigo5"], df["metodo_imputacion"]))
     gj = json.loads((PROC / "municipios_euskadi_252.geojson").read_text(encoding="utf-8"))
     feats = gj["datos"]["features"]
-    # join codigo_ine: CSV _id int vs GeoJSON '01002' str zero-padded
-    df["codigo5"] = df["_id"].astype(int).astype(str).str.zfill(5)
-    esfuerzo = dict(zip(df["codigo5"], df["esfuerzo_joven_pct_18_34"]))
-    # Territorio por municipio desde CSV (para anotar en título)
-    ths = sorted(df["territorio"].dropna().unique().tolist())
     cmap = LinearSegmentedColormap.from_list("verde_ambar_rojo", ["#1a9850", "#fee08b", "#d73027"], N=256)
-    patches = []
-    vals = []
-    th_por_mun = {}
+
+    def _polys(f):
+        geom = f["geometry"]
+        return [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+
+    vals_of = []
     for f in feats:
         code = str(f["properties"]["codigo_ine"]).zfill(5)
-        th_por_mun[code] = f["properties"].get("territorio", "")
-        geom = f["geometry"]
-        v = esfuerzo.get(code, np.nan)
-        if np.isnan(v):
+        v = esfuerzo.get(code)
+        if metodo.get(code) == "oficial" and v is not None and not pd.isna(v):
+            vals_of.append(float(v))
+    vmin = min(vals_of) if vals_of else 0.0
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+    # capa oficial con croma
+    patches, vals = [], []
+    for f in feats:
+        code = str(f["properties"]["codigo_ine"]).zfill(5)
+        v = esfuerzo.get(code)
+        if metodo.get(code) != "oficial" or v is None or pd.isna(v):
             continue
-        t = geom["type"]
-        polys = []
-        if t == "Polygon":
-            polys = [geom["coordinates"]]
-        elif t == "MultiPolygon":
-            polys = geom["coordinates"]
-        for poly in polys:
+        for poly in _polys(f):
             for ring in poly:
                 patches.append(MplPolygon(ring, closed=True))
-                vals.append(v)
-    vals_arr = np.array(vals, dtype=float)
-    vmin, vmax = float(np.nanmin(vals_arr)), float(np.nanmax(vals_arr))
-    # corte visual 30%: normalización hacia 30% aporta contraste
-    norm_v = np.clip((vals_arr - vmin) / (30.0 - vmin if 30.0 > vmin else 1.0), 0, 1)
-    # reescalar: >30% va a rojo saturado; <30% gradiente verde-ámbar
-    fig, ax = plt.subplots(figsize=(10, 8))
-    pc = PatchCollection(patches, cmap=cmap, edgecolor="white", linewidth=0.2, alpha=0.95)
-    pc.set_array(norm_v)
-    pc.set_clim(0, 1)
-    ax.add_collection(pc)
+                vals.append(float(v))
+    if patches:
+        norm_v = np.clip((np.array(vals) - vmin) / (30.0 - vmin if 30.0 > vmin else 1.0), 0, 1)
+        pc = PatchCollection(patches, cmap=cmap, edgecolor="white", linewidth=0.2, alpha=0.95)
+        pc.set_array(norm_v)
+        pc.set_clim(0, 1)
+        ax.add_collection(pc)
+    # IDW con trama
+    patches_idw = []
+    for f in feats:
+        code = str(f["properties"]["codigo_ine"]).zfill(5)
+        v = esfuerzo.get(code)
+        if metodo.get(code) != "idw" or v is None or pd.isna(v):
+            continue
+        for poly in _polys(f):
+            for ring in poly:
+                patches_idw.append(MplPolygon(ring, closed=True, facecolor="#D8D1C2",
+                                              edgecolor="white", linewidth=0.2, hatch="//"))
+    if patches_idw:
+        ax.add_collection(PatchCollection(patches_idw, match_original=True))
+    # sin dato en gris
+    patches_null = []
+    for f in feats:
+        code = str(f["properties"]["codigo_ine"]).zfill(5)
+        if metodo.get(code) in ("oficial", "idw"):
+            continue
+        for poly in _polys(f):
+            for ring in poly:
+                patches_null.append(MplPolygon(ring, closed=True, facecolor="#F0F0F0",
+                                               edgecolor="white", linewidth=0.2))
+    if patches_null:
+        ax.add_collection(PatchCollection(patches_null, match_original=True))
     ax.autoscale_view()
     ax.set_aspect("equal")
     ax.set_axis_off()
     ax.set_title(
-        f"N1 Esfuerzo joven 18-34 por municipio (252) — Territorio Histórico (TH): {', '.join(ths)}\n"
-        f"Esfuerzo % (verde→ámbar→rojo, corte 30%)",
+        "N1 Esfuerzo joven 18-34 por municipio — 159 oficial (croma) + 93 IDW (trama) + gris sin dato\n"
+        "Capa oficial Eustat 2024; IDW comarcal solo sensibilidad",
         fontsize=11,
     )
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(0, 1))
@@ -107,8 +134,8 @@ def generar_N1() -> Path:
     cbar = fig.colorbar(sm, ax=ax, shrink=0.7)
     cbar.set_ticks([0, 0.5, 1])
     cbar.set_ticklabels([f"{vmin:.1f}%", "≈15%", "≥30%"])
-    cbar.set_label("Esfuerzo joven 18-34 %")
-    fig.text(0.5, 0.02, "Fuente: mongo_esfuerzo_por_municipio.csv + municipios_euskadi_252.geojson (join codigo_ine). Corte visual 30%.",
+    cbar.set_label("Esfuerzo joven 18-34 % (oficial 2024)")
+    fig.text(0.5, 0.02, "Capa oficial Eustat 2024 (159) con croma; IDW comarcal (93) con trama; sin dato en gris. Fuente: mongo_esfuerzo_por_municipio.csv.",
              ha="center", fontsize=8)
     for spine in ax.spines.values():
         spine.set_visible(False)
@@ -116,34 +143,40 @@ def generar_N1() -> Path:
     out = RES / "mapa_coroplastico_esfuerzo_18_34.png"
     fig.savefig(out, dpi=150, facecolor="white")
     plt.close(fig)
-    print(f"OK N1: {out} ({out.stat().st_size} bytes, 252 feats, {vmin:.1f}%-{vmax:.1f}%)")
+    print(f"OK N1: {out} ({out.stat().st_size} bytes)")
     return out
 
 
 def generar_N2() -> Path:
-    """N2: histograma esfuerzo 18-34 (252) + líneas 30%/40%."""
+    """N2: histograma esfuerzo 18-34 con capas separadas (oficial / IDW)."""
     df = pd.read_csv(RES / "mongo_esfuerzo_por_municipio.csv", dtype=str, encoding="utf-8-sig")
-    s = pd.to_numeric(df["esfuerzo_joven_pct_18_34"], errors="coerce").dropna()
+    df["esfuerzo"] = pd.to_numeric(df["esfuerzo_joven_pct_18_34"], errors="coerce")
     mod, crit = _umbrales()  # 30, 40 por defecto
-    n = len(s)
-    pct30 = float((s > mod).mean() * 100)
-    pct40 = float((s > crit).mean() * 100)
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.hist(s, bins=min(30, max(10, n // 8)), color="#0072B2", edgecolor="white", alpha=0.85)
-    ax.axvline(mod, color="#D55E00", linestyle="--", linewidth=2, label=f"Moderado {mod:.0f}% (esfuerzo_moderado)")
-    ax.axvline(crit, color="#CC0000", linestyle="-.", linewidth=2, label=f"Crítico {crit:.0f}% (esfuerzo_tensionado)")
-    ax.set_xlabel("Esfuerzo alquiler joven 18-34 % (canónico)")
-    ax.set_ylabel("Municipios (n=252)")
-    ax.set_title(f"N2 Histograma esfuerzo joven 18-34 — {n} municipios, {pct30:.1f}% >30% (>{mod:.0f}%)")
-    ax.legend()
-    ax.grid(axis="y", alpha=0.3)
-    fig.text(0.5, 0.01, f"Fuente: mongo_esfuerzo_por_municipio.csv (252). Umbrales config/parametros_estudio.yaml: moderado={mod:.0f}%, crítico={crit:.0f}%. >{crit:.0f}%: {pct40:.1f}%.",
+    of = df[df["metodo_imputacion"] == "oficial"]["esfuerzo"].dropna()
+    idw = df[df["metodo_imputacion"] == "idw"]["esfuerzo"].dropna()
+    tit_of = f"Oficial 159 (n={len(of)}): {100 * (of > mod).mean():.1f}% >30%"
+    tit_idw = f"IDW 93 (n={len(idw)}): {100 * (idw > mod).mean():.1f}% >30%"
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 5))
+    for ax, s, titulo in (
+        (ax1, of, tit_of),
+        (ax2, idw, tit_idw),
+    ):
+        ax.hist(s, bins=min(30, max(10, len(s) // 8)), color="#0072B2", edgecolor="white", alpha=0.85)
+        ax.axvline(mod, color="#D55E00", linestyle="--", linewidth=2, label=f"Moderado {mod:.0f}%")
+        ax.axvline(crit, color="#CC0000", linestyle="-.", linewidth=2, label=f"Crítico {crit:.0f}%")
+        ax.set_xlabel("Esfuerzo alquiler joven 18-34 % (canónico)")
+        ax.set_ylabel("Municipios")
+        ax.set_title(titulo)
+        ax.legend()
+        ax.grid(axis="y", alpha=0.3)
+    fig.suptitle("N2 Histograma esfuerzo joven 18-34 — capas separadas (oficial / IDW)")
+    fig.text(0.5, 0.01, "Capa oficial Eustat 2024 (159) y IDW comarcal (93) por separado. Umbrales config/parametros_estudio.yaml.",
              ha="center", fontsize=8)
-    fig.tight_layout()
+    fig.tight_layout(rect=[0, 0.04, 1, 0.94])
     out = RES / "hist_esfuerzo_18_34_umbral30.png"
     fig.savefig(out, dpi=150, facecolor="white")
     plt.close(fig)
-    print(f"OK N2: {out} ({out.stat().st_size} bytes, n={n}, >30%={pct30:.1f}%)")
+    print(f"OK N2: {out} ({out.stat().st_size} bytes)")
     return out
 
 
@@ -269,10 +302,11 @@ def regenerar_F() -> Path:
     """F con título €/mes y Territorio Histórico (TH)."""
     df = pd.read_csv(RES / "mongo_alquiler_por_municipio.csv", dtype=str, encoding="utf-8-sig")
     df["cuantia_media"] = pd.to_numeric(df["cuantia_media"], errors="coerce")
-    g = df.groupby("territorio")["cuantia_media"].mean().reindex(sorted(df["territorio"].unique()))
+    df = df[df["metodo_imputacion"] == "oficial"]
+    g = df.groupby("territorio")["cuantia_media"].mean().reindex(sorted(df["territorio"].dropna().unique().tolist()))
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.bar(g.index.tolist(), g.values.tolist())
-    ax.set_title("Cuantia media alquiler por Territorio Histórico (TH) — €/mes (Mongo)")
+    ax.set_title("Cuantía media alquiler por TH — €/mes, solo oficial 2024 (Mongo)")
     ax.set_ylabel("€/mes (cuantía media)")
     fig.tight_layout()
     out = RES / "F_comparativa_th.png"
@@ -285,18 +319,25 @@ def regenerar_F() -> Path:
 def regenerar_H8() -> Path:
     """H8 con eje €/mes."""
     df = pd.read_csv(RES / "mongo_tier_confianza.csv", dtype=str, encoding="utf-8-sig")
-    for c in ("mediana_precio_temporal", "mediana_precio_larga"):
+    for c in ("mediana_precio_temporal", "mediana_precio_larga", "n_precio_temporal", "n_precio_larga"):
         df[c] = pd.to_numeric(df[c], errors="coerce")
     ab = df[df["tier"].isin(["A", "B"])].copy()
+    mt = ab["mediana_precio_temporal"].fillna(0).tolist()
+    ml = ab["mediana_precio_larga"].fillna(0).tolist()
+    nt = ab["n_precio_temporal"].fillna(0).astype(int).tolist()
+    nl = ab["n_precio_larga"].fillna(0).astype(int).tolist()
     fig, ax = plt.subplots(figsize=(9, 4))
     x = np.arange(len(ab))
     w = 0.35
-    ax.bar(x - w / 2, ab["mediana_precio_temporal"].fillna(0).values, w, label="Temporal")
-    ax.bar(x + w / 2, ab["mediana_precio_larga"].fillna(0).values, w, label="Larga estancia")
+    ax.bar(x - w / 2, mt, w, label="Temporal")
+    ax.bar(x + w / 2, ml, w, label="Larga estancia")
+    for i in range(len(ab)):
+        ax.text(x[i] - w / 2, mt[i] * 1.02, f"n={nt[i]}", ha="center", fontsize=7)
+        ax.text(x[i] + w / 2, ml[i] * 1.02, f"n={nl[i]}", ha="center", fontsize=7)
     ax.set_xticks(x)
     ax.set_xticklabels(ab["nombre"].tolist(), rotation=20, ha="right")
     ax.set_ylabel("Mediana precio €/mes")
-    ax.set_title("H8 Mediana temporal vs larga - Tier A/B (Mongo) — €/mes")
+    ax.set_title("H8 Mediana temporal vs larga - Tier A/B (Mongo) — €/mes, no comparable; ver H8b (€/m²)")
     ax.legend()
     fig.tight_layout()
     out = RES / "H8_tier_mediana_temporal_vs_larga.png"
@@ -353,14 +394,14 @@ def regenerar_P() -> Path:
     fig, ax = plt.subplots(figsize=(8, 4))
     x = np.arange(len(ths))
     w = 0.35
-    ax.bar(x - w / 2, med_of, w, label="Cuantia oficial €/mes (mediana)")
-    ax.bar(x + w / 2, med_an, w, label="Anuncios precio medio €/mes (mediana)")
+    ax.bar(x - w / 2, med_of, w, label="Cuantía oficial 2024 €/mes (mediana)")
+    ax.bar(x + w / 2, med_an, w, label="Anuncios 2026 precio medio €/mes (mediana)")
     for i in range(len(ths)):
         ax.text(i, max(med_of[i], med_an[i]) * 1.02, f"n_of={n_of[i]} n_an={n_an[i]}", ha="center", fontsize=7)
     ax.set_xticks(x)
     ax.set_xticklabels(ths)
     ax.set_ylabel("€/mes")
-    ax.set_title("P Cuantia oficial vs anuncios por Territorio Histórico (TH) — €/mes (Mongo, n y cobertura)")
+    ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes (no comparable; ratio 1,96; Spearman 0,18)")
     ax.legend()
     fig.tight_layout()
     out = RES / "P_oficial_vs_anuncios_por_TH.png"

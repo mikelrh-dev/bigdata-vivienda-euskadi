@@ -394,6 +394,14 @@ def _fnum(value: Any) -> float | None:
         return None
 
 
+def _metodo_ind(d: dict[str, Any]) -> str | None:
+    m = d.get("metodo_imputacion")
+    if m is None:
+        return None
+    s = str(m)
+    return "idw" if s.startswith("IDW") else s
+
+
 def exportar_png_desde_mongo(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
@@ -459,14 +467,14 @@ def exportar_png_desde_mongo(
     # ANEXO+g1: esfuerzo por Territorio Histórico (TH) (g1 duplica A1 byte-idéntica -> anexo/).
     for nombre in ("g1_esfuerzo_por_territorio.png", "A1_distribucion_esfuerzo_por_TH.png"):
         fig, ax = plt.subplots(figsize=(7, 4))
-        datos = [[e for d in ind if d.get("territorio") == t and (e := _esf(d)) is not None] for t in terr]
+        datos = [[e for d in ind if d.get("territorio") == t and _metodo_ind(d) == "oficial" and (e := _esf(d)) is not None] for t in terr]
         if any(datos):
             try:
                 ax.boxplot(datos, tick_labels=terr)
             except TypeError:
                 ax.boxplot(datos, labels=terr)
         ax.axhline(30, color="red", linestyle="--", label="Umbral 30%")
-        ax.set_title("Esfuerzo alquiler joven 18-34 por Territorio Histórico (TH) (Mongo)")
+        ax.set_title("Esfuerzo alquiler joven 18-34 por Territorio Histórico (TH) — solo oficial 159 (Mongo)")
         ax.set_ylabel("Esfuerzo %")
         ax.legend()
         _save(fig, nombre)
@@ -521,13 +529,13 @@ def exportar_png_desde_mongo(
     fig, ax = plt.subplots(figsize=(7, 4))
     vals, labels = [], []
     for t in terr:
-        esfs = [_esf(d) for d in ind if d.get("territorio") == t]
+        esfs = [_esf(d) for d in ind if d.get("territorio") == t and _metodo_ind(d) == "oficial"]
         esfs = [e for e in esfs if e is not None]
         vals.append(100 * sum(1 for e in esfs if e > 30) / len(esfs) if esfs else 0)
         labels.append(t)
     if labels:
         ax.bar(labels, vals)
-    ax.set_title("% municipios inasequibles por Territorio Histórico (TH) (Mongo)")
+    ax.set_title("% municipios inasequibles por Territorio Histórico (TH) — solo oficial 159 (Mongo)")
     ax.set_ylabel("% con esfuerzo>30")
     _save(fig, "A2_pct_inasequibles_por_TH.png")
 
@@ -587,13 +595,13 @@ def exportar_png_desde_mongo(
     fig, ax = plt.subplots(figsize=(7, 4))
     vals, labels = [], []
     for t in sorted({str(d.get("territorio")) for d in alq if d.get("territorio")}):
-        cs = [_fnum(d.get("cuantia_media")) for d in alq if str(d.get("territorio")) == t]
+        cs = [_fnum(d.get("cuantia_media")) for d in alq if str(d.get("territorio")) == t and _metodo_ind(d) == "oficial"]
         cs = [c for c in cs if c]
         vals.append(sum(cs) / len(cs) if cs else 0)
         labels.append(t)
     if labels:
         ax.bar(labels, vals)
-    ax.set_title("Cuantia media alquiler por Territorio Histórico (TH) — €/mes (Mongo)")
+    ax.set_title("Cuantia media alquiler por Territorio Histórico (TH) — €/mes, solo oficial 2024 (Mongo)")
     _save(fig, "F_comparativa_th.png")
 
     # ANEXO: G gaps (tabla, no gráfico) — se escribe en anexo/.
@@ -648,13 +656,6 @@ def exportar_png_desde_mongo(
             return s[lo] * (1 - frac) + s[hi] * frac
 
         return _pct(0.5), _pct(0.25), _pct(0.75)
-
-    def _metodo_ind(d: dict[str, Any]) -> str | None:
-        m = d.get("metodo_imputacion")
-        if m is None:
-            return None
-        s = str(m)
-        return "idw" if s.startswith("IDW") else s
 
     # H1: ranking esfuerzo 18-34 Tier A n>=30 (pipeline_top_municipios_por_esfuerzo).
     h1 = []
@@ -799,9 +800,9 @@ def exportar_png_desde_mongo(
         ax.set_yticks(range(len(h6)))
         ax.set_yticklabels([t[0] for t in h6], fontsize=7)
         ax.set_xscale("log")
-        ax.set_xlabel("EUR (escala log; punto = mediana, raya = min-max)")
-        nota_out = f" outlier max {max6:,.0f} EUR" if max6 > 20000 else ""
-        ax.set_title(f"H6 Habitaciones mediana/min-max (Mongo) -{nota_out}")
+        ax.set_xlabel("€/habitación (escala log; punto = mediana, raya = min-max)")
+        nota_out = f" outlier max {max6:,.0f} €/habitación" if max6 > 20000 else ""
+        ax.set_title("H6 Habitaciones mediana/min-max (Mongo) — €/habitación, no agregar con vivienda entera" + (f"; {nota_out}" if nota_out else ""))
         _save(fig, "H6_habitaciones_mediana_rango.png")
     else:
         _honest("H6_habitaciones_mediana_rango.png", "H6 Habitaciones (sin datos)",
@@ -845,16 +846,21 @@ def exportar_png_desde_mongo(
         noms = [str(d.get("nombre") or d.get("codigo_ine")) for d in tier_ab]
         mt = [_fnum(d.get("mediana_precio_temporal")) or 0 for d in tier_ab]
         ml = [_fnum(d.get("mediana_precio_larga")) or 0 for d in tier_ab]
+        nt = [int(d.get("n_precio_temporal") or 0) for d in tier_ab]
+        nl = [int(d.get("n_precio_larga") or 0) for d in tier_ab]
         import numpy as _np
         x = _np.arange(len(noms))
         w = 0.35
         fig, ax = plt.subplots(figsize=(9, 4))
         ax.bar(x - w / 2, mt, w, label="Temporal")
         ax.bar(x + w / 2, ml, w, label="Larga estancia")
+        for i in range(len(noms)):
+            ax.text(x[i] - w / 2, mt[i] * 1.02, f"n={nt[i]}", ha="center", fontsize=7)
+            ax.text(x[i] + w / 2, ml[i] * 1.02, f"n={nl[i]}", ha="center", fontsize=7)
         ax.set_xticks(x)
         ax.set_xticklabels(noms, rotation=20, ha="right")
         ax.set_ylabel("Mediana precio €/mes")
-        ax.set_title("H8 Mediana temporal vs larga - Tier A/B (Mongo)")
+        ax.set_title("H8 Mediana temporal vs larga - Tier A/B (Mongo) — €/mes, no comparable; ver H8b (€/m²)")
         ax.legend()
         _save(fig, "H8_tier_mediana_temporal_vs_larga.png")
     else:
@@ -923,7 +929,7 @@ def exportar_png_desde_mongo(
                 ax.scatter(xs, ys, label=cat, alpha=0.5, color=col)
         ax.set_xlabel("Etxebide solicitudes por mil")
         ax.set_ylabel("Esfuerzo 18-34 %")
-        ax.set_title("H10 Tension etxebide vs esfuerzo (Mongo)")
+        ax.set_title("H10 Tensión etxebide 2024 vs esfuerzo 18-34 (Mongo)")
         ax.legend()
         _save(fig, "H10_tension_vs_esfuerzo.png")
     else:
@@ -986,9 +992,8 @@ def exportar_png_desde_mongo(
         _honest("H13_mediana_precio_m2_winsorizada.png", "H13 Winsorizada (sin datos)",
                 "sin mediana_precio_m2_winsorizada en indicadores")
 
-    # ANEXO: I precio por modalidad (mezcla unidades; ver H8; €/mes vs €/m2).
-    # Los pipelines no exponen EUR/m2 por modalidad (solo mediana global
-    # winsorizada): el titulo lo declara honestamente.
+    # ANEXO: I precio por modalidad (media de anuncios vs mediana municipal Tier A/B).
+    # Misma unidad (€/mes), distinto estadístico: no comparar directamente.
     I_medianas, I_quartiles = {}, {}
     for mod_name in ("larga_estancia", "temporal"):
         campo = "mediana_precio_larga" if mod_name == "larga_estancia" else "mediana_precio_temporal"
@@ -1011,7 +1016,7 @@ def exportar_png_desde_mongo(
         ax.set_xticks(x)
         ax.set_xticklabels(etiquetas)
         ax.set_ylabel("EUR")
-        ax.set_title("I Modalidad temporal vs larga (Mongo) - EUR/m2 por modalidad no disponible en pipelines")
+        ax.set_title("I Modalidad temporal vs larga (Mongo) — media anuncios vs mediana municipal (€/mes)")
         ax.legend()
         _save(fig, "I_modalidad_temporal_vs_larga.png")
     else:
@@ -1175,8 +1180,8 @@ def exportar_png_desde_mongo(
         med_of = [_statistics.median(p_of[t]) if p_of.get(t) else 0 for t in thsP]
         med_an = [_statistics.median(p_an[t]) if p_an.get(t) else 0 for t in thsP]
         w = 0.35
-        ax.bar([i - w / 2 for i in x], med_of, w, label="Cuantia oficial €/mes (mediana)")
-        ax.bar([i + w / 2 for i in x], med_an, w, label="Anuncios precio medio €/mes (mediana)")
+        ax.bar([i - w / 2 for i in x], med_of, w, label="Cuantía oficial 2024 €/mes (mediana)")
+        ax.bar([i + w / 2 for i in x], med_an, w, label="Anuncios 2026 precio medio €/mes (mediana)")
         for i, t in enumerate(thsP):
             ax.text(i, max(med_of[i], med_an[i]) * 1.02,
                     f"n_of={len(p_of.get(t, []))} n_an={len(p_an.get(t, []))}",
@@ -1184,7 +1189,7 @@ def exportar_png_desde_mongo(
         ax.set_xticks(x)
         ax.set_xticklabels(thsP)
         ax.set_ylabel("€/mes")
-        ax.set_title("P Cuantia oficial vs anuncios por Territorio Histórico (TH) — €/mes (Mongo, n y cobertura)")
+        ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes (no comparable; ratio 1,96; Spearman 0,18)")
         ax.legend()
         _save(fig, "P_oficial_vs_anuncios_por_TH.png")
     else:
