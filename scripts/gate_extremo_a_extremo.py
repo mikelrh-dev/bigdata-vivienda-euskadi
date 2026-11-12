@@ -165,10 +165,10 @@ def tcp_probe(host: str, port: int, timeout: float = 5.0) -> bool:
 def run_offline(root: Path = ROOT) -> list[tuple[str, bool, str]]:
     checks: list[tuple[str, bool, str]] = []
     ok, det = check_manifest(root / RAW_MANIFEST, root / RAW_BASE, EXPECTED_RAW)
-    checks.append(("manifiesto raw 355 SHA", ok, det))
+    checks.append((f"manifiesto raw {EXPECTED_RAW} SHA", ok, det))
     ok, det = check_manifest(root / SILVER_MANIFEST, root / SILVER_BASE,
                              EXPECTED_SILVER)
-    checks.append(("silver 185", ok, det))
+    checks.append((f"silver {EXPECTED_SILVER}", ok, det))
     ok, det = check_colecciones()
     checks.append(("15 colecciones", ok, det))
     ok, det = check_duplicados()
