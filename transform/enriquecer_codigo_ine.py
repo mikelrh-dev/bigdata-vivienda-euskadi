@@ -16,15 +16,47 @@ from __future__ import annotations
 import csv
 import json
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import PROCESADO_DIR, RAW_DIR, get_logger  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "extract"))
-from entity_resolution import resolver_municipio  # noqa: E402
+from entity_resolution import MANUAL_MAP, norm  # noqa: E402
 
 log = get_logger("f0_entity")
+
+
+@lru_cache(maxsize=1)
+def _mapa_municipios_silver() -> dict[str, tuple[str, str]]:
+    """Construye el mapa enriquecido de Silver para la fase Transform."""
+    ruta = PROCESADO_DIR / "dim_municipios.json"
+    data = json.loads(ruta.read_text(encoding="utf-8"))
+    registros = data.get("datos", data) if isinstance(data, dict) else data
+    mapa: dict[str, tuple[str, str]] = {}
+    for registro in registros:
+        codigo = str(registro["codigo_ine"]).zfill(5)
+        canonico = registro["nombre_canonico"]
+        mapa[norm(canonico)] = (codigo, canonico)
+        variantes = registro.get("variantes", []) or []
+        if isinstance(variantes, str):
+            variantes = variantes.split("|")
+        for variante in variantes:
+            if str(variante).strip():
+                mapa.setdefault(norm(variante), (codigo, canonico))
+    for alias, canonico in MANUAL_MAP.items():
+        destino = mapa.get(norm(canonico))
+        if destino:
+            mapa.setdefault(alias, destino)
+    return mapa
+
+
+def resolver_municipio(nombre: str | None) -> tuple[str | None, str | None]:
+    """Resuelve en la dimensión Silver ya generada por Transform."""
+    if nombre is None or not str(nombre).strip():
+        return None, None
+    return _mapa_municipios_silver().get(norm(nombre), (None, None))
 
 
 def _zfill(codigo) -> str | None:

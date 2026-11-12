@@ -10,12 +10,14 @@ import csv
 import json
 import math
 import sys
+import tempfile
 import zipfile
 from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json, guardar_meta
+from _common import RAW_DIR, Cliente, get_logger, guardar_json, guardar_meta
+from entity_resolution import cargar_dim
 
 log = get_logger("euskadi_geo")
 
@@ -23,21 +25,23 @@ URL_MUNICIPIOS = (
     "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/"
     "MUNICIPIOS_5000_ETRS89.zip"
 )
-SHP = RAW_DIR / "shp_euskadi" / "MUNICIPIOS_5000_ETRS89.shp"
+SHP_DIR = Path(tempfile.gettempdir()) / "vivienda-euskadi-shp"
+SHP = SHP_DIR / "MUNICIPIOS_5000_ETRS89.shp"
 
 
 def _asegurar_shp() -> Path:
     """Devuelve el SHP municipal, descargándolo de GeoEuskadi si falta."""
     if SHP.exists():
         return SHP
-    zip_path = SHP.parent / "MUNICIPIOS_5000_ETRS89.zip"
+    SHP_DIR.mkdir(parents=True, exist_ok=True)
+    zip_path = SHP_DIR / "MUNICIPIOS_5000_ETRS89.zip"
     log.info("SHP ausente: descargando %s", URL_MUNICIPIOS)
     Cliente("euskadi_geo").descargar(URL_MUNICIPIOS, zip_path)
     with zipfile.ZipFile(zip_path) as z:
-        z.extractall(SHP.parent)
+        z.extractall(SHP_DIR)
     if SHP.exists():
         return SHP
-    encontrados = sorted(SHP.parent.rglob("MUNICIPIOS_5000_ETRS89.shp"))
+    encontrados = sorted(SHP_DIR.rglob("MUNICIPIOS_5000_ETRS89.shp"))
     if not encontrados:
         raise FileNotFoundError(
             f"El ZIP no contiene MUNICIPIOS_5000_ETRS89.shp: {zip_path}"
@@ -157,12 +161,7 @@ def main() -> int:
 
     # Filtrar solo municipios canónicos (dim_municipios), tanto las geometrías
     # como la tabla de distancias: el SHP trae más polígonos que municipios.
-    dim_path = PROCESADO_DIR / "dim_municipios.json"
-    dim_codigos = set()
-    if dim_path.exists():
-        dim = json.loads(dim_path.read_text(encoding="utf-8"))
-        regs = dim.get("datos", dim) if isinstance(dim, dict) else dim
-        dim_codigos = {r["codigo_ine"] for r in regs}
+    dim_codigos = set(cargar_dim()["codigo_ine"].astype(str))
     if dim_codigos:
         features = [f for f in features if f["properties"]["codigo_ine"] in dim_codigos]
         municipios = [m for m in municipios if m["codigo_ine"] in dim_codigos]

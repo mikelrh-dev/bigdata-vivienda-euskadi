@@ -358,6 +358,7 @@ def main() -> int:
             unicos_fc,
             metadata={
                 "fuente": "Fotocasa (scraping HTML, sin API key) - habitaciones",
+                "url": "https://www.fotocasa.es/es/compartir/pisos",
                 "municipios": MUNICIPIOS,
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                 "n_anuncios": len(unicos_fc),
@@ -389,6 +390,7 @@ def main() -> int:
             unicos_pisos,
             metadata={
                 "fuente": "Pisos.com (scraping HTML, sin API key) - habitaciones",
+                "url": "https://www.pisos.com/alquiler/",
                 "n_municipios": len({a["municipio_busqueda"] for a in unicos_pisos}),
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                 "n_anuncios": len(unicos_pisos),

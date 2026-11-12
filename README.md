@@ -63,15 +63,11 @@ data/raw/ → Kafka → HDFS (rama de almacenamiento, independiente de MongoDB)
 ### 1. Extracción (solo cuando se quiera actualizar raw)
 
 ```powershell
-.\.venv\Scripts\python.exe extract/main_ingest.py
+.\.venv\Scripts\python.exe extract/run_all.py --force
 ```
 
 Ejecuta extractores con acceso a fuentes externas. Para validar los hashes del
 raw existente sin volver a descargar datos:
-
-```powershell
-.\.venv\Scripts\python.exe extract/main_ingest.py --mode replay-raw
-```
 
 ### 2. Transformación
 

@@ -16,6 +16,7 @@ import io
 import math
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -291,7 +292,9 @@ def main() -> int:
     cliente = Cliente("opendata_bizilagun_etxebide", delay=1.0)
 
     # ── EMAL ─────────────────────────────────────────────────────────
-    ruta_xlsx = RAW_DIR / "emal_barrios_municipios_2016_2025.xlsx"
+    temp_dir = Path(tempfile.gettempdir()) / "vivienda-euskadi"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    ruta_xlsx = temp_dir / "emal_barrios_municipios_2016_2025.xlsx"
     cliente.descargar(URL_EMAL, ruta_xlsx)
     _anios, registros_emal = parsear_emal(ruta_xlsx)
 

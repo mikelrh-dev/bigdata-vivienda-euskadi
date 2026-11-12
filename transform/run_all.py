@@ -26,7 +26,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from paths import PROCESADO_DIR, ensure_dirs  # noqa: E402
+from paths import PROCESADO_DIR  # noqa: E402
 
 TRANSFORM_DIR = PROJECT_ROOT / "transform"
 LOG_DIR = PROJECT_ROOT / "logs"
@@ -165,6 +165,9 @@ def seleccionar(only: str | None, missing: bool, force: bool) -> list[Paso]:
 
 
 def _ejecutar(paso: Paso, log) -> bool:
+    if Path(paso.script).name != paso.script:
+        log(f"  ✗ la transformación debe estar en transform/: {paso.script}")
+        return False
     script = TRANSFORM_DIR / paso.script
     if not script.exists():
         log(f"  ✗ no existe {script}")
@@ -196,7 +199,7 @@ def _ejecutar(paso: Paso, log) -> bool:
 
 
 def ejecutar(pasos: list[Paso]) -> int:
-    ensure_dirs()
+    PROCESADO_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     sello = datetime.now().strftime("%Y%m%d_%H%M%S")
     ruta_log = LOG_DIR / f"transform_{sello}.log"

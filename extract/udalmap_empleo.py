@@ -13,7 +13,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
+from entity_resolution import cargar_dim  # noqa: E402
 
 log = get_logger("udalmap_empleo")
 
@@ -77,17 +78,8 @@ def _extraer_municipios(data: dict, dim_codigos: set[str]) -> dict[str, float]:
 
 def main() -> int:
     # Cargar códigos canónicos
-    dim_path = PROCESADO_DIR / "dim_municipios.json"
-    if not dim_path.exists():
-        log.error("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
-        return 1
-    dim = json.loads(dim_path.read_text(encoding="utf-8"))
-    dim_codigos = set()
-    # dim_municipios.json es una lista directa (guardar_json envuelve en metadata/datos?)
-    if isinstance(dim, dict):
-        registros = dim.get("datos", [])
-    else:
-        registros = dim
+    registros = cargar_dim().to_dict(orient="records")
+    dim_codigos = set(r["codigo_ine"] for r in registros)
     dim_codigos = {r["codigo_ine"] for r in registros}
 
     datos: dict[str, dict] = {c: {} for c in dim_codigos}

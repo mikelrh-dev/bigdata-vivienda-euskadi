@@ -15,7 +15,8 @@ import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
+from entity_resolution import cargar_dim  # noqa: E402
 
 log = get_logger("educacion_centros")
 
@@ -38,11 +39,7 @@ def _norm(s: str) -> str:
 
 
 def _cargar_dim() -> dict[str, dict]:
-    dim_path = PROCESADO_DIR / "dim_municipios.json"
-    if not dim_path.exists():
-        raise FileNotFoundError("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
-    data = json.loads(dim_path.read_text(encoding="utf-8"))
-    registros = data.get("datos", data) if isinstance(data, dict) else data
+    registros = cargar_dim().to_dict(orient="records")
     return {r["codigo_ine"]: r for r in registros}
 
 

@@ -19,16 +19,12 @@ from paths import (  # noqa: E402
     DATA_DIR,
     PROCESADO_DIR,
     RAW_DIR,
-    RESULTADOS_DIR,
-    ensure_dirs,
 )
 
 __all__ = [
     "DATA_DIR",
     "PROCESADO_DIR",
     "RAW_DIR",
-    "RESULTADOS_DIR",
-    "ensure_dirs",
     "get_logger",
     "guardar_json",
     "leer_csv_seguro",

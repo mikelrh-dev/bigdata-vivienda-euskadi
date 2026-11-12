@@ -18,8 +18,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import RAW_DIR as RAW, guardar_meta  # noqa: E402
 
 TMP = Path(tempfile.gettempdir()) / "geo_areas"
-TMP.mkdir(parents=True, exist_ok=True)
-
 URL = "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/AREAS_FUNCIONALES_5000_ETRS89.zip"
 ZIP_PATH = TMP / "areas.zip"
 EXTRACT_DIR = TMP
@@ -52,7 +50,7 @@ def shape_to_polygons(shp_rec):
 
 
 def main():
-    global SHP
+    TMP.mkdir(parents=True, exist_ok=True)
     if not ZIP_PATH.exists():
         urllib.request.urlretrieve(URL, ZIP_PATH)
 

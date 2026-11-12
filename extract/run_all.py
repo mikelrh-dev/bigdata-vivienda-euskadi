@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from paths import RAW_DIR, ensure_dirs  # noqa: E402
+from paths import RAW_DIR  # noqa: E402
 
 LOG_DIR = PROJECT_ROOT / "logs"
 
@@ -46,9 +46,9 @@ class Paso:
     scraper: bool = False
 
 
-# El orden de esta lista es el orden de ejecución. `dim-municipios` no es un
-# extractor: es el catálogo que varios extractores necesitan, así que se
-# ejecuta después de las fuentes que lo alimentan y antes de sus consumidores.
+# El orden de esta lista es el orden de ejecución. Los extractores que necesitan
+# resolver municipios usan Eustat desde raw; ningún paso de Extract escribe en
+# procesado/.
 PASOS: tuple[Paso, ...] = (
     Paso("eustat", "01_eustat_api.py", (
         "eustat_poblacion_edad.csv",
@@ -92,14 +92,10 @@ PASOS: tuple[Paso, ...] = (
         "anuncios_realtyapi.json",
     ), lento=True, nota="API con clave", credenciales=("REALTYAPI_KEY",)),
     Paso("opendata-etxebide", "10_opendata_bizilagun_etxebide.py", (
-        "emal_barrios_municipios_2016_2025.xlsx",
         "emal_fianzas.csv",
         "etxebide_indicador_86.csv",
         "etxebide_solicitudes.csv",
     ), lento=True),
-    Paso("dim-municipios", "transform/dim_municipios.py", (
-        "procesado/dim_municipios.json",
-    ), nota="catálogo (transform)"),
     Paso("euskadi-geo", "euskadi_geo.py", (
         "municipios_euskadi.geojson",
         "distancias_capitales.csv",
@@ -121,21 +117,18 @@ PASOS: tuple[Paso, ...] = (
         "anuncios_pisos_habitaciones.json",
     ), lento=True, nota="scraper", scraper=True),
     Paso("serpavi", "16_serpavi_renta.py", (
-        "serpavi_renta_municipal.xlsx",
         "serpavi_renta_municipal.csv",
     )),
     Paso("osrm", "17_osrm_tiempos.py", (
         "osrm_tiempos_capitales.csv",
     ), lento=True),
     Paso("lanbide-juvenil", "18_lanbide_paro_juvenil.py", (
-        "lanbide_paro_historico.xlsx",
         "lanbide_paro_juvenil.csv",
     )),
     Paso("udalmap-adicionales", "19_udalmap_indicadores_adicionales.py", (
         "udalmap_indicadores_adicionales.csv",
     )),
     Paso("ecvi", "20_ecvi_compraventa.py", (
-        "ECVI_*.xlsx",
         "ecvi_*.csv",
     ), lento=True),
     Paso("lanbide-historico", "21_lanbide_historico_paro_joven.py", (
@@ -183,12 +176,12 @@ POR_ID = {paso.id: paso for paso in PASOS}
 
 
 def _coincidencias(patron: str) -> list[Path]:
-    base = RAW_DIR
-    if patron.split("/")[0] in {"procesado", "resultados"}:
-        base = RAW_DIR.parent
+    relativo = Path(patron)
+    if relativo.is_absolute() or ".." in relativo.parts:
+        return []
     if any(c in patron for c in "*?["):
-        return sorted(base.glob(patron))
-    ruta = base / patron
+        return sorted(RAW_DIR.glob(patron))
+    ruta = RAW_DIR / relativo
     return [ruta] if ruta.exists() else []
 
 
@@ -243,10 +236,10 @@ def seleccionar(
 
 
 def _ejecutar(paso: Paso, log) -> bool:
-    if "/" in paso.script:
-        script = PROJECT_ROOT / paso.script
-    else:
-        script = PROJECT_ROOT / "extract" / paso.script
+    if Path(paso.script).name != paso.script:
+        log(f"  ✗ el extractor debe estar en extract/: {paso.script}")
+        return False
+    script = PROJECT_ROOT / "extract" / paso.script
     if not script.exists():
         log(f"  ✗ no existe {script}")
         return False
@@ -277,7 +270,7 @@ def _ejecutar(paso: Paso, log) -> bool:
 
 
 def ejecutar(pasos: list[Paso]) -> int:
-    ensure_dirs()
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     sello = datetime.now().strftime("%Y%m%d_%H%M%S")
     ruta_log = LOG_DIR / f"extract_{sello}.log"

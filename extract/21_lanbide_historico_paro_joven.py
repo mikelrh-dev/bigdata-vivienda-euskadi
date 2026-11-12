@@ -7,6 +7,8 @@ Salida: raw/lanbide_paro_historico_joven.csv
 from __future__ import annotations
 
 import sys
+import tempfile
+import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -14,15 +16,16 @@ from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
 
 log = get_logger("lanbide_historico_paro_joven")
 
-SRC = RAW_DIR / "lanbide_paro_historico.xlsx"
+SRC = Path(tempfile.gettempdir()) / "vivienda-euskadi-lanbide-paro_historico.xlsx"
 OUT_CSV = RAW_DIR / "lanbide_paro_historico_joven.csv"
 URL = "https://www.lanbide.euskadi.eus/contenidos/estadistica/paro_historico/es_def/adjuntos/Dap_Historico.xlsx"
 
 
 def main() -> int:
     if not SRC.exists():
-        log.error("Falta %s", SRC)
-        return 1
+        SRC.parent.mkdir(parents=True, exist_ok=True)
+        log.info("Descargando fuente Lanbide a caché temporal")
+        urllib.request.urlretrieve(URL, SRC)
 
     import pandas as pd
 

@@ -11,6 +11,7 @@ Metodo: descarga programatica (urllib) de XLSX (~68 MB) + pandas.
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -26,11 +27,11 @@ def main() -> int:
 
     import pandas as pd
 
-    destino = RAW_DIR / "serpavi_renta_municipal.xlsx"
+    destino = Path(tempfile.gettempdir()) / "vivienda-euskadi-serpavi.xlsx"
     if not destino.exists():
         log.info("Descargando SERPAVI (~68 MB)...")
         urllib.request.urlretrieve(URL, destino)
-        log.info("Guardado %s", destino.name)
+        log.info("Descarga temporal completada (%s)", destino.name)
 
     df = pd.read_excel(destino, sheet_name="Municipios", dtype={"CUMUN": str, "CPRO": str})
     basque = df[df["CPRO"].isin(["01", "20", "48"])].copy()

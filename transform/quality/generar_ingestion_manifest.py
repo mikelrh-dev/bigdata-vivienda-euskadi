@@ -14,12 +14,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RAW_DIR = PROJECT_ROOT / "data" / "raw"
-META_DIR = PROJECT_ROOT / "data" / "procesado" / "_meta"
+sys.path.insert(0, str(PROJECT_ROOT))
+from paths import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+META_DIR = PROCESADO_DIR / "_meta"
 OUT = META_DIR / "ingestion_manifest.json"
 
 EXCLUIDOS = {".FROZEN", ".gitkeep", "manifest_sha256.txt"}

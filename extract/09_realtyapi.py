@@ -241,6 +241,7 @@ def main() -> int:
         unicos,
         metadata={
             "fuente": "RealtyAPI.io (Idealista, no oficial)",
+            "url": BASE_URL,
             "n_municipios": len({a["municipio_busqueda"] for a in unicos}),
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_anuncios": len(unicos),

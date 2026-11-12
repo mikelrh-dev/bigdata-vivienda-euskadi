@@ -20,10 +20,11 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(PROJECT_ROOT / "extract"))
+sys.path.insert(0, str(PROJECT_ROOT))
 
-RAW_DIR = PROJECT_ROOT / "data" / "raw"
-PROC_DIR = PROJECT_ROOT / "data" / "procesado"
+from paths import PROCESADO_DIR, RAW_DIR  # noqa: E402
+
+PROC_DIR = PROCESADO_DIR
 CANONICAL = RAW_DIR / "manifest_sha256.txt"
 SILVER = PROC_DIR / "manifest_sha256.txt"
 

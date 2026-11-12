@@ -255,6 +255,7 @@ def main() -> int:
             unicos,
             metadata={
                 "fuente": "Fotocasa (scraping HTML, sin API key)",
+                "url": BASE,
                 "provincias": args.provincias,
                 "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
                 "n_anuncios": len(unicos),

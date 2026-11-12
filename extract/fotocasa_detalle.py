@@ -5,7 +5,7 @@ Por cada url_detalle descarga la ficha (1 peticion, delay 2s) y extrae:
   descripcion_completa, fecha_publicacion, distrito/zona exactos,
   coordenadas exactas, n_imagenes.
 Re-ejecutable: salta los ids ya presentes en anuncios_fotocasa_detalle.json.
-Fusiona columnas planas en anuncios_fotocasa.csv/.json (aditivo).
+Fusiona las columnas planas en el JSON canónico de anuncios (aditivo).
 """
 from __future__ import annotations
 import json, re, sys
@@ -78,8 +78,9 @@ def main() -> int:
         if i % 50 == 0:
             log.info("Progreso %d/%d (ok=%d fallos=%d)", i, len(pendientes), nuevos_ok, fallos)
             guardar_json(det_path, detalle, metadata={"fuente": "Fotocasa fichas detalle",
-                         "n_fichas": len(detalle)})
+                         "url": "https://www.fotocasa.es", "n_fichas": len(detalle)})
     guardar_json(det_path, detalle, metadata={"fuente": "Fotocasa fichas detalle (V1)",
+                 "url": "https://www.fotocasa.es",
                  "fecha": __import__("datetime").datetime.now().isoformat(timespec="seconds"),
                  "n_fichas": len(detalle), "fallos": fallos})
     # fusion plana aditiva en el json principal + csv
@@ -92,16 +93,7 @@ def main() -> int:
                 a.setdefault(k, d.get(k))
     guardar_json(RAW_DIR / "anuncios_fotocasa.json", anuncios,
                  metadata={**meta, "v1_detalle": f"{len(detalle)} fichas"})
-    import csv
-    df_cols = ["codigo_ine", "nombre_canonico", "anio_fuente", "id_anuncio", "precio_eur",
-               "municipio", "provincia", "codigo_postal", "barrio", "distrito_detalle", "zona_detalle",
-               "latitud_detalle", "longitud_detalle", "superficie_m2", "habitaciones", "banos",
-               "planta", "cert_energetico", "alquiler_temporal", "es_temporal_detalle",
-               "tipo_inmueble", "profesional", "publicado", "url_detalle"]
-    with open(RAW_DIR / "anuncios_fotocasa.csv", "w", newline="", encoding="utf-8-sig") as fh:
-        w = csv.DictWriter(fh, fieldnames=df_cols, extrasaction="ignore")
-        w.writeheader(); w.writerows(anuncios)
-    log.info("V1: %d fichas detalle, %d fallos. CSV+JSON fusionados.", len(detalle), fallos)
+    log.info("V1: %d fichas detalle, %d fallos. Anuncios canónicos guardados en JSON.", len(detalle), fallos)
     return 0
 
 if __name__ == "__main__":

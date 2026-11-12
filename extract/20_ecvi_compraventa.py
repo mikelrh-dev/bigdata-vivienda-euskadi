@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 import sys
+import tempfile
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -60,13 +61,15 @@ def main() -> int:
 
     for url in urls:
         nombre = url.split("/")[-1]
-        destino = RAW_DIR / nombre
+        temp_dir = Path(tempfile.gettempdir()) / "vivienda-euskadi-ecvi"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        destino = temp_dir / nombre
         log.info("Descargando %s ...", nombre)
         try:
             r = requests.get(url, timeout=120)
             r.raise_for_status()
             destino.write_bytes(r.content)
-            log.info("Guardado %s (%.1f KB)", destino.name, len(r.content) / 1024)
+            log.info("Descarga temporal %s (%.1f KB)", destino.name, len(r.content) / 1024)
         except Exception as exc:  # noqa: BLE001
             log.error("Error descargando %s: %s", url, exc)
             continue

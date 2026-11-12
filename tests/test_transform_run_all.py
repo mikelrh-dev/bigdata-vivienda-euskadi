@@ -27,12 +27,21 @@ def test_cada_paso_declara_salidas(tr) -> None:
 def test_todos_los_scripts_declarados_existen(tr) -> None:
     faltan = [p.script for p in tr.PASOS if not (ROOT / "transform" / p.script).exists()]
     assert faltan == []
+    assert all(Path(p.script).name == p.script for p in tr.PASOS)
 
 
 def test_salidas_son_nombres_planos_en_procesado(tr) -> None:
     for paso in tr.PASOS:
         for salida in paso.salidas:
             assert "/" not in salida and "\\" not in salida, (paso.id, salida)
+
+
+def test_quality_scripts_usan_rutas_canonicas_configurables() -> None:
+    quality = ROOT / "transform" / "quality"
+    for nombre in ("generar_manifest.py", "generar_ingestion_manifest.py", "normalizar_metadata.py"):
+        fuente = (quality / nombre).read_text(encoding="utf-8")
+        assert 'PROJECT_ROOT / "data"' not in fuente, nombre
+        assert "from paths import" in fuente, nombre
 
 
 def test_dim_municipios_va_primero(tr) -> None:
@@ -105,7 +114,7 @@ def test_ejecutar_aisla_fallos_y_sigue(tr, tmp_path: Path, monkeypatch) -> None:
         llamados.append(paso.id)
         return paso.id == "b"
 
-    monkeypatch.setattr(tr, "ensure_dirs", lambda: None)
+    monkeypatch.setattr(tr, "PROCESADO_DIR", tmp_path / "data" / "procesado")
     monkeypatch.setattr(tr, "LOG_DIR", tmp_path / "logs")
     monkeypatch.setattr(tr, "_ejecutar", fake_ejecutar)
 
@@ -116,10 +125,14 @@ def test_ejecutar_aisla_fallos_y_sigue(tr, tmp_path: Path, monkeypatch) -> None:
 
 
 def test_ejecutar_devuelve_cero_si_todo_va_bien(tr, tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setattr(tr, "ensure_dirs", lambda: None)
+    procesado = tmp_path / "data" / "procesado"
+    monkeypatch.setattr(tr, "PROCESADO_DIR", procesado)
     monkeypatch.setattr(tr, "LOG_DIR", tmp_path / "logs")
     monkeypatch.setattr(tr, "_ejecutar", lambda paso, log: True)
     assert tr.ejecutar([tr.Paso("a", "a.py", ("a.csv",))]) == 0
+    assert procesado.is_dir()
+    assert not (tmp_path / "data" / "raw").exists()
+    assert not (tmp_path / "data" / "resultados").exists()
 
 
 def test_main_list_no_ejecuta(tr, monkeypatch, capsys) -> None:

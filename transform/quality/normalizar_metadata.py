@@ -26,12 +26,13 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "extract"))
 
 from _common import REQUIRED_METADATA  # noqa: E402
+from paths import PROCESADO_DIR, RAW_DIR  # noqa: E402
 
-RAW_DIR = PROJECT_ROOT / "data" / "raw"
-PROC_DIR = PROJECT_ROOT / "data" / "procesado"
+PROC_DIR = PROCESADO_DIR
 META_DIR = PROC_DIR / "_meta"
 
 # Nombres normalizados que conservan el timestamp del raw del que salieron.

@@ -19,7 +19,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import RAW_DIR, PROCESADO_DIR, get_logger, guardar_meta  # noqa: E402
+from _common import RAW_DIR, get_logger, guardar_meta  # noqa: E402
+from entity_resolution import cargar_dim  # noqa: E402
 
 log = get_logger("ine_atlas_renta")
 
@@ -58,13 +59,8 @@ def _con_renta_derivada(fila: dict) -> dict:
 
 
 def _cargar_dim() -> dict:
-    ruta = PROCESADO_DIR / "dim_municipios.json"
-    if not ruta.exists():
-        log.error("Falta dim_municipios.json. Ejecuta transform/dim_municipios.py primero.")
-        sys.exit(1)
-    data = json.loads(ruta.read_text(encoding="utf-8"))
-    regs = data.get("datos", data) if isinstance(data, dict) else data
-    return {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
+    dim = cargar_dim()
+    return dict(zip(dim["codigo_ine"], dim["nombre_canonico"]))
 
 
 def _cargar_eustat() -> dict:

@@ -9,6 +9,7 @@ Metodo: descarga programatica (requests) de XLSX + pandas.
 from __future__ import annotations
 
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -23,7 +24,7 @@ def main() -> int:
 
     import pandas as pd
 
-    destino = RAW_DIR / "lanbide_paro_historico.xlsx"
+    destino = Path(tempfile.gettempdir()) / "vivienda-euskadi-lanbide-paro_historico.xlsx"
     if not destino.exists():
         log.info("Descargando %s", URL)
         urllib.request.urlretrieve(URL, destino)
