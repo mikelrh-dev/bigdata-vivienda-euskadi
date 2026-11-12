@@ -237,6 +237,21 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "in": ["proc:anuncios_vivienda_residencial.csv"],
         "out": ["proc:anuncios_vivienda_residencial_filtrado.csv"],
         "out_glob": []},
+    # Capa 2026: consumidores declarados para que un rebuild limpio desde raw la
+    # regenere en orden. Antes vivian fuera del DAG y habia que ejecutarlos a mano.
+    "calcular_esfuerzo_mercado_2026.py": {
+        "group": "analisis",
+        "in": ["proc:anuncios_vivienda_residencial_filtrado.csv",
+               "proc:dim_municipios_enriquecido.csv",
+               "raw:ipc_ine_2024_2026.csv",
+               "raw:ovj_salario_joven_2024.json"],
+        "out": ["proc:esfuerzo_mercado_2026.csv"], "out_glob": []},
+    "calcular_esfuerzo_mercado_2026_por_tipo.py": {
+        "group": "analisis",
+        "in": ["proc:anuncios_vivienda_residencial_filtrado.csv",
+               "raw:ipc_ine_2024_2026.csv",
+               "raw:ovj_salario_joven_2024.json"],
+        "out": ["proc:esfuerzo_mercado_2026_por_tipo.csv"], "out_glob": []},
     "generar_vistas_mercado.py": {
         "group": "analisis",
         "in": ["proc:anuncios_unificados.csv"],
@@ -283,6 +298,7 @@ EXCLUIDOS: dict[str, str] = {
     "generar_nombres_normalizados_map.py": "paso de la fase quality (inventario _meta, no silver)",
     "generar_figuras_N.py": "genera PNG P0 N1,N2,N3,N7 y H2 desde CSV sin Mongo vivo (evidencia visual, no silver)",
     "_raw_guard.py": "libreria de guardia raw, no paso del pipeline",
+    "_anuncios_2026.py": "libreria de filtrado unico de anuncios 2026, no paso del pipeline",
 }
 
 

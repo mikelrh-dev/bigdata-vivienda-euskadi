@@ -53,7 +53,9 @@ def main() -> int:
     for node in tree.body:
         if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "SCRIPTS":
             dag = len(node.value.keys)
-    check("transform", len(transform) == 44 and dag == 38,
+    # 47 incluye la libreria _anuncios_2026.py; 40 = 38 previos + los dos
+    # consumidores de la capa 2026 declarados en el DAG (antes fuera de el).
+    check("transform", len(transform) == 47 and dag == 40,
           f"{len(transform)} scripts, {dag} nodos DAG")
 
     silver = ROOT / "data" / "procesado" / "manifest_sha256.txt"

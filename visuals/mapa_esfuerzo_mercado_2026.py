@@ -40,6 +40,8 @@ OUT_DIR = PROJECT_ROOT / "visuals" / "esfuerzo_mercado_2026"
 GEOJSON = PROC / "municipios_euskadi_252.geojson"
 MERCADO_2026 = PROC / "esfuerzo_mercado_2026.csv"
 OUT = OUT_DIR / "mapa_coropletico_2026.png"
+OUT_COBERTURA = OUT_DIR / "mapa_cobertura_2026.png"
+N_MIN_FIABLE = 5
 
 COLOR_SIN_DATOS = "#d3d3d3"
 CMAP = "YlOrRd"
@@ -75,7 +77,10 @@ def main() -> int:
     df["esfuerzo_mercado_2026_pct_18_34"] = pd.to_numeric(
         df["esfuerzo_mercado_2026_pct_18_34"], errors="coerce"
     )
+    df["n_anuncios_2026"] = pd.to_numeric(df["n_anuncios_2026"], errors="coerce")
     esfuerzo = df.set_index("codigo_ine")["esfuerzo_mercado_2026_pct_18_34"]
+    anuncios = df.set_index("codigo_ine")["n_anuncios_2026"]
+    n_insuficiente = set(df.loc[df["n_anuncios_2026"] < N_MIN_FIABLE, "codigo_ine"])
 
     valores = esfuerzo.dropna()
     if valores.empty:
@@ -99,15 +104,18 @@ def main() -> int:
         anillos = _anillos_geometria(feat.get("geometry", {}))
         if pd.isna(valor):
             facecolor = COLOR_SIN_DATOS
+            hatch = None
             n_sin_dato += 1
         else:
             facecolor = cmap(norm(float(valor)))
+            # n<5 no sostiene una mediana municipal: se marca con trama.
+            hatch = "///" if code in n_insuficiente else None
             n_con_dato += 1
         for anillo in anillos:
             polygon = MplPolygon(
                 anillo, closed=True,
                 facecolor=facecolor, edgecolor="white", linewidth=0.3,
-                antialiased=True,
+                antialiased=True, hatch=hatch,
             )
             ax.add_patch(polygon)
 
@@ -125,6 +133,8 @@ def main() -> int:
 
     leyenda = [
         Patch(facecolor=COLOR_SIN_DATOS, edgecolor="white", label="Sin datos"),
+        Patch(facecolor="#f0b27a", edgecolor="white", hatch="///",
+              label=f"n<{N_MIN_FIABLE}: no concluyente"),
     ]
     ax.legend(handles=leyenda, loc="lower left", frameon=True, fontsize=9)
 
@@ -135,6 +145,37 @@ def main() -> int:
         f"OK: {OUT.name} ({n_con_dato} municipios con dato, "
         f"{n_sin_dato} sin dato, vmin={vmin:.2f}, vmax={vmax:.2f})"
     )
+
+    # Segundo mapa: cobertura (n de anuncios), para no confundir gris con barato.
+    valores_n = anuncios.dropna()
+    valores_n = valores_n[valores_n > 0]
+    norm_n = Normalize(vmin=1, vmax=float(valores_n.max()))
+    cmap_n = plt.get_cmap("Blues")
+    fig2, ax2 = plt.subplots(figsize=(10, 10))
+    ax2.set_aspect("equal")
+    ax2.axis("off")
+    for feat in features:
+        props = feat.get("properties", {})
+        code = str(props.get("codigo_ine", "")).zfill(5)
+        n = anuncios.get(code, float("nan"))
+        facecolor = COLOR_SIN_DATOS if (pd.isna(n) or n == 0) else cmap_n(norm_n(float(n)))
+        for anillo in _anillos_geometria(feat.get("geometry", {})):
+            ax2.add_patch(MplPolygon(
+                anillo, closed=True, facecolor=facecolor,
+                edgecolor="white", linewidth=0.3, antialiased=True,
+            ))
+    sm2 = plt.cm.ScalarMappable(norm=norm_n, cmap=cmap_n)
+    sm2.set_array([])
+    cbar2 = fig2.colorbar(sm2, ax=ax2, fraction=0.046, pad=0.04)
+    cbar2.set_label("Anuncios 2026 usados (n)")
+    ax2.set_title(
+        "Cobertura de la capa 2026: anuncios por municipio\n"
+        "(gris = sin anuncio: 'sin dato', no 'asequible')",
+        fontsize=12, pad=12,
+    )
+    fig2.savefig(OUT_COBERTURA, dpi=150, bbox_inches="tight")
+    plt.close(fig2)
+    print(f"OK: {OUT_COBERTURA.name} ({len(valores_n)} municipios con anuncio)")
     return 0
 
 

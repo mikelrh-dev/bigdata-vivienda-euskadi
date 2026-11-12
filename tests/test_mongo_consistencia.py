@@ -44,6 +44,7 @@ _LOADERS = [
     "load_udalmap_extendido",
     "load_etxebide_promociones",
     "load_certificados",
+    "load_esfuerzo_mercado_2026",
     "load_vpo_municipal",
 ]
 
@@ -142,7 +143,7 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
             load_mongo.load_all()
     assert "índices" in caplog.text
 
-    # Camino feliz: sin error de índices, load_all devuelve las 13 colecciones.
+    # Camino feliz: sin error de índices, load_all devuelve las 15 colecciones.
     monkeypatch.setattr(mi, "ensure_indexes", lambda: {})
     result = load_mongo.load_all()
     assert set(result) == {
@@ -159,6 +160,7 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
         "udalmap_extendido",
         "etxebide_promociones",
         "certificados_energeticos",
+        "esfuerzo_mercado_2026",
         "vpo_municipal",
     }
     assert all(v == 1 for v in result.values())

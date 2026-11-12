@@ -46,6 +46,8 @@ def _cargar() -> pd.DataFrame:
         df["precio_mediana_anuncio_2026_eur_mes"], errors="coerce"
     )
     df["n_anuncios_2026"] = pd.to_numeric(df["n_anuncios_2026"], errors="coerce")
+    for col in ("ic95_lo_pct_18_34", "ic95_hi_pct_18_34"):
+        df[col] = pd.to_numeric(df.get(col), errors="coerce")
     return df
 
 
@@ -58,19 +60,25 @@ def _guardar(fig, nombre: str) -> None:
 
 
 def grafico_barras_top20(df: pd.DataFrame) -> None:
+    """Top 20 con n>=5 (un municipio con 1 anuncio no se compara). Con IC95 %."""
     d = df.dropna(subset=["esfuerzo_mercado_2026_pct_18_34"]).copy()
+    d = d[d["n_anuncios_2026"] >= 5]
     d = d.sort_values("esfuerzo_mercado_2026_pct_18_34", ascending=False).head(20)
     fig, ax = plt.subplots(figsize=(10, 8))
-    ax.barh(
-        d["nombre_canonico"],
-        d["esfuerzo_mercado_2026_pct_18_34"],
-        color=sns.color_palette("rocket", n_colors=len(d)),
-    )
+    y = range(len(d))
+    lo = (d["esfuerzo_mercado_2026_pct_18_34"] - d["ic95_lo_pct_18_34"]).fillna(0)
+    hi = (d["ic95_hi_pct_18_34"] - d["esfuerzo_mercado_2026_pct_18_34"]).fillna(0)
+    ax.barh(d["nombre_canonico"], d["esfuerzo_mercado_2026_pct_18_34"],
+            color=sns.color_palette("rocket", n_colors=len(d)))
+    ax.errorbar(d["esfuerzo_mercado_2026_pct_18_34"], list(y),
+                xerr=[lo, hi], fmt="none", ecolor="#333333", capsize=3, elinewidth=1.2)
+    ax.axvline(30, color="#9A5A2E", linestyle="--", linewidth=1.4)
     ax.invert_yaxis()
-    ax.set_xlabel("Esfuerzo mercado 2026 (% salario joven 18-34)")
-    ax.set_title("Top 20 municipios — esfuerzo de alquiler 2026 (pct 18-34)")
+    ax.set_xlabel("Esfuerzo mercado 2026 (% salario joven 18-34), IC95 % bootstrap")
+    ax.set_title("Top municipios con n>=5 — esfuerzo de alquiler 2026 (pct 18-34)")
     for i, v in enumerate(d["esfuerzo_mercado_2026_pct_18_34"]):
-        ax.text(v + 0.5, i, f"{v:.1f}%", va="center")
+        ax.text(v + 0.5, i, f"{v:.1f}% (n={int(d['n_anuncios_2026'].iloc[i])})",
+                va="center", fontsize=8)
     _guardar(fig, "barras_esfuerzo_top20.png")
 
 
@@ -80,7 +88,11 @@ def grafico_histograma(df: pd.DataFrame) -> None:
     ax.hist(d["esfuerzo_mercado_2026_pct_18_34"], bins=12, edgecolor="white", color="#4c72b0")
     ax.set_xlabel("Esfuerzo mercado 2026 (% salario joven 18-34)")
     ax.set_ylabel("N municipios")
-    ax.set_title("Distribucion del esfuerzo de mercado 2026 (municipios con anuncio)")
+    ax.set_title(
+        f"Distribucion del esfuerzo de mercado 2026 "
+        f"({len(d)} municipios con anuncio; mediana {d['esfuerzo_mercado_2026_pct_18_34'].median():.1f} %)"
+    )
+    ax.axvline(30, color="#9A5A2E", linestyle="--", linewidth=1.4)
     _guardar(fig, "hist_esfuerzo.png")
 
 
