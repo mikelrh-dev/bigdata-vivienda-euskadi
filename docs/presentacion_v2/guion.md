@@ -9,7 +9,7 @@ artefacto. Ninguna cifra de este guion se teclea a mano: todas salen de
 
 > **Cifras congeladas (2026-11-11).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Las cifras obsoletas que **no** se usan: 188 silver, 235 tests,
-> 54/65/40, 1716/2465/1536/1406 € de precio medio, 62/252 con precio.
+> 54/65/40, 1716/2465/1536/1406 € de precio medio, 62/252 con precio (pre-M1; vigente 60/252).
 
 ---
 
@@ -142,13 +142,14 @@ diapositivas 3, 4 y 9 son las que se estiran).
 ## D6 · El mapa (5:15–6:15)
 
 - **Mensaje:** el esfuerzo tiene geografía: capitales y costa arriba; interior y sur, abajo.
-- **En pantalla:** coroplético municipal, 159 oficiales, escala 20-40 %, leyenda con el 30 %.
+- **En pantalla:** coroplético municipal, 159 oficiales (croma) + 93 IDW (trama) + gris sin dato, escala 20-40 %, leyenda con el 30 %.
 - **Gráfica:** `mapa_coroplastico_esfuerzo_18_34.png`.
 - **Evidencia:** figura generada desde `mongo_esfuerzo_por_municipio.csv`.
 - **Rúbrica:** C19, C18.
-- **Nota oral:** «Cada municipio con alquiler oficial, coloreado por esfuerzo. No hace falta
-  leer nombres: Bilbao, Donostia y el corredor del Nervión están en la banda alta; el interior
-  de Álava y amplias zonas rurales, por debajo del 30 %. Ojo: el gris es “sin dato”, no cero.»
+- **Nota oral:** «Cada municipio con alquiler oficial, coloreado por esfuerzo; la trama gris es
+  el IDW comarcal, solo sensibilidad. No hace falta leer nombres: Bilbao, Donostia y el corredor
+  del Nervión están en la banda alta; el interior de Álava y amplias zonas rurales, por debajo
+  del 30 %. Ojo: el gris liso es “sin dato”, no cero.»
 - **Transición:** «¿Cuántos quedan a cada lado del umbral?»
 
 ## D7 · El reparto (6:15–7:15)
@@ -175,7 +176,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 - **Mensaje:** cuatro municipios sostienen el ranking; el orden 3º/4º es frágil y lo decimos.
 - **En pantalla (tabla):**
 
-| Municipio | n | Esfuerzo 18-34 | Precio medio | Paro Lanbide |
+| Municipio | n | Esfuerzo 18-34 (2024) | Precio medio anuncio (2026) | Paro general (2024, 16-64) |
 |---|---:|---:|---:|---:|
 | Bilbao | 204 | 37,69 % | 1.704,96 € | 9,71 % |
 | Donostia / San Sebastián | 126 | 38,17 % | 2.247,82 € | 5,82 % |
@@ -184,6 +185,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 
   - Getxo vs Vitoria: **11 anuncios** de diferencia → sin ranking firme 3º/4º
   - **Barakaldo 38,50 % con n=6** → el ranking sin `n≥30` es una trampa
+  - **Vintages distintos:** el esfuerzo usa alquiler oficial 2024; el precio es asking 2026; el paro es Udalmap 2024 general 16-64
 - **Gráfica:** `O_ranking_bloqueado_n30.png` (IC y resto en gris).
 - **Evidencia:** `comparativa_3_municipios_mongo.csv`, `pipeline_indicadores_municipio`.
 - **Rúbrica:** C18 (núcleo), C17.

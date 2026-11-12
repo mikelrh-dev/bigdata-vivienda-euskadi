@@ -141,7 +141,7 @@ bigdata-vivienda-euskadi/
 | Municipios robustos (n≥30) | 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39) |
 | Tipologia (n≥30 / n≥1+mercado) | Nivel1 4 / Nivel2 54 / Nivel3 194; Tier B 10-29 = 3 (Sopela 19, Zarautz 15, Santurtzi 11, solo indicativo, temporal!=larga) |
 | Tier A/B/C/D (de `mongo_tier_confianza.csv`) | A fuerte 4 (Bilbao 204, Donostia 126, Getxo 50, Vitoria 39) / B indicativo 3 / C sin precio municipal 57 / D sin dato 188 |
-| Precio medio observable | Solo 62/252 con anuncio real (resto None, sin IDW/comarcal); esfuerzo 252 contextual sobre 159 oficiales |
+| Precio medio observable | 60/252 con precio observable (64/252 con anuncio; resto None, sin IDW/comarcal); esfuerzo 252 contextual sobre 159 oficiales |
 | Alquiler oficial Eustat | 159/252 (93 imputados por comarca) |
 | Tests | 235 passed, 2 skipped (237 collected) |
 | VPO | `viviendas=0` en `mongo_vpo_por_municipio.csv` significa «sin dato»: `NumViviendas` vacío en 406/406 promociones; no es stock |
@@ -256,7 +256,7 @@ completos.
 - **HDFS:** listo en clúster centro `http://10.22.87.215:50070` con user `iabd-user15` y ruta `/user/iabd-user15/bigdata_reto/vivienda_euskadi/data/raw` (352 canónicos; manifest local 354). Flujo vigente vía Kafka: `storage/kafka_raw_producer.py` publica manifiesto y `storage/kafka_hdfs_uploader.py` sube con `InsecureClient` directo (sin pasar por utils).
 - **Kafka:** listo en el broker del clúster centro `10.22.87.215:9092`, topic vigente `vivienda_euskadi` con 1 partición (RF 1, justificado: single node sin alta disponibilidad, upsert idempotente; topic viejo `anuncios_inmobiliarios` eliminado 2026-11-06, datos Kafka borrados, colección `vivienda_euskadi.anuncios` vaciada — cifra histórica 759 pre-v5, vigente 594/843). Productor y consumidor Python en `storage/kafka_raw_producer.py` (publica el manifiesto `{rel,size,sha256}` de cada fichero de `data/raw`) y `storage/kafka_hdfs_uploader.py` (consume y sube a HDFS, descartando por SHA lo que ya coincide). Kafka no escribe en Mongo: Mongo se carga en batch con `storage/load_mongo.py`. Tests offline del pipeline en `tests/test_kafka_pipeline.py` (dobles de `KafkaProducer`/`KafkaConsumer`/`InsecureClient`, sin broker).
 - **Informe y demo:** pendiente. Aggregation Pipeline, indicadores y CSV desde Mongo hechos (`analysis/run_analisis_mongo.py`); falta informe/demo final.
-- **Cobertura de anuncios (83/252, solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
+- **Cobertura de anuncios (64/252 con anuncio, 60/252 con precio observable; solo 4 con n≥30):** limitación principal del ranking municipal fino. Los municipios sin datos se marcan “sin dato”.
 - **Alquiler oficial (159/252 sin dato):** completado parcialmente con alquiler comarcal para los 93 faltantes.
 - **Paro: `tasa_paro_aprox_pct` invalidado** → usar `tasa_paro_lanbide_pct` del Udalmap/Lanbide.
 - **Distancias completas (252×252):** generadas con Haversine, pero solo Gipuzkoa tiene distancia por carretera.
@@ -282,7 +282,7 @@ El flujo actual tiene dos ramas sobre los mismos originales: fuente → silver �
 
 ## ⚠️ Puntos débiles (limitaciones defendibles)
 
-- Cobertura de anuncios: solo 83/252 municipios, 4 robustos (n≥30). Ranking municipal fino no defendible para la mayoría.
+- Cobertura de anuncios: 64/252 municipios con anuncio (60/252 con precio observable), 4 robustos (n≥30). Ranking municipal fino no defendible para la mayoría.
 - Alquiler oficial: solo 159/252; 93 imputados por comarca (no municipal).
 - Proxy renta (falacia ecológica): renta municipal aplicada homogéneamente, no captura precariedad juvenil.
 - Emancipación solo a nivel CAE, no municipal.
