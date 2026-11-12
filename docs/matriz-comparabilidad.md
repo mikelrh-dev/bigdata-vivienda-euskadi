@@ -28,4 +28,4 @@ Qué es comparable con qué y qué no. Capas: oficial 159 / IDW 93 / contexto
 9. Declaración del denominador (Eustat RPF vs INE Atlas): corregir a INE Atlas.
 10. Declaración del paro (Lanbide 2026 vs Udalmap 2024): corregir a Udalmap 2024 general 16-64.
 11. `bootstrap_robustos.csv` mezclando 2026/2024: etiquetar no comparable.
-12. Conteos 83/252 y 62/252: corregir a 64/252 con anuncio y 60/252 con precio.
+12. Conteos de cobertura sobreestimados: corregir a 64/252 con anuncio y 60/252 con precio.

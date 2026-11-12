@@ -31,9 +31,9 @@
 
 ## 4. Verificación (P0)
 
-- [ ] 4.1 `pytest tests -q` verde (237+ passed, 2 skipped).
-- [ ] 4.2 `python scripts/run_pipeline.py --fase silver` regenera tensión/enriquecido.
-- [ ] 4.3 `python scripts/run_pipeline.py --fase mongo --allow-mongo-write` recarga la tensión embebida.
-- [ ] 4.4 `python scripts/run_pipeline.py --fase gold` regenera figuras y CSV.
-- [ ] 4.5 `python scripts/run_pipeline.py --check` 0 errores.
-- [ ] 4.6 Escribir `verify-report.md`.
+- [x] 4.1 `pytest tests -q` verde (237+ passed, 2 skipped).
+- [x] 4.2 `python scripts/run_pipeline.py --fase silver` regenera tensión/enriquecido.
+- [x] 4.3 `python scripts/run_pipeline.py --fase mongo --allow-mongo-write` recarga la tensión embebida.
+- [x] 4.4 `python scripts/run_pipeline.py --fase gold` regenera figuras y CSV.
+- [x] 4.5 `python scripts/run_pipeline.py --check` 0 errores.
+- [x] 4.6 Escribir `verify-report.md`.
