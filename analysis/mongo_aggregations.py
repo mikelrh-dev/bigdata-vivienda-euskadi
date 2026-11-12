@@ -311,11 +311,57 @@ def pipeline_alquiler_por_municipio(limit: int | None = None) -> list[dict[str, 
 
 
 def pipeline_modalidades() -> list[dict[str, Any]]:
+    """Precio por modalidad (temporal vs larga estancia).
+
+    Ademas del precio medio mensual devuelve la mediana de EUR/m2, que es la
+    magnitud comparable entre modalidades: el alquiler temporal suele ser un
+    piso mas pequeno, de modo que su mediana mensual puede coincidir con la de
+    larga estancia mientras su coste por m2 es mayor. Solo se usan anuncios con
+    `precio_eur` y `superficie_m2` validos (10-500 m2), el mismo filtro que
+    aplica el pipeline de indicadores. Mediana = elemento `floor(n/2)` de la
+    lista ordenada, igual que en `pipeline_tier_por_municipio`.
+    """
     return list(get_collection("anuncios").aggregate([
         {"$match": {}},
-        {"$group": {"_id": "$modalidad", "n": {"$sum": 1}, "precio_medio": {"$avg": "$precio_eur"}}},
+        {"$group": {
+            "_id": "$modalidad",
+            "n": {"$sum": 1},
+            "precio_medio": {"$avg": "$precio_eur"},
+            "_precios": {"$push": {"$cond": [
+                {"$ne": ["$precio_eur", None]}, "$precio_eur", None]}},
+            "_ratios_m2": {"$push": {"$cond": [
+                {"$and": [
+                    {"$ne": ["$precio_eur", None]},
+                    {"$ne": ["$superficie_m2", None]},
+                    {"$gte": ["$superficie_m2", 10]},
+                    {"$lte": ["$superficie_m2", 500]},
+                ]},
+                {"$divide": ["$precio_eur", "$superficie_m2"]},
+                None,
+            ]}},
+        }},
+        {"$addFields": {
+            "_precios": {"$filter": {"input": "$_precios", "as": "p",
+                                     "cond": {"$ne": ["$$p", None]}}},
+            "_ratios_m2": {"$filter": {"input": "$_ratios_m2", "as": "r",
+                                        "cond": {"$ne": ["$$r", None]}}},
+        }},
+        {"$addFields": {
+            "n_precio": {"$size": "$_precios"},
+            "mediana_precio_eur": {"$arrayElemAt": [
+                {"$sortArray": {"input": "$_precios", "sortBy": 1}},
+                {"$floor": {"$divide": [{"$size": "$_precios"}, 2]}},
+            ]},
+            "n_eur_m2": {"$size": "$_ratios_m2"},
+            "mediana_eur_m2": {"$arrayElemAt": [
+                {"$sortArray": {"input": "$_ratios_m2", "sortBy": 1}},
+                {"$floor": {"$divide": [{"$size": "$_ratios_m2"}, 2]}},
+            ]},
+        }},
         {"$sort": {"n": -1}},
-        {"$project": {"modalidad": "$_id", "n": 1, "precio_medio": 1, "_id": 0}},
+        {"$project": {"modalidad": "$_id", "n": 1, "precio_medio": 1,
+                      "n_precio": 1, "mediana_precio_eur": 1,
+                      "n_eur_m2": 1, "mediana_eur_m2": 1, "_id": 0}},
     ]))
 
 
