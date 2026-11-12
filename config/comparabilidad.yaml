@@ -1,0 +1,56 @@
+# Contrato de comparabilidad del proyecto.
+# Fija capas, unidades, vintages y denominadores. Los generadores de figuras
+# y los CSV de resultados deben responder a estas reglas.
+
+canonico:
+  esfuerzo: esfuerzo_joven_pct_18_34
+  renta: renta_hogar_INE_Atlas_2024
+  alquiler: cuantia_media_eur_mes_mediana
+
+capas:
+  oficial:
+    municipios: 159
+    metodo_imputacion: oficial
+    is_imputed: false
+    uso: titular
+  idw:
+    municipios: 93
+    metodo_imputacion: idw
+    is_imputed: true
+    uso: sensibilidad
+  contexto:
+    municipios: 252
+    metodo_imputacion: contexto
+    is_imputed: true
+    uso: contexto
+
+unidades:
+  eur_mes: "€/mes"
+  eur_m2: "€/m²"
+  eur_habitacion: "€/habitación"
+
+vintages:
+  alquiler: 2024
+  anuncios: 2026
+  renta: 2024
+  paro_udalmap: 2024
+  paro_lanbide: 2026
+
+denominadores:
+  esfuerzo_joven_pct_18_34: renta_hogar_INE_Atlas_2024
+  esfuerzo_joven_pct: renta_joven_estimada_16_29
+  esfuerzo_joven_fiscal_18_34_pct: renta_personal_total_udalmap_2024
+  esfuerzo_ovj_referencia_pct: salario_ovj_2024_constante
+  esfuerzo_alquiler_hombres_pct: renta_personal_total_hombres_udalmap_2024
+  esfuerzo_alquiler_mujeres_pct: renta_personal_total_mujeres_udalmap_2024
+
+aliases_legacy:
+  esfuerzo_joven_pct: esfuerzo_joven_pct_16_29
+  esfuerzo_alquiler_pct: esfuerzo_joven_pct_16_29
+
+reglas:
+  - No mezclar capas sin etiqueta (oficial 159 / IDW 93 / contexto 252).
+  - No mezclar unidades en un mismo eje (eur_mes, eur_m2, eur_habitacion).
+  - Declarar el denominador de cada variante de esfuerzo.
+  - Declarar el vintage de cada cifra (alquiler 2024, anuncios 2026, paro 2024/2026, renta 2024).
+  - No presentar la IDW como precio municipal real.

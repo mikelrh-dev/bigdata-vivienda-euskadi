@@ -47,9 +47,10 @@ pesos_indice_compuesto:
 
 fuentes:
   alquiler_oficial: "Eustat Bizilagun 2024"
-  renta: "Eustat RPF 2024"
+  renta: "INE Atlas renta_hogar 2024 (denominador canónico)"
+  renta_contraste: "Eustat RPF 2024"
   poblacion: "Eustat Población 2025"
-  paro: "Lanbide 2026"
+  paro: "Udalmap 2024 paro general 16-64 (dato); Lanbide 2026 (declarativo)"
   anuncios: "Fotocasa, Pisos, RealtyAPI 2026"
   compraventa: "ECVI 2026T2"
   transporte: "GTFS 13 operadores"
