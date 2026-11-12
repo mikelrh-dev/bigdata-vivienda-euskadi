@@ -6,10 +6,14 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 ## Qué hay aquí
 
 - `guion.md` — guion oral slide por slide, con cifras, gráficas, backups y mapa de rúbrica.
-- `index.html` — deck completo, 15 diapositivas + 8 de backup. Estilo **Swiss Modern**.
-  Una sola página, CSS/JS inline, sin red: se abre con doble clic.
-- `assets/` — 12 PNG de `data/resultados/` copiados para que la carpeta sea portable.
-- `presentacion_v2.pdf` — exportación a 1920×1080, 23 páginas (15 + backups).
+- `index.html` — deck completo, **21 diapositivas + 9 de backup**, en cuatro actos:
+  2024 oficial → 2026 de oferta → cómo se construyó → límites y cierre. Estilo
+  **Swiss Modern**, una sola página, CSS/JS inline, sin red: se abre con doble clic.
+- `assets/` — PNG portables. Los del bloque 2026 salen de
+  `visuals/assets_presentacion_esfuerzo_mercado_2026.py` (lee los CSV de
+  `data/procesado`, no teclea cifras): top20 con IC, histograma, territorio,
+  tipología, diferencia de nivel, intervalos, cobertura y los dos mapas.
+- `presentacion_v2.pdf` — exportación a 1920×1080, 30 páginas (21 + 9 backups).
 - H8b (`H8b_modalidad_mediana_eur_m2.png`) se genera en `run_analisis_mongo.py` desde
   `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` por modalidad. Gold pasa a 53/53.
 
@@ -26,6 +30,44 @@ chrome --headless=new --no-pdf-header-footer \
 
 Si cambias una cifra en `guion.md`, actualízala también en `index.html` y vuelve a exportar.
 Las cifras canónicas siguen en `data/resultados/*.csv`.
+
+## Regenerar el bloque 2026
+
+```
+python scripts/regenerar_capa_2026.py
+```
+
+Encadena en orden (fail-fast) los dos `transform/` de 2026, la calibración del
+premium, la comparación con denominador común, la diferencia de nivel, cobertura,
+validación SERPAVI, mapas, gráficos y assets. Al final imprime el SHA-256 de cada
+salida. No toca `data/raw` ni `extract/`, y no modifica el esfuerzo canónico 2024.
+
+Cifras que alimentan el bloque 2026 (diapositivas 9 a 15):
+
+| Dato | Valor | Fuente |
+|---|---|---|
+| Mediana esfuerzo 2026 (50 mun) | 78,6 % | `esfuerzo_mercado_2026.csv` |
+| Anuncios usados / excluidos | 287 / 10 | `_anuncios_2026.py` (conciliado en test) |
+| Anuncios > 30 % del salario | 98,3 % | mismo CSV, nivel anuncio |
+| Cobertura población 18-34 | 71,2 % | `data/resultados/cobertura_representatividad_2026.csv` |
+| 2024 oficial → 2026 oferta (misma base) | 44,6 % → 78,6 % | `data/resultados/comparacion_esfuerzo_2024_2026_resumen.csv` |
+| 2026 con denominador canónico | 57,8 % | mismo CSV |
+| SERPAVI vs Eustat 2024 | ratio 0,976 · Spearman 0,979 | `data/resultados/validacion_alquiler_2024_serpavi.csv` |
+| Esfuerzo por tipología (mediana de anuncios) | 78,6 / 82,0 / 116,4 % | `data/resultados/esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
+| Sensibilidad al portal | Donostia 116,4 → 93,1 % sin realtyapi | `data/resultados/validacion_portales_2026.csv` |
+
+Los productos de `analysis/` van a `data/resultados` (capa gold): `data/procesado`
+queda reservado a `transform/`, que es lo que vigila el manifest silver.
+
+## Comprobar que el deck no se ha desincronizado
+
+```
+python scripts/verificar_cifras_deck.py
+```
+
+Lee `index.html`, saca 20 cifras de los CSV gold y falla si alguna ya no coincide. Existe
+porque el deck se quedó una vez con el corte viejo (79,3 % / 52 municipios) mientras los
+CSV ya daban 78,6 % / 50. Se ejecuta antes de exportar el PDF.
 
 ## Skill instalado
 
