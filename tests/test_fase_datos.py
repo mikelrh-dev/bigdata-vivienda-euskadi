@@ -237,7 +237,7 @@ def test_wp17_ingestion_manifest():
     import json
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(
         encoding="utf-8"))
-    assert man["n_ficheros"] == len(man["ficheros"]) == 354
+    assert man["n_ficheros"] == len(man["ficheros"]) == 355
     for e in man["ficheros"]:
         assert set(e) >= {"fichero", "bytes", "sha256", "fuente",
                           "url", "fecha_extraccion", "n_registros"}

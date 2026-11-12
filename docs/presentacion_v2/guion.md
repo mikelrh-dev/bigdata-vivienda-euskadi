@@ -10,7 +10,7 @@ artefacto. Ninguna cifra de este guion se teclea a mano: todas salen de
 > **Cifras congeladas (2026-11-12).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Las cifras obsoletas que **no** se usan: 182 silver, 277 tests, 54/65/40,
 > 62/252 con precio, 79,3 % de mediana 2026 (corte viejo de 52 municipios).
-> Cifras vigentes: **355 raw** · **185 silver** · **53/53 gold** · **287 tests**
+> Cifras vigentes: **355 raw** · **183 silver** · **63/63 gold** · **287 tests**
 > (285 passed, 2 skipped) · **287 anuncios válidos en 50 municipios** · **78,6 %**.
 
 ---
@@ -414,7 +414,7 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
   - 13 familias de fuentes · **47 scripts** transform · **40 nodos** en el DAG
   - Limpieza PyMongo: `canonicalize_codigo_ine`, `mark_nulls`, `resolve_duplicates`,
     `convert_types` (+ `clean_obsolete_fields`)
-  - **185/185** silver y **53/53** gold reconstruidos desde cero, byte a byte
+  - **183/183** silver y **63/63** gold reconstruidos desde cero, byte a byte
   - `python scripts/run_pipeline.py --fase silver,quality,gold`
 - **Gráfica:** ninguna (diagrama de fases + dos checks).
 - **Evidencia:** `scripts/run_pipeline.py`, `storage/clean_mongo.py`, manifests.
@@ -422,8 +422,8 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
 - **Nota oral:** «La automatización no es un script: es un DAG con dependencias. Cada fichero
   de silver tiene un productor declarado o no existe. Los nulos se marcan, no se rellenan;
   los duplicados se resuelven por portal+id y por huella; los tipos se convierten, incluido
-  el `codigo_ine` a cinco dígitos. Y se puede reconstruir de cero: lo hicimos, 185 ficheros
-  y 53 artefactos idénticos.»
+  el `codigo_ine` a cinco dígitos. Y se puede reconstruir de cero: lo hicimos, 183 ficheros
+  y 63 artefactos idénticos.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
 
 ---
@@ -476,15 +476,15 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
 
 - **Mensaje:** no es una demo: es un sistema que se reconstruye y que falla cuando debe.
 - **En pantalla:**
-  - **287 tests** (2 skipped) · gobernanza **TODO OK** (47/40/185/15)
-  - Gate offline: 355 raw SHA + 185 silver + 15 colecciones + lag 0
-  - Rebuild: **183/183** silver y **53/53** gold byte-idénticos
+  - **287 tests** (2 skipped) · gobernanza **TODO OK** (47/40/183/15)
+  - Gate offline: 355 raw SHA + 183 silver + 15 colecciones + lag 0
+  - Rebuild: **183/183** silver y **63/63** gold byte-idénticos
   - **FAIL 07 conocido y visible**: paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26
 - **Gráfica:** ninguna (4 checks en verde + 1 en ámbar).
 - **Evidencia:** `pytest`, `verificar_gobernanza.py`, `gate_extremo_a_extremo.py --offline`,
   `verificar_fase_datos.py`.
 - **Rúbrica:** C8, C16, T6, P-08.
-- **Nota oral:** «Tenemos 287 tests. El gate verifica los 355 SHA del raw y los 185 ficheros
+- **Nota oral:** «Tenemos 287 tests. El gate verifica los 355 SHA del raw y los 183 ficheros
   de silver. Reconstruimos la capa entera desde cero y sale idéntica. Y hay un check que
   falla a propósito: tres municipios con paro cero en el INE y tasa no nula en Lanbide.
   Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.»
@@ -523,7 +523,7 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; y en 188
   municipios no lo sabemos.» + «Gracias. Abrimos el código, los datos y el CSV de cada cifra.»
 - **Gráfica:** ninguna.
-- **Evidencia:** repositorio completo (355 raw · 185 silver · 53 gold · 287 tests).
+- **Evidencia:** repositorio completo (355 raw · 183 silver · 63 gold · 287 tests).
 - **Rúbrica:** C18, C19.
 - **Nota oral:** «Y hasta aquí. En la mayoría del territorio, justo; en las capitales, no; y en
   188 municipios no lo sabemos. Gracias; abrimos el código y los datos.»
@@ -537,7 +537,7 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
 | B2 | Transacciones / sharding | Atómica de documento, por qué no replica set, shard key `codigo_ine` |
 | B3 | CRUD y consultas | `demo_crud_operations` + 30 consultas (dot notation, `$elemMatch`, `$and`) |
-| B4 | Hashes y conteos | 355/185/53 · 594/252 · 4/3/57/188 · 15 colecciones · 287/50 |
+| B4 | Hashes y conteos | 355/183/63 · 594/252 · 4/3/57/188 · 15 colecciones · 287/50 |
 | B5 | HDFS/Kafka | Evidencia v8, 352 canónicos, topic `vivienda_euskadi`, lag 0, por qué no se revalida hoy |
 | B6 | Habitaciones | `H6_habitaciones_mediana_rango.png`; solo Bilbao 96 y Donostia 66 firmes |
 | B7 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; divergencia por territorio |

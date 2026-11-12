@@ -478,13 +478,13 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div class="arrow">→</div>
         <div class="box"><span class="n">02</span><b>raw inmutable</b><div class="small" style="font-size:18px">355 ficheros · SHA + .FROZEN</div></div>
         <div class="arrow">→</div>
-        <div class="box"><span class="n">03</span><b>silver</b><div class="small" style="font-size:18px">185 ficheros · 43 CSV</div></div>
+        <div class="box"><span class="n">03</span><b>silver</b><div class="small" style="font-size:18px">183 ficheros · 42 CSV</div></div>
         <div class="arrow">→</div>
         <div class="box"><span class="n">04</span><b>Mongo</b><div class="small" style="font-size:18px">15 vivas · PyMongo</div></div>
         <div class="arrow">→</div>
-        <div class="box" style="border-color:var(--accent)"><span class="n">05</span><b>gold</b><div class="small" style="font-size:18px">53 artefactos · CSV + PNG</div></div>
+        <div class="box" style="border-color:var(--accent)"><span class="n">05</span><b>gold</b><div class="small" style="font-size:18px">63 artefactos · CSV + PNG</div></div>
       </div>
-      <p class="small" style="margin-top:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 185/185 silver · 53/53 gold byte a byte · 40 nodos en el DAG.</p>
+      <p class="small" style="margin-top:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 183/183 silver · 63/63 gold byte a byte · 40 nodos en el DAG.</p>
       <div class="branch">
         <div class="grid2" style="gap:26px">
           <div class="box"><span class="n">CONSERVACIÓN</span><b>raw → Kafka → HDFS</b><div class="small" style="font-size:18px">manifiesto con SHA · consumidor que sube · nunca Kafka→Mongo</div></div>
@@ -572,8 +572,8 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <div class="grid4" style="margin-top:8px">
         <div><div class="big sm">287</div><div class="cap">tests · 2 skipped</div></div>
         <div><div class="big sm">355</div><div class="cap">SHA del raw verificados</div></div>
-        <div><div class="big sm">185</div><div class="cap">silver verificados</div></div>
-        <div><div class="big sm">53</div><div class="cap">gold byte-idénticos</div></div>
+        <div><div class="big sm">183</div><div class="cap">silver verificados</div></div>
+        <div><div class="big sm">63</div><div class="cap">gold byte-idénticos</div></div>
       </div>
       <div class="warn" style="margin-top:44px;max-width:70ch">
         <b>FAIL 07, visible:</b> Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el INE con tasa no nula en Lanbide.
@@ -628,7 +628,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <h2>Una frase, y abrimos preguntas.</h2>
       <p class="final" style="margin-top:56px;max-width:30ch;font-size:64px">En la mayoría del territorio, justo; en las capitales, no; y en 188 municipios no lo sabemos.</p>
       <p class="lead" style="margin-top:64px;max-width:40ch">Gracias. Abrimos el código, los datos y el CSV de cada cifra de esta charla.</p>
-      <footer class="ft"><span class="proof">Repositorio · 355 raw · 185 silver · 53 gold · 287 tests</span><span class="proof">C18 · C19</span></footer>
+      <footer class="ft"><span class="proof">Repositorio · 355 raw · 183 silver · 63 gold · 287 tests</span><span class="proof">C18 · C19</span></footer>
     </div>
   </section>
 
@@ -698,9 +698,9 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <header class="hd"><span class="kicker">Backup · B4 Conteos</span><span class="pg">B4 / 9</span></header>
       <h2>Los números, en crudo.</h2>
       <div class="grid3" style="font-size:23px;line-height:1.7">
-        <div><b>Datos</b><br>355 raw · 355 SHA<br>352 HDFS · 185 silver<br>43 CSV silver<br>594 anuncios (326/268)<br>64 municipios con anuncio<br>201 habitaciones / 9<br>5.040 registros Etxebide · 406 promos</div>
+        <div><b>Datos</b><br>355 raw · 355 SHA<br>352 HDFS · 183 silver<br>42 CSV silver<br>594 anuncios (326/268)<br>64 municipios con anuncio<br>201 habitaciones / 9<br>5.040 registros Etxebide · 406 promos</div>
         <div><b>Indicador</b><br>159 oficiales · 93 IDW<br>mediana 26,61 %<br>40/159 &gt; 30 %<br>119 / 26 / 14<br>Tier A4 B3 C57 D188<br>287 anuncios válidos 2026 · 50 municipios</div>
-        <div><b>Sistema</b><br>15 vivas + 14 backup<br>11 pipelines · 8 etapas<br>24 índices<br>287 tests · 2 skipped<br>185/185 · 53/53<br>COLLSCAN 594 → IXSCAN 1</div>
+        <div><b>Sistema</b><br>15 vivas + 14 backup<br>11 pipelines · 8 etapas<br>24 índices<br>287 tests · 2 skipped<br>183/183 · 63/63<br>COLLSCAN 594 → IXSCAN 1</div>
       </div>
       <footer class="ft"><span class="proof">manifests · Mongo · gobernanza</span><span class="proof">C8 · C16</span></footer>
     </div>
