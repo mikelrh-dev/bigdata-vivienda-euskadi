@@ -36,7 +36,7 @@ def main() -> int:
     # WP-10: lectura tipada como str; medidas a numerico explicito.
     etx24["etxebide_solicitudes_por_mil_2024"] = pd.to_numeric(
         etx24["etxebide_solicitudes_por_mil_2024"], errors="coerce")
-    for _c in ["esfuerzo_joven_pct", "esfuerzo_max_pct"]:
+    for _c in ["esfuerzo_joven_pct_18_34", "esfuerzo_max_pct"]:
         if _c in dim.columns:
             dim[_c] = pd.to_numeric(dim[_c], errors="coerce")
 
@@ -50,12 +50,12 @@ def main() -> int:
     dim["etxebide_solicitudes_por_mil_2024"] = dim["etxebide_solicitudes_por_mil_2024"].fillna(med)
 
     # percentiles
-    # WP-06: esfuerzo canonico = esfuerzo_joven_pct (base municipal fiscal).
+    # Esfuerzo canonico 18-34 (NO el legacy 16-29, que es un denominador distinto).
     # esfuerzo_ovj_referencia_pct usa un denominador autonomico constante y
     # solo refleja diferencias de alquiler, no de renta: no se usa aqui.
     # Fallback fiscal (mismo numerador, ratio CAE) donde el municipal falta.
-    dim["esf_fallback"] = dim["esfuerzo_joven_pct"].isna()
-    esf = dim["esfuerzo_joven_pct"].fillna(dim["esfuerzo_max_pct"])
+    dim["esf_fallback"] = dim["esfuerzo_joven_pct_18_34"].isna()
+    esf = dim["esfuerzo_joven_pct_18_34"].fillna(dim["esfuerzo_max_pct"])
     n_fb = int(dim["esf_fallback"].sum())
     print(f"esfuerzo canonico: {int(esf.notna().sum())} mun., fallback fiscal: {n_fb}")
     p_sol = _percentil(dim["etxebide_solicitudes_por_mil_2024"])
