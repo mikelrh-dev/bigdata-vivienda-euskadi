@@ -25,14 +25,15 @@ artefacto. Ninguna cifra de este guion se teclea a mano: todas salen de
 | 5 | Cómo se mide | 4:20 | 5:15 | B. Datos |
 | 6 | El mapa | 5:15 | 6:15 | C. Detalle |
 | 7 | El reparto | 6:15 | 7:15 | C. Detalle |
-| 8 | Los 4 robustos | 7:15 | 8:45 | C. Detalle |
-| 9 | Incertidumbre y hallazgos | 8:45 | 10:00 | C. Detalle |
-| 10 | Arquitectura | 10:00 | 11:00 | D. Ingeniería |
-| 11 | Pipeline y limpieza | 11:00 | 12:00 | D. Ingeniería |
-| 12 | Modelo Mongo | 12:00 | 12:45 | D. Ingeniería |
-| 13 | Aggregation, índices, CRUD | 12:45 | 13:30 | D. Ingeniería |
-| 14 | Pruebas | 13:30 | 14:30 | E. Cierre |
-| 15 | Límites y cierre | 14:30 | 15:30 | E. Cierre |
+| 8 | Esfuerzo mercado 2026 | 7:15 | 7:45 | C. Detalle |
+| 9 | Los 4 robustos | 7:45 | 9:00 | C. Detalle |
+| 10 | Incertidumbre y hallazgos | 9:00 | 10:15 | C. Detalle |
+| 11 | Arquitectura | 10:15 | 11:15 | D. Ingeniería |
+| 12 | Pipeline y limpieza | 11:15 | 12:00 | D. Ingeniería |
+| 13 | Modelo Mongo | 12:00 | 12:45 | D. Ingeniería |
+| 14 | Aggregation, índices, CRUD | 12:45 | 13:30 | D. Ingeniería |
+| 15 | Pruebas | 13:30 | 14:30 | E. Cierre |
+| 16 | Límites y cierre | 14:30 | 15:30 | E. Cierre |
 
 Los tiempos suman 15:30 con colchón; en ensayo hay que entrar en **13:30** (las
 diapositivas 3, 4 y 9 son las que se estiran).
@@ -172,7 +173,24 @@ diapositivas 3, 4 y 9 son las que se estiran).
   lista cambia.»
 - **Transición:** «Pero solo cuatro aguantan una comparación firme.»
 
-## D8 · Los 4 robustos (7:15–8:45)
+## D8 · Esfuerzo mercado 2026 (7:15–7:45)
+
+- **Mensaje:** el mercado de alquiler de anuncio 2026 es sensiblemente mas caro que el alquiler oficial 2024: el esfuerzo se dispara cuando comparamos precio de anuncio con salario joven.
+- **En pantalla:**
+  - **79,3 %** mediana esfuerzo mercado 2026 (52 municipios con anuncio, vs 26,61 % del esfuerzo canonico 2024 con alquiler oficial)
+  - **1.363 €** precio mediana anuncio 2026
+  - **1.719 €** salario joven 18-34 ajustado 2026 (OVJ 2024 × IPC INE 1,099)
+  - **49/52** municipios superan el 30 % (94,2 %)
+  - **Bilbao 98,19 % · Donostia 116,37 %** (vs 37,69 % / 38,17 % en esfuerzo 2024)
+- **Gráfica:** `M26_hist_esfuerzo_mercado.png`
+- **Evidencia:** `data/procesado/esfuerzo_mercado_2026.csv`, `transform/calcular_esfuerzo_mercado_2026.py`.
+- **Rúbrica:** C17, C19.
+- **Nota oral:** «Esta es la capa paralela. El esfuerzo canonico 2024 usa alquiler oficial de Eustat y da una mediana del 26,6 %. El esfuerzo mercado 2026 usa precios de anuncio de Fotocasa y Pisos (2026) sobre el salario joven OVJ 2024 ajustado por IPC INE, y da una mediana del 79,3 %. No son comparables 1 a 1: el numerador cambia, de alquiler efectivo a precio de oferta publicada. Pero nos dicen algo importante: el mercado de anuncio es mucho mas caro que el alquiler oficial, y donde hay anuncio, casi siempre se pasa del 30 %.»
+- **Transición:** «Pero solo cuatro municipios aguantan una comparación firme.»
+
+---
+
+## D9 · Los 4 robustos (7:45–9:00)
 
 - **Mensaje:** cuatro municipios sostienen el ranking; el orden 3º/4º es frágil y lo decimos.
 - **En pantalla (tabla):**
@@ -197,7 +215,9 @@ diapositivas 3, 4 y 9 son las que se estiran).
   tensión es precio más paro; en Donostia es precio puro, con el paro más bajo.»
 - **Transición:** «¿Y cuánto de esto es incertidumbre?»
 
-## D9 · Incertidumbre y hallazgos laterales (8:45–10:00)
+---
+
+## D10 · Incertidumbre y hallazgos laterales (9:00–10:15)
 
 - **Mensaje:** el titular aguanta la incertidumbre; dos hallazgos laterales cambian la
   lectura: temporal≠larga y la demanda social no sigue al precio.
@@ -224,7 +244,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 
 # Acto D — Cómo se calculó
 
-## D10 · Arquitectura (10:00–11:00)
+## D11 · Arquitectura (10:15–11:15)
 
 - **Mensaje:** dos ramas sobre los mismos originales: una analítica (Mongo) y una de
   conservación (Kafka→HDFS); nunca Kafka→Mongo.
@@ -243,7 +263,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
   352 originales, con recuperación por SHA.»
 - **Transición:** «¿Y cómo se pasa de 356 ficheros a un indicador?»
 
-## D11 · Pipeline y limpieza (11:00–12:00)
+## D12 · Pipeline y limpieza (11:15–12:00)
 
 - **Mensaje:** una orden reconstruye todo, y la limpieza es explícita: nulos marcados,
   duplicados resueltos, tipos convertidos.
@@ -263,7 +283,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
   y 53 artefactos idénticos.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
 
-## D12 · Modelo Mongo (12:00–12:45)
+## D13 · Modelo Mongo (12:00–12:45)
 
 - **Mensaje:** lo que se lee junto se embebe; lo que crece sin límite se referencia por
   `codigo_ine`.
@@ -282,7 +302,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
   rompería el límite de 16 MB.»
 - **Transición:** «Y con eso, consultas y agregaciones.»
 
-## D13 · Aggregation, índices y CRUD (12:45–13:30)
+## D14 · Aggregation, índices y CRUD (12:45–13:30)
 
 - **Mensaje:** 11 pipelines con 8 etapas; un índice convierte 594 documentos examinados en 1.
 - **En pantalla (dos mitades):**
@@ -307,25 +327,25 @@ diapositivas 3, 4 y 9 son las que se estiran).
 
 # Acto E — Pruebas y cierre
 
-## D14 · Pruebas (13:30–14:30)
+## D15 · Pruebas (13:30–14:30)
 
 - **Mensaje:** no es una demo: es un sistema que se reconstruye y que falla cuando debe.
 - **En pantalla:**
-  - **277 tests** (2 skipped) · gobernanza **TODO OK** (44/38/182/11)
-  - Gate offline: 354 raw SHA + 182 silver + 14 colecciones + lag 0
-  - Rebuild: **182/182** silver y **53/53** gold byte-idénticos
+  - **277 tests** (2 skipped) · gobernanza **TODO OK** (44/38/183/11)
+  - Gate offline: 355 raw SHA + 183 silver + 15 colecciones + lag 0
+  - Rebuild: **183/183** silver y **53/53** gold byte-idénticos
   - **FAIL 07 conocido y visible**: paro-cero Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26
 - **Gráfica:** ninguna (4 checks en verde + 1 en ámbar).
 - **Evidencia:** `pytest`, `verificar_gobernanza.py`, `gate_extremo_a_extremo.py --offline`,
   `verificar_fase_datos.py`.
 - **Rúbrica:** C8, C16, T6, P-08.
-- **Nota oral:** «Tenemos 277 tests. El gate verifica los 354 SHA del raw y los 182 ficheros
+- **Nota oral:** «Tenemos 277 tests. El gate verifica los 354 SHA del raw y los 183 ficheros
   de silver. Reconstruimos la capa entera desde cero y sale idéntica. Y hay un check que
   falla a propósito: tres municipios con paro cero en el INE y tasa no nula en Lanbide.
   Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.»
 - **Transición:** «Y hasta aquí lo que sostenemos.»
 
-## D15 · Límites y cierre (14:30–15:30)
+## D16 · Límites y cierre (14:30–15:30)
 
 - **Mensaje:** sabemos qué afirmamos, qué no y qué nos tumbaría.
 - **En pantalla (dos columnas):**
@@ -354,7 +374,7 @@ diapositivas 3, 4 y 9 son las que se estiran).
 | B1 | Modelado Tema 8 | Las 7 preguntas del docx con respuesta y la decisión embedding/referencing |
 | B2 | Transacciones / sharding | Atómica de documento, por qué no replica set, shard key candidata `codigo_ine` |
 | B3 | CRUD y consultas | `demo_crud_operations` + 30 consultas (dot notation, `$elemMatch`, `$and`) |
-| B4 | Hashes y conteos | 354/182/53 · 594/252 · 4/3/57/188 · 16+14 colecciones |
+| B4 | Hashes y conteos | 355/183/53 · 594/252 · 4/3/57/188 · 16+15 colecciones |
 | B5 | HDFS/Kafka | Evidencia v8, 352 canónicos, topic `vivienda_euskadi`, lag 0, por qué no se revalida hoy |
 | B6 | Habitaciones | `H6_habitaciones_mediana_rango.png`; solo Bilbao 96 y Donostia 66 firmes |
 | B7 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; divergencia por territorio |

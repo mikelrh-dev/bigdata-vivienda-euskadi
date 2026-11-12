@@ -564,6 +564,46 @@ def load_certificados() -> int:
     return replace_collection("certificados_energeticos", docs)
 
 
+def load_esfuerzo_mercado_2026() -> int:
+    """Carga capa esfuerzo de mercado 2026 (coleccion aislada, sin tocar 2024)."""
+    df = _read_csv("esfuerzo_mercado_2026.csv")
+    docs = []
+    for _, row in df.iterrows():
+        code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
+        docs.append({
+            "_id": code,
+            "codigo_ine": code,
+            "nombre_canonico": to_str(row.get("nombre_canonico")),
+            "territorio": to_str(row.get("territorio")),
+            "n_anuncios_2026": to_int(row.get("n_anuncios_2026")),
+            "n_precio_2026": to_int(row.get("n_precio_2026")),
+            "precio_medio_anuncio_2026_eur_mes": _money(row.get("precio_medio_anuncio_2026_eur_mes")),
+            "precio_mediana_anuncio_2026_eur_mes": _money(row.get("precio_mediana_anuncio_2026_eur_mes")),
+            "mediana_m2_winsorizada_2026_eur_m2": to_float(row.get("mediana_m2_winsorizada_2026_eur_m2")),
+            "salario_joven_2024_base_18_34_eur_mes": _money(row.get("salario_joven_2024_base_18_34_eur_mes")),
+            "salario_joven_2024_base_16_29_eur_mes": _money(row.get("salario_joven_2024_base_16_29_eur_mes")),
+            "ipc_2024": to_float(row.get("ipc_2024")),
+            "ipc_2026": to_float(row.get("ipc_2026")),
+            "factor_ipc_2026_2024": to_float(row.get("factor_ipc_2026_2024")),
+            "salario_joven_2026_ajustado_18_34_eur_mes": _money(row.get("salario_joven_2026_ajustado_18_34_eur_mes")),
+            "salario_joven_2026_ajustado_16_29_eur_mes": _money(row.get("salario_joven_2026_ajustado_16_29_eur_mes")),
+            "esfuerzo_mercado_2026_pct_18_34": to_float(row.get("esfuerzo_mercado_2026_pct_18_34")),
+            "esfuerzo_mercado_2026_pct_16_29": to_float(row.get("esfuerzo_mercado_2026_pct_16_29")),
+            "vintage_numerador": to_int(row.get("vintage_numerador")),
+            "vintage_denominador": to_int(row.get("vintage_denominador")),
+            "flag_no_comparable": to_bool(row.get("flag_no_comparable")),
+            "flag_ipc": to_str(row.get("flag_ipc")),
+            "fuente": "silver esfuerzo_mercado_2026 (anuncios 2026 + OVJ 2024 x IPC INE 2024->2026)",
+            "anio_fuente": 2024,
+            "fecha_carga": datetime.now(timezone.utc),
+        })
+    if not docs:
+        return 0
+    return replace_collection("esfuerzo_mercado_2026", docs)
+
+
 def load_vpo_municipal() -> int:
     """VPO terminada en el ultimo quinquenio (Udalmap 73), flujo en por mil."""
     df = _read_csv("vpo_municipal.csv")
@@ -602,6 +642,7 @@ def load_all() -> dict[str, int]:
         "udalmap_extendido": load_udalmap_extendido(),
         "etxebide_promociones": load_etxebide_promociones(),
         "certificados_energeticos": load_certificados(),
+        "esfuerzo_mercado_2026": load_esfuerzo_mercado_2026(),
         "vpo_municipal": load_vpo_municipal(),
     }
     try:

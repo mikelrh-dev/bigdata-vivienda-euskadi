@@ -441,6 +441,57 @@ def indicador_por_municipio(codigo_ine: str) -> dict[str, Any] | None:
     return d
 
 
+def pipeline_esfuerzo_mercado_2026(limit: int | None = None) -> list[dict[str, Any]]:
+    """Esfuerzo de mercado 2026 por municipio (coleccion aislada `esfuerzo_mercado_2026`).
+
+    Capa paralela al esfuerzo canónico 2024: NO toca `municipios` ni
+    `pipeline_indicadores_municipio`. Cada documento ya lleva el esfuerzo
+    calculado aguas arriba (anuncios 2026 + OVJ 2024 x IPC INE 2024->2026).
+    Devuelve 252 filas; municipios sin anuncio 2026 devuelven esfuerzo nulo
+    y `esfuerzo_no_disponible=True` (sin imputar comarcal/IDW).
+
+    Etapas: $match, $addFields, $project, $sort (opcional $limit).
+    """
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {}},
+        {"$addFields": {
+            "esfuerzo_no_disponible": {
+                "$eq": ["$esfuerzo_mercado_2026_pct_18_34", None]
+            },
+        }},
+        {"$project": {
+            "_id": 0,
+            "codigo_ine": 1,
+            "nombre_canonico": 1,
+            "territorio": 1,
+            "n_anuncios_2026": 1,
+            "n_precio_2026": 1,
+            "precio_medio_anuncio_2026_eur_mes": 1,
+            "precio_mediana_anuncio_2026_eur_mes": 1,
+            "mediana_m2_winsorizada_2026_eur_m2": 1,
+            "salario_joven_2024_base_18_34_eur_mes": 1,
+            "salario_joven_2024_base_16_29_eur_mes": 1,
+            "ipc_2024": 1,
+            "ipc_2026": 1,
+            "factor_ipc_2026_2024": 1,
+            "salario_joven_2026_ajustado_18_34_eur_mes": 1,
+            "salario_joven_2026_ajustado_16_29_eur_mes": 1,
+            "esfuerzo_mercado_2026_pct_18_34": 1,
+            "esfuerzo_mercado_2026_pct_16_29": 1,
+            "vintage_numerador": 1,
+            "vintage_denominador": 1,
+            "flag_no_comparable": 1,
+            "flag_ipc": 1,
+            "esfuerzo_no_disponible": 1,
+            "anio_fuente": 1,
+        }},
+        {"$sort": {"esfuerzo_mercado_2026_pct_18_34": -1, "codigo_ine": 1}},
+    ]
+    if limit is not None:
+        pipeline.append({"$limit": limit})
+    return list(get_collection("esfuerzo_mercado_2026").aggregate(pipeline))
+
+
 def pipeline_esfuerzo_por_sexo(limit: int | None = None) -> list[dict[str, Any]]:
     """E4: esfuerzo alquiler por sexo calculado en Mongo ($match/$lookup/$addFields/$sort/$limit)."""
     pipeline: list[dict[str, Any]] = [

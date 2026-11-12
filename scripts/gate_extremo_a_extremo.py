@@ -29,8 +29,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 # Umbrales normativos (spec.md).
-EXPECTED_RAW = 354
-EXPECTED_SILVER = 182  # reproducible desde raw: toda entrada tiene productor
+EXPECTED_RAW = 355
+EXPECTED_SILVER = 183  # reproducible desde raw: toda entrada tiene productor
 EXPECTED_COLLECTIONS = [
     "municipios",
     "anuncios",
@@ -41,9 +41,10 @@ EXPECTED_COLLECTIONS = [
     "udalmap_empleo",
     "osrm_tiempos",
     "emancipacion_juventud",
+    "esfuerzo_mercado_2026",
+    "etxebide_promociones",
     "etxebide_solicitudes",
     "udalmap_extendido",
-    "etxebide_promociones",
     "certificados_energeticos",
     "vpo_municipal",
 ]
@@ -135,7 +136,7 @@ def check_duplicados() -> tuple[bool, str]:
 
 
 def check_colecciones() -> tuple[bool, str]:
-    ok = len(EXPECTED_COLLECTIONS) == 14
+    ok = len(EXPECTED_COLLECTIONS) == 15
     detail = f"colecciones esperadas: {len(EXPECTED_COLLECTIONS)}"
     if ok:
         # offline: cada colección debe aparecer en el loader (solo lectura).
@@ -164,12 +165,12 @@ def tcp_probe(host: str, port: int, timeout: float = 5.0) -> bool:
 def run_offline(root: Path = ROOT) -> list[tuple[str, bool, str]]:
     checks: list[tuple[str, bool, str]] = []
     ok, det = check_manifest(root / RAW_MANIFEST, root / RAW_BASE, EXPECTED_RAW)
-    checks.append(("manifiesto raw 354 SHA", ok, det))
+    checks.append(("manifiesto raw 355 SHA", ok, det))
     ok, det = check_manifest(root / SILVER_MANIFEST, root / SILVER_BASE,
                              EXPECTED_SILVER)
-    checks.append(("silver 182", ok, det))
+    checks.append(("silver 183", ok, det))
     ok, det = check_colecciones()
-    checks.append(("14 colecciones", ok, det))
+    checks.append(("15 colecciones", ok, det))
     ok, det = check_duplicados()
     checks.append(("0 duplicados en reintentos", ok, det))
     ok, det = check_lag()
