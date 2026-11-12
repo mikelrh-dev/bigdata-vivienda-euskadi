@@ -17,7 +17,7 @@ Calcula:
 NO toca raw ni el esfuerzo canonico 2024.
 
 Guarda:
-    data/procesado/brecha_esfuerzo_2024_2026.csv
+    data/resultados/brecha_esfuerzo_2024_2026.csv
 
 Uso:
     python analysis/calcular_brecha_esfuerzo_2024_2026.py
@@ -35,7 +35,7 @@ PROC = PROJECT_ROOT / "data" / "procesado"
 DIM = PROC / "dim_municipios_enriquecido.csv"
 MERCADO_2026 = PROC / "esfuerzo_mercado_2026.csv"
 PREMIUM = PROJECT_ROOT / "data" / "resultados" / "premium_oferta_2026.csv"
-OUT = PROC / "brecha_esfuerzo_2024_2026.csv"
+OUT = PROJECT_ROOT / "data" / "resultados" / "brecha_esfuerzo_2024_2026.csv"
 
 CAVEAT = (
     "diferencia de nivel entre alquiler registrado 2024 y precio de oferta 2026; "

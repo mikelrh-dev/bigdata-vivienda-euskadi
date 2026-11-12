@@ -59,7 +59,7 @@ SALIDAS = [
     RES / "premium_oferta_2026.csv",
     RES / "comparacion_esfuerzo_2024_2026.csv",
     RES / "comparacion_esfuerzo_2024_2026_resumen.csv",
-    PROC / "brecha_esfuerzo_2024_2026.csv",
+    RES / "brecha_esfuerzo_2024_2026.csv",
     RES / "cobertura_representatividad_2026.csv",
     RES / "validacion_alquiler_2024_serpavi.csv",
     RES / "validacion_portales_2026.csv",

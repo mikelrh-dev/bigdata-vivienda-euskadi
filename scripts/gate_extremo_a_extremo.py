@@ -1,7 +1,7 @@
 """Gate extremo a extremo (offline por defecto, vivo opt-in).
 
 Offline (defecto, sin red): verifica umbrales sobre el repo local
-read-only: manifiesto raw 354 SHA, silver 182, 14 colecciones,
+read-only: manifiesto raw 355 SHA, silver 183, 15 colecciones,
 0 duplicados en reintentos (idempotencia simulada), lag 0.
 No escribe en ``data/`` ni conecta a Mongo/HDFS/Kafka.
 
@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Umbrales normativos (spec.md).
 EXPECTED_RAW = 355
-EXPECTED_SILVER = 185  # reproducible desde raw: toda entrada tiene productor
+EXPECTED_SILVER = 183  # reproducible desde raw: toda entrada tiene productor
 EXPECTED_COLLECTIONS = [
     "municipios",
     "anuncios",

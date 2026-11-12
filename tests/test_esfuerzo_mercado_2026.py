@@ -20,7 +20,7 @@ from _anuncios_2026 import cargar_anuncios_2026  # noqa: E402
 PROC = ROOT / "data" / "procesado"
 CSV = PROC / "esfuerzo_mercado_2026.csv"
 CSV_TIPO = PROC / "esfuerzo_mercado_2026_por_tipo.csv"
-CSV_BRECHA = PROC / "brecha_esfuerzo_2024_2026.csv"
+CSV_BRECHA = ROOT / "data" / "resultados" / "brecha_esfuerzo_2024_2026.csv"
 RES = ROOT / "data" / "resultados"
 CSV_PREMIUM = RES / "premium_oferta_2026.csv"
 CSV_COMP = RES / "comparacion_esfuerzo_2024_2026.csv"

@@ -4,7 +4,7 @@ Comprueba lo que la auditoría dejó fijado (v6 2026-11-08, valores reales
 contados con Python):
 - 50 cabeceras de requisito (46 con ID numérico único + 4 `chart_*`).
 - 44 scripts en transform/ y 38 nodos en el DAG.
-- 182 entradas en el manifiesto silver (todas con productor declarado).
+- Manifiesto silver == ficheros en disco (menos los 3 de control).
 - 0 variables de entorno usadas sin declarar en .env.example.
 - 11 pipelines en PIPELINE_ORDER.
 
@@ -58,9 +58,22 @@ def main() -> int:
     check("transform", len(transform) == 47 and dag == 40,
           f"{len(transform)} scripts, {dag} nodos DAG")
 
-    silver = ROOT / "data" / "procesado" / "manifest_sha256.txt"
-    entradas = sum(1 for line in silver.read_text(encoding="utf-8").splitlines() if line.strip())
-    check("silver", entradas == 182, f"{entradas} entradas en manifest_sha256.txt")
+    # Se compara contra disco en vez de contra un literal: el manifiesto tiene
+    # que ser exactamente el inventario de la capa, no una foto de un dia.
+    proc = ROOT / "data" / "procesado"
+    silver = proc / "manifest_sha256.txt"
+    entradas = {line.split("  ", 1)[1].strip().replace("\\", "/")
+                for line in silver.read_text(encoding="utf-8").splitlines() if line.strip()}
+    control = {"manifest_sha256.txt", "run_manifest.json", ".gitkeep",
+               "_meta/ingestion_manifest.json"}
+    en_disco = {str(p.relative_to(proc)).replace("\\", "/")
+                for p in proc.rglob("*") if p.is_file()} - control
+    detalle = f"{len(entradas)} entradas, {len(en_disco)} ficheros de datos"
+    if en_disco - entradas:
+        detalle += f"; sin hashear: {sorted(en_disco - entradas)[:3]}"
+    if entradas - en_disco:
+        detalle += f"; hasheados que no existen: {sorted(entradas - en_disco)[:3]}"
+    check("silver", entradas == en_disco, detalle)
 
     usadas: set[str] = set()
     for carpeta in ("extract", "transform", "storage", "analysis", "scripts"):

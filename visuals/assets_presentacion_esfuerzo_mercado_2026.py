@@ -50,7 +50,7 @@ GRIS = "#C9C5BD"
 SRC = PROC / "esfuerzo_mercado_2026.csv"
 SRC_TIPO = PROC / "esfuerzo_mercado_2026_por_tipo.csv"
 SRC_TIPO_ANUNCIO = ROOT / "data" / "resultados" / "esfuerzo_por_tipo_nivel_anuncio_2026.csv"
-SRC_BRECHA = PROC / "brecha_esfuerzo_2024_2026.csv"
+SRC_BRECHA = ROOT / "data" / "resultados" / "brecha_esfuerzo_2024_2026.csv"
 SRC_COB = ROOT / "data" / "resultados" / "cobertura_representatividad_2026.csv"
 
 

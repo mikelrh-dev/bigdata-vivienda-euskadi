@@ -349,7 +349,7 @@ dos capas se tocan. Límites (20) y cierre (21) van al final, no en medio.
   - Precio de oferta **2,0×** el alquiler registrado 2024 en el mismo municipio (**1,44×** en €/m²)
   - Extremos: **+122,6 pp con n=1** (Ibarrangelu, Mendata); bajan **Barakaldo (−15,2)**, **Basauri (−12,8)**, **Eibar (−1,7)**, los tres con n≤2
 - **Gráfica:** `M26_brecha_2024_2026.png` (15 mayores diferencias; **gris = n<5**, no concluyente).
-- **Evidencia:** `data/procesado/brecha_esfuerzo_2024_2026.csv`,
+- **Evidencia:** `data/resultados/brecha_esfuerzo_2024_2026.csv`,
   `analysis/calcular_brecha_esfuerzo_2024_2026.py`,
   `analysis/comparar_esfuerzo_2024_2026_misma_base.py`,
   `analysis/calibrar_premium_oferta.py`.

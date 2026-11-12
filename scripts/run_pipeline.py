@@ -8,7 +8,8 @@ Fases:
   quality  normalizar_metadata + nombres_normalizados_map + ingestion_manifest
            + manifest --write
   mongo    scripts/run_mongo_pipeline.py  (DESTRUCTIVO: exige --allow-mongo-write)
-  gold     run_analisis_mongo + comparativa_mongo + sensibilidad + figuras
+  gold     capa_2026 + run_analisis_mongo + comparativa_mongo + sensibilidad
+           + figuras  (el bloque Mongo exige la fase mongo ya hecha)
 
 `--fase all` = silver,quality,gold. Nunca incluye mongo.
 
@@ -100,6 +101,10 @@ FASES: dict[str, Fase] = {
         destructiva=True,
     ),
     "gold": Fase("gold", (
+        # Bloque 2026 (lo que antes habia que lanzar a mano): solo necesita
+        # silver, asi que va primero y falla rapido si falta un insumo.
+        Paso("capa_2026", _py("scripts/regenerar_capa_2026.py")),
+        # A partir de aqui hace falta Mongo poblado (fase mongo).
         Paso("run_analisis_mongo", _py("analysis/run_analisis_mongo.py")),
         Paso("comparativa_mongo", _py("analysis/comparativa_mongo.py")),
         Paso("sensibilidad", _py("analysis/sensibilidad.py")),
