@@ -449,7 +449,7 @@ ul.clean.sq li:before{background:var(--ink)}
   <!-- 16 CIERRE -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">E · Pruebas y cierre</span><span class="pg">16 / 16</span></header>
+      <header class="hd"><span class="kicker">E · Pruebas y cierre</span><span class="pg">19 / 19</span></header>
       <h2>Lo que sostenemos y lo que no.</h2>
       <div class="grid2" style="margin-top:8px">
         <div>
@@ -471,6 +471,74 @@ ul.clean.sq li:before{background:var(--ink)}
       </div>
       <p class="final" style="margin-top:46px">En la mayoría del territorio, justo; en las capitales, no; y en 188 municipios no lo sabemos.</p>
       <footer class="ft"><span class="proof">Nos tumbaría: fuente independiente con n≥30 que mueva &gt;10 % el precio; un piso en cuarentena que sí esté en Euskadi</span><span class="proof">C18 · C19</span></footer>
+    </div>
+  </section>
+
+  <!-- 17 ESFUERZO POR TIPO -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · Detalle</span><span class="pg">17 / 19</span></header>
+      <h2>Esfuerzo de mercado 2026 por tipo de vivienda</h2>
+      <div class="grid2" style="grid-template-columns:1.35fr .65fr;gap:52px;align-items:center">
+        <div class="fig">
+          <img src="assets/M26_esfuerzo_por_tipo.png" alt="Esfuerzo de mercado 2026 por tipo de vivienda">
+          <div class="cap">M26 · esfuerzo medio ponderado por nº de anuncios · 18-34 · 2026</div>
+        </div>
+        <div>
+          <table class="s">
+            <thead><tr><th>Tipo</th><th>n</th><th>Esfuerzo 18-34</th></tr></thead>
+            <tbody>
+              <tr><td>1-2 hab</td><td>128</td><td>82,8 %</td></tr>
+              <tr><td>3 hab</td><td>95</td><td>85,4 %</td></tr>
+              <tr class="hi"><td>4+ hab</td><td>63</td><td>141,6 %</td></tr>
+            </tbody>
+          </table>
+          <p class="small" style="margin-top:24px">La vivienda de 4+ habitaciones casi dobla el esfuerzo: el precio del anuncio sube más que el salario joven. Media ponderada por nº de anuncios.</p>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">transform/calcular_esfuerzo_mercado_2026_por_tipo.py</span><span class="proof">C8</span></footer>
+    </div>
+  </section>
+
+  <!-- 18 BRECHA 2024 2026 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · Detalle</span><span class="pg">18 / 19</span></header>
+      <h2>Brecha de esfuerzo: 2024 (canónico) vs 2026 (mercado)</h2>
+      <div class="grid2" style="grid-template-columns:.9fr 1.1fr;gap:52px;align-items:center">
+        <div class="fig">
+          <img src="assets/M26_brecha_2024_2026.png" alt="Brecha de esfuerzo 2024 vs 2026 por municipio">
+          <div class="cap">M26 · brecha en puntos porcentuales (18-34) · top 10 y bottom 10 municipios</div>
+        </div>
+        <div>
+          <p class="lead" style="max-width:32ch">La brecha es el esfuerzo de 2026 menos el de 2024, en puntos porcentuales.</p>
+          <ul class="clean" style="font-size:22px">
+            <li><b>49 de 52</b> municipios empeoran: el mercado 2026 es más caro que el alquiler oficial 2024.</li>
+            <li>Mayor subida: <b>Amorebieta-Etxano (+255,9 pp)</b>, con muy pocos anuncios — extremo, no tendencia.</li>
+            <li>Bajan <b>Barakaldo (−15,2)</b>, <b>Basauri (−12,8)</b> y <b>Eibar (−1,7)</b>: precio de anuncio por debajo del oficial 2024.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">analysis/calcular_brecha_esfuerzo_2024_2026.py</span><span class="proof">C8</span></footer>
+    </div>
+  </section>
+
+  <!-- 19 MAPA COROPLETICO 2026 -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">C · Detalle</span><span class="pg">19 / 19</span></header>
+      <h2>Mapa coroplético: esfuerzo mercado 2026 por municipio</h2>
+      <div class="grid2" style="grid-template-columns:1.4fr .6fr;gap:48px;align-items:center">
+        <div class="fig map"><img src="assets/M26_mapa_coropletico_2026.png" alt="Mapa coroplético esfuerzo mercado 2026 por municipio"></div>
+        <div>
+          <p class="small">Cada municipio con anuncio, coloreado por esfuerzo de mercado 2026 (precio de anuncio sobre salario joven 18-34, ajuste IPC INE 2024→2026).</p>
+          <ul class="clean" style="font-size:21px">
+            <li>Capitales y corredor del Nervión, en la banda alta.</li>
+            <li>El gris es <b>sin anuncio</b>, nunca cero.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">visuals/mapa_esfuerzo_mercado_2026.py</span><span class="proof">C8</span></footer>
     </div>
   </section>
 
