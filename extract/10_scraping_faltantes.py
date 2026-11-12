@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import unicodedata
 from datetime import datetime
 from pathlib import Path
 
@@ -15,7 +14,9 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _slugs import slug_fotocasa  # noqa: E402
+from entity_resolution import cargar_dim, resolver_municipio  # noqa: E402
 
 import importlib.util
 
@@ -32,30 +33,45 @@ pisos_mod = importlib.util.module_from_spec(spec_pisos)
 spec_pisos.loader.exec_module(pisos_mod)
 
 log = get_logger("faltantes")
-PROC_DIR = RAW_DIR.parent / "procesado"
-
-
 def _slug(nombre: str) -> str:
-    s = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode("ascii")
-    s = s.lower().strip().replace(" ", "-").replace("/", "-")
-    while "--" in s:
-        s = s.replace("--", "-")
-    return s.strip("-")
+    return slug_fotocasa(nombre)
 
 
 def _municipios_faltantes(umbral: int) -> list[tuple[str, str]]:
-    """Devuelve lista de (codigo_ine, nombre_canonico) con n < umbral."""
-    import pandas as pd
+    """Identifica municipios con pocos anuncios usando solo entradas raw.
 
-    csv_path = PROC_DIR / "anuncios_unificados.csv"
-    df = pd.read_csv(csv_path, dtype=str, encoding="utf-8-sig")
-    if "codigo_ine" in df.columns:  # M-1: claves siempre string 5 digitos
-        df["codigo_ine"] = df["codigo_ine"].astype(str).str.zfill(5)
-    counts = df.groupby("codigo_ine").size().to_dict()
-    # cargar dim para nombres
-    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
-    regs = dim["datos"] if isinstance(dim, dict) else dim
-    nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
+    Este extractor corre antes de Transform; por eso no puede depender de
+    anuncios_unificados.csv. Los IDs/URLs deduplican repeticiones entre feeds.
+    """
+    dim = cargar_dim()
+    regs = dim.to_dict(orient="records")
+    nombres = {str(r["codigo_ine"]).zfill(5): r["nombre_canonico"] for r in regs}
+    ids_por_codigo: dict[str, set[str]] = {}
+    fuentes = [
+        RAW_DIR / "anuncios_fotocasa.json",
+        RAW_DIR / "anuncios_pisos.json",
+        RAW_DIR / "anuncios_realtyapi.json",
+        *sorted(RAW_DIR.glob("anuncios_fotocasa_dirigido_*.json")),
+    ]
+    for ruta in fuentes:
+        if not ruta.exists():
+            continue
+        payload = json.loads(ruta.read_text(encoding="utf-8"))
+        anuncios = payload.get("datos", payload) if isinstance(payload, dict) else payload
+        for idx, anuncio in enumerate(anuncios):
+            codigo = anuncio.get("codigo_ine") or anuncio.get("codigo_ine_forzado")
+            if not codigo:
+                codigo, _ = resolver_municipio(
+                    anuncio.get("municipio_busqueda") or anuncio.get("municipio")
+                )
+            if not codigo:
+                continue
+            codigo = str(codigo).zfill(5)
+            identidad = anuncio.get("url_detalle") or anuncio.get("url") or anuncio.get("id_anuncio")
+            if not identidad:
+                identidad = f"{ruta.name}:{idx}"
+            ids_por_codigo.setdefault(codigo, set()).add(str(identidad))
+    counts = {codigo: len(ids) for codigo, ids in ids_por_codigo.items()}
     faltantes = []
     for cod, nombre in nombres.items():
         n = counts.get(cod, 0)
@@ -72,10 +88,23 @@ def main() -> int:
     parser.add_argument("--umbral", type=int, default=30)
     parser.add_argument("--max-municipios", type=int, default=10)
     parser.add_argument("--max-paginas", type=int, default=2)
+    parser.add_argument("--codigos", nargs="+", help="Limitar a códigos INE concretos")
     args = parser.parse_args()
 
     faltantes = _municipios_faltantes(args.umbral)
-    seleccion = faltantes[: args.max_municipios]
+    if args.codigos:
+        dim = cargar_dim()
+        nombres = {
+            str(fila["codigo_ine"]).zfill(5): fila["nombre_canonico"]
+            for fila in dim.to_dict(orient="records")
+        }
+        pedidos = list(dict.fromkeys(args.codigos))
+        desconocidos = sorted(set(pedidos) - set(nombres))
+        if desconocidos:
+            parser.error(f"Códigos INE desconocidos: {', '.join(desconocidos)}")
+        seleccion = [(codigo, nombres[codigo]) for codigo in pedidos]
+    else:
+        seleccion = faltantes[: args.max_municipios]
     log.info("Faltantes totales: %d | seleccionados: %d", len(faltantes), len(seleccion))
 
     cliente_fc = Cliente("faltantes_fc", delay=2.0, reintentos=2)
@@ -130,6 +159,7 @@ def main() -> int:
         fc_path = RAW_DIR / f"anuncios_faltantes_fotocasa_batch{batch_num}_{fecha}.json"
         guardar_json(fc_path, todos_fc, metadata={
             "fuente": "Scraping dirigido a faltantes (Fotocasa)",
+            "url": "https://www.fotocasa.es/es/alquiler/viviendas",
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_anuncios": len(todos_fc),
             "municipios_objetivo": len(seleccion),
@@ -140,6 +170,7 @@ def main() -> int:
         pisos_path = RAW_DIR / f"anuncios_faltantes_pisos_batch{batch_num}_{fecha}.json"
         guardar_json(pisos_path, todos_pisos, metadata={
             "fuente": "Scraping dirigido a faltantes (Pisos)",
+            "url": "https://www.pisos.com/alquiler/",
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_anuncios": len(todos_pisos),
             "municipios_objetivo": len(seleccion),

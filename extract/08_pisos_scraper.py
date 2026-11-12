@@ -21,15 +21,16 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
-import unicodedata
 from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _slugs import slug_pisos  # noqa: E402
 
 log = get_logger("pisos")
 
@@ -38,10 +39,7 @@ MAX_POR_PAGINA = 30
 
 
 def _slug(nombre: str) -> str:
-    """Convierte 'Donostia / San Sebastián' en 'donostia-san-sebastian'."""
-    nombre = nombre.split("/")[0].strip()
-    nombre = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", "-", nombre.lower()).strip("-")
+    return slug_pisos(nombre)
 
 
 def _limpiar(texto: str) -> str:
@@ -179,10 +177,27 @@ def main() -> int:
         nargs="+",
         help="Lista concreta de municipios (por defecto, los de Eustat)",
     )
+    parser.add_argument(
+        "--codigos",
+        nargs="+",
+        help="Códigos INE concretos para reintentar municipios seleccionados",
+    )
     args = parser.parse_args()
 
     # Si no se pasan municipios, usar los 159 de Eustat
-    if args.municipios:
+    if args.codigos:
+        from entity_resolution import cargar_dim
+
+        dim = cargar_dim()
+        nombres = {
+            str(fila["codigo_ine"]).zfill(5): fila["nombre_canonico"]
+            for fila in dim.to_dict(orient="records")
+        }
+        desconocidos = [codigo for codigo in args.codigos if codigo not in nombres]
+        if desconocidos:
+            parser.error(f"Códigos INE desconocidos: {', '.join(desconocidos)}")
+        municipios = [nombres[codigo] for codigo in args.codigos]
+    elif args.municipios:
         municipios = args.municipios
     else:
         import csv as csv_module
@@ -228,17 +243,49 @@ def main() -> int:
     log.info("Anuncios totales: %d | únicos: %d", len(todos), len(unicos))
 
     if unicos:
+        salida = unicos
+        metadata = {
+            "fuente": "Pisos.com (scraping HTML, sin API key)",
+            "url": BASE.format(municipio="{municipio}"),
+            "n_municipios": len({a["municipio_busqueda"] for a in unicos}),
+            "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
+            "n_anuncios": len(unicos),
+            "n_sin_duplicar": len(todos),
+        }
+        # Un reintento dirigido actualiza solo sus registros y conserva el
+        # resto del raw; nunca reemplaza los 159 municipios por el subconjunto.
+        existente = RAW_DIR / "anuncios_pisos.json"
+        if args.codigos and existente.exists():
+            payload = json.loads(existente.read_text(encoding="utf-8"))
+            previos = payload.get("datos", payload) if isinstance(payload, dict) else payload
+            metadata_previa = payload.get("metadata", {}) if isinstance(payload, dict) else {}
+            por_clave = {}
+            salida = []
+            for anuncio in previos:
+                clave = anuncio.get("url_detalle") or anuncio.get("id_anuncio")
+                if clave is None:
+                    clave = (anuncio.get("municipio_busqueda"), anuncio.get("titulo"))
+                por_clave[clave] = len(salida)
+                salida.append(anuncio)
+            for anuncio in unicos:
+                clave = anuncio.get("url_detalle") or anuncio.get("id_anuncio")
+                if clave is None:
+                    clave = (anuncio.get("municipio_busqueda"), anuncio.get("titulo"))
+                if clave in por_clave:
+                    salida[por_clave[clave]] = anuncio
+                else:
+                    por_clave[clave] = len(salida)
+                    salida.append(anuncio)
+            metadata = {**metadata_previa, **metadata, "n_anuncios": len(salida)}
+            metadata["n_municipios"] = len({a.get("municipio_busqueda") for a in salida})
+
         guardar_json(
-            RAW_DIR / "anuncios_pisos.json",
-            unicos,
-            metadata={
-                "fuente": "Pisos.com (scraping HTML, sin API key)",
-                "n_municipios": len({a["municipio_busqueda"] for a in unicos}),
-                "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
-                "n_anuncios": len(unicos),
-                "n_sin_duplicar": len(todos),
-            },
+            existente if args.codigos else RAW_DIR / "anuncios_pisos.json",
+            salida,
+            metadata=metadata,
         )
+        if args.codigos:
+            log.info("Raw actualizado con merge: %d anuncios en total", len(salida))
 
     return 0 if unicos else 1
 

@@ -51,6 +51,8 @@ EQUIVALENCIAS = {
     "arrankudiaga / zollo": "arrankudiaga zollo",
     "bilbao": "bilbao",
     "getxo": "getxo",
+    # Alias Fotocasa: "Plasencia" frente a la forma oficial "Placencia".
+    "soraluze plasencia de las armas": "soraluze placencia de las armas",
 }
 
 

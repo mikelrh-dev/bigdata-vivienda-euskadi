@@ -16,15 +16,13 @@ def ra():
 
 
 def _script_path(paso) -> Path:
-    if "/" in paso.script:
-        return ROOT / paso.script
     return ROOT / "extract" / paso.script
 
 
 def test_registro_sin_ids_duplicados(ra) -> None:
     ids = [paso.id for paso in ra.PASOS]
     assert len(ids) == len(set(ids))
-    assert len(ra.PASOS) == 34
+    assert len(ra.PASOS) == 33
 
 
 def test_cada_paso_declara_salidas(ra) -> None:
@@ -34,6 +32,45 @@ def test_cada_paso_declara_salidas(ra) -> None:
 def test_todos_los_scripts_declarados_existen(ra) -> None:
     faltan = [paso.script for paso in ra.PASOS if not _script_path(paso).exists()]
     assert faltan == []
+    assert all(Path(paso.script).name == paso.script for paso in ra.PASOS)
+
+
+def test_slugs_portales_usan_aliases_actuales() -> None:
+    from conftest import load_module
+
+    pisos = load_module("pisos_scraper_slug_test", "extract/08_pisos_scraper.py")
+    assert pisos._slug("Gernika-Lumo") == "gernika_lumo"
+    assert pisos._slug("Donostia / San Sebastián") == "donostia_san_sebastian"
+    assert pisos._slug("Alegría-Dulantzi") == "alegria_dulantzi"
+    assert pisos._slug("Iruña Oka/Iruña de Oca") == "iruna_oka_iruna_de_oca"
+    assert pisos._slug("Urduña/Orduña") == "urduna_orduna"
+    assert pisos._slug("Ribera Baja/Erriberabeitia") == "ribera_baja_erriberabeitia"
+    assert pisos._slug("Karrantza Harana/Valle de Carranza") == "karrantza_harana"
+
+    from _slugs import slug_fotocasa
+
+    assert slug_fotocasa("Agurain/Salvatierra") == "salvatierra-agurain"
+    assert slug_fotocasa("Campezo/Kanpezu") == "campezo-kampezu"
+    assert (
+        slug_fotocasa("Soraluze-Placencia de las Armas")
+        == "soraluze-plasencia-de-las-armas"
+    )
+
+
+def test_cliente_no_reintenta_error_404() -> None:
+    from conftest import load_module
+
+    common = load_module("extract_common_404_test", "extract/_common.py")
+    cliente = common.Cliente("test_404", reintentos=4, delay=0)
+    llamadas = []
+
+    class Response:
+        status_code = 404
+
+    cliente.session.request = lambda *args, **kwargs: llamadas.append(args) or Response()
+    with pytest.raises(RuntimeError, match="no se reintenta"):
+        cliente.get("https://example.invalid/not-found")
+    assert len(llamadas) == 1
 
 
 def test_inventario_cubre_todos_los_extractores_registrados(ra) -> None:
@@ -46,7 +83,35 @@ def test_inventario_cubre_todos_los_extractores_registrados(ra) -> None:
     }
     assert columnas <= set(filas[0])
     scripts = {fila["script"] for fila in filas}
-    assert all(p.script.split("/")[-1] in scripts for p in ra.PASOS if not p.script.startswith("transform/"))
+    assert all(Path(p.script).name in scripts for p in ra.PASOS)
+
+
+def test_entity_resolution_funciona_desde_raw_sin_transform(tmp_path: Path) -> None:
+    import pandas as pd
+
+    from conftest import load_module
+
+    module = load_module("entity_resolution_raw_only", "extract/entity_resolution.py")
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    pd.DataFrame(
+        [
+            {"ámbitos territoriales": "01001", "ámbitos territoriales__etiqueta": "Alegría-Dulantzi"},
+            {"ámbitos territoriales": "20001", "ámbitos territoriales__etiqueta": "Abaltzisketa"},
+            {"ámbitos territoriales": "20065", "ámbitos territoriales__etiqueta": "Soraluze-Placencia de las Armas"},
+            {"ámbitos territoriales": "48001", "ámbitos territoriales__etiqueta": "Abadiño"},
+            {"ámbitos territoriales": "00001", "ámbitos territoriales__etiqueta": "CAE"},
+        ]
+    ).to_csv(raw / "eustat_renta_municipal.csv", index=False, encoding="utf-8-sig")
+    module.RAW_DIR = raw
+    module.cargar_dim.cache_clear()
+    module._mapa.cache_clear()
+
+    assert module.resolver_municipio("Abadiño") == ("48001", "Abadiño")
+    assert module.resolver_municipio("Soraluze / Plasencia de las Armas") == (
+        "20065", "Soraluze-Placencia de las Armas"
+    )
+    assert not (tmp_path / "procesado").exists()
 
 
 def test_anuncios_se_guardan_solo_en_json(ra) -> None:
@@ -56,19 +121,35 @@ def test_anuncios_se_guardan_solo_en_json(ra) -> None:
                 assert salida.endswith(".json"), (paso.id, salida)
 
 
-def test_solo_el_catalogo_escribe_en_procesado(ra) -> None:
+def test_extract_no_declara_salidas_fuera_de_raw(ra) -> None:
     for paso in ra.PASOS:
         for salida in paso.salidas:
-            if salida.startswith("procesado/"):
-                assert salida == "procesado/dim_municipios.json", (paso.id, salida)
+                assert not salida.startswith(("procesado/", "resultados/")), (paso.id, salida)
+    for script in (ROOT / "extract").glob("*.py"):
+        contenido = script.read_text(encoding="utf-8")
+        assert "PROCESADO_DIR" not in contenido, script.name
+        assert "RESULTADOS_DIR" not in contenido, script.name
 
 
-def test_coincidencias_resuelve_prefijo_procesado(ra, tmp_path: Path, monkeypatch) -> None:
+def test_orquestador_extract_no_crea_ni_escribe_fuera_de_raw(ra, tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(ra, "RAW_DIR", tmp_path / "data" / "raw")
+    monkeypatch.setattr(ra, "LOG_DIR", tmp_path / "logs")
+    monkeypatch.setattr(ra, "_ejecutar", lambda paso, log: True)
+    monkeypatch.setattr(ra, "PASOS", (ra.Paso("x", "x.py", ("x.csv",)),))
+
+    assert ra.ejecutar(list(ra.PASOS)) == 0
+    assert (tmp_path / "data" / "raw").is_dir()
+    assert not (tmp_path / "data" / "procesado").exists()
+    assert not (tmp_path / "data" / "resultados").exists()
+
+
+def test_coincidencias_solo_resuelve_dentro_de_raw(ra, tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(ra, "RAW_DIR", tmp_path / "raw")
-    (tmp_path / "procesado").mkdir()
-    objetivo = tmp_path / "procesado" / "dim_municipios.json"
+    (tmp_path / "raw").mkdir()
+    objetivo = tmp_path / "raw" / "dim_municipios.json"
     objetivo.write_text("{}", encoding="utf-8")
-    assert ra._coincidencias("procesado/dim_municipios.json") == [objetivo]
+    assert ra._coincidencias("dim_municipios.json") == [objetivo]
+    assert ra._coincidencias("../procesado/dim_municipios.json") == []
 
 
 def test_estado_completo_parcial_y_pendiente(ra, tmp_path: Path, monkeypatch) -> None:
@@ -147,7 +228,7 @@ def test_ejecutar_aisla_fallos_y_sigue(ra, tmp_path: Path, monkeypatch) -> None:
         llamados.append(paso.id)
         return paso.id == "b"
 
-    monkeypatch.setattr(ra, "ensure_dirs", lambda: None)
+    monkeypatch.setattr(ra, "RAW_DIR", tmp_path / "raw")
     monkeypatch.setattr(ra, "LOG_DIR", tmp_path / "logs")
     monkeypatch.setattr(ra, "_ejecutar", fake_ejecutar)
 
@@ -161,7 +242,7 @@ def test_ejecutar_aisla_fallos_y_sigue(ra, tmp_path: Path, monkeypatch) -> None:
 
 def test_ejecutar_devuelve_cero_si_todo_va_bien(ra, tmp_path: Path, monkeypatch) -> None:
     pasos = (ra.Paso("a", "a.py", ("a.csv",)),)
-    monkeypatch.setattr(ra, "ensure_dirs", lambda: None)
+    monkeypatch.setattr(ra, "RAW_DIR", tmp_path / "raw")
     monkeypatch.setattr(ra, "LOG_DIR", tmp_path / "logs")
     monkeypatch.setattr(ra, "_ejecutar", lambda paso, log: True)
     assert ra.ejecutar(list(pasos)) == 0
@@ -201,7 +282,8 @@ def test_main_list_no_ejecuta(ra, monkeypatch, capsys) -> None:
     monkeypatch.setattr(ra, "ejecutar", prohibido)
     assert ra.main(["--list"]) == 0
     salida = capsys.readouterr().out
-    assert "eustat" in salida and "dim-municipios" in salida
+    assert "eustat" in salida and "euskadi-geo" in salida
+    assert "dim-municipios" not in salida
 
 
 def test_main_missing_sin_pendientes_no_ejecuta(ra, monkeypatch, capsys) -> None:

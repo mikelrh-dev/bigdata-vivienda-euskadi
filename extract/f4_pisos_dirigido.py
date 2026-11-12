@@ -1,6 +1,6 @@
 """F4c: Pisos.com dirigido a top-40 municipios (captura opcional).
 
-Lee data/procesado/f4_pisos_objetivo.json (codigos INE), resuelve nombres
+Lee opcionalmente raw/f4_pisos_objetivo.json (codigos INE), resuelve nombres
 via dim_municipios, scrapea cada municipio con max 3 páginas y registra
 resultado individual (OK/FALLO + n anuncios). Fusiona con los existentes
 deduplicando por URL.
@@ -10,8 +10,8 @@ import json, sys
 from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "extract"))
-sys.path.insert(0, str(PROJECT_ROOT / "transform"))
-from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from entity_resolution import cargar_dim, resolver_municipio  # noqa: E402
 import importlib.util
 spec = importlib.util.spec_from_file_location(
     "pisos_mod", Path(__file__).resolve().parent / "08_pisos_scraper.py")
@@ -30,14 +30,68 @@ def _nombre_lote(raw_dir) -> Path:
     # con timestamp que ya existen en raw se conservan congelados.
     return Path(raw_dir) / "anuncios_pisos_dirigido_lote.json"
 
+
+def _objetivos_raw() -> list[str]:
+    """Replica el criterio de baja cobertura sin depender de una salida Silver."""
+    fuentes = {
+        "anuncios_fotocasa.json": "fotocasa",
+        "anuncios_pisos.json": "pisos",
+        "anuncios_realtyapi.json": "realtyapi",
+    }
+    total_por_codigo: dict[str, int] = {}
+    fotocasa_por_codigo: dict[str, int] = {}
+    for nombre, fuente in fuentes.items():
+        ruta = RAW_DIR / nombre
+        if not ruta.exists():
+            continue
+        payload = json.loads(ruta.read_text(encoding="utf-8"))
+        anuncios = payload.get("datos", payload) if isinstance(payload, dict) else payload
+        for anuncio in anuncios:
+            codigo = anuncio.get("codigo_ine")
+            if not codigo:
+                codigo, _ = resolver_municipio(
+                    anuncio.get("municipio_busqueda") or anuncio.get("municipio")
+                )
+            if not codigo:
+                continue
+            codigo = str(codigo).zfill(5)
+            total_por_codigo[codigo] = total_por_codigo.get(codigo, 0) + 1
+            if fuente == "fotocasa":
+                fotocasa_por_codigo[codigo] = fotocasa_por_codigo.get(codigo, 0) + 1
+    # La tipología silver clasifica como Nivel 1 los municipios con 30+
+    # anuncios totales. Los Niveles 2/3 con menos de 5 anuncios Fotocasa son
+    # los objetivos de la captura dirigida.
+    return sorted(
+        codigo for codigo in total_por_codigo
+        if total_por_codigo[codigo] < 30 and fotocasa_por_codigo.get(codigo, 0) < 5
+    )
+
 def main() -> int:
-    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
-    regs = dim["datos"] if isinstance(dim, dict) else dim
-    nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Pisos.com dirigido F4")
+    parser.add_argument("--codigos", nargs="+", help="Limitar a códigos INE concretos")
+    args = parser.parse_args()
+
+    dim = cargar_dim()
+    nombres = {
+        str(r["codigo_ine"]).zfill(5): r["nombre_canonico"]
+        for r in dim.to_dict(orient="records")
+    }
     # La selección la prepara el flujo de calidad/transformación; se lee como
     # configuración de esta captura, pero nunca se escribe en procesado.
-    objetivos_path = RAW_DIR.parent / "procesado" / "f4_pisos_objetivo.json"
-    objetivos = json.loads(objetivos_path.read_text(encoding="utf-8"))
+    objetivos_path = RAW_DIR / "f4_pisos_objetivo.json"
+    if objetivos_path.exists():
+        objetivos = json.loads(objetivos_path.read_text(encoding="utf-8"))
+    else:
+        objetivos = _objetivos_raw()
+        log.info("Objetivos derivados desde raw: %d municipios", len(objetivos))
+    if args.codigos:
+        pedidos = set(args.codigos)
+        desconocidos = sorted(pedidos - set(nombres))
+        if desconocidos:
+            parser.error(f"Códigos INE desconocidos: {', '.join(desconocidos)}")
+        objetivos = list(dict.fromkeys(args.codigos))
     cliente = Cliente("pisos_f4", delay=3.0, reintentos=2)
     informe, nuevos = [], []
     for cod in objetivos:
@@ -51,9 +105,14 @@ def main() -> int:
             estado = f"FALLO: {type(exc).__name__}: {exc}"
         log.info("%s [%s]: %s", nombre, cod, estado)
         informe.append({"codigo_ine": cod, "municipio": nombre, "estado": estado})
-    # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
+    # Los reintentos dirigidos llevan nombre propio para no reemplazar el lote
+    # F4 completo que sirve como evidencia histórica.
     raw_path = _nombre_lote(RAW_DIR)
     from datetime import datetime, timezone  # noqa: E402
+    if args.codigos:
+        raw_path = RAW_DIR / (
+            f"anuncios_pisos_dirigido_reintento_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
+        )
     guardar_json(raw_path, nuevos, metadata={
         "fuente": "Pisos.com dirigido F4",
         "url": "https://www.pisos.com/alquiler/",

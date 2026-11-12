@@ -20,15 +20,12 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from paths import (  # noqa: E402
-    DATA_DIR,
-    PROCESADO_DIR,
     RAW_DIR,
-    RESULTADOS_DIR,
-    ensure_dirs,
 )
 
 # Directory creation belongs to the command that owns the output. Importing
-# extraction helpers must not create or mutate any data layer.
+# extraction helpers must not create or mutate any data layer. Expose only the
+# raw path here so extractors cannot accidentally target Silver/Gold outputs.
 
 
 # ─── Logging ──────────────────────────────────────────────────
@@ -101,6 +98,8 @@ class Cliente:
                 self._ultima = time.time()
                 if resp.status_code < 400:
                     return resp
+                if resp.status_code == 404:
+                    raise RuntimeError(f"HTTP 404 para {url}; no se reintenta")
                 ultimo_error = RuntimeError(
                     f"HTTP {resp.status_code} para {url}"
                 )

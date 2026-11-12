@@ -8,13 +8,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import unicodedata
 from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from _common import RAW_DIR, PROCESADO_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _common import RAW_DIR, Cliente, get_logger, guardar_json  # noqa: E402
+from _slugs import slug_fotocasa  # noqa: E402
+from entity_resolution import cargar_dim  # noqa: E402
 
 # Reutilizar normalizador del scraper principal
 import importlib.util
@@ -30,22 +31,17 @@ MAX_PAG = 2
 
 
 def _slug(nombre: str) -> str:
-    s = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode("ascii")
-    s = s.lower().strip()
-    s = s.replace(" ", "-").replace("/", "-").replace("\\", "-")
-    while "--" in s:
-        s = s.replace("--", "-")
-    return s.strip("-")
+    return slug_fotocasa(nombre)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fotocasa dirigido por municipio")
     parser.add_argument("--max-municipios", type=int, default=None)
+    parser.add_argument("--codigos", nargs="+", help="Limitar a códigos INE concretos")
     parser.add_argument("--max-paginas", type=int, default=MAX_PAG)
     args = parser.parse_args()
 
-    dim = json.loads((PROCESADO_DIR / "dim_municipios.json").read_text(encoding="utf-8"))
-    regs = dim["datos"] if isinstance(dim, dict) else dim
+    regs = cargar_dim().to_dict(orient="records")
     nombres = {r["codigo_ine"]: r["nombre_canonico"] for r in regs}
 
     # Optional target list is configuration for this acquisition, kept in raw
@@ -55,6 +51,12 @@ def main() -> int:
         objetivos = json.loads(objetivos_path.read_text(encoding="utf-8"))
     else:
         objetivos = list(nombres.keys())
+
+    if args.codigos:
+        desconocidos = [cod for cod in args.codigos if cod not in nombres]
+        if desconocidos:
+            parser.error(f"Códigos INE desconocidos: {', '.join(desconocidos)}")
+        objetivos = list(dict.fromkeys(args.codigos))
 
     if args.max_municipios:
         objetivos = objetivos[: args.max_municipios]
@@ -104,6 +106,7 @@ def main() -> int:
         todos,
         metadata={
             "fuente": "Fotocasa dirigido por municipio (append-only)",
+            "url": "https://www.fotocasa.es/es/alquiler/viviendas",
             "fecha_extraccion": datetime.now().isoformat(timespec="seconds"),
             "n_anuncios": len(todos),
             "municipios_objetivo": len(objetivos),
