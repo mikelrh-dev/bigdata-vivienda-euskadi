@@ -184,7 +184,7 @@ ul.clean.sq li:before{background:var(--ink)}
             <div><div class="big sm">64</div><div class="cap">con anuncio (de 252)</div></div>
             <div><div class="big sm">60</div><div class="cap">con precio de anuncio</div></div>
           </div>
-          <p class="small" style="margin-top:32px">Tier de confianza: <b>A 4 · B 3 · C 57 · D 188</b>.<br>201 habitaciones en 9 municipios · 5.040 solicitudes Etxebide · 406 promociones.</p>
+          <p class="small" style="margin-top:32px">Tier de confianza: <b>A 4 · B 3 · C 57 · D 188</b>.<br>201 habitaciones en 9 municipios · 5.040 registros Etxebide (2005-2024) · 406 promociones.</p>
         </div>
         <div class="stack tight">
           <div class="fig"><img src="assets/H2_tier_confianza_ABCD.png" alt="Tier A/B/C/D"><div class="cap">H2 · municipios por Tier (252)</div></div>
@@ -236,7 +236,7 @@ ul.clean.sq li:before{background:var(--ink)}
       <header class="hd"><span class="kicker">C · La respuesta en detalle</span><span class="pg">07 / 15</span></header>
       <h2>No es un problema de cuatro municipios.</h2>
       <div class="grid2" style="grid-template-columns:1.15fr 1fr;align-items:center">
-        <div class="fig"><img src="assets/hist_esfuerzo_18_34_umbral30.png" alt="Distribución del esfuerzo con umbral 30 %"><div class="cap">distribución del esfuerzo 18-34 · línea 30 %</div></div>
+        <div class="fig"><img src="assets/hist_esfuerzo_18_34_umbral30.png" alt="Distribución del esfuerzo con umbral 30 %"><div class="cap">distribución del esfuerzo 18-34 · oficial 159 / IDW 93 · umbrales 30/40 %</div></div>
         <div>
           <div class="grid3">
             <div><div class="big sm">119</div><div class="cap">&lt; 30 %</div></div>
@@ -292,7 +292,7 @@ ul.clean.sq li:before{background:var(--ink)}
         </div>
         <div class="stack tight">
           <div class="fig"><img src="assets/H8b_modalidad_mediana_eur_m2.png" alt="Temporal vs larga: mediana mensual y por m²"><div class="cap">H8b · misma mediana €/mes, distinto €/m² (594 anuncios)</div></div>
-          <div class="fig"><img src="assets/H10_tension_vs_esfuerzo.png" alt="Tensión Etxebide vs esfuerzo"><div class="cap">H10 · tensión social vs esfuerzo 18-34</div></div>
+          <div class="fig"><img src="assets/H10_tension_vs_esfuerzo.png" alt="Tensión Etxebide vs esfuerzo"><div class="cap">H10 · tensión etxebide 2024 vs esfuerzo 18-34</div></div>
         </div>
       </div>
       <footer class="ft"><span class="proof">bootstrap_robustos.csv · sensibilidad_idw.csv · mongo_modalidades.csv</span><span class="proof">C16 · C17 · C18</span></footer>
@@ -407,7 +407,7 @@ ul.clean.sq li:before{background:var(--ink)}
       <header class="hd"><span class="kicker">E · Pruebas y cierre</span><span class="pg">14 / 15</span></header>
       <h2>No es una demo: falla cuando debe.</h2>
       <div class="grid4" style="margin-top:8px">
-        <div><div class="big sm">262</div><div class="cap">tests · 2 skipped</div></div>
+        <div><div class="big sm">277</div><div class="cap">tests · 2 skipped</div></div>
         <div><div class="big sm">354</div><div class="cap">SHA del raw verificados</div></div>
         <div><div class="big sm">182</div><div class="cap">silver verificados</div></div>
         <div><div class="big sm">53</div><div class="cap">gold byte-idénticos</div></div>
@@ -511,9 +511,9 @@ ul.clean.sq li:before{background:var(--ink)}
       <header class="hd"><span class="kicker">Backup · B4 Conteos</span><span class="pg">B4 / 8</span></header>
       <h2>Los números, en crudo.</h2>
       <div class="grid3" style="font-size:23px;line-height:1.7">
-        <div><b>Datos</b><br>356 raw · 354 SHA<br>352 HDFS · 182 silver<br>40 CSV silver<br>594 anuncios (326/268)<br>64 municipios con anuncio<br>201 habitaciones / 9<br>5.040 Etxebide · 406 promos</div>
+        <div><b>Datos</b><br>356 raw · 354 SHA<br>352 HDFS · 182 silver<br>40 CSV silver<br>594 anuncios (326/268)<br>64 municipios con anuncio<br>201 habitaciones / 9<br>5.040 registros Etxebide · 406 promos</div>
         <div><b>Indicador</b><br>159 oficiales · 93 IDW<br>mediana 26,61 %<br>40/159 &gt; 30 %<br>119 / 26 / 14<br>Tier A4 B3 C57 D188<br>60/252 con precio</div>
-        <div><b>Sistema</b><br>16 vivas + 14 backup<br>11 pipelines · 8 etapas<br>24 índices<br>262 tests · 2 skipped<br>182/182 · 52/52<br>COLLSCAN 594 → IXSCAN 1</div>
+        <div><b>Sistema</b><br>16 vivas + 14 backup<br>11 pipelines · 8 etapas<br>24 índices<br>277 tests · 2 skipped<br>182/182 · 53/53<br>COLLSCAN 594 → IXSCAN 1</div>
       </div>
       <footer class="ft"><span class="proof">manifests · Mongo · gobernanza</span><span class="proof">C8 · C16</span></footer>
     </div>
@@ -540,7 +540,7 @@ ul.clean.sq li:before{background:var(--ink)}
       <header class="hd"><span class="kicker">Backup · B6 Habitaciones</span><span class="pg">B6 / 8</span></header>
       <h2>Habitación vs vivienda entera.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
-        <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Habitaciones mediana y rango"><div class="cap">H6 · mediana con min-max y n_precio</div></div>
+        <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Habitaciones mediana y rango"><div class="cap">H6 · €/habitación, mediana con min-max y n_precio</div></div>
         <div>
           <p class="small"><b>201</b> anuncios en <b>9</b> municipios.</p>
           <p class="small">Solo Bilbao (96) y Donostia (66) sostienen comparación firme; el resto es indicativo.</p>
@@ -557,7 +557,7 @@ ul.clean.sq li:before{background:var(--ink)}
       <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 8</span></header>
       <h2>El alquiler oficial y el de anuncio no son lo mismo.</h2>
       <div class="grid2" style="grid-template-columns:1.45fr .55fr;align-items:center">
-        <div class="fig"><img src="assets/P_oficial_vs_anuncios_por_TH.png" alt="Cuantía oficial vs anuncios por territorio"><div class="cap">P · cuantía oficial vs anuncios por TH (n y cobertura)</div></div>
+        <div class="fig"><img src="assets/P_oficial_vs_anuncios_por_TH.png" alt="Cuantía oficial vs anuncios por territorio"><div class="cap">P · cuantía oficial 2024 vs anuncios 2026 por TH — no comparable (ratio 1,96; Spearman 0,18)</div></div>
         <p class="small">El anuncio mide oferta publicada; el oficial, alquiler efectivo. Se usan para cosas distintas y no se mezclan en el indicador.</p>
       </div>
       <footer class="ft"><span class="proof">mongo_alquiler_por_municipio.csv · mongo_esfuerzo_por_municipio.csv</span><span class="proof">C15 · C17</span></footer>
