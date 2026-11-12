@@ -171,7 +171,25 @@ def main() -> int:
           and (df_em26["vintage_denominador"] == "2024").all(),
           f"{len(df_em26)} filas, cols={sorted(cols_req & set(df_em26.columns))}")
 
-    print("RESULTADO:", "OK 19/19" if ok else "PENDIENTE (ver FAIL)")
+    em26_tipo = PROC / "esfuerzo_mercado_2026_por_tipo.csv"
+    df_em26_tipo = pd.read_csv(em26_tipo, encoding="utf-8-sig", dtype=str)
+    check("20 esfuerzo_mercado_2026_por_tipo CSV", em26_tipo.exists()
+          and len(df_em26_tipo) > 0
+          and {"codigo_ine", "tipo_de_vivienda", "esfuerzo_mercado_2026_pct_18_34"} <= set(df_em26_tipo.columns),
+          f"{len(df_em26_tipo)} filas")
+
+    brecha = PROC / "brecha_esfuerzo_2024_2026.csv"
+    df_brecha = pd.read_csv(brecha, encoding="utf-8-sig", dtype=str)
+    check("21 brecha_esfuerzo_2024_2026 CSV", brecha.exists()
+          and len(df_brecha) > 0
+          and {"codigo_ine", "esfuerzo_2024_pct_18_34", "esfuerzo_2026_pct_18_34", "brecha_pp_18_34"} <= set(df_brecha.columns),
+          f"{len(df_brecha)} filas")
+
+    mapa = ROOT / "visuals" / "esfuerzo_mercado_2026" / "mapa_coropletico_2026.png"
+    check("22 mapa coroplético 2026 PNG", mapa.exists() and mapa.stat().st_size > 0,
+          f"{mapa.stat().st_size} bytes")
+
+    print("RESULTADO:", "OK 22/22" if ok else "PENDIENTE (ver FAIL)")
     # Huella SHA-256 reproducible de los artefactos comprobados (mismo
     # criterio que check 01 con docs/raw_manifest_sha256.txt). Se emite
     # siempre: con 07 FAIL conocido el resultado sigue siendo PENDIENTE.

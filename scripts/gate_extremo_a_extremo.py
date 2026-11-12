@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Umbrales normativos (spec.md).
 EXPECTED_RAW = 355
-EXPECTED_SILVER = 183  # reproducible desde raw: toda entrada tiene productor
+EXPECTED_SILVER = 185  # reproducible desde raw: toda entrada tiene productor
 EXPECTED_COLLECTIONS = [
     "municipios",
     "anuncios",
@@ -168,7 +168,7 @@ def run_offline(root: Path = ROOT) -> list[tuple[str, bool, str]]:
     checks.append(("manifiesto raw 355 SHA", ok, det))
     ok, det = check_manifest(root / SILVER_MANIFEST, root / SILVER_BASE,
                              EXPECTED_SILVER)
-    checks.append(("silver 183", ok, det))
+    checks.append(("silver 185", ok, det))
     ok, det = check_colecciones()
     checks.append(("15 colecciones", ok, det))
     ok, det = check_duplicados()
@@ -226,3 +226,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

@@ -1,6 +1,6 @@
 # Guion — Presentación v2 (híbrida: datos + ingeniería)
 
-**Duración objetivo:** 13:30 (15 diapositivas) · **Recorte a 12:00** al final.
+**Duración objetivo:** 17:00 (19 diapositivas) · **Recorte a 12:00** al final.
 **Público:** tribunal SBD + BDA (perfil técnico, poco tiempo, mucha pregunta).
 **Idioma:** castellano. **Formato:** 16:9 fijo, offline, sin dependencias.
 **Regla de oro:** primero la respuesta, después cómo se calculó. Cada cifra lleva su
@@ -34,9 +34,12 @@ artefacto. Ninguna cifra de este guion se teclea a mano: todas salen de
 | 14 | Aggregation, índices, CRUD | 12:45 | 13:30 | D. Ingeniería |
 | 15 | Pruebas | 13:30 | 14:30 | E. Cierre |
 | 16 | Límites y cierre | 14:30 | 15:30 | E. Cierre |
+| 17 | Esfuerzo por tipo de vivienda | 15:30 | 16:00 | C. Detalle |
+| 18 | Brecha esfuerzo 2024 vs 2026 | 16:00 | 16:30 | C. Detalle |
+| 19 | Mapa coroplético 2026 | 16:30 | 17:00 | C. Detalle |
 
-Los tiempos suman 15:30 con colchón; en ensayo hay que entrar en **13:30** (las
-diapositivas 3, 4 y 9 son las que se estiran).
+Los tiempos de la tabla suman 17:00 con las diapositivas de enriquecimiento; en ensayo hay
+que ajustar (las diapositivas 3, 4 y 9 son las que se estiran).
 
 ---
 
@@ -364,6 +367,66 @@ diapositivas 3, 4 y 9 son las que se estiran).
   reversible. Y no defendemos emancipación municipal: solo tenemos CAE. Con más datos,
   lo primero sería subir la muestra de los 57 Tier C y separar temporal de larga en todo.»
 - **Cierre:** «Gracias. Abrimos el código y los datos.»
+
+---
+
+# Acto C (bis) — Enriquecimientos del mercado 2026
+
+## D17 · Esfuerzo por tipo de vivienda (15:30–16:00)
+
+- **Mensaje:** el esfuerzo de mercado 2026 no es homogéneo: las viviendas de 4+ habitaciones
+  casi doblan el esfuerzo de las de 1-2.
+- **En pantalla:**
+  - **1-2 hab:** 82,8 % (n=128 anuncios)
+  - **3 hab:** 85,4 % (n=95)
+  - **4+ hab:** 141,6 % (n=63)
+  - Media ponderada por nº de anuncios, pct 18-34
+- **Gráfica:** `M26_esfuerzo_por_tipo.png`.
+- **Evidencia:** `data/procesado/esfuerzo_mercado_2026_por_tipo.csv`,
+  `transform/calcular_esfuerzo_mercado_2026_por_tipo.py`.
+- **Rúbrica:** C8.
+- **Nota oral:** «Descglozamos el esfuerzo de mercado por tamaño de vivienda. La vivienda de
+  1-2 habitaciones pide un 82,8 % del salario joven; la de 3, un 85,4 %; y la de 4 o más, un
+  141,6 %. Es el mismo patrón que ya vimos: el precio del anuncio sube más deprisa que el
+  salario joven, y en las viviendas grandes se dispara.»
+- **Transición:** «¿Y cómo se compara cada municipio con su propio punto de partida en 2024?»
+
+## D18 · Brecha esfuerzo 2024 vs 2026 (16:00–16:30)
+
+- **Mensaje:** casi todos los municipios empeoran; la brecha es 2026 menos 2024, en puntos
+  porcentuales, y hay tres excepciones que bajan.
+- **En pantalla:**
+  - **49 de 52** municipios empeoran (brecha positiva)
+  - Mayor subida: **Amorebieta-Etxano +255,9 pp**, con muy pocos anuncios — extremo, no tendencia
+  - Bajan **Barakaldo (−15,2)**, **Basauri (−12,8)** y **Eibar (−1,7)**
+- **Gráfica:** `M26_brecha_2024_2026.png` (top 10 y bottom 10).
+- **Evidencia:** `data/procesado/brecha_esfuerzo_2024_2026.csv`,
+  `analysis/calcular_brecha_esfuerzo_2024_2026.py`.
+- **Rúbrica:** C8.
+- **Nota oral:** «Restamos el esfuerzo canónico 2024 del esfuerzo de mercado 2026: el resultado
+  es la brecha en puntos porcentuales. En 49 de los 52 municipios con dato el esfuerzo sube.
+  La subida más extrema es Amorebieta, con 255 puntos, pero es un municipio con muy pocos
+  anuncios: lo señalamos como extremo, no como tendencia. Solo tres bajan: Barakaldo, Basauri y
+  Eibar, donde el precio de anuncio queda por debajo del alquiler oficial de 2024. Ojo: son capas
+  distintas (anuncio vs oficial), se leen como comparación, no como serie temporal.»
+- **Transición:** «Y para cerrar el detalle, el mapa de todo esto en 2026.»
+
+## D19 · Mapa coroplético 2026 (16:30–17:00)
+
+- **Mensaje:** el esfuerzo de mercado 2026 tiene geografía; el gris es ausencia de anuncio,
+  nunca cero.
+- **En pantalla:** coroplético municipal del esfuerzo de mercado 2026 (precio de anuncio sobre
+  salario joven 18-34, ajuste IPC INE 2024→2026); gris = sin anuncio.
+- **Gráfica:** `M26_mapa_coropletico_2026.png`.
+- **Evidencia:** `data/procesado/esfuerzo_mercado_2026.csv`,
+  `visuals/mapa_esfuerzo_mercado_2026.py`.
+- **Rúbrica:** C8.
+- **Nota oral:** «El mapa cierra la capa de enriquecimiento. Cada municipio con anuncio va
+  coloreado por su esfuerzo de mercado 2026; el gris es municipio sin anuncio, que no es lo
+  mismo que cero. Las capitales y el corredor del Nervión vuelven a la banda alta; el interior
+  y el rural, por debajo. Es la misma geografía del esfuerzo canónico, leída sobre precio de
+  oferta publicada en vez de alquiler efectivo.»
+- **Transición:** «Con esto cerramos el detalle. Abrimos el turno de preguntas.»
 
 ---
 
