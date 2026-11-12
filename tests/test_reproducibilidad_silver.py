@@ -41,6 +41,18 @@ QUALITY = (
     "run_manifest.json",  # subproducto del propio run_all
 )
 
+# Artefactos de la capa de analisis (gold) que se escriben junto a silver por
+# herencia historica. No salen de un nodo del DAG, sino de un script de
+# analysis/: se declara el productor y el test comprueba que sigue existiendo.
+ANALISIS = {
+    "brecha_esfuerzo_2024_2026.csv": "analysis/calcular_brecha_esfuerzo_2024_2026.py",
+    "premium_oferta_2026.csv": "analysis/calibrar_premium_oferta.py",
+    "comparacion_esfuerzo_2024_2026.csv": "analysis/comparar_esfuerzo_2024_2026_misma_base.py",
+    "comparacion_esfuerzo_2024_2026_resumen.csv": "analysis/comparar_esfuerzo_2024_2026_misma_base.py",
+    "cobertura_representatividad_2026.csv": "analysis/cobertura_representatividad_2026.py",
+    "validacion_alquiler_2024_serpavi.csv": "analysis/validar_alquiler_serpavi.py",
+}
+
 
 def _patrones_dag() -> list[str]:
     """Patrones proc:* declarados por cualquier nodo (out y out_glob)."""
@@ -66,7 +78,9 @@ def _entradas_manifest() -> list[str]:
 def test_manifest_silver_solo_tiene_productores_declarados():
     nombres = _entradas_manifest()
     assert nombres, "el manifest silver esta vacio"
-    patrones = _patrones_dag() + list(QUALITY)
+    faltan = [p for p in ANALISIS.values() if not (ROOT / p).exists()]
+    assert not faltan, f"productores de analisis declarados que no existen: {faltan}"
+    patrones = _patrones_dag() + list(QUALITY) + list(ANALISIS)
     sin_productor = [n for n in nombres
                      if not any(fnmatch.fnmatch(n, p) for p in patrones)]
     assert not sin_productor, (

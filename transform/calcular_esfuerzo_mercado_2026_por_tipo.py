@@ -1,7 +1,8 @@
 """Calcula esfuerzo de mercado 2026 por municipio y tipo de vivienda.
 
 Combina:
-  - precio de anuncio 2026 (desde anuncios_vivienda_residencial_filtrado.csv)
+  - precio de anuncio 2026 (desde anuncios_vivienda_residencial_filtrado.csv,
+    con la regla unica de filtrado de `_anuncios_2026.py`)
   - salario joven OVJ 2024 ajustado por factor IPC INE 2024->2026
 
 Deriva tipo_de_vivienda de habitaciones:
@@ -21,17 +22,19 @@ Uso:
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _anuncios_2026 import cargar_anuncios_2026, mediana_con_ic  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RAW = PROJECT_ROOT / "data" / "raw"
 PROC = PROJECT_ROOT / "data" / "procesado"
 
 OUT = PROC / "esfuerzo_mercado_2026_por_tipo.csv"
-
-ANUNCIOS = PROC / "anuncios_vivienda_residencial_filtrado.csv"
 IPC = RAW / "ipc_ine_2024_2026.csv"
 SALARIO = RAW / "ovj_salario_joven_2024.json"
 
@@ -84,17 +87,8 @@ def main() -> int:
     salario_18_34_2026 = salario_18_34_2024 * factor_ipc
     salario_16_29_2026 = salario_16_29_2024 * factor_ipc
 
-    if not ANUNCIOS.exists():
-        print(f"Falta {ANUNCIOS.name}. Ejecuta primero generar_anuncios_residencial_filtrado.py")
-        return 1
-
-    df = pd.read_csv(ANUNCIOS, dtype=str, encoding="utf-8-sig")
-    df["codigo_ine"] = df["codigo_ine"].astype(str).str.zfill(5)
-    df["precio_eur"] = pd.to_numeric(df["precio_eur"], errors="coerce")
-    df["habitaciones"] = pd.to_numeric(df["habitaciones"], errors="coerce")
-
-    # Solo filas con precio y habitaciones derivables.
-    df = df.dropna(subset=["precio_eur", "habitaciones"]).copy()
+    df, meta = cargar_anuncios_2026()
+    df = df[df["anuncio_valido"]].dropna(subset=["precio_eur", "habitaciones"]).copy()
     df["tipo_de_vivienda"] = df["habitaciones"].map(_tipo_de_vivienda)
 
     filas = []
@@ -103,20 +97,15 @@ def main() -> int:
         n_anuncios = len(precios)
         if n_anuncios == 0:
             continue
-        precios_sorted = sorted(precios)
-        n = len(precios_sorted)
-        mediana = (
-            precios_sorted[n // 2]
-            if n % 2 == 1
-            else (precios_sorted[n // 2 - 1] + precios_sorted[n // 2]) / 2
-        )
-        esfuerzo_18_34 = mediana / salario_18_34_2026 * 100
-        esfuerzo_16_29 = mediana / salario_16_29_2026 * 100
+        ic = mediana_con_ic(precios, semilla=int(code) + len(tipo))
+        esfuerzo_18_34 = ic["mediana"] / salario_18_34_2026 * 100
+        esfuerzo_16_29 = ic["mediana"] / salario_16_29_2026 * 100
+        esfuerzo_sin_ajuste = ic["mediana"] / salario_18_34_2024 * 100
 
         filas.append({
             "codigo_ine": code,
             "tipo_de_vivienda": tipo,
-            "precio_mediana_eur": round(mediana, 2),
+            "precio_mediana_eur": round(ic["mediana"], 2),
             "n_anuncios": n_anuncios,
             "salario_joven_2026_ajustado_18_34_eur_mes": round(salario_18_34_2026, 2),
             "salario_joven_2026_ajustado_16_29_eur_mes": round(salario_16_29_2026, 2),
@@ -125,6 +114,12 @@ def main() -> int:
             "factor_ipc": round(factor_ipc, 6),
             "vintage_numerador": 2026,
             "vintage_denominador": 2024,
+            "esfuerzo_sin_ajuste_pct_18_34": round(esfuerzo_sin_ajuste, 2),
+            "ic95_lo_pct_18_34": round(ic["lo"] / salario_18_34_2026 * 100, 2),
+            "ic95_hi_pct_18_34": round(ic["hi"] / salario_18_34_2026 * 100, 2),
+            "ic95_amplitud_pct_18_34": ic["amplitud_pct"],
+            "flag_n_insuficiente": n_anuncios < 5,
+            "flag_concluyente": bool(n_anuncios >= 10 and ic["amplitud_pct"] < 30),
         })
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -134,11 +129,14 @@ def main() -> int:
         "salario_joven_2026_ajustado_16_29_eur_mes",
         "esfuerzo_mercado_2026_pct_18_34", "esfuerzo_mercado_2026_pct_16_29",
         "factor_ipc", "vintage_numerador", "vintage_denominador",
+        "esfuerzo_sin_ajuste_pct_18_34",
+        "ic95_lo_pct_18_34", "ic95_hi_pct_18_34", "ic95_amplitud_pct_18_34",
+        "flag_n_insuficiente", "flag_concluyente",
     ])
     df_out.to_csv(OUT, index=False, encoding="utf-8-sig")
     print(
-        f"OK: {OUT.name} ({len(df_out)} grupos, "
-        f"factor_ipc={factor_ipc}, flag_ipc={flag_ipc})"
+        f"OK: {OUT.name} ({len(df_out)} grupos, {int(df_out['n_anuncios'].sum())} anuncios, "
+        f"factor_ipc={factor_ipc:.6f}, flag_ipc={flag_ipc})"
     )
     return 0
 

@@ -31,6 +31,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.collections import PatchCollection
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Patch as MplPatch
 from matplotlib.patches import Polygon as MplPolygon
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -62,6 +63,10 @@ def generar_N1() -> Path:
     df["codigo5"] = df["_id"].astype("Int64").astype(str).str.zfill(5)
     esfuerzo = dict(zip(df["codigo5"], df["esfuerzo_joven_pct_18_34"]))
     metodo = dict(zip(df["codigo5"], df["metodo_imputacion"]))
+    n_of = sum(1 for m in metodo.values() if m == "oficial")
+    n_idw = sum(1 for m in metodo.values() if m == "idw")
+    n_sat = sum(1 for c, m in metodo.items()
+                if m == "oficial" and not pd.isna(esfuerzo.get(c)) and esfuerzo[c] >= 30.0)
     gj = json.loads((PROC / "municipios_euskadi_252.geojson").read_text(encoding="utf-8"))
     feats = gj["datos"]["features"]
     cmap = LinearSegmentedColormap.from_list("verde_ambar_rojo", ["#1a9850", "#fee08b", "#d73027"], N=256)
@@ -78,7 +83,7 @@ def generar_N1() -> Path:
             vals_of.append(float(v))
     vmin = min(vals_of) if vals_of else 0.0
 
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(9.6, 7.2))
     # capa oficial con croma
     patches, vals = [], []
     for f in feats:
@@ -105,10 +110,12 @@ def generar_N1() -> Path:
             continue
         for poly in _polys(f):
             for ring in poly:
-                patches_idw.append(MplPolygon(ring, closed=True, facecolor="#D8D1C2",
-                                              edgecolor="white", linewidth=0.2, hatch="//"))
+                patches_idw.append(MplPolygon(ring, closed=True))
     if patches_idw:
-        ax.add_collection(PatchCollection(patches_idw, match_original=True))
+        # El hatch va en el collection: con match_original=True matplotlib lo descarta
+        # y los 93 imputados quedaban indistinguibles del dato oficial.
+        ax.add_collection(PatchCollection(patches_idw, facecolor="#D8D1C2",
+                                          edgecolor="#6E6B66", linewidth=0.3, hatch="//"))
     # sin dato en gris
     patches_null = []
     for f in feats:
@@ -125,23 +132,38 @@ def generar_N1() -> Path:
     ax.set_aspect("equal")
     ax.set_axis_off()
     ax.set_title(
-        "N1 Esfuerzo joven 18-34 por municipio — 159 oficial (croma) + 93 IDW (trama) + gris sin dato\n"
+        f"N1 Esfuerzo joven 18-34 por municipio — {n_of} oficial (color) + {n_idw} IDW (trama)\n"
         "Capa oficial Eustat 2024; IDW comarcal solo sensibilidad",
         fontsize=11,
     )
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(0, 1))
     sm.set_array([])
     cbar = fig.colorbar(sm, ax=ax, shrink=0.7)
-    cbar.set_ticks([0, 0.5, 1])
-    cbar.set_ticklabels([f"{vmin:.1f}%", "≈15%", "≥30%"])
+    # Ticks en sus posiciones reales: el centro de la escala no es 15 % sino 25 %.
+    pos_25 = (25.0 - vmin) / ((30.0 - vmin) if 30.0 > vmin else 1.0)
+    cbar.set_ticks([0, pos_25, 1])
+    cbar.set_ticklabels([f"{vmin:.1f} %".replace(".", ","), "25,0 %", "≥30 %"])
     cbar.set_label("Esfuerzo joven 18-34 % (oficial 2024)")
-    fig.text(0.5, 0.02, "Capa oficial Eustat 2024 (159) con croma; IDW comarcal (93) con trama; sin dato en gris. Fuente: mongo_esfuerzo_por_municipio.csv.",
-             ha="center", fontsize=8)
+    handles = [
+        MplPatch(facecolor="#fee08b", edgecolor="none", label=f"Oficial Eustat 2024 ({n_of})"),
+        MplPatch(facecolor="#D8D1C2", edgecolor="#5A554C", hatch="///",
+                 label=f"IDW comarcal imputado ({n_idw})"),
+    ]
+    if patches_null:
+        handles.append(MplPatch(facecolor="#F0F0F0", edgecolor="none", label="Sin dato"))
+    # fig.legend (no ax.legend): dentro de los ejes, tight_layout encogia el mapa.
+    fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.03, 0.05),
+               frameon=False, fontsize=9, handlelength=2.2)
+    fig.text(0.5, 0.015,
+             f"Capa oficial Eustat 2024 (n={n_of}) a color; IDW comarcal imputado (n={n_idw}) con trama.\n"
+             f"El color se satura a los 30 %: los {n_sat} municipios que los superan comparten el rojo maximo. "
+             f"Fuente: mongo_esfuerzo_por_municipio.csv.",
+             ha="center", va="bottom", fontsize=7.5)
     for spine in ax.spines.values():
         spine.set_visible(False)
     fig.tight_layout(rect=[0, 0.04, 1, 0.94])
     out = RES / "mapa_coroplastico_esfuerzo_18_34.png"
-    fig.savefig(out, dpi=150, facecolor="white")
+    fig.savefig(out, dpi=150, facecolor="white", bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     print(f"OK N1: {out} ({out.stat().st_size} bytes)")
     return out

@@ -44,9 +44,9 @@ def _manifest_tmp(base: Path, n: int) -> tuple[Path, Path]:
 
 
 def test_umbrales_normativos() -> None:
-    assert EXPECTED_RAW == 354
-    assert EXPECTED_SILVER == 182
-    assert len(EXPECTED_COLLECTIONS) == 14
+    assert EXPECTED_RAW == 355
+    assert EXPECTED_SILVER == 185
+    assert len(EXPECTED_COLLECTIONS) == 15
 
 
 def test_manifiesto_fake_ok(tmp_path: Path) -> None:
