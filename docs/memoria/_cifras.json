@@ -1,0 +1,285 @@
+{
+  "_meta": {
+    "generado_utc": "2026-11-13T18:11:47+00:00",
+    "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
+    "fuente_datos": "data/resultados/*.csv",
+    "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
+  },
+  "cifras": {
+    "datos.alquiler_imputado": {
+      "valor": 93,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 252 - oficiales"
+    },
+    "datos.alquiler_oficial": {
+      "valor": 159,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · tiene_alquiler_oficial"
+    },
+    "datos.anuncios_larga": {
+      "valor": 326,
+      "formato": "int",
+      "fuente": "n_larga_estancia"
+    },
+    "datos.anuncios_larga_municipios": {
+      "valor": 53,
+      "formato": "int",
+      "fuente": "municipios con n_larga_estancia > 0"
+    },
+    "datos.anuncios_municipios": {
+      "valor": 64,
+      "formato": "int",
+      "fuente": "municipios con n_anuncios > 0"
+    },
+    "datos.anuncios_sin": {
+      "valor": 188,
+      "formato": "int",
+      "fuente": "municipios sin anuncio"
+    },
+    "datos.anuncios_temporal": {
+      "valor": 268,
+      "formato": "int",
+      "fuente": "n_temporal"
+    },
+    "datos.anuncios_temporal_municipios": {
+      "valor": 38,
+      "formato": "int",
+      "fuente": "municipios con n_temporal > 0"
+    },
+    "datos.anuncios_total": {
+      "valor": 594,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · n_anuncios"
+    },
+    "datos.esfuerzo_idw_sobre30": {
+      "valor": 47,
+      "formato": "int",
+      "fuente": "esfuerzo_joven_pct_18_34 > 30 · 252 municipios"
+    },
+    "datos.esfuerzo_idw_sobre30_pct": {
+      "valor": 18.650793650793652,
+      "formato": "2d",
+      "fuente": "sobre30 / 252 * 100"
+    },
+    "datos.esfuerzo_mediana_idw": {
+      "valor": 25.37389515365591,
+      "formato": "2d",
+      "fuente": "mediana de esfuerzo_joven_pct_18_34 · 252 municipios"
+    },
+    "datos.esfuerzo_mediana_oficial": {
+      "valor": 26.613722848566496,
+      "formato": "2d",
+      "fuente": "mediana de esfuerzo_joven_pct_18_34 · oficiales"
+    },
+    "datos.esfuerzo_oficial_sobre30": {
+      "valor": 40,
+      "formato": "int",
+      "fuente": "esfuerzo_joven_pct_18_34 > 30 · oficiales"
+    },
+    "datos.esfuerzo_oficial_sobre30_pct": {
+      "valor": 25.157232704402517,
+      "formato": "2d",
+      "fuente": "sobre30 / oficiales * 100"
+    },
+    "datos.habitaciones_municipios": {
+      "valor": 9,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · filas"
+    },
+    "datos.municipios": {
+      "valor": 252,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · filas"
+    },
+    "datos.precio_observable": {
+      "valor": 60,
+      "formato": "int",
+      "fuente": "precio_medio_eur no nulo"
+    },
+    "datos.tier_a": {
+      "valor": 4,
+      "formato": "int",
+      "fuente": "mongo_tier_confianza.csv · tier A"
+    },
+    "datos.tier_b": {
+      "valor": 3,
+      "formato": "int",
+      "fuente": "mongo_tier_confianza.csv · tier B"
+    },
+    "datos.tier_c": {
+      "valor": 57,
+      "formato": "int",
+      "fuente": "mongo_tier_confianza.csv · tier C"
+    },
+    "datos.tier_d": {
+      "valor": 188,
+      "formato": "int",
+      "fuente": "mongo_tier_confianza.csv · tier D"
+    },
+    "datos.vpo_promociones": {
+      "valor": 406,
+      "formato": "int",
+      "fuente": "_facts.json · etxebide_promociones.docs"
+    },
+    "datos.vpo_sin_dato": {
+      "valor": 406,
+      "formato": "int",
+      "fuente": "etxebide_promociones · NumViviendas ausente o nulo"
+    },
+    "gold.anexo_png": {
+      "valor": 8,
+      "formato": "int",
+      "fuente": "data/resultados/anexo/*.png"
+    },
+    "gold.artefactos": {
+      "valor": 53,
+      "formato": "int",
+      "fuente": "CSV + PNG de la raíz"
+    },
+    "gold.csv": {
+      "valor": 24,
+      "formato": "int",
+      "fuente": "data/resultados/*.csv"
+    },
+    "gold.png": {
+      "valor": 29,
+      "formato": "int",
+      "fuente": "data/resultados/*.png"
+    },
+    "infra.hdfs_bytes": {
+      "valor": 895597901,
+      "formato": "int",
+      "fuente": "GETCONTENTSUMMARY /data/raw · 2026-11-13"
+    },
+    "infra.hdfs_objetos": {
+      "valor": 353,
+      "formato": "int",
+      "fuente": "GETCONTENTSUMMARY /data/raw · 2026-11-13"
+    },
+    "infra.kafka_factor_replicacion": {
+      "valor": 1,
+      "formato": "int",
+      "fuente": "KafkaAdminClient.describe_topics · 2026-11-13"
+    },
+    "infra.kafka_particiones": {
+      "valor": 1,
+      "formato": "int",
+      "fuente": "KafkaAdminClient.describe_topics · 2026-11-13"
+    },
+    "infra.kafka_topic": {
+      "valor": "vivienda_euskadi",
+      "formato": "str",
+      "fuente": "KafkaAdminClient.describe_topics · 2026-11-13"
+    },
+    "mongo.backup": {
+      "valor": 15,
+      "formato": "int",
+      "fuente": "_facts.json · collections_backup"
+    },
+    "mongo.csv_salidas": {
+      "valor": 8,
+      "formato": "int",
+      "fuente": "_facts.json · pipelines.csv_outputs"
+    },
+    "mongo.habitaciones": {
+      "valor": 201,
+      "formato": "int",
+      "fuente": "_facts.json · anuncios_habitaciones_unificados.docs"
+    },
+    "mongo.indices_creados": {
+      "valor": 8,
+      "formato": "int",
+      "fuente": "_facts.json · defined_indexes - defined_indexes_missing"
+    },
+    "mongo.indices_definidos": {
+      "valor": 10,
+      "formato": "int",
+      "fuente": "_facts.json · defined_indexes"
+    },
+    "mongo.pipelines": {
+      "valor": 11,
+      "formato": "int",
+      "fuente": "_facts.json · pipelines.ordered"
+    },
+    "mongo.pipelines_fuera_orden": {
+      "valor": 1,
+      "formato": "int",
+      "fuente": "_facts.json · pipelines.outside_order"
+    },
+    "mongo.pipelines_total": {
+      "valor": 12,
+      "formato": "int",
+      "fuente": "_facts.json · pipelines.defined"
+    },
+    "mongo.total": {
+      "valor": 32,
+      "formato": "int",
+      "fuente": "_facts.json · collections_total"
+    },
+    "mongo.vivas": {
+      "valor": 17,
+      "formato": "int",
+      "fuente": "_facts.json · collections_live"
+    },
+    "raw.disco": {
+      "valor": 357,
+      "formato": "int",
+      "fuente": "find data/raw -type f"
+    },
+    "raw.manifest": {
+      "valor": 355,
+      "formato": "int",
+      "fuente": "docs/raw_manifest_sha256.txt · líneas"
+    },
+    "raw.visibles": {
+      "valor": 355,
+      "formato": "int",
+      "fuente": "find data/raw -type f -not -name '.*'"
+    },
+    "silver.disco": {
+      "valor": 187,
+      "formato": "int",
+      "fuente": "find data/procesado -type f"
+    },
+    "silver.manifest": {
+      "valor": 183,
+      "formato": "int",
+      "fuente": "data/procesado/manifest_sha256.txt · líneas"
+    },
+    "verif.gobernanza_cabeceras": {
+      "valor": 53,
+      "formato": "int",
+      "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
+    },
+    "verif.gobernanza_dag": {
+      "valor": 40,
+      "formato": "int",
+      "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
+    },
+    "verif.gobernanza_ids": {
+      "valor": 49,
+      "formato": "int",
+      "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
+    },
+    "verif.gobernanza_scripts": {
+      "valor": 47,
+      "formato": "int",
+      "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
+    },
+    "verif.tests_collected": {
+      "valor": 287,
+      "formato": "int",
+      "fuente": "pytest -q tests · 2026-11-13"
+    },
+    "verif.tests_passed": {
+      "valor": 285,
+      "formato": "int",
+      "fuente": "pytest -q tests · 2026-11-13"
+    },
+    "verif.tests_skipped": {
+      "valor": 2,
+      "formato": "int",
+      "fuente": "pytest -q tests · 2026-11-13"
+    }
+  }
+}
