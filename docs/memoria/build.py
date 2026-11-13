@@ -134,8 +134,6 @@ def _csv(name: str):
 
 def refresh() -> None:
     """Recalcula las cifras automáticas y conserva las manuales."""
-    import pandas as pd
-
     facts = _facts()
     prev = _load_json(CIFRAS).get("cifras", {}) if CIFRAS.exists() else {}
     c: dict[str, dict] = {}
@@ -424,25 +422,23 @@ def build() -> int:
     subtitle = doc["subtitulo"].replace('"', '\\"')
     author = doc["autor"].replace('"', '\\"')
 
+    front = (
+        "---\n"
+        f'title: "{title}"\n'
+        f'subtitle: "{subtitle}"\n'
+        f'author: "{author}"\n'
+        f'date: "{doc["fecha"]}"\n'
+        f'lang: {doc.get("idioma", "es")}\n'
+        "---"
+    )
     parts = [
+        front,
         "<!-- GENERADO por docs/memoria/build.py. No editar a mano. -->",
-        "---",
-        f'title: "{title}"',
-        f'subtitle: "{subtitle}"',
-        f'author: "{author}"',
-        f'date: "{doc["fecha"]}"',
-        f'lang: {doc.get("idioma", "es")}',
-        "---",
-        "",
         "> Cifras verificadas el "
         f"{doc['fecha']}. Fuente única: `docs/memoria/_cifras.json`.",
-        "",
         "# Índice",
-        "",
     ]
-    for _, meta, _ in chapters:
-        parts.append(f"{meta['cap']}. {meta['titulo']}")
-    parts.append("")
+    parts.append("\n".join(f"{meta['cap']}. {meta['titulo']}" for _, meta, _ in chapters))
 
     for index, (path, meta, text) in enumerate(chapters):
         match = META_RE.search(text)
