@@ -8,8 +8,11 @@ ruta se valida antes de salir a la red.
 from __future__ import annotations
 
 import hashlib
+import io
 import sys
+from contextlib import contextmanager
 from pathlib import Path
+from typing import Iterator
 
 import pytest
 
@@ -32,10 +35,11 @@ class FakeClient:
             raise self.exc
         return {"length": len(self.payload or b"")}
 
-    def read(self, path: str) -> bytes:
+    @contextmanager
+    def read(self, path: str) -> Iterator[io.BytesIO]:
         if self.exc:
             raise self.exc
-        return self.payload or b""
+        yield io.BytesIO(self.payload or b"")
 
 
 @pytest.fixture

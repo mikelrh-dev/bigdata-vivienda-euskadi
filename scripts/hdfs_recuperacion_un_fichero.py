@@ -20,6 +20,7 @@ import hashlib
 import os
 import sys
 from pathlib import Path
+from typing import BinaryIO, cast
 
 from dotenv import load_dotenv
 
@@ -96,7 +97,8 @@ def recuperar(
 
             client = InsecureClient(get_hdfs_url(), user=get_hdfs_user(), timeout=timeout)
         status = client.status(info["hdfs_path"])  # type: ignore[attr-defined]
-        remote = client.read(info["hdfs_path"])  # type: ignore[attr-defined]
+        with client.read(info["hdfs_path"]) as reader:  # type: ignore[attr-defined]
+            remote = cast(BinaryIO, reader).read()
     except Exception as exc:  # noqa: BLE001
         info["error"] = f"HDFS_NO_ALCANZABLE ({type(exc).__name__}: {exc})"
         return 2, info

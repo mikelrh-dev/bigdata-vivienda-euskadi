@@ -1,0 +1,104 @@
+{
+  "fecha": "2026-11-12",
+  "modo": "solo lectura",
+  "head": "b29c6ac",
+  "entorno": {
+    "python": "3.12.10",
+    "red_centro": {
+      "hdfs_10.22.87.215:50070": "TCP OK",
+      "kafka_10.22.87.215:9092": "TCP OK",
+      "mongo_localhost:27017": "TCP OK"
+    },
+    "dns_cluster": {
+      "hadoop-master1.tartangalh.eus": "gaierror [Errno 11001]",
+      "hadoop-worker1.tartangalh.eus": "gaierror [Errno 11001]",
+      "hadoop-worker2.tartangalh.eus": "gaierror [Errno 11001]"
+    }
+  },
+  "hdfs": {
+    "raw_content_summary": {
+      "status": 200,
+      "directoryCount": 6,
+      "fileCount": 353,
+      "length": 895597901
+    },
+    "raw_top_level": {
+      "status": 200,
+      "childrenNum": 202,
+      "primeros": [".FROZEN", ".gitkeep", "ECVI_cifras_interanuales_es_2025T4.xlsx", "ECVI_es_2026T2.xlsx", "ECVI_otros_inmuebles_2025T4.xlsx", "alquiler_distrito_seccion_original.csv"]
+    },
+    "data_root_listing": {
+      "status": 200,
+      "hijos": ["raw"]
+    },
+    "procesado_getfilestatus": {
+      "status": 404,
+      "exception": "FileNotFoundException"
+    },
+    "open_redirect": {
+      "status": "falla",
+      "motivo": "WebHDFS OPEN redirige a hadoop-worker1/2.tartangalh.eus:50075 y el nombre no resuelve",
+      "script_recuperacion_rc": 2,
+      "salida": "HDFS_REC FAIL HDFS_NO_ALCANZABLE (ConnectionError ... NameResolutionError ... Failed to resolve 'hadoop-worker2.tartangalh.eus')"
+    }
+  },
+  "kafka": {
+    "tcp": "OK",
+    "admin_list_topics": {
+      "ok": false,
+      "error": "NodeNotReadyError",
+      "intentos": 3
+    },
+    "consumer_offsets": {
+      "ok": false,
+      "error": "KafkaTimeoutError al pedir offsets por timestamps / metadata no disponible"
+    },
+    "causa_probable": "los brokers anunciados usan hadoop-*.tartangalh.eus, que no resuelve desde esta máquina",
+    "evidencia_historica": "openspec/audit/v8_2026-11-09/evidencia/vivo/kafka_retry2.json (topic vivienda_euskadi, end=352, committed=352, lag 0)"
+  },
+  "mongo": {
+    "db": "vivienda_euskadi",
+    "colecciones_totales": 32,
+    "vivas": 17,
+    "backup": 15,
+    "counts": {
+      "municipios": 252,
+      "anuncios": 594,
+      "alquiler_municipal": 252,
+      "indicadores": 252,
+      "etxebide_promociones": 406,
+      "vpo_municipal": 252,
+      "anuncios_habitaciones_unificados": 201,
+      "anuncios_habitaciones_unificados_bigdata": 201
+    },
+    "anuncios_modalidad": {
+      "larga_estancia": 326,
+      "temporal": 268
+    },
+    "municipios_con_codigo_ine": 0,
+    "indices_anuncios": [
+      "_id_",
+      "idx_anuncios_ine_modalidad_precio",
+      "idx_anuncios_geo",
+      "idx_anuncios_portal_id",
+      "idx_anuncios_equipamiento"
+    ],
+    "explain": {
+      "filtro": "ubicacion.codigo_ine=20069, modalidad=larga_estancia, precio_eur<=1000",
+      "before": {"stage": "COLLSCAN", "totalDocsExamined": 594, "totalKeysExamined": 0, "nReturned": 1},
+      "after": {"stage": "IXSCAN", "totalDocsExamined": 1, "totalKeysExamined": 1, "nReturned": 1}
+    },
+    "tier": {"A": 4, "B": 3, "C": 57, "D": 188},
+    "municipios_con_anuncio": 64,
+    "municipios_con_precio_medio": 60,
+    "municipios_con_n_precio_positivo": 7,
+    "ind_metodo_imputacion": {"oficial": 159, "idw": 93}
+  },
+  "gold_regenerado_en_tmp": {
+    "rc": 0,
+    "csv": 13,
+    "png": 33,
+    "huella": "d158780a2998ea79a2fbdc210660f9bfd0bacf191fd834ba60f007b83ef8090a",
+    "reproducibilidad": "ok (dos pasadas)"
+  }
+}

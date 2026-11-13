@@ -10,8 +10,8 @@ y no debe citarse como total actual.
 ## Cómo se regenera
 
 ```bash
-# Todo (silver + quality + gold), desde data/raw
-.venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality,gold
+# Silver + quality, desde data/raw (gold exige Mongo ya cargado)
+.venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality
 
 # Solo gold (requiere Mongo cargado y silver presente)
 .venv/Scripts/python.exe scripts/run_pipeline.py --fase gold
@@ -20,7 +20,7 @@ y no debe citarse como total actual.
 .venv/Scripts/python.exe scripts/run_pipeline.py --check
 ```
 
-Verificado el 2026-11-11: silver **182/182** ficheros y gold **53/53** artefactos reconstruidos desde
+Verificado el 2026-11-11: silver **183/183** ficheros y gold **53/53** artefactos reconstruidos desde
 cero con SHA-256 idéntico.
 
 ## CSV generados desde Mongo (evidencia RA4 / PREPARACION-VISUALIZACION)
@@ -49,8 +49,10 @@ cero con SHA-256 idéntico.
 
 - 29 PNG en la raíz (A1, A2, B, C, D, E, F, H1-H13, H8b, J, O, P, g2-g5, histograma, mapa coroplético,
   transporte) más 8 PNG en `anexo/`.
-- `mapa_esquema_silver.html` — grafo de relaciones entre los 40 CSV silver (PyVis, determinista).
-- `auditoria_lagunas_silver.csv` — profiling de los 40 CSV silver (filas, nulos, cobertura/252).
+- `mapa_esquema_silver.html` — grafo de relaciones entre los 42 CSV silver (PyVis, determinista).
+- `auditoria_lagunas_silver.csv` — **pendiente de materializar** en este checkout: la genera
+  `transform/auditar_lagunas_silver.py` (audita los 42 CSV silver) y `transform/run_all.py --check`
+  la reporta como salida que falta. Regenerarla sube el gold de 53 a 54 artefactos.
 
 ## Qué es evidencia y qué no
 
