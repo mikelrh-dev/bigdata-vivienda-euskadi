@@ -92,7 +92,6 @@ def main() -> int:
     norm = Normalize(vmin=vmin, vmax=vmax)
 
     fig, ax = plt.subplots(figsize=(10, 10))
-    ax.set_aspect("equal")
     ax.axis("off")
 
     n_con_dato = 0
@@ -118,6 +117,11 @@ def main() -> int:
                 antialiased=True, hatch=hatch,
             )
             ax.add_patch(polygon)
+
+    # Sin autoscale explicito, set_aspect("equal") deja el axes en 0-1 y los
+    # poligonos (lon -3, lat 43) quedan fuera de la vista: el mapa sale blanco.
+    ax.autoscale_view()
+    ax.set_aspect("equal")
 
     sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
     sm.set_array([])
@@ -152,7 +156,6 @@ def main() -> int:
     norm_n = Normalize(vmin=1, vmax=float(valores_n.max()))
     cmap_n = plt.get_cmap("Blues")
     fig2, ax2 = plt.subplots(figsize=(10, 10))
-    ax2.set_aspect("equal")
     ax2.axis("off")
     for feat in features:
         props = feat.get("properties", {})
@@ -164,6 +167,8 @@ def main() -> int:
                 anillo, closed=True, facecolor=facecolor,
                 edgecolor="white", linewidth=0.3, antialiased=True,
             ))
+    ax2.autoscale_view()
+    ax2.set_aspect("equal")
     sm2 = plt.cm.ScalarMappable(norm=norm_n, cmap=cmap_n)
     sm2.set_array([])
     cbar2 = fig2.colorbar(sm2, ax=ax2, fraction=0.046, pad=0.04)

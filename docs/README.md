@@ -4,8 +4,10 @@
 
 | Ruta | Qué es |
 |---|---|
-| `raw_manifest_sha256.txt` | SHA-256 canónico de los 354 ficheros raw. Lo leen `scripts/gate_extremo_a_extremo.py`, `scripts/verificar_fase_datos.py`, `extract/generar_manifest.py` y `tests/test_raw_inmutable.py`; no se mueve. |
-| `presentacion/` | Deck de defensa (13 diapositivas, PDF y assets). Ver `presentacion/README.md`. |
+| `raw_manifest_sha256.txt` | SHA-256 canónico de los 355 ficheros raw. Lo leen `scripts/gate_extremo_a_extremo.py`, `scripts/verificar_fase_datos.py`, `extract/generar_manifest.py` y `tests/test_raw_inmutable.py`; no se mueve. |
+| `presentacion/` | Deck de defensa v1 (13 diapositivas, PDF y assets). Ver `presentacion/README.md`. |
+| `presentacion_v2/` | Deck v2 (22 diapositivas + 8 backups), guion y PDF. Ver `presentacion_v2/README.md`. |
+| `matriz-comparabilidad.md` | Matriz de comparabilidad entre fuentes y años. |
 
 ## Dónde está el resto
 

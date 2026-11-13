@@ -150,10 +150,10 @@ def main() -> int:
           and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
           f"{len(cob)} mun")
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(encoding="utf-8"))
-    # 354 = ficheros con hash en ingestion_manifest local; distinto de los
-    # 352 ficheros raw publicados en HDFS (alias documentado, no se colapsa).
-    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 354,
-          f"{man['n_ficheros']} ficheros (354 ingestion local; 352 raw en HDFS)")
+    # 355 = ficheros con hash en ingestion_manifest local; distinto de los
+    # 353 ficheros raw publicados en HDFS (alias documentado, no se colapsa).
+    check("17 ingestion manifest", man["n_ficheros"] == len(man["ficheros"]) == 355,
+          f"{man['n_ficheros']} ficheros (355 ingestion local; 353 raw en HDFS)")
     mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").read_text(encoding="utf-8"))
     import re as _re
     con_ts = [p.name for p in PROC.glob("*_normalizado.json")
