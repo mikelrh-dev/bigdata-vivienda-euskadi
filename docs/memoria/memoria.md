@@ -256,28 +256,30 @@ La mediana oficial es 26,61 %. La interpolación asigna un valor a los 93 munici
 ## 6.2 O2. La capa 2024: dónde pesa más
 
 ![Ranking de esfuerzo 18-34](figuras/fig-ranking-2024.png){width=15cm}\
-*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. Sin Tier ni muestra de anuncios: el numerador es administrativo y no depende de la oferta. Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
+*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. El valor y el orden son administrativos; el color y la n solo describen la cobertura de oferta de 2026 (azul, Tier A; azul claro, B; gris, C/D). Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
 
 El corte de la tabla no es un top-N elegido a mano: son todos los municipios con alquiler oficial de 2024 que superan el 35 % de esfuerzo, en orden descendente. Por debajo, las posiciones se apelotonan y el orden deja de ser informativo.
 
-| Municipio | Territorio | Alquiler oficial (€/mes) | Esfuerzo 18–34 (2024) |
-|---|---|---:|---:|
-| Barakaldo | Bizkaia | 746 € | 38,50 % |
-| Donostia / San Sebastián | Gipuzkoa | 995 € | 38,17 % |
-| Sestao | Bizkaia | 650 € | 38,10 % |
-| Bilbao | Bizkaia | 850 € | 37,69 % |
-| Erandio | Bizkaia | 720 € | 37,65 % |
-| Pasaia | Gipuzkoa | 691 € | 36,87 % |
-| Lasarte-Oria | Gipuzkoa | 766 € | 36,47 % |
-| Errenteria | Gipuzkoa | 705 € | 36,41 % |
-| Astigarraga | Gipuzkoa | 867 € | 36,37 % |
-| Basauri | Bizkaia | 672 € | 36,09 % |
-| Santurtzi | Bizkaia | 697 € | 36,02 % |
-| Portugalete | Bizkaia | 702 € | 35,65 % |
-| Lezo | Gipuzkoa | 702 € | 35,62 % |
-| Irun | Gipuzkoa | 729 € | 35,44 % |
+| Municipio | Territorio | Alquiler oficial (€/mes) | Esfuerzo 18–34 (2024) | Anuncios 2026 |
+|---|---|---:|---:|---:|
+| Barakaldo | Bizkaia | 746 € | 38,50 % | 6 (C) |
+| Donostia / San Sebastián | Gipuzkoa | 995 € | 38,17 % | 126 (A) |
+| Sestao | Bizkaia | 650 € | 38,10 % | 4 (C) |
+| Bilbao | Bizkaia | 850 € | 37,69 % | 204 (A) |
+| Erandio | Bizkaia | 720 € | 37,65 % | 4 (C) |
+| Pasaia | Gipuzkoa | 691 € | 36,87 % | 2 (C) |
+| Lasarte-Oria | Gipuzkoa | 766 € | 36,47 % | 1 (C) |
+| Errenteria | Gipuzkoa | 705 € | 36,41 % | 0 (D) |
+| Astigarraga | Gipuzkoa | 867 € | 36,37 % | 0 (D) |
+| Basauri | Bizkaia | 672 € | 36,09 % | 1 (C) |
+| Santurtzi | Bizkaia | 697 € | 36,02 % | 11 (B) |
+| Portugalete | Bizkaia | 702 € | 35,65 % | 5 (C) |
+| Lezo | Gipuzkoa | 702 € | 35,62 % | 2 (C) |
+| Irun | Gipuzkoa | 729 € | 35,44 % | 4 (C) |
 
 Los catorce tienen alquiler oficial de 2024, ninguno imputado, así que el esfuerzo es dato administrativo y no estimación: alquiler oficial de 2024 sobre renta joven de 2024. El orden es el del esfuerzo, no el del alquiler, y esa diferencia es el resultado: Barakaldo encabeza el ranking con 38,50 % y un alquiler de 746 €, por debajo del de Donostia (995 €). Lo que empuja el esfuerzo arriba no es el precio de la vivienda sino la renta joven: Sestao, con 650 €, es el tercero del ranking.
+
+La última columna es solo cobertura: el total de anuncios de 2026 de cada municipio y su Tier entre paréntesis, el mismo color que en la figura. No es la muestra comparable de 6.5 (allí Bilbao son 68 anuncios y aquí 204), y sirve para leer el otro eje del problema: Barakaldo encabeza el esfuerzo con 6 anuncios, mientras Donostia lo hace con 126.
 
 El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en 28,60 % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 

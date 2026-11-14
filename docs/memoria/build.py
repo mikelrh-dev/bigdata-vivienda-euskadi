@@ -257,6 +257,8 @@ def refresh() -> None:
     )
 
     t = _csv("mongo_tier_confianza.csv")
+    t["codigo_ine"] = t["codigo_ine"].astype(str).str.zfill(5)
+    tier_por_codigo = dict(zip(t["codigo_ine"], t["tier"]))
     vc = t["tier"].value_counts()
     for letra in ("A", "B", "C", "D"):
         add(f"datos.tier_{letra.lower()}", int(vc.get(letra, 0)), "int", f"mongo_tier_confianza.csv · tier {letra}")
@@ -478,14 +480,26 @@ def refresh() -> None:
             "2d",
             f"mongo_esfuerzo_por_municipio.csv · {code}",
         )
-        # El n de anuncios ya no se publica en la tabla de 2024: es muestra de
-        # 2026 y vive en la figura del ranking (M26_ranking_esfuerzo_muestra).
         if slug in RANKING_2024:
             add(
                 f"datos.mun_{slug}_alquiler",
                 float(fila["cuantia_alquiler_mes"]),
                 "int",
                 f"mongo_esfuerzo_por_municipio.csv · {code} · cuantia_alquiler_mes",
+            )
+            # Cobertura 2026 de la tabla de 2024: el total de anuncios y su Tier.
+            # No es la muestra comparable de §6.5 (Bilbao 204 aqui, 68 alli).
+            add(
+                f"datos.mun_{slug}_n_cobertura",
+                int(fila["n_anuncios"]),
+                "int",
+                f"mongo_esfuerzo_por_municipio.csv · {code} · n_anuncios",
+            )
+            add(
+                f"datos.mun_{slug}_tier_cobertura",
+                str(tier_por_codigo.get(code, "s/t")),
+                "str",
+                f"mongo_tier_confianza.csv · {code} · tier",
             )
 
     # Tabla de la capa 2026 (§6.5): los cuatro Tier A con su muestra y su

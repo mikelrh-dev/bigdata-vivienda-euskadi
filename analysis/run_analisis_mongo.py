@@ -698,14 +698,29 @@ def exportar_png_desde_mongo(
     # H1: ranking de esfuerzo 18-34 de 2024 sobre alquiler oficial.
     # Capa 2024: el numerador (alquiler oficial de Eustat) es administrativo y
     # no depende de la oferta, asi que no hay Tier ni n de anuncios que
-    # ordenar; esos son criterios de 2026 y viven en la figura M26. Etiqueta
-    # sin n para no sugerir una muestra que aqui no interviene.
+    # ordenen el ranking. Se anotan igual (n y Tier 2026) solo como cobertura
+    # de oferta, sin que el valor ni el orden dependan de ellos: el color de la
+    # barra es la unica cosa que aporta la capa 2026.
     #
     # El corte es el 35 %, no un top-N: con top-12 el 12.º (Portugalete 35,65)
     # quedaba a 0,03 pp de Lezo (35,62) y el corte no se sostenia a la
-    # precision que publica la tabla. Con el umbral se publican los 14 que
+    # precision que publica la tabla. Con el umbral se publican los que
     # superan el 35 % y el margen pasa a 0,45 pp (Irun 35,44 -> Urduliz 34,99).
     UMBRAL_RANKING_2024 = 35.0
+    # Cobertura de oferta 2026: n_anuncios y Tier por municipio (misma fuente y
+    # mismo corte que `mongo_tier_confianza.csv`, sin filtrar el ranking).
+    cobertura_2026: dict[str, tuple[int, str]] = {}
+    for _t in tier_rows:
+        _n = str(_t.get("nombre") or _t.get("_id"))
+        if _n:
+            cobertura_2026[_n] = (int(_t.get("n_anuncios") or 0), str(_t.get("tier") or ""))
+    COLOR_TIER = {"A": "#0072B2", "B": "#5BA3D0"}
+    COLOR_SIN_MUESTRA = "#999999"
+    LEYENDA_COBERTURA = [
+        ("A · n≥30 (firme)", COLOR_TIER["A"]),
+        ("B · n 10-29 (indicativo)", COLOR_TIER["B"]),
+        ("C/D · n<10 (sin muestra)", COLOR_SIN_MUESTRA),
+    ]
     h1 = []
     for d in pipeline_top_municipios_por_esfuerzo(limit=250, min_esfuerzo=UMBRAL_RANKING_2024):
         e = _fnum(d.get("esfuerzo_joven_pct_18_34"))
@@ -713,24 +728,43 @@ def exportar_png_desde_mongo(
             h1.append((str(d.get("nombre") or d.get("_id")), e))
     h1.sort(key=lambda t: t[1])
     if h1:
-        fig, ax = plt.subplots(figsize=(8.2, 4.6))
-        ax.barh([r[0] for r in h1], [r[1] for r in h1], color="#0072B2")
+        fig, ax = plt.subplots(figsize=(9.4, 5.4))
+        colores_h1 = [COLOR_TIER.get(cobertura_2026.get(n, (0, ""))[1], COLOR_SIN_MUESTRA)
+                      for n, _e in h1]
+        ax.barh([r[0] for r in h1], [r[1] for r in h1], color=colores_h1)
         # Dos decimales: la tabla de §6.2 publica 37,69 y 38,17; con un
         # decimal Bilbao y Erandio quedaban en 37,7 y el texto no casaba.
-        for i, (_n, _e) in enumerate(h1):
-            ax.text(_e, i, " " + f"{_e:.2f}".replace(".", ",") + " %",
-                    va="center", fontsize=8)
+        for i, (n, _e) in enumerate(h1):
+            _n_cov, _tier_cov = cobertura_2026.get(n, (0, ""))
+            ax.text(_e, i, " " + f"{_e:.2f}".replace(".", ",") + " %  (n=" + str(_n_cov)
+                    + " · " + (_tier_cov or "s/t") + ")",
+                    va="center", fontsize=7.5)
         ax.axvline(30, color="#D55E00", linestyle="--", label="Umbral 30 %")
-        # Hueco bajo la ultima barra para la leyenda: con 14 barras la etiqueta
-        # caia sobre la de Irun. Dos filas de margen y la leyenda abajo.
-        ax.set_ylim(-2.4, len(h1) - 0.4)
-        ax.set_xlim(0, max(r[1] for r in h1) * 1.22)
+        # Hueco bajo la ultima barra para la leyenda: con 14 barras y tres
+        # entradas, dos filas de margen no bastaban y tapaba la etiqueta de
+        # Irun. Tres filas dejan la leyenda fuera de las barras.
+        ax.set_ylim(-3.6, len(h1) - 0.35)
+        ax.set_xlim(0, max(r[1] for r in h1) * 1.6)
         ax.set_xlabel("Esfuerzo del alquiler sobre la renta joven 18-34 (%)")
+        # Titulo de dos lineas: `_save` vuelve a llamar a tight_layout, asi que
+        # un fig.text en el margen superior acababa pisado por el eje. Como
+        # titulo del eje, tight_layout le reserva su caja.
         ax.set_title(
-            "H1 Esfuerzo 18-34 - 2024, alquiler oficial >=35 % (Mongo)"
+            "H1 · Esfuerzo 18-34 — capa oficial 2024 (alquiler registrado)\n"
+            "El valor es administrativo y no depende de la muestra de anuncios.\n"
+            "La n y el Tier son cobertura de oferta 2026: solo A/B sostiene lectura firme.",
+            fontsize=9.5, linespacing=1.55, pad=10,
         )
         ax.grid(axis="x", alpha=0.25)
-        ax.legend(loc="lower right")
+        handles = [plt.Line2D([0], [0], color=c, lw=7, label=l) for l, c in LEYENDA_COBERTURA]
+        ax.legend(handles=handles, loc="lower right", fontsize=8, frameon=True)
+        # Pie/fuente de la figura, encima de la banda que reserva el sello.
+        fig.text(
+            0.012, 0.075,
+            "Fuentes: Eustat alquiler 2024 + renta joven proxy (INE Atlas 2024 × ratio CAE 2024) "
+            "· n/Tier: Mongo 2026",
+            ha="left", va="bottom", fontsize=7, color="#4D4D4D",
+        )
         _save(fig, "H1_ranking_esfuerzo_18_34.png")
     else:
         _honest("H1_ranking_esfuerzo_18_34.png",

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T18:18:04+00:00",
+    "generado_utc": "2026-11-14T19:38:44+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -341,6 +341,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20903"
     },
+    "datos.mun_astigarraga_n_cobertura": {
+      "valor": 0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20903 · n_anuncios"
+    },
+    "datos.mun_astigarraga_tier_cobertura": {
+      "valor": "D",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20903 · tier"
+    },
     "datos.mun_barakaldo_alquiler": {
       "valor": 746.0,
       "formato": "int",
@@ -351,6 +361,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48013"
     },
+    "datos.mun_barakaldo_n_cobertura": {
+      "valor": 6,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48013 · n_anuncios"
+    },
+    "datos.mun_barakaldo_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48013 · tier"
+    },
     "datos.mun_basauri_alquiler": {
       "valor": 672.0,
       "formato": "int",
@@ -360,6 +380,16 @@
       "valor": 36.093456270700926,
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48015"
+    },
+    "datos.mun_basauri_n_cobertura": {
+      "valor": 1,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48015 · n_anuncios"
+    },
+    "datos.mun_basauri_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48015 · tier"
     },
     "datos.mun_bilbao_alquiler": {
       "valor": 850.0,
@@ -381,10 +411,20 @@
       "formato": "int",
       "fuente": "comparacion_esfuerzo_2024_2026.csv · 48020 · n_anuncios_2026"
     },
+    "datos.mun_bilbao_n_cobertura": {
+      "valor": 204,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48020 · n_anuncios"
+    },
     "datos.mun_bilbao_precio_2026": {
       "valor": 1687.5,
       "formato": "2d",
       "fuente": "comparacion_esfuerzo_2024_2026.csv · 48020 · precio mediano 2026"
+    },
+    "datos.mun_bilbao_tier_cobertura": {
+      "valor": "A",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48020 · tier"
     },
     "datos.mun_donostia_alquiler": {
       "valor": 995.0,
@@ -406,10 +446,20 @@
       "formato": "int",
       "fuente": "comparacion_esfuerzo_2024_2026.csv · 20069 · n_anuncios_2026"
     },
+    "datos.mun_donostia_n_cobertura": {
+      "valor": 126,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20069 · n_anuncios"
+    },
     "datos.mun_donostia_precio_2026": {
       "valor": 2000.0,
       "formato": "2d",
       "fuente": "comparacion_esfuerzo_2024_2026.csv · 20069 · precio mediano 2026"
+    },
+    "datos.mun_donostia_tier_cobertura": {
+      "valor": "A",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20069 · tier"
     },
     "datos.mun_erandio_alquiler": {
       "valor": 720.0,
@@ -421,6 +471,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48902"
     },
+    "datos.mun_erandio_n_cobertura": {
+      "valor": 4,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48902 · n_anuncios"
+    },
+    "datos.mun_erandio_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48902 · tier"
+    },
     "datos.mun_errenteria_alquiler": {
       "valor": 705.0,
       "formato": "int",
@@ -430,6 +490,16 @@
       "valor": 36.40698359964368,
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20067"
+    },
+    "datos.mun_errenteria_n_cobertura": {
+      "valor": 0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20067 · n_anuncios"
+    },
+    "datos.mun_errenteria_tier_cobertura": {
+      "valor": "D",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20067 · tier"
     },
     "datos.mun_getxo_esfuerzo": {
       "valor": 28.59530020498134,
@@ -461,6 +531,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20045"
     },
+    "datos.mun_irun_n_cobertura": {
+      "valor": 4,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20045 · n_anuncios"
+    },
+    "datos.mun_irun_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20045 · tier"
+    },
     "datos.mun_lasarte_oria_alquiler": {
       "valor": 766.0,
       "formato": "int",
@@ -470,6 +550,16 @@
       "valor": 36.47228273161209,
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20902"
+    },
+    "datos.mun_lasarte_oria_n_cobertura": {
+      "valor": 1,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20902 · n_anuncios"
+    },
+    "datos.mun_lasarte_oria_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20902 · tier"
     },
     "datos.mun_lezo_alquiler": {
       "valor": 702.0,
@@ -481,6 +571,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20053"
     },
+    "datos.mun_lezo_n_cobertura": {
+      "valor": 2,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20053 · n_anuncios"
+    },
+    "datos.mun_lezo_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20053 · tier"
+    },
     "datos.mun_pasaia_alquiler": {
       "valor": 691.0,
       "formato": "int",
@@ -490,6 +590,16 @@
       "valor": 36.872507036992566,
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 20064"
+    },
+    "datos.mun_pasaia_n_cobertura": {
+      "valor": 2,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20064 · n_anuncios"
+    },
+    "datos.mun_pasaia_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 20064 · tier"
     },
     "datos.mun_portugalete_alquiler": {
       "valor": 702.0,
@@ -501,6 +611,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48078"
     },
+    "datos.mun_portugalete_n_cobertura": {
+      "valor": 5,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48078 · n_anuncios"
+    },
+    "datos.mun_portugalete_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48078 · tier"
+    },
     "datos.mun_santurtzi_alquiler": {
       "valor": 697.0,
       "formato": "int",
@@ -511,6 +631,16 @@
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48082"
     },
+    "datos.mun_santurtzi_n_cobertura": {
+      "valor": 11,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48082 · n_anuncios"
+    },
+    "datos.mun_santurtzi_tier_cobertura": {
+      "valor": "B",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48082 · tier"
+    },
     "datos.mun_sestao_alquiler": {
       "valor": 650.0,
       "formato": "int",
@@ -520,6 +650,16 @@
       "valor": 38.1023095861503,
       "formato": "2d",
       "fuente": "mongo_esfuerzo_por_municipio.csv · 48084"
+    },
+    "datos.mun_sestao_n_cobertura": {
+      "valor": 4,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48084 · n_anuncios"
+    },
+    "datos.mun_sestao_tier_cobertura": {
+      "valor": "C",
+      "formato": "str",
+      "fuente": "mongo_tier_confianza.csv · 48084 · tier"
     },
     "datos.mun_vitoria_esfuerzo": {
       "valor": 33.36895336688767,
