@@ -131,13 +131,19 @@ def _p1(x: float) -> str:
 def grafico_histograma(df: pd.DataFrame) -> None:
     d = df.dropna(subset=["esf_18_34"])
     fig, ax = plt.subplots(figsize=(8.4, 4.4))
-    bins = [0, 25, 50, 75, 100, 125, 150, 200, 300, 500]
+    # El eje cierra en 150: el maximo real es 145,5 % (n=50), asi que los tramos
+    # hasta 500 dejaban la distribucion en el primer sexto del ancho y las barras
+    # se leian como un pico suelto en una figura casi vacia.
+    bins = list(range(20, 151, 10))
     ax.hist(d["esf_18_34"], bins=bins, color=ACCENT, alpha=0.9,
             edgecolor="white", linewidth=0.8)
+    ax.set_xlim(18, 152)
     mediana = d["esf_18_34"].median()
     ax.axvline(mediana, color=INK, linewidth=2)
-    ax.text(mediana + 3, ax.get_ylim()[1] * 0.92, f"mediana {_p1(mediana)} %",
-            color=INK, fontsize=10, fontweight="bold", va="top")
+    # Etiqueta con fondo: sin caja, el rotulo caia encima de las barras altas.
+    ax.text(mediana + 3, ax.get_ylim()[1] * 0.98, f"mediana {_p1(mediana)} %",
+            color=INK, fontsize=10, fontweight="bold", va="top", ha="left",
+            bbox=dict(facecolor=PAPER, edgecolor="none", pad=2))
     # Sin linea de umbral: el 30 % es del esfuerzo de 2024 (alquiler oficial) y
     # aqui el numerador es el precio de anuncio. Dibujarla sugeria que la misma
     # raya sirve para las dos capas, que es justo lo que el pie de la figura
