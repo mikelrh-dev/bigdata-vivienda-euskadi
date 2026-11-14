@@ -32,8 +32,10 @@ from bson.decimal128 import Decimal128
 from analysis.mongo_aggregations import (
     pipeline_accesibilidad_extendida,
     pipeline_alquiler_por_municipio,
+    pipeline_esfuerzo_mercado_2026,
     pipeline_esfuerzo_por_sexo,
     pipeline_habitaciones_por_municipio,
+    pipeline_habitaciones_precios,
     pipeline_indicadores_municipio,
     pipeline_modalidades,
     pipeline_tier_por_municipio,
@@ -42,8 +44,12 @@ from analysis.mongo_aggregations import (
     pipeline_vpo_por_municipio,
     pipeline_vpo_terminadas,
 )
+from analysis.vintage_figuras import anotar, copias_deck, metadatos, rango_etxebide
 
 RESULTADOS_DIR = ROOT / "data" / "resultados"
+DECK_ASSETS = ROOT / "docs" / "presentacion_v2" / "assets"
+# Nombres de gold que el deck consume byte a byte: los declara
+# `config/vintage_figuras.yaml` (sincronizacion.deck), no esta lista.
 
 # Orden fijo de ejecucion de los 11 pipelines principales.
 PIPELINE_ORDER: tuple[str, ...] = (
@@ -405,8 +411,9 @@ def _metodo_ind(d: dict[str, Any]) -> str | None:
 def exportar_png_desde_mongo(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
+    sync_deck: bool = False,
 ) -> dict[str, Path]:
-    """Genera los 32 PNG desde PyMongo (sin DuckDB ni CSV).
+    """Genera los 33 PNG desde PyMongo (sin DuckDB ni CSV).
 
     Fuente unica: los 11 pipelines en memoria (`resultados`). 13
     ficheros previos (12 figuras unicas A1,A2,B,C,D,E,F,G,g2,g3,g4,g5
@@ -417,6 +424,10 @@ def exportar_png_desde_mongo(
     Sobrescribe los mismos nombres que generaba DuckDB para dejar atras
     esa dependencia. Si una serie esta vacia o falta un campo, se guarda
     una figura honesta con el motivo (nunca datos inventados).
+    Cada PNG lleva su vintage (`config/vintage_figuras.yaml`) como etiqueta
+    visible y como metadato PNG. Si `sync_deck=True`, copia a
+    `docs/presentacion_v2/assets` los nombres declarados en
+    `sincronizacion.deck` para que el deck use el mismo byte que gold.
     Devuelve dict fichero -> ruta.
     """
     import matplotlib
@@ -448,10 +459,16 @@ def exportar_png_desde_mongo(
         # en memoria y se escribe con la API de Python.
         ruta = (destino / "anexo" / nombre) if nombre in ANEXO_PNG else (destino / nombre)
         fig.tight_layout()
+        # Sello de vintage (config/vintage_figuras.yaml): texto + metadato PNG.
+        anotar(fig, nombre)
         buffer = io.BytesIO()
-        fig.savefig(buffer, format="png", dpi=110)
+        fig.savefig(buffer, format="png", dpi=110, metadata=metadatos(nombre))
+        png = buffer.getvalue()
         plt.close(fig)
-        ruta.write_bytes(buffer.getvalue())
+        ruta.write_bytes(png)
+        if sync_deck and nombre in copias_deck():
+            DECK_ASSETS.mkdir(parents=True, exist_ok=True)
+            (DECK_ASSETS / nombre).write_bytes(png)
         rutas[nombre] = ruta
 
     ind = resultados.get("pipeline_indicadores_municipio", [])
@@ -555,11 +572,32 @@ def exportar_png_desde_mongo(
     # no antigüedad por TH. Ver data/resultados/README.md.
     from collections import Counter
     fig, ax = plt.subplots(figsize=(8, 4))
-    cnt = Counter(str(d.get("estado") or "sin dato") for d in vpo)
+    # `vpo` son filas de agregacion (municipio x estado x tipologia), no
+    # promociones: cada fila trae `n_promociones`. Contar filas daba 274 donde
+    # el registro tiene 347, asi que se suma la columna.
+    cnt: Counter = Counter()
+    for d in vpo:
+        cnt[str(d.get("estado") or "sin dato")] += int(d.get("n_promociones") or 0)
     if cnt:
         ax.bar(list(cnt), [cnt[k] for k in cnt])
+        # Etiqueta con el total: una barra de 1 promocion es invisible a esta
+        # escala y sin numero se lee como cero.
+        for _i, _k in enumerate(cnt):
+            ax.text(_i, cnt[_k], str(cnt[_k]), ha="center", va="bottom", fontsize=8)
         plt.setp(ax.get_xticklabels(), rotation=20, ha="right")
     ax.set_title("Promociones VPO por estado (Mongo)")
+    # El registro de Etxebide no tiene un ano unico: solo una parte trae fecha
+    # de sorteo. Se declara el rango real (derivado de Mongo, no tecleado).
+    _rango = rango_etxebide()
+    if cnt and _rango:
+        ax.margins(y=0.18)  # aire arriba para la nota, sin tapar las barras
+        ax.text(
+            0.99, 0.98,
+            f"Fechas de sorteo: {_rango} · en curso, convenio y proyecto sin fecha",
+            transform=ax.transAxes, ha="right", va="top", fontsize=6.8,
+            color="#4D4D4D",
+            bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3"),
+        )
     _save(fig, "C_vpo_por_estado.png")
 
     # D: minutos Bilbao vs precio (OSRM + anuncios, todo Mongo).
@@ -657,23 +695,42 @@ def exportar_png_desde_mongo(
 
         return _pct(0.5), _pct(0.25), _pct(0.75)
 
-    # H1: ranking esfuerzo 18-34 Tier A n>=30 (pipeline_top_municipios_por_esfuerzo).
+    # H1: ranking de esfuerzo 18-34 de 2024 sobre alquiler oficial.
+    # Capa 2024: el numerador (alquiler oficial de Eustat) es administrativo y
+    # no depende de la oferta, asi que no hay Tier ni n de anuncios que
+    # ordenar; esos son criterios de 2026 y viven en la figura M26. Etiqueta
+    # sin n para no sugerir una muestra que aqui no interviene.
+    #
+    # El corte es el 35 %, no un top-N: con top-12 el 12.º (Portugalete 35,65)
+    # quedaba a 0,03 pp de Lezo (35,62) y el corte no se sostenia a la
+    # precision que publica la tabla. Con el umbral se publican los 14 que
+    # superan el 35 % y el margen pasa a 0,45 pp (Irun 35,44 -> Urduliz 34,99).
+    UMBRAL_RANKING_2024 = 35.0
     h1 = []
-    for d in top:
+    for d in pipeline_top_municipios_por_esfuerzo(limit=250, min_esfuerzo=UMBRAL_RANKING_2024):
         e = _fnum(d.get("esfuerzo_joven_pct_18_34"))
         if e is not None:
-            h1.append((str(d.get("nombre") or d.get("_id")), e, int(d.get("n_anuncios") or 0)))
+            h1.append((str(d.get("nombre") or d.get("_id")), e))
     h1.sort(key=lambda t: t[1])
     if h1:
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots(figsize=(8.2, 4.6))
         ax.barh([r[0] for r in h1], [r[1] for r in h1], color="#0072B2")
-        for i, (_n, _e, _k) in enumerate(h1):
-            ax.text(_e, i, f" {_e:.1f}% (n={_k})", va="center", fontsize=7)
-        ax.axvline(30, color="#D55E00", linestyle="--", label="Umbral 30%")
-        ax.set_xlim(0, max(r[1] for r in h1) * 1.35)
-        ax.set_xlabel("Esfuerzo alquiler joven 18-34 % (canonico)")
-        ax.set_title("H1 Ranking esfuerzo 18-34 - Tier A n>=30 (Mongo)")
-        ax.legend()
+        # Dos decimales: la tabla de §6.2 publica 37,69 y 38,17; con un
+        # decimal Bilbao y Erandio quedaban en 37,7 y el texto no casaba.
+        for i, (_n, _e) in enumerate(h1):
+            ax.text(_e, i, " " + f"{_e:.2f}".replace(".", ",") + " %",
+                    va="center", fontsize=8)
+        ax.axvline(30, color="#D55E00", linestyle="--", label="Umbral 30 %")
+        # Hueco bajo la ultima barra para la leyenda: con 14 barras la etiqueta
+        # caia sobre la de Irun. Dos filas de margen y la leyenda abajo.
+        ax.set_ylim(-2.4, len(h1) - 0.4)
+        ax.set_xlim(0, max(r[1] for r in h1) * 1.22)
+        ax.set_xlabel("Esfuerzo del alquiler sobre la renta joven 18-34 (%)")
+        ax.set_title(
+            "H1 Esfuerzo 18-34 - 2024, alquiler oficial >=35 % (Mongo)"
+        )
+        ax.grid(axis="x", alpha=0.25)
+        ax.legend(loc="lower right")
         _save(fig, "H1_ranking_esfuerzo_18_34.png")
     else:
         _honest("H1_ranking_esfuerzo_18_34.png",
@@ -763,50 +820,177 @@ def exportar_png_desde_mongo(
         _honest("H4_esfuerzo_18_34_vs_16_29.png", "H4 Canonico vs legacy (sin datos)",
                 "sin pares 18-34/16-29 en pipeline_indicadores_municipio")
 
-    # H5: VPO terminadas por mil (Top15 + histograma, ceros anotados).
+    # H5: VPO terminada por mil (Top15 con valor + reparto por tramos).
     vals5 = sorted([(_fnum(d.get("vpo_terminadas_por_mil")) or 0.0) for d in vpo_term])
     top5 = sorted(vpo_term, key=lambda d: _fnum(d.get("vpo_terminadas_por_mil")) or 0, reverse=True)[:15]
     n_ceros5 = sum(1 for v in vals5 if v == 0)
     if top5 and vals5:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        fig, (ax1, ax2) = plt.subplots(
+            1, 2, figsize=(11, 4.6), gridspec_kw={"width_ratios": [1.25, 1]}
+        )
         noms = [str(d.get("municipio") or d.get("codigo_ine")) for d in reversed(top5)]
         vls = [(_fnum(d.get("vpo_terminadas_por_mil")) or 0.0) for d in reversed(top5)]
-        ax1.barh(noms, vls, color="#0072B2")
-        ax1.set_xlabel("VPO terminadas por mil")
-        ax1.set_title("Top15")
-        ax2.hist(vals5, bins=min(30, max(5, len(vals5) // 10)))
-        ax2.set_xlabel("VPO terminadas por mil")
+        barras = ax1.barh(noms, vls, color="#0072B2")
+        ax1.set_xlabel("VPO terminada por mil habitantes (2020-2024)")
+        ax1.set_title("Los 15 municipios con más VPO terminada")
+        ax1.set_xlim(0, max(vls) * 1.20)
+        # Valor escrito sobre cada barra: sin esto hay que adivinar la cifra.
+        for barra, v in zip(barras, vls):
+            ax1.text(
+                v + max(vls) * 0.015,
+                barra.get_y() + barra.get_height() / 2,
+                f"{v:.1f}".replace(".", ","),
+                va="center", ha="left", fontsize=8,
+            )
+
+        # Reparto por tramos: dice lo mismo que el histograma, pero se lee.
+        tramos = [
+            ("0", 0.0, 0.0),
+            ("hasta 5", 0.0, 5.0),
+            ("5-10", 5.0, 10.0),
+            ("10-20", 10.0, 20.0),
+            ("20 o más", 20.0, float("inf")),
+        ]
+        etiquetas5, cuentas5 = [], []
+        for etiqueta, lo, hi in tramos:
+            if lo == 0.0 and hi == 0.0:
+                cuentas5.append(sum(1 for v in vals5 if v == 0))
+            else:
+                cuentas5.append(sum(1 for v in vals5 if lo < v <= hi))
+            etiquetas5.append(etiqueta)
+        total5 = max(1, len(vals5))
+        barras2 = ax2.bar(etiquetas5, cuentas5, color="#56B4E9", edgecolor="#0072B2")
+        ax2.set_title("Reparto de los municipios por tramo (‰)")
         ax2.set_ylabel("Municipios")
-        fig.suptitle(f"H5 VPO terminadas por mil (Mongo) - {n_ceros5} municipios en 0")
+        # Sin xlabel: la unidad ya esta en el titulo y el sello de vintage vive
+        # justo debajo de este eje.
+        ax2.set_ylim(0, max(cuentas5) * 1.22)
+        for barra, n in zip(barras2, cuentas5):
+            ax2.text(
+                barra.get_x() + barra.get_width() / 2,
+                barra.get_height() + max(cuentas5) * 0.03,
+                f"{n}", ha="center", va="bottom", fontsize=8,
+            )
+        ax2.text(
+            0.02, 0.97,
+            f"{n_ceros5} de {len(vals5)} municipios sin VPO terminada\n"
+            f"({n_ceros5 / total5 * 100:.0f} % del total con dato)",
+            transform=ax2.transAxes, ha="left", va="top", fontsize=8,
+            color="#4D4D4D",
+            bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3"),
+        )
+        fig.suptitle(
+            "H5 Vivienda protegida terminada en el último quinquenio (2020-2024)",
+            fontsize=11,
+        )
         _save(fig, "H5_vpo_terminadas_por_mil.png")
     else:
         _honest("H5_vpo_terminadas_por_mil.png", "H5 VPO terminadas (sin datos)",
                 "pipeline_vpo_terminadas vacio")
 
-    # H6: habitaciones mediana/min-max (9 filas, outlier anotado).
+    # H6: ranking n>=10 + distribucion global de precios de habitacion.
+    # Fuente: pipeline_habitaciones_por_municipio (n/mediana) y
+    # pipeline_habitaciones_precios (precios individuales para IC y distribucion).
+    precios_hab = pipeline_habitaciones_precios()
+    precios_por_codigo: dict[str, list[float]] = {}
+    for d in precios_hab:
+        code = str(d.get("codigo_ine") or "").zfill(5)
+        p = _fnum(d.get("precio_eur"))
+        if code and p is not None and p > 0:
+            precios_por_codigo.setdefault(code, []).append(p)
     h6 = []
     for d in hab:
-        h6.append((str(d.get("municipio") or d.get("codigo_ine")),
-                   _fnum(d.get("min_precio_eur")), _fnum(d.get("mediana_precio_eur")),
-                   _fnum(d.get("max_precio_eur"))))
-    h6 = [t for t in h6 if t[1] is not None and t[2] is not None and t[3] is not None]
-    h6.sort(key=lambda t: t[2])
-    max6 = max([t[3] for t in h6], default=0)
-    if h6:
-        fig, ax = plt.subplots(figsize=(8, 4))
-        for i, (n, mn, md, mx) in enumerate(h6):
-            ax.plot([mn, mx], [i, i], color="#999999", linewidth=2)
-            ax.scatter([md], [i], color="#0072B2", zorder=3)
-        ax.set_yticks(range(len(h6)))
-        ax.set_yticklabels([t[0] for t in h6], fontsize=7)
-        ax.set_xscale("log")
-        ax.set_xlabel("€/habitación (escala log; punto = mediana, raya = min-max)")
-        nota_out = f" outlier max {max6:,.0f} €/habitación" if max6 > 20000 else ""
-        ax.set_title("H6 Habitaciones mediana/min-max (Mongo) — €/habitación, no agregar con vivienda entera" + (f"; {nota_out}" if nota_out else ""))
+        code = str(d.get("codigo_ine") or "").zfill(5)
+        n_precio = int(d.get("n_precio") or 0)
+        med = _fnum(d.get("mediana_precio_eur"))
+        vals = precios_por_codigo.get(code, [])
+        if n_precio >= 10 and med is not None and vals:
+            h6.append((str(d.get("municipio") or code), n_precio, med, vals))
+    h6.sort(key=lambda t: t[2], reverse=True)
+    if h6 and precios_por_codigo:
+        import numpy as np
+
+        rng = np.random.default_rng(42)
+
+        def _ci_mediana(vals: list[float], n_boot: int = 2000) -> tuple[float, float]:
+            arr = np.asarray(vals, dtype=float)
+            idx = rng.integers(0, arr.size, size=(n_boot, arr.size))
+            meds = np.median(arr[idx], axis=1)
+            lo, hi = np.percentile(meds, [2.5, 97.5])
+            return float(lo), float(hi)
+
+        todos = [p for vals in precios_por_codigo.values() for p in vals]
+        arr_todos = np.asarray(todos, dtype=float)
+        med_global = float(np.median(arr_todos))
+        q1, q3 = (float(x) for x in np.percentile(arr_todos, [25, 75]))
+        pct700 = float(np.mean(arr_todos <= 700) * 100)
+        max_global = float(np.max(arr_todos))
+        salarios = [
+            _fnum(d.get("salario_joven_2026_ajustado_18_34_eur_mes"))
+            for d in pipeline_esfuerzo_mercado_2026()
+        ]
+        salarios = [s for s in salarios if s is not None and s > 0]
+        salario_joven = float(np.median(salarios)) if salarios else None
+        esfuerzo_global = (
+            med_global / salario_joven * 100 if salario_joven else None
+        )
+
+        fig, (ax_rank, ax_dist) = plt.subplots(
+            1, 2, figsize=(10, 4.2), gridspec_kw={"width_ratios": [1.15, 1.0]}
+        )
+        etiquetas, meds, errs, colores = [], [], [], []
+        for nombre, n_precio, med, vals in h6:
+            lo, hi = _ci_mediana(vals)
+            etiquetas.append(f"{nombre} (n={n_precio})")
+            meds.append(med)
+            errs.append([med - lo, hi - med])
+            colores.append("#0072B2" if n_precio >= 30 else "#56B4E9")
+        y = np.arange(len(h6))
+        ax_rank.barh(y, meds, color=colores, height=0.55)
+        ax_rank.errorbar(
+            meds, y, xerr=np.asarray(errs).T, fmt="none",
+            ecolor="#333333", elinewidth=1.2, capsize=4,
+        )
+        for i, (med, err) in enumerate(zip(meds, errs)):
+            ax_rank.text(
+                med + max(20.0, err[1]) + 20, i,
+                f"{med:,.0f} €".replace(",", "."),
+                va="center", fontsize=8,
+            )
+        ax_rank.set_yticks(y)
+        ax_rank.set_yticklabels(etiquetas, fontsize=8)
+        ax_rank.invert_yaxis()
+        ax_rank.set_xlim(0, max(meds) * 1.35)
+        ax_rank.set_xlabel("Mediana €/habitación (IC95 bootstrap)")
+        ax_rank.set_title("Ranking n≥10 · azul oscuro = firme (n≥30)")
+
+        arr_vis = arr_todos[arr_todos <= 2500]
+        ax_dist.hist(arr_vis, bins=20, color="#0072B2", alpha=0.78, edgecolor="white")
+        ax_dist.axvline(med_global, color="#D55E00", linestyle="--", linewidth=1.2,
+                        label=f"mediana {med_global:,.0f} €".replace(",", "."))
+        ax_dist.axvline(q1, color="#777777", linestyle=":", linewidth=1.0,
+                        label=f"Q1 {q1:,.0f} €".replace(",", "."))
+        ax_dist.axvline(q3, color="#777777", linestyle=":", linewidth=1.0,
+                        label=f"Q3 {q3:,.0f} €".replace(",", "."))
+        ax_dist.set_xlim(0, 2500)
+        ax_dist.set_xlabel("€/habitación (hasta 2.500; outlier fuera)")
+        ax_dist.set_ylabel("Anuncios")
+        titulo_dist = f"Impresión general · n={len(arr_todos)} · {pct700:.0f} % ≤700 €"
+        if esfuerzo_global is not None:
+            eff_txt = f"{esfuerzo_global:.1f}".replace(".", ",")
+            titulo_dist += f"\nEsfuerzo mediano {eff_txt} % del salario joven 2026"
+        ax_dist.set_title(titulo_dist, fontsize=9.5)
+        ax_dist.legend(fontsize=7, loc="upper right")
+        if max_global > 2500:
+            ax_dist.text(
+                0.98, 0.62, f"máx. {max_global:,.0f} €".replace(",", "."),
+                transform=ax_dist.transAxes, ha="right", fontsize=7, color="#555555",
+            )
+        fig.suptitle("H6 Habitaciones: ranking, distribución y esfuerzo (Mongo)")
         _save(fig, "H6_habitaciones_mediana_rango.png")
     else:
         _honest("H6_habitaciones_mediana_rango.png", "H6 Habitaciones (sin datos)",
-                "pipeline_habitaciones_por_municipio vacio")
+                "sin habitaciones con n>=10 y precio")
 
     # H7: minutos OSRM a Bilbao/Vitoria vs esfuerzo 18-34.
     by_id_esf = {str(d.get("_id")): _esf(d) for d in ind}
@@ -905,7 +1089,12 @@ def exportar_png_desde_mongo(
         ns = [modc[k][0] for k in keys]
         pm = [modc[k][1] or 0 for k in keys]
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-        ax1.pie(ns, labels=[f"{k}\n{v} EUR" for k, v in zip(keys, pm)], autopct="%1.0f%%")
+        # Sin redondear, el pie imprimia el float crudo ("1829.666666666667 EUR").
+        ax1.pie(
+            ns,
+            labels=[f"{k}\n{v:,.0f} EUR".replace(",", ".") for k, v in zip(keys, pm)],
+            autopct="%1.0f%%",
+        )
         ax2.bar(keys, pm, color=["#0072B2", "#D55E00"][:len(keys)])
         ax2.set_ylabel("Precio medio EUR")
         fig.suptitle("H9 Modalidades larga vs temporal (Mongo)")
@@ -962,16 +1151,34 @@ def exportar_png_desde_mongo(
                 "pipeline_indicadores_municipio vacio")
 
     # ANEXO: H12 VPO promociones estado/tipología (duplica C_vpo_por_estado).
-    cnt_est = _Counter(str(d.get("estado") or "sin dato") for d in vpo) if vpo else _Counter()
-    cnt_tip = _Counter(str(d.get("tipologia") or "sin dato") for d in vpo) if vpo else _Counter()
+    # Igual que C: se suma `n_promociones` por estado y tipologia, no se
+    # cuentan filas de la agregacion (contar filas perdia ~20 % del registro).
+    cnt_est = _Counter()
+    cnt_tip = _Counter()
+    for d in vpo:
+        _n = int(d.get("n_promociones") or 0)
+        cnt_est[str(d.get("estado") or "sin dato")] += _n
+        cnt_tip[str(d.get("tipologia") or "sin dato")] += _n
     if cnt_est:
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
         ax1.bar(list(cnt_est), list(cnt_est.values()))
+        for _i, _k in enumerate(cnt_est):
+            ax1.text(_i, cnt_est[_k], str(cnt_est[_k]), ha="center", va="bottom",
+                     fontsize=7.5)
         ax1.set_title("Por estado")
+        _rango12 = rango_etxebide()
+        if _rango12:
+            ax1.text(0.98, 0.96, f"sorteo {_rango12}", transform=ax1.transAxes,
+                     ha="right", va="top", fontsize=7, color="#4D4D4D")
         top_tip = cnt_tip.most_common(10)
         ax2.bar([k for k, _ in top_tip], [v for _, v in top_tip])
+        for _i, (_, _v) in enumerate(top_tip):
+            ax2.text(_i, _v, str(_v), ha="center", va="bottom", fontsize=7)
         ax2.set_title("Tipologia (top10)")
-        plt.setp(ax2.get_xticklabels(), rotation=30, ha="right")
+        # Margen a los lados: con rotation+ha=right, la primera y la ultima
+        # etiqueta se salian del area de dibujo y aparecian cortadas.
+        ax2.margins(x=0.10)
+        plt.setp(ax2.get_xticklabels(), rotation=30, ha="right", rotation_mode="anchor")
         fig.suptitle("H12 VPO promociones estado/tipologia (Mongo) - viviendas sin dato (null)")
         _save(fig, "H12_vpo_promociones_estado_tipologia.png")
     else:
@@ -1133,8 +1340,12 @@ def exportar_png_desde_mongo(
                 print(f"O bootstrap: calculado inline ({len(ic_map)} municipios)")
         except Exception as exc:
             print(f"O bootstrap: no disponible ({exc!r})")
+    # O si es el ranking bloqueado por muestra: el filtro n>=30 es el que la
+    # figura y el deck anuncian, y `top` ya no lo trae (la tabla de 2024 no
+    # filtra por anuncios), asi que se pide aqui con min_anuncios=30.
     o_rank = [(str(d.get("nombre") or d.get("_id")), _fnum(d.get("esfuerzo_joven_pct_18_34")),
-               int(d.get("n_anuncios") or 0)) for d in top]
+               int(d.get("n_anuncios") or 0))
+              for d in pipeline_top_municipios_por_esfuerzo(limit=50, min_anuncios=30)]
     o_rank = [t for t in o_rank if t[1] is not None]
     o_gris = [(_fnum(d.get("esfuerzo_joven_pct_18_34")), int(d.get("n_anuncios") or 0))
               for d in ind if int(d.get("n_anuncios") or 0) < 30]
@@ -1189,7 +1400,10 @@ def exportar_png_desde_mongo(
         ax.set_xticks(x)
         ax.set_xticklabels(thsP)
         ax.set_ylabel("€/mes")
-        ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes (no comparable; ratio 1,96; Spearman 0,18)")
+        # Dos lineas: en una sola el titulo se salia del lienzo de 8" y se
+        # cortaba en "Spearman".
+        ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes\n"
+                     "(no comparable; ratio 1,96; Spearman 0,18)")
         ax.legend()
         _save(fig, "P_oficial_vs_anuncios_por_TH.png")
     else:
@@ -1252,7 +1466,7 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:
         print(f"habitaciones: NO GENERADO ({exc!r})")
     try:
-        pngs = exportar_png_desde_mongo(primera, Path(args.salida))
+        pngs = exportar_png_desde_mongo(primera, Path(args.salida), sync_deck=True)
         print(f"png_mongo: {len(pngs)} ficheros -> {args.salida}")
     except Exception as exc:
         print(f"png_mongo: NO GENERADOS ({exc!r})")

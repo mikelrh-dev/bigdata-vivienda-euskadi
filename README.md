@@ -209,8 +209,8 @@ Cada cifra tiene una única fuente; el resto del documento no las repite.
 | VPO | 406 promociones; `NumViviendas` vacío en 406/406 | Mongo `etxebide_promociones` |
 | MongoDB | 17 colecciones vivas + 15 `__backup` = 32; 8/10 índices | PyMongo `list_collection_names()`, `list_indexes()` |
 | Pipelines / export | 11 en `PIPELINE_ORDER` + 1 fuera de orden; 8 CSV `mongo_*` | `analysis/run_analisis_mongo.py` |
-| Gold | 53 artefactos (24 CSV + 29 PNG) + 8 PNG en `anexo/` | `data/resultados/` |
-| Tests | 285 passed, 2 skipped (287 collected) | `pytest tests` |
+| Gold | 54 artefactos (24 CSV + 30 PNG) + 8 PNG en `anexo/` | `data/resultados/` |
+| Tests | 293 passed, 2 skipped (295 collected) | `pytest tests` |
 
 > **353 vs 355 vs 357.** El manifest tiene 355 entradas (351 canónicas + 4 de
 > `legacy_obsoleto_no_usar/`); el canónico publicado en HDFS es 353 porque incluye
@@ -232,6 +232,7 @@ Cada cifra tiene una única fuente; el resto del documento no las repite.
 .venv/Scripts/python.exe scripts/run_pipeline.py --check
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py
 .venv/Scripts/python.exe scripts/verificar_cifras_deck.py
+.venv/Scripts/python.exe scripts/verificar_vintage_figuras.py
 .venv/Scripts/python.exe transform/run_all.py --check
 ```
 
@@ -239,19 +240,20 @@ Resultados esperados a 2026-11-13:
 
 | Comando | Salida |
 |---|---|
-| `pytest tests` | `285 passed, 2 skipped` |
+| `pytest tests` | `293 passed, 2 skipped` |
 | `verificar_gobernanza.py` | `TODO OK`: 53 cabeceras / 49 con ID, 47 scripts / 40 nodos DAG, 183 silver, 0 env sin declarar, 11 pipelines |
 | `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 15 colecciones, 0 duplicados, lag 0) |
 | `run_pipeline.py --check` | 355 y 183 entradas, 0 errores |
 | `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26, documentado sin imputar |
-| `verificar_cifras_deck.py` | `44/44 comprobaciones pasan` |
+| `verificar_cifras_deck.py` | `63/63 comprobaciones pasan`; lánzalo con `.venv/Scripts/python`, porque el `python` del sistema no tiene `pymongo` y entonces se saltan las 3 comprobaciones de colecciones e índices (`60/60`) |
+| `verificar_vintage_figuras.py` | `OK 54 figuras declaradas · gold, deck y memoria sellados y coherentes` (incluye 0 solapes del sello en las 54) |
 | `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`; sale con **rc 1** por esa salida (ver huecos) |
 
 **Huecos declarados, no enmascarados:**
 
 - `auditoria_lagunas_silver.csv` es salida del DAG pero **no está materializada** en
-  este checkout; por eso `run_all.py --check` devuelve rc 1. Regenerarla mueve el gold
-  de 53 a 54 y obliga a rehacer el deck, así que se deja como pendiente explícita.
+  este checkout; por eso `run_all.py --check` devuelve rc 1. Regenerarla sube el gold
+  un artefacto más y obliga a rehacer el deck, así que se deja como pendiente explícita.
 - Los 2 índices de `esfuerzo_mercado_2026` no están creados; los otros 8 sí.
 - El `OPEN` de WebHDFS depende del DNS de los datanodes. Hoy
   `scripts/hdfs_recuperacion_un_fichero.py` devuelve `HDFS_REC OK SHA_TAMANO_IGUALES`; si el
@@ -278,7 +280,11 @@ Resultados esperados a 2026-11-13:
 - **Proxy de renta (falacia ecológica):** la renta municipal se aplica homogéneamente
   y no captura la precariedad juvenil.
 - **Emancipación:** solo hay dato a nivel CAE, no municipal.
-- **Mezcla de años:** anuncios 2026 frente a renta y alquiler 2024.
+- **Mezcla de años:** anuncios 2026 frente a renta y alquiler 2024. Cada figura declara
+  su vintage con un sello visible en el PNG y en el pie; la autoridad única es
+  `config/vintage_figuras.yaml` y se comprueba con `scripts/verificar_vintage_figuras.py`.
+  El sello nunca tapa un texto: el generador lo mide y deja el recuento de solapes en
+  los metadatos del PNG, y el verificador exige que sea cero.
 - **VPO:** el flujo oficial municipal se integra aparte; `NumViviendas` no es stock.
 - **ECVI:** solo territorial o por área funcional, no municipal.
 - **Distancias:** por carretera solo en Gipuzkoa; Álava y Bizkaia usan Haversine.
@@ -291,7 +297,7 @@ Resultados esperados a 2026-11-13:
 | `docs/README.md` | Índice de lo que queda en `docs/` |
 | `docs/raw_manifest_sha256.txt` | SHA-256 canónico de los raw (355) |
 | `docs/presentacion/` | Deck de defensa v1 (13 diapositivas + PDF) |
-| `docs/presentacion_v2/` | Deck v2 (22 + 8 backups), guion y PDF |
+| `docs/presentacion_v2/` | Deck v2 (22 + 9 backups), guion y PDF |
 | `data/resultados/README.md` | Índice del gold y de los 8 CSV `mongo_*` |
 | `openspec/specs/contrato-reto/spec.md` | Contrato: 19 criterios C1–C19 y 21 requisitos |
 | `openspec/archive/2026-11-10-docs/` | `modelo_mongodb.md`, `arquitectura_datos.md`, `contrato_datos_raw.md`, `informe_final.md` |

@@ -1,0 +1,150 @@
+# Vintage (año) declarado para cada figura del proyecto.
+#
+# Autoridad única del sello de año que llevan los PNG: el generador lo pinta
+# en la esquina inferior derecha y lo escribe como metadato PNG, así que
+# `scripts/verificar_vintage_figuras.py` puede comprobarlo sin OCR.
+#
+# Lo leen:
+#   analysis/run_analisis_mongo.py    (_save de las 33 figuras Mongo)
+#   transform/generar_figuras_N.py    (N1/N2/N3/N7 + H2/F/H8/J/P offline)
+#   visuals/*.py                      (_guardar y savefig de la capa 2026)
+#   scripts/sincronizar_figuras.py    (copias gold -> deck y gold -> memoria)
+#   scripts/verificar_vintage_figuras.py
+#
+# Regla del proyecto (config/comparabilidad.yaml, regla 4): no se publica una
+# cifra sin declarar su vintage. Un `mixto` obliga a decir que no es comparable.
+#
+# Códigos: 2024 | 2026 | mixto | flujo | acumulado | sin-fecha
+
+codigos:
+  "2024": "Datos: 2024"
+  "2026": "Datos: 2026"
+  mixto: "Datos: 2024 + 2026 (no comparable)"
+  flujo: "Datos: flujo 2020-2024"
+  acumulado: "Datos: registro Etxebide (sin año único)"
+  sin-fecha: "Datos: sin año único"
+
+# Etiqueta larga solo donde el código se queda corto.
+etiquetas:
+  B_paro_vs_precio.png: "Datos: paro 2024 + precio 2026 (no comparable)"
+  D_distancia_vs_precio.png: "Datos: precio 2026 + distancia sin año"
+  H2_tier_confianza_ABCD.png: "Datos: muestra de anuncios 2026"
+  H7_accesibilidad_tiempo_capital.png: "Datos: esfuerzo 2024 + distancia sin año"
+  O_ranking_bloqueado_n30.png: "Datos: esfuerzo 2024 (muestra 2026)"
+  P_oficial_vs_anuncios_por_TH.png: "Datos: oficial 2024 + anuncios 2026 (no comparable)"
+  g5_esfuerzo_robustos.png: "Datos: esfuerzo 2024 (muestra 2026)"
+  K_vpo_terminadas_vs_esfuerzo.png: "Datos: VPO 2020-2024 + esfuerzo 2024"
+  transporte_oferta_vs_esfuerzo.png: "Datos: esfuerzo 2024 + GTFS 2026"
+  M26_brecha_2024_2026.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
+  M26_brecha_n5.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
+  M26_ranking_esfuerzo_muestra_2026.png: "Datos: anuncios 2026 + salario 2026 (Tier 2026)"
+  G_gaps_limitaciones.png: "Datos: conteos del pipeline (sin año)"
+  S_serie_vpo_2004_2024.png: "Datos: flujo 2004-2024, ventana de 5 años"
+  # {rango} lo resuelve analysis/vintage_figuras.py desde `Sorteo` en Mongo:
+  # el registro no tiene un año único, pero sí un rango de fechas real.
+  C_vpo_por_estado.png: "Datos: registro Etxebide (sorteo {rango})"
+  H12_vpo_promociones_estado_tipologia.png: "Datos: registro Etxebide (sorteo {rango})"
+
+figuras:
+  # ------------------------------------------------------------------ 2024
+  # Ancla oficial: alquiler Eustat Bizilagun 2024 / renta INE Atlas 2024.
+  A1_distribucion_esfuerzo_por_TH.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  A2_pct_inasequibles_por_TH.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  E_confort_vs_esfuerzo.png: {vintage: 2024, fuentes: [udalmap, alquiler_oficial]}
+  F_comparativa_th.png: {vintage: 2024, fuentes: [alquiler_oficial]}
+  H1_ranking_esfuerzo_18_34.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  H3_esfuerzo_por_sexo.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  H4_esfuerzo_18_34_vs_16_29.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  H10_tension_vs_esfuerzo.png: {vintage: 2024, fuentes: [etxebide_2024, alquiler_oficial]}
+  H11_imputacion_oficial_idw_por_TH.png: {vintage: 2024, fuentes: [alquiler_oficial]}
+  # El esfuerzo es 2024; los anuncios 2026 solo filtran la muestra (n>=30).
+  O_ranking_bloqueado_n30.png: {vintage: 2024, fuentes: [alquiler_oficial, renta, anuncios], muestra_2026: true}
+  g1_esfuerzo_por_territorio.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  g2_renta_vs_alquiler.png: {vintage: 2024, fuentes: [renta, alquiler_oficial]}
+  L_confort_accesibilidad_vs_esfuerzo.png: {vintage: 2024, fuentes: [udalmap, alquiler_oficial]}
+  mapa_coroplastico_esfuerzo_18_34.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  hist_esfuerzo_18_34_umbral30.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+  dumbbell_esfuerzo_18_24_vs_25_34.png: {vintage: 2024, fuentes: [alquiler_oficial, renta]}
+
+  # ------------------------------------------------------------------ 2026
+  # Capa de oferta: anuncios Fotocasa/Pisos/RealtyAPI 2026.
+  H2_tier_confianza_ABCD.png: {vintage: 2026, fuentes: [anuncios]}
+  H6_habitaciones_mediana_rango.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  H8_tier_mediana_temporal_vs_larga.png: {vintage: 2026, fuentes: [anuncios]}
+  H8b_modalidad_mediana_eur_m2.png: {vintage: 2026, fuentes: [anuncios]}
+  H9_modalidades_larga_vs_temporal.png: {vintage: 2026, fuentes: [anuncios]}
+  H13_mediana_precio_m2_winsorizada.png: {vintage: 2026, fuentes: [anuncios]}
+  I_modalidad_temporal_vs_larga.png: {vintage: 2026, fuentes: [anuncios]}
+  J_tier_confianza_vs_precio.png: {vintage: 2026, fuentes: [anuncios]}
+  g3_top10_precio_medio.png: {vintage: 2026, fuentes: [anuncios]}
+  g4_distribucion_anuncios.png: {vintage: 2026, fuentes: [anuncios]}
+  M26_top20_esfuerzo_mercado.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_hist_esfuerzo_mercado.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_esfuerzo_por_territorio.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_esfuerzo_por_tipo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_ic_esfuerzo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_cobertura.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
+  M26_mapa_coropletico_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  M26_mapa_cobertura.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
+  M26_ranking_esfuerzo_muestra_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  mapa_coropletico_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  mapa_cobertura_2026.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
+  barras_esfuerzo_top20.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  hist_esfuerzo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  barras_territorio.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  scatter_precio_vs_esfuerzo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+
+  # ----------------------------------------------------------------- mixto
+  B_paro_vs_precio.png: {vintage: mixto, fuentes: [paro_udalmap, anuncios]}
+  D_distancia_vs_precio.png: {vintage: mixto, fuentes: [osrm, anuncios]}
+  H7_accesibilidad_tiempo_capital.png: {vintage: mixto, fuentes: [osrm, alquiler_oficial]}
+  P_oficial_vs_anuncios_por_TH.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
+  g5_esfuerzo_robustos.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
+  K_vpo_terminadas_vs_esfuerzo.png: {vintage: mixto, fuentes: [vpo_terminadas, alquiler_oficial]}
+  transporte_oferta_vs_esfuerzo.png: {vintage: mixto, fuentes: [gtfs, alquiler_oficial]}
+  M26_brecha_2024_2026.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
+  # Variante para la memoria: solo municipios con n>=5, que es la mediana que
+  # cita el texto (la del deck incluye los extremos de n=1 a proposito).
+  M26_brecha_n5.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
+
+  # ---------------------------------------------------------------- flujo
+  H5_vpo_terminadas_por_mil.png: {vintage: flujo, fuentes: [vpo_terminadas]}
+  S_serie_vpo_2004_2024.png: {vintage: flujo, fuentes: [udalmap_vpo_terminadas]}
+
+  # ------------------------------------------------------------ acumulado
+  C_vpo_por_estado.png: {vintage: acumulado, fuentes: [etxebide_promociones]}
+  H12_vpo_promociones_estado_tipologia.png: {vintage: acumulado, fuentes: [etxebide_promociones]}
+
+  # ------------------------------------------------------------ sin-fecha
+  G_gaps_limitaciones.png: {vintage: sin-fecha, fuentes: [pipeline]}
+
+# Copias byte a byte que se regeneran con el gold. Sin esto, deck y memoria
+# se quedan con la versión anterior (pasó con H2, H8 y P).
+sincronizacion:
+  deck:
+    - H5_vpo_terminadas_por_mil.png
+    - S_serie_vpo_2004_2024.png
+    - H10_tension_vs_esfuerzo.png
+    - H11_imputacion_oficial_idw_por_TH.png
+    - H2_tier_confianza_ABCD.png
+    - H6_habitaciones_mediana_rango.png
+    - H8_tier_mediana_temporal_vs_larga.png
+    - H8b_modalidad_mediana_eur_m2.png
+    - O_ranking_bloqueado_n30.png
+    - P_oficial_vs_anuncios_por_TH.png
+    - g4_distribucion_anuncios.png
+    - hist_esfuerzo_18_34_umbral30.png
+    - mapa_coroplastico_esfuerzo_18_34.png
+  memoria:
+    fig-mapa-2024.png: data/resultados/mapa_coroplastico_esfuerzo_18_34.png
+    fig-ranking-2024.png: data/resultados/H1_ranking_esfuerzo_18_34.png
+    fig-tier.png: data/resultados/H2_tier_confianza_ABCD.png
+    fig-oficial-vs-anuncios.png: data/resultados/P_oficial_vs_anuncios_por_TH.png
+    fig-modalidades.png: data/resultados/H8b_modalidad_mediana_eur_m2.png
+    fig-vpo-flujo.png: data/resultados/H5_vpo_terminadas_por_mil.png
+    fig-vpo-serie.png: data/resultados/S_serie_vpo_2004_2024.png
+    fig-mapa-2026.png: docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png
+    fig-hist-2026.png: docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png
+    fig-ranking-2026.png: docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png
+    fig-cobertura-2026.png: docs/presentacion_v2/assets/M26_cobertura.png
+    fig-brecha-2026.png: docs/presentacion_v2/assets/M26_brecha_n5.png

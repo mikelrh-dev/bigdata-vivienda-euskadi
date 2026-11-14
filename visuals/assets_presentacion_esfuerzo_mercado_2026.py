@@ -26,6 +26,7 @@ Uso:
 from __future__ import annotations
 
 import shutil
+import sys
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
@@ -40,6 +41,11 @@ PROC = ROOT / "data" / "procesado"
 ASSETS = ROOT / "docs" / "presentacion_v2" / "assets"
 FIGURAS = ROOT / "visuals" / "esfuerzo_mercado_2026"
 
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from analysis.vintage_figuras import anotar, metadatos, sincronizar  # noqa: E402
+
 PAPER = "#F5F4F0"
 INK = "#121212"
 MUTED = "#6E6B66"
@@ -52,6 +58,8 @@ SRC_TIPO = PROC / "esfuerzo_mercado_2026_por_tipo.csv"
 SRC_TIPO_ANUNCIO = ROOT / "data" / "resultados" / "esfuerzo_por_tipo_nivel_anuncio_2026.csv"
 SRC_BRECHA = ROOT / "data" / "resultados" / "brecha_esfuerzo_2024_2026.csv"
 SRC_COB = ROOT / "data" / "resultados" / "cobertura_representatividad_2026.csv"
+SRC_COMP = ROOT / "data" / "resultados" / "comparacion_esfuerzo_2024_2026.csv"
+SRC_TIER = ROOT / "data" / "resultados" / "mongo_tier_confianza.csv"
 
 
 def _cargar() -> pd.DataFrame:
@@ -80,7 +88,12 @@ def _estilo_ax(ax) -> None:
 def _guardar(fig, nombre: str) -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     ruta = ASSETS / nombre
-    fig.savefig(ruta, dpi=150, bbox_inches="tight", transparent=True, facecolor="none")
+    # PNG transparente: el sello usa el papel del deck para no dejar un hueco.
+    anotar(fig, nombre, fondo=PAPER)
+    fig.savefig(
+        ruta, dpi=150, bbox_inches="tight", transparent=True, facecolor="none",
+        metadata=metadatos(nombre),
+    )
     plt.close(fig)
     print(f"OK: {ruta}")
 
@@ -125,9 +138,10 @@ def grafico_histograma(df: pd.DataFrame) -> None:
     ax.axvline(mediana, color=INK, linewidth=2)
     ax.text(mediana + 3, ax.get_ylim()[1] * 0.92, f"mediana {_p1(mediana)} %",
             color=INK, fontsize=10, fontweight="bold", va="top")
-    ax.axvline(30, color=SECOND, linewidth=1.6, linestyle="--")
-    ax.text(30, ax.get_ylim()[1] * 0.78, "umbral 30 %", color=SECOND,
-            fontsize=9, va="top", ha="right", fontweight="bold")
+    # Sin linea de umbral: el 30 % es del esfuerzo de 2024 (alquiler oficial) y
+    # aqui el numerador es el precio de anuncio. Dibujarla sugeria que la misma
+    # raya sirve para las dos capas, que es justo lo que el pie de la figura
+    # 6.10 advierte que no se puede hacer.
     ax.set_xlabel("Esfuerzo de mercado 2026 (% salario joven 18-34)", color=INK, fontsize=11)
     ax.set_ylabel("Municipios", color=INK, fontsize=11)
     ax.set_title(f"Distribucion del esfuerzo de mercado 2026 ({len(d)} municipios con anuncio)",
@@ -245,6 +259,45 @@ def grafico_brecha() -> None:
     _guardar(fig, "M26_brecha_2024_2026.png")
 
 
+def grafico_brecha_muestra() -> None:
+    """Diferencia de nivel solo con muestra suficiente, para la memoria.
+
+    La version del deck (15 mayores) incluye municipios con n=1 y su argumento
+    es justamente ese contraste. En la memoria se cita la mediana de los
+    municipios con n>=5: la figura tiene que ensenar ese conjunto, no los
+    extremos que el propio documento descarta.
+    """
+    if not SRC_BRECHA.exists():
+        print(f"AVISO: falta {SRC_BRECHA.name}; se omite el grafico de brecha")
+        return
+    df = pd.read_csv(SRC_BRECHA, encoding="utf-8-sig", dtype=str)
+    for col in ("brecha_pp_18_34", "esfuerzo_2024_pct_18_34",
+                "esfuerzo_2026_pct_18_34", "n_anuncios_2026"):
+        df[col] = pd.to_numeric(df.get(col), errors="coerce")
+    d = df.dropna(subset=["brecha_pp_18_34", "n_anuncios_2026"])
+    d = d[d["n_anuncios_2026"] >= 5].sort_values("brecha_pp_18_34")
+    if d.empty:
+        print("AVISO: sin municipios con n>=5 para la brecha")
+        return
+    fig, ax = plt.subplots(figsize=(7.0, 3.4))
+    bars = ax.barh(d["nombre_canonico"], d["brecha_pp_18_34"], color=ACCENT,
+                   height=0.6)
+    for b, v, n in zip(bars, d["brecha_pp_18_34"], d["n_anuncios_2026"]):
+        ax.text(v + 1, b.get_y() + b.get_height() / 2,
+                f"{v:+.1f} pp (n={int(n)})",
+                va="center", ha="left", fontsize=8.5, color=INK)
+    ax.axvline(0, color=INK, linewidth=1.2)
+    ax.set_xlim(0, d["brecha_pp_18_34"].max() * 1.38)
+    ax.set_xlabel("Diferencia de nivel 2026 oferta - 2024 registrado (pp)",
+                  color=INK, fontsize=9.5)
+    ax.set_title("Diferencia de nivel, municipios con n>=5", color=INK,
+                 fontsize=11, loc="left", pad=10)
+    _estilo_ax(ax)
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color="#CFCBC3", linewidth=0.8)
+    _guardar(fig, "M26_brecha_n5.png")
+
+
 def grafico_ic(df: pd.DataFrame) -> None:
     """Dot plot con IC95 % para los municipios con n>=5."""
     d = df.dropna(subset=["esf_18_34", "ic95_lo_pct_18_34", "ic95_hi_pct_18_34"])
@@ -284,9 +337,13 @@ def grafico_cobertura() -> None:
                 va="center", ha="left", fontsize=10, color=INK)
     total_pct = float(total["valor"])
     ax.axvline(total_pct, color=INK, linestyle="--", linewidth=1.3)
-    ax.text(total_pct - 1, -0.55,
+    # El rotulo del total va DENTRO del area de ejes: en y=-0.55 caia fuera y
+    # se pisaba con las etiquetas del eje X (se veia al insertarlo en la
+    # memoria a 13 cm).
+    ax.text(total_pct - 1.5, len(terr) - 0.35,
             f"total {_p1(total_pct)} %", color=INK, fontsize=9,
             ha="right", va="bottom")
+    ax.set_ylim(-0.55, len(terr) - 0.05)
     ax.set_xlim(0, 100)
     ax.set_xlabel("% de poblacion 18-34 en municipios con anuncio", color=INK, fontsize=10.5)
     ax.set_title("Cobertura de la capa 2026: poblacion, no municipios", color=INK,
@@ -295,6 +352,73 @@ def grafico_cobertura() -> None:
     ax.grid(axis="y", visible=False)
     ax.grid(axis="x", color="#CFCBC3", linewidth=0.8)
     _guardar(fig, "M26_cobertura.png")
+
+
+def grafico_ranking_muestra() -> None:
+    """Esfuerzo 2026 con la muestra que lo sostiene, solo Tier A.
+
+    El Tier se calcula sobre TODOS los anuncios de 2026, pero el esfuerzo de
+    2026 se calcula solo con larga estancia con precio valido, que es lo
+    comparable al contrato oficial. De ahí que cada barra lleve su propio n,
+    que no coincide ni con los anuncios totales del municipio ni con el n del
+    Tier.
+
+    Solo Tier A: es el unico con muestra suficiente para leer el precio
+    (n>=30, regla M3). El bloque B (4-8 anuncios comparables) obligaba a un
+    segundo eje de lectura: sus barras (84-90 %) quedaban dibujadas por debajo
+    de valores menores del A, con el orden roto, y daba dos n distintos para
+    el mismo municipio (11 en el Tier, 4 en la barra). El B sigue en la figura
+    de distribucion de Tier y en el deck, marcado como indicativo.
+
+    Sin linea de umbral: el 30 % es del esfuerzo 2024, que usa alquiler oficial
+    y renta joven como base. Aqui la base es otra y la raya enganaria.
+    """
+    comp = pd.read_csv(SRC_COMP, encoding="utf-8-sig", dtype=str)
+    tier = pd.read_csv(SRC_TIER, encoding="utf-8-sig", dtype=str)
+    comp["n"] = pd.to_numeric(comp.get("n_anuncios_2026"), errors="coerce")
+    comp["esf"] = pd.to_numeric(
+        comp.get("esfuerzo_2026_base_salario_pct_18_34"), errors="coerce"
+    )
+    tier["codigo_ine"] = tier["codigo_ine"].str.zfill(5)
+    comp["codigo_ine"] = comp["codigo_ine"].str.zfill(5)
+    m = comp.merge(tier[["codigo_ine", "tier"]], on="codigo_ine", how="inner")
+    m = m[m["tier"] == "A"].dropna(subset=["esf", "n"])
+    if m.empty:
+        print("AVISO: sin municipios Tier A con esfuerzo 2026; no se dibuja el ranking")
+        return
+
+    grupo = m.sort_values("esf", ascending=True)
+
+    ys, nombres, valores, muestras = [], [], [], []
+    for y, (_, fila) in enumerate(grupo.iterrows()):
+        ys.append(float(y))
+        nombres.append(fila["nombre_canonico"])
+        valores.append(float(fila["esf"]))
+        muestras.append(int(fila["n"]))
+
+    # Tamano de papel, no de diapositiva: en la memoria se inserta a 15 cm y
+    # con 9,4 in el texto quedaba a 5 pt.
+    fig, ax = plt.subplots(figsize=(6.8, 3.9))
+    barras = ax.barh(ys, valores, color=ACCENT, height=0.66, edgecolor=INK,
+                     linewidth=0.6)
+    for ypos, valor, n in zip(ys, valores, muestras):
+        ax.text(valor + 2, ypos, f"{_p1(valor).replace('.', ',')} % (n={n})",
+                va="center", ha="left", fontsize=8.5, color=INK)
+
+    ax.set_yticks(ys)
+    ax.set_yticklabels(nombres, fontsize=9, color=INK)
+    ax.set_xlabel("Esfuerzo 2026, % del salario joven (anuncio de larga estancia / salario 2026)",
+                  color=INK, fontsize=9.5)
+    ax.set_title("Esfuerzo 2026 y la muestra que lo sostiene (Tier A)",
+                 color=INK, fontsize=11, loc="left", pad=10)
+    _estilo_ax(ax)
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color="#CFCBC3", linewidth=0.8)
+    ax.set_xlim(0, max(valores) * 1.32)
+    # Sin texto al pie a proposito: el sello de vintage ocupa esa banda y el
+    # aviso (Tier sobre todos los anuncios, umbral que no se traslada) va en
+    # el pie de figura de la memoria, donde se lee con el contexto.
+    _guardar(fig, "M26_ranking_esfuerzo_muestra_2026.png")
 
 
 def copiar_mapas() -> None:
@@ -323,9 +447,14 @@ def main() -> int:
     grafico_territorio(df)
     grafico_por_tipo()
     grafico_brecha()
+    grafico_brecha_muestra()
     grafico_ic(df)
     grafico_cobertura()
+    grafico_ranking_muestra()
     copiar_mapas()
+    # Mantiene al dia las copias declaradas en config/vintage_figuras.yaml
+    # (memoria incluye los dos mapas 2026). Idempotente.
+    sincronizar()
     print(f"Assets escritos en {ASSETS}")
     return 0
 

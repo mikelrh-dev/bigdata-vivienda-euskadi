@@ -66,10 +66,12 @@ def test_plan_gold_respeta_dependencias():
     """Analisis antes de figuras: las figuras leen los CSV generados."""
     pasos = [p.nombre for p in rp.FASES["gold"].pasos]
     assert pasos == ["capa_2026", "run_analisis_mongo", "comparativa_mongo",
-                     "sensibilidad", "generar_figuras_N"]
+                     "sensibilidad", "generar_figuras_N", "sincronizar_figuras"]
     # la capa 2026 se calcula antes de que las figuras la lean
     assert pasos.index("capa_2026") < pasos.index("generar_figuras_N")
     assert pasos.index("run_analisis_mongo") < pasos.index("sensibilidad")
+    # las copias al deck y a la memoria van al final: ya existen todas las figuras
+    assert pasos[-1] == "sincronizar_figuras"
 
 
 def test_dry_run_no_ejecuta(monkeypatch, capsys, sin_subprocess):

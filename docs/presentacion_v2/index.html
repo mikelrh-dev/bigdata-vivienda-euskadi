@@ -54,6 +54,7 @@ p{margin:0 0 18px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .big{font-family:Bahnschrift,"DIN Alternate",sans-serif;font-size:132px;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .big.sm{font-size:96px}
+.big.xs{font-size:64px}
 .cap{font-size:17px;line-height:1.35;color:var(--muted);margin-top:14px}
 .unit{font-size:44px;letter-spacing:-.02em}
 
@@ -208,7 +209,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
             <li>353 objetos en HDFS: 352 canónicos + 1 manifiesto</li>
           </ul>
         </div>
-        <div class="fig map"><img src="assets/H11_imputacion_oficial_idw_por_TH.png" alt="Oficial frente a IDW por territorio"><div class="cap">H11 · 159 oficiales + 93 IDW por territorio · el IDW se muestra aparte</div></div>
+        <div class="fig map"><img src="assets/H11_imputacion_oficial_idw_por_TH.png" alt="Oficial frente a IDW por territorio"><div class="cap">H11 · 2024 · 159 oficiales + 93 IDW por territorio · el IDW se muestra aparte</div></div>
       </div>
       <footer class="ft"><span class="proof">config/fuentes.yaml · docs/raw_manifest_sha256.txt · mongo_tier_confianza.csv</span><span class="proof">C1 · C5 · C6 · C15</span></footer>
     </div>
@@ -220,7 +221,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <header class="hd"><span class="kicker">B · 2024, el ancla oficial</span><span class="pg">05 / 22</span></header>
       <h2>El esfuerzo tiene geografía clara.</h2>
       <div class="grid2" style="grid-template-columns:1.55fr .75fr;align-items:center">
-        <div class="fig map"><img src="assets/mapa_coroplastico_esfuerzo_18_34.png" alt="Mapa de esfuerzo por municipio"><div class="cap">esfuerzo 18-34 · 159 oficial (color) + 93 IDW (trama) · el color se satura a los 30 %</div></div>
+        <div class="fig map"><img src="assets/mapa_coroplastico_esfuerzo_18_34.png" alt="Mapa de esfuerzo por municipio"><div class="cap">esfuerzo 18-34, 2024 · 159 oficial (color) + 93 IDW (trama) · el color se satura a los 30 %</div></div>
         <div>
           <ul class="clean">
             <li><b>Capitales y eje metropolitano:</b> Bilbao 37,69 %, Donostia 38,17 % y Vitoria-Gasteiz 33,37 % superan el límite saludable</li>
@@ -239,7 +240,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <header class="hd"><span class="kicker">B · 2024, el ancla oficial</span><span class="pg">06 / 22</span></header>
       <h2>No es un problema exclusivo de las capitales.</h2>
       <div class="grid2" style="grid-template-columns:1.15fr 1fr;align-items:center">
-        <div class="fig"><img src="assets/hist_esfuerzo_18_34_umbral30.png" alt="Distribución del esfuerzo con umbral 30 %"><div class="cap">distribución del esfuerzo 18-34 · oficial 159 / IDW 93 · umbrales 30/40 %</div></div>
+        <div class="fig"><img src="assets/hist_esfuerzo_18_34_umbral30.png" alt="Distribución del esfuerzo con umbral 30 %"><div class="cap">esfuerzo 18-34, 2024 · oficial 159 / IDW 93 · umbrales 30/40 %</div></div>
         <div>
           <div class="grid3">
             <div><div class="big sm">119</div><div class="cap">municipios &lt; 30 %</div></div>
@@ -277,7 +278,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
           <p class="small" style="margin-top:16px;font-size:19px">Valida el alquiler registrado de 2024, no el precio de anuncio de 2026. Si el oficial estuviera infrainflado, la diferencia con 2026 sería mayor: el sesgo iría en contra nuestra.</p>
         </div>
         <div>
-          <div class="fig"><img src="assets/O_ranking_bloqueado_n30.png" alt="Ranking bloqueado n>=30" style="max-height:430px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">O · n≥30 = anuncios 2026 · IC de dispersión de precios, no del estimador Eustat</div></div>
+          <div class="fig"><img src="assets/O_ranking_bloqueado_n30.png" alt="Ranking bloqueado n>=30" style="max-height:430px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">O · esfuerzo 2024 filtrado por muestra de anuncios 2026 (n≥30) · el IC mide dispersión de precios, no el estimador Eustat</div></div>
           <div class="warn" style="margin-top:18px;font-size:20px">
             Bootstrap 95 %: Bilbao <b>33,75–40,95</b> · Getxo <b>27,54–31,77</b> · Donostia <b>32,4–45,8</b>. Se solapan: defendemos el cruce del 30 %, no un podio. El ancho mide dispersión de precios 2026 sobre el nivel 2024; <b>no</b> es el error del estimador Eustat.
           </div>
@@ -295,16 +296,22 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
   <section class="slide">
     <div class="pad">
       <header class="hd"><span class="kicker">C · 2026, la capa de oferta</span><span class="pg">08 / 22</span></header>
-      <h2>De 843 anuncios crudos a 287 válidos.</h2>
+      <h2>De 845 anuncios crudos a 287 válidos.</h2>
       <div class="grid2" style="grid-template-columns:1fr 1fr;gap:56px;margin-top:6px">
         <div>
           <div class="grid2" style="gap:28px 34px">
-            <div><div class="big sm">843</div><div class="cap">anuncios crudos extraídos de 3 portales</div></div>
+            <div><div class="big sm">845</div><div class="cap">anuncios crudos extraídos de 3 portales</div></div>
             <div><div class="big sm">594</div><div class="cap">vigentes tras deduplicación y cuarentena</div></div>
-            <div><div class="big sm">326</div><div class="cap">vivienda completa con precio publicado</div></div>
+            <div><div class="big sm">326</div><div class="cap">vivienda completa · 297 con precio</div></div>
             <div><div class="big sm accent">287</div><div class="cap">válidos: la muestra de la capa</div></div>
           </div>
-          <p class="small" style="margin-top:24px"><b>45</b> en cuarentena fuera de Euskadi · <b>10</b> excluidos por el propio pipeline (900 m², 9.500 €) · <b>29</b> sin precio · <b>268</b> habitaciones/sin precio separados.</p>
+          <div class="grid3" style="gap:18px;margin-top:22px">
+            <div><div class="big xs">41 %</div><div class="cap">piso completo · larga<br><b>326</b></div></div>
+            <div><div class="big xs">34 %</div><div class="cap">piso completo · temporal<br><b>268</b></div></div>
+            <div><div class="big xs">25 %</div><div class="cap">habitación · colección aparte<br><b>201</b></div></div>
+          </div>
+          <p class="small" style="margin-top:16px">Sobre <b>795</b> productos de oferta 2026. El temporal no es descarte: es <b>otro producto</b>. Los <b>287</b> válidos son el <b>36 %</b>.</p>
+          <p class="small" style="margin-top:10px;font-size:18px"><b>45</b> en cuarentena fuera de Euskadi · <b>10</b> excluidos por el propio pipeline (900 m², 9.500 €) · <b>29</b> largas y <b>4</b> temporales sin precio.</p>
           <div class="warn" style="margin-top:18px;font-size:20px">Amorebieta-Etxano y Laguardia caen a 0 anuncios: el mapa pasa de 52 a 50 municipios.</div>
         </div>
         <div>
@@ -362,8 +369,8 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
           <p class="small" style="margin-top:22px">El 78,6 % se defiende como nivel agregado, no como mapa municipal. El 70,4 % de los anuncios está en 4 municipios y 43 de los 50 no admiten mediana. El gris es falta de dato, no precio bueno.</p>
         </div>
         <div class="stack tight">
-          <div class="fig"><img src="assets/M26_cobertura.png" alt="Cobertura de población 18-34 por territorio"><div class="cap">M26 · % de población 18-34 cubierta · 50 municipios</div></div>
-          <div class="fig"><img src="assets/M26_mapa_cobertura.png" alt="Mapa de cobertura de anuncios"><div class="cap">n de anuncios por municipio · gris = sin dato</div></div>
+          <div class="fig"><img src="assets/M26_cobertura.png" alt="Cobertura de población 18-34 por territorio"><div class="cap">M26 · 2026 · % de población 18-34 cubierta · 50 municipios</div></div>
+          <div class="fig"><img src="assets/M26_mapa_cobertura.png" alt="Mapa de cobertura de anuncios"><div class="cap">n de anuncios 2026 por municipio · gris = sin dato</div></div>
         </div>
       </div>
       <footer class="ft"><span class="proof">cobertura_representatividad_2026.csv · analysis/cobertura_representatividad_2026.py</span><span class="proof">C16 · C19</span></footer>
@@ -431,7 +438,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <div class="grid2" style="grid-template-columns:.95fr 1.05fr;gap:52px;align-items:center">
         <div class="fig">
           <img src="assets/M26_brecha_2024_2026.png" alt="Brecha de esfuerzo 2024 vs 2026 por municipio">
-          <div class="cap">M26 · diferencia en pp (18-34) · 15 mayores · gris = n&lt;5, no concluyente</div>
+          <div class="cap">M26 · 2024 → 2026 · diferencia en pp (18-34) · 15 mayores · gris = n&lt;5, no concluyente</div>
         </div>
         <div>
           <ul class="clean" style="font-size:21px">
@@ -465,9 +472,9 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div class="arrow">→</div>
         <div class="box" style="padding:16px 18px"><span class="n">04</span><b style="font-size:22px">MongoDB</b><div class="mini">17 vivas · PyMongo</div></div>
         <div class="arrow">→</div>
-        <div class="box" style="padding:16px 18px;border-color:var(--accent)"><span class="n">05</span><b style="font-size:22px">Gold</b><div class="mini">53 artefactos · 24 CSV + 29 PNG</div></div>
+        <div class="box" style="padding:16px 18px;border-color:var(--accent)"><span class="n">05</span><b style="font-size:22px">Gold</b><div class="mini">54 artefactos · 24 CSV + 30 PNG</div></div>
       </div>
-      <p class="small" style="margin-top:14px;font-size:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 183/183 silver · 53/53 gold byte a byte · 40 nodos en el DAG.</p>
+      <p class="small" style="margin-top:14px;font-size:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 183/183 silver · 54/54 gold byte a byte · 40 nodos en el DAG.</p>
       <div class="branch" style="margin-top:18px;padding-top:18px">
         <div class="grid2" style="gap:22px">
           <div class="box" style="padding:16px 18px"><span class="n">CONSERVACIÓN</span><b style="font-size:22px">raw → Kafka → HDFS</b><div class="mini">productor lee manifiesto SHA → topic <span class="mono">vivienda_euskadi</span> → consumidor <span class="mono">hdfs_centro</span> → 353 objetos (352 canónicos + 1 manifiesto). Nunca Kafka → Mongo.</div></div>
@@ -625,7 +632,7 @@ db.anuncios.find(
       <header class="hd"><span class="kicker">D · Calidad del dato</span><span class="pg">19 / 22</span></header>
       <h2>No es una demo: los tests fallan cuando el dato miente.</h2>
       <div class="grid4" style="margin-top:8px">
-        <div><div class="big sm">287</div><div class="cap">tests · 285 pasan · 2 skipped</div></div>
+        <div><div class="big sm">287</div><div class="cap">tests · 293 pasan · 2 skipped</div></div>
         <div><div class="big sm">355</div><div class="cap">SHA del raw verificados</div></div>
         <div><div class="big sm">183</div><div class="cap">silver validados en esquema y tipos</div></div>
         <div><div class="big sm">53</div><div class="cap">gold reproducibles byte a byte</div></div>
@@ -634,7 +641,7 @@ db.anuncios.find(
         <b>FAIL 07, visible:</b> Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el INE con tasa no nula en Lanbide.
         Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.
       </div>
-      <p class="small" style="margin-top:22px">Gobernanza TODO OK · gate offline OK · FAIL 07 es un dato real, no un test roto. 183/183 silver y 53/53 gold reconstruidos desde cero.</p>
+      <p class="small" style="margin-top:22px">Gobernanza TODO OK · gate offline OK · FAIL 07 es un dato real, no un test roto. 183/183 silver y 54/54 gold reconstruidos desde cero.</p>
       <footer class="ft"><span class="proof">pytest · verificar_gobernanza.py · gate_extremo_a_extremo.py --offline</span><span class="proof">C8 · C16 · P-08</span></footer>
     </div>
   </section>
@@ -701,7 +708,7 @@ db.anuncios.find(
       <h2>Conclusión.</h2>
       <p class="final" style="margin-top:44px;max-width:31ch;font-size:60px">En la mayoría del territorio, justo; en las capitales, no; en el mercado de entrada actual, prohibitivo; y en 188 municipios no lo sabemos.</p>
       <p class="lead" style="margin-top:52px;max-width:42ch">Gracias. Abrimos el código, los datos y el CSV de cada cifra de esta charla.</p>
-      <footer class="ft"><span class="proof">Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 53 gold · 287 tests</span><span class="proof">C18 · C19</span></footer>
+      <footer class="ft"><span class="proof">Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 53 gold · 295 tests</span><span class="proof">C18 · C19</span></footer>
     </div>
   </section>
 
@@ -712,7 +719,7 @@ db.anuncios.find(
   <!-- B1 MODELADO -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B1 Modelado</span><span class="pg">B1 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B1 Modelado</span><span class="pg">B1 / 9</span></header>
       <h2>Las 7 preguntas del Tema 8.</h2>
       <div class="grid2" style="font-size:21px;line-height:1.45">
         <div>
@@ -734,12 +741,12 @@ db.anuncios.find(
   <!-- B2 CONTEOS -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B2 Conteos auditados</span><span class="pg">B2 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B2 Conteos auditados</span><span class="pg">B2 / 9</span></header>
       <h2>Los números, en crudo.</h2>
       <div class="grid3" style="font-size:22px;line-height:1.65">
         <div><b>Datos</b><br>355 SHA · 357 ficheros en disco<br>352 canónicos + 3 legado<br>353 objetos en HDFS (352 + 1 manifiesto)<br>183 silver · 42 CSV<br>594 anuncios (326 larga + 268 temporal)<br>64 municipios con anuncio<br>287 válidos en 50 municipios<br>201 habitaciones / 9 municipios<br>5.040 solicitudes · 406 promociones</div>
         <div><b>Indicador</b><br>159 oficiales + 93 IDW<br>mediana 26,61 % (159)<br>40/159 &gt; 30 % · 119/26/14<br>25,37 % global · 47/252 &gt; 30 %<br>78,6 % municipal (50)<br>87,3 % anuncio (287)<br>1.350 € mediana de medianas<br>1.500 € mediana de anuncios<br>Tier A4 B3 C57 D188</div>
-        <div><b>Sistema</b><br>17 vivas + 15 backup = 32<br>11 pipelines · 8 etapas · 30 consultas<br>25 índices · 5 en anuncios<br>287 tests (285 pasan, 2 skip)<br>183/183 · 53/53<br>COLLSCAN 594 → IXSCAN 1<br>40 nodos en el DAG</div>
+        <div><b>Sistema</b><br>17 vivas + 15 backup = 32<br>11 pipelines · 8 etapas · 30 consultas<br>25 índices · 5 en anuncios<br>295 tests (293 pasan, 2 skip)<br>183/183 · 54/54<br>COLLSCAN 594 → IXSCAN 1<br>40 nodos en el DAG</div>
       </div>
       <footer class="ft"><span class="proof">manifests · Mongo · gobernanza</span><span class="proof">C8 · C16</span></footer>
     </div>
@@ -748,7 +755,7 @@ db.anuncios.find(
   <!-- B3 HDFS Y KAFKA -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B3 HDFS y Kafka</span><span class="pg">B3 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B3 HDFS y Kafka</span><span class="pg">B3 / 9</span></header>
       <h2>Lo que está verificado y lo que hoy no.</h2>
       <ul class="clean" style="font-size:22px;max-width:82ch">
         <li><b>Inventario HDFS (2026-11-12):</b> 353 objetos, 895.597.901 B; <span class="mono">/data/raw</span> con 202 hijos; <span class="mono">/data/procesado</span> responde 404 por la excepción declarada.</li>
@@ -763,30 +770,31 @@ db.anuncios.find(
   <!-- B4 HABITACIONES -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B4 Habitaciones</span><span class="pg">B4 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B4 Habitaciones</span><span class="pg">B4 / 9</span></header>
       <h2>Habitación vs vivienda entera.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
-        <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Habitaciones mediana y rango"><div class="cap">H6 · €/habitación, mediana con min-max y n_precio</div></div>
+        <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Ranking y distribución de habitaciones"><div class="cap">H6 · 2026 · ranking n≥10 con IC95 + distribución + esfuerzo; n&lt;10 fuera de ranking</div></div>
         <div>
-          <p class="small"><b>201</b> anuncios en <b>9</b> municipios.</p>
-          <p class="small">Solo Bilbao (96) y Donostia (66) sostienen comparación firme; el resto es indicativo.</p>
-          <p class="small">No se agregan con vivienda entera: son productos distintos.</p>
+          <p class="small"><b>201</b> anuncios en <b>9</b> municipios; <b>200</b> con precio.</p>
+          <p class="small">Solo Bilbao (96) y Donostia (66) son firmes; Vitoria (12) y Barakaldo (11), indicativos; Getxo (8) y el resto, fuera del ranking.</p>
+          <p class="small">Mediana global <b>640 €</b>; <b>61 %</b> ≤700 €. Esfuerzo individual <b>37,2 %</b> del salario joven; Donostia <b>69,8 %</b>, Bilbao <b>34,9 %</b>.</p>
+          <p class="small">No se agregan con vivienda entera.</p>
         </div>
       </div>
-      <footer class="ft"><span class="proof">mongo_habitaciones_por_municipio.csv</span><span class="proof">C15 · C19</span></footer>
+      <footer class="ft"><span class="proof">mongo_habitaciones_por_municipio.csv + salario joven 2026</span><span class="proof">C15 · C19</span></footer>
     </div>
   </section>
 
   <!-- B5 MODALIDADES -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B5 Modalidades</span><span class="pg">B5 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B5 Modalidades</span><span class="pg">B5 / 9</span></header>
       <h2>Temporal y larga estancia: mismo alquiler, distinto metro.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
-        <div class="fig"><img src="assets/H8b_modalidad_mediana_eur_m2.png" alt="Temporal vs larga: mediana mensual y por m²"><div class="cap">H8b · mediana €/mes y €/m² por modalidad (594 anuncios)</div></div>
+        <div class="fig"><img src="assets/H8b_modalidad_mediana_eur_m2.png" alt="Temporal vs larga: mediana mensual y por m²"><div class="cap">H8b · 2026 · mediana €/mes y €/m² por modalidad (594 anuncios)</div></div>
         <div>
-          <p class="small">Misma <b>mediana mensual (1.500 €)</b>, pero el temporal es más pequeño: <b>80 vs 92,5 m²</b>.</p>
-          <p class="small">Por m², el temporal es <b>+23,2 %</b> en Fotocasa y <b>+13,7 %</b> en el total (18,95 vs 16,67 €/m²).</p>
+          <p class="small">Misma <b>mediana mensual (1.500 €)</b>, pero el temporal es más pequeño: <b>80 m² vs 90 m²</b>.</p>
+          <p class="small">Por m², el temporal es <b>+13,7 %</b> en el total (18,95 vs 16,67 €/m²).</p>
           <p class="small">Por eso no se mezclan las modalidades en el indicador.</p>
         </div>
       </div>
@@ -797,24 +805,36 @@ db.anuncios.find(
   <!-- B6 VPO -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B6 VPO</span><span class="pg">B6 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B6 VPO</span><span class="pg">B6 / 9</span></header>
       <h2>VPO: flujo, no stock.</h2>
       <div class="grid2" style="grid-template-columns:1.35fr .65fr;align-items:center">
-        <div class="fig"><img src="assets/C_vpo_por_estado.png" alt="VPO por estado"><div class="cap">C · promociones por estado y tipo</div></div>
+        <div class="fig"><img src="assets/H5_vpo_terminadas_por_mil.png" alt="VPO terminadas 2020-2024 por mil habitantes"><div class="cap">H5 · VPO terminadas 2020-2024 por mil habitantes (Udalmap 73, edición 2024) · 211 de 251 municipios en cero</div></div>
         <div>
-          <p class="small"><b>406</b> promociones en 77 municipios.</p>
+          <p class="small">Dato datado: <b>2020-2024</b> (Udalmap 73, edición 2024).</p>
           <p class="small">Flujo de terminadas: <b>251/252</b> municipios; Usansolo sin dato.</p>
           <p class="small">El stock no es público: no se inventa.</p>
+          <p class="small">El registro de promociones (<b>406</b>, 77 municipios) da estado, no fechas ni viviendas.</p>
         </div>
       </div>
       <footer class="ft"><span class="proof">mongo_vpo_por_municipio.csv · mongo_vpo_terminadas_por_municipio.csv</span><span class="proof">C17</span></footer>
     </div>
   </section>
 
+  <!-- B6b VPO serie -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B6b VPO, serie</span><span class="pg">B6b / 9</span></header>
+      <h2>La VPO terminada se ha dividido por cuatro.</h2>
+      <div class="fig"><img src="assets/S_serie_vpo_2004_2024.png" alt="VPO terminada por mil habitantes, 2004-2024, Euskadi y los tres territorios históricos"><div class="cap">S · VPO terminada por mil habitantes, 2004-2024 (Udalmap 73, edición 2024) · ventana móvil de 5 años</div></div>
+      <p class="small" style="margin-top:8px">Euskadi: <b>11,5 ‰</b> en 2011 → <b>2,7 ‰</b> en 2024. Cada punto resume los cinco años anteriores: no es el flujo de un año suelto. Araba/Álava va en panel propio, con su escala, porque su tasa llega a <b>40,1 ‰</b> y en la escala común aplastaría a las demás series.</p>
+      <footer class="ft"><span class="proof">data/raw/udalmap_vpo_terminadas.csv · indicador 73</span><span class="proof">C17</span></footer>
+    </div>
+  </section>
+
   <!-- B7 OFICIAL VS ANUNCIOS -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 9</span></header>
       <h2>El alquiler oficial y el de anuncio no son lo mismo.</h2>
       <div class="grid2" style="grid-template-columns:1.45fr .55fr;align-items:center">
         <div class="fig"><img src="assets/P_oficial_vs_anuncios_por_TH.png" alt="Cuantía oficial vs anuncios por territorio"><div class="cap">P · cuantía oficial 2024 vs anuncios 2026 por TH — ratio 1,96; Spearman 0,18</div></div>
@@ -827,11 +847,11 @@ db.anuncios.find(
   <!-- B8 DOS MAPAS 2026 -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B8 Dos mapas 2026</span><span class="pg">B8 / 8</span></header>
+      <header class="hd"><span class="kicker">Backup · B8 Dos mapas 2026</span><span class="pg">B8 / 9</span></header>
       <h2>Cuánto cuesta y cuánto sabemos.</h2>
       <div class="grid2" style="grid-template-columns:1fr 1fr;gap:40px;align-items:start">
         <div class="fig"><img src="assets/M26_mapa_coropletico_2026.png" alt="Mapa coroplético esfuerzo mercado 2026"><div class="cap">esfuerzo de mercado 2026 por municipio · gris = sin anuncio</div></div>
-        <div class="fig"><img src="assets/M26_mapa_cobertura.png" alt="Mapa de cobertura de anuncios"><div class="cap">n de anuncios por municipio · 50 con dato</div></div>
+        <div class="fig"><img src="assets/M26_mapa_cobertura.png" alt="Mapa de cobertura de anuncios"><div class="cap">n de anuncios 2026 por municipio · 50 con dato</div></div>
       </div>
       <p class="small" style="margin-top:18px">La misma geografía del esfuerzo canónico, leída sobre precio publicado. Y la segunda capa dice dónde ese color no existe: 50 municipios, 71,2 % de los jóvenes, 43 sin mediana.</p>
       <footer class="ft"><span class="proof">visuals/mapa_esfuerzo_mercado_2026.py · cobertura_representatividad_2026.csv</span><span class="proof">C8 · C19</span></footer>

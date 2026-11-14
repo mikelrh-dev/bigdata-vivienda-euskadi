@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; width: 2000px; height: 1150px; background: #fff;
+    font-family: "Segoe UI", Arial, sans-serif; color: #1a1a1a;
+    padding: 50px 60px;
+  }
+  h1 { font-size: 52px; margin: 0 0 8px; color: #1f4e79; letter-spacing: -0.5px; }
+  .sub { font-size: 26px; color: #555; margin-bottom: 40px; }
+  .flow { display: flex; align-items: stretch; gap: 14px; }
+  .box { flex: 1; border: 3px solid #1f4e79; border-radius: 14px; padding: 22px 20px; background: #f7fafc; }
+  .box .n { font-size: 18px; letter-spacing: .14em; color: #c55a11; font-weight: 700; }
+  .box b { display: block; font-size: 38px; margin: 8px 0 10px; line-height: 1.1; }
+  .box .mini { font-size: 24px; color: #444; line-height: 1.4; }
+  .arrow { align-self: center; font-size: 46px; color: #1f4e79; font-weight: 700; }
+  .branches { display: flex; gap: 28px; margin-top: 42px; }
+  .branch { flex: 1; border-left: 8px solid #c55a11; background: #fdf6f0; padding: 24px 28px; border-radius: 0 14px 14px 0; }
+  .branch b { font-size: 30px; }
+  .branch p { font-size: 23px; line-height: 1.5; margin: 10px 0 0; color: #333; }
+  .mono { font-family: Consolas, monospace; font-size: 22px; }
+  .note { margin-top: 36px; font-size: 23px; color: #444; border-top: 2px solid #ddd; padding-top: 20px; }
+  .tag { display: inline-block; background: #1f4e79; color: #fff; font-size: 18px; padding: 3px 12px; border-radius: 99px; margin-right: 10px; vertical-align: 2px; }
+</style>
+</head>
+<body>
+  <h1>Dos ramas, cinco capas</h1>
+  <div class="sub">El mismo raw inmutable alimenta la conservación y el análisis. Ninguna transformación toca el original.</div>
+
+  <div class="flow">
+    <div class="box"><div class="n">01 · FUENTES</div><b>API + scraping</b><div class="mini">13 familias<br>26 scripts</div></div>
+    <div class="arrow">→</div>
+    <div class="box"><div class="n">02 · RAW</div><b>Inmutable</b><div class="mini">355 manifiesto<br>357 disco · 353 HDFS</div></div>
+    <div class="arrow">→</div>
+    <div class="box"><div class="n">03 · SILVER</div><b>Normalizado</b><div class="mini">183 manifiesto<br>clave codigo_ine</div></div>
+    <div class="arrow">→</div>
+    <div class="box"><div class="n">04 · MONGODB</div><b>17 vivas</b><div class="mini">+ 15 backup<br>11 pipelines</div></div>
+    <div class="arrow">→</div>
+    <div class="box" style="border-color:#c55a11;background:#fdf6f0"><div class="n">05 · GOLD</div><b>53 artefactos</b><div class="mini">24 CSV + 29 PNG<br>+ 8 anexo</div></div>
+  </div>
+
+  <div class="branches">
+    <div class="branch">
+      <b>Conservación · raw → Kafka → HDFS</b>
+      <p>El productor lee el manifiesto SHA. El consumidor <span class="mono">hdfs_centro</span> valida SHA y tamaño y escribe en HDFS. Topic <span class="mono">vivienda_euskadi</span>, 1 partición, RF 1. Solo raw.</p>
+    </div>
+    <div class="branch">
+      <b>Analítica · silver → Mongo → gold</b>
+      <p><span class="mono">replace_collection</span> carga 17 colecciones sin duplicar. Los 11 pipelines calculan indicadores y escriben 8 CSV; las figuras salen del gold, no de Mongo.</p>
+    </div>
+  </div>
+
+  <div class="note"><span class="tag">CLAVE</span> El manifiesto cuenta entradas declaradas; el disco, ficheros; HDFS, objetos conservados. Las tres cifras se explican en el capítulo 7.</div>
+</body>
+</html>

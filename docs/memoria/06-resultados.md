@@ -1,65 +1,131 @@
 <!-- cap: 6 | titulo: Resultados y conclusiones | criterios: C17, C18, C19 | estado: borrador -->
 # 6. Resultados y conclusiones
 
-> **Objetivo.** Responder a la pregunta con indicadores calculados, separar las dos capas y decir qué no se puede afirmar.
+> El capítulo cuenta primero la capa registrada de 2024 y después la capa de oferta de 2026, sin mezclarlas, y cierra con lo que se puede y no se puede afirmar.
 
-## 6.1 O1 · El esfuerzo mediano
+El capítulo responde a cuatro objetivos. **O1**: ¿qué parte de la renta joven se va en alquiler? **O2**: ¿dónde pesa más? **O3**: ¿qué añade la oferta de 2026? **O4**: ¿qué papel tiene la vivienda protegida? O1, O2 y O4 se responden con datos de 2024; O3, con la capa de oferta. Las secciones 6.1 a 6.3 son de 2024, las secciones 6.4 y 6.5 son de 2026, y solo la 6.6 junta las respuestas, sin restarlas.
+
+## 6.1 O1. La capa 2024: el esfuerzo mediano
 
 | Método | Municipios | Mediana | Por encima del 30 % |
 |---|---:|---:|---:|
 | Alquiler oficial | {{datos.alquiler_oficial}} | {{datos.esfuerzo_mediana_oficial}} % | {{datos.esfuerzo_oficial_sobre30}} ({{datos.esfuerzo_oficial_sobre30_pct}} %) |
 | IDW-252 | {{datos.municipios}} | {{datos.esfuerzo_mediana_idw}} % | {{datos.esfuerzo_idw_sobre30}} ({{datos.esfuerzo_idw_sobre30_pct}} %) |
 
-La mediana oficial es {{datos.esfuerzo_mediana_oficial}} %. La interpolación rebaja la mediana a {{datos.esfuerzo_mediana_idw}} % y reparte los municipios sin dato, pero no crea evidencia donde no la hay. Por eso el ranking principal usa los {{datos.alquiler_oficial}} municipios oficiales.
+El esfuerzo es el alquiler mensual multiplicado por doce, dividido entre la renta joven anual y expresado en porcentaje. El indicador canónico usa el tramo de 18 a 34 años. El tramo de 16 a 29 se conserva en los CSV como legado: comparte fórmula pero no denominador, y ninguna conclusión de esta memoria lo usa. El 30 % es el umbral de referencia habitual en los estudios de asequibilidad; aquí se usa como línea de lectura, no como frontera estadística.
 
-![Mapa de esfuerzo por municipio](figuras/fig-mapa-2024.png){width=15cm}
+La mediana oficial es {{datos.esfuerzo_mediana_oficial}} %. La interpolación asigna un valor a los {{datos.alquiler_imputado}} municipios sin alquiler oficial y baja la mediana a {{datos.esfuerzo_mediana_idw}} %, pero no crea evidencia donde no la hay. Por eso el ranking principal usa los {{datos.alquiler_oficial}} municipios oficiales.
 
-*Figura 6.1. Esfuerzo de la población joven por municipio. El gris indica ausencia de dato, no esfuerzo cero. Fuente: `data/resultados/mapa_coroplastico_esfuerzo_18_34.png`.*
+![Mapa de esfuerzo por municipio](figuras/fig-mapa-2024.png){width=15cm}\
+*Figura 6.1. Esfuerzo de la población joven por municipio, datos de 2024. El color corresponde a los {{datos.alquiler_oficial}} municipios con alquiler oficial; la trama gris, a los {{datos.alquiler_imputado}} imputados por IDW. Fuente: `data/resultados/mapa_coroplastico_esfuerzo_18_34.png`.*
 
-## 6.2 O2 · Dónde está la evidencia
+## 6.2 O2. La capa 2024: dónde pesa más
 
-![Ranking de esfuerzo 18-34](figuras/fig-ranking-2024.png){width=15cm}
+![Ranking de esfuerzo 18-34](figuras/fig-ranking-2024.png){width=15cm}\
+*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. Sin Tier ni muestra de anuncios: el numerador es administrativo y no depende de la oferta. Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
 
-*Figura 6.2. Municipios ordenados por esfuerzo con alquiler oficial. Solo se muestran los que tienen muestra suficiente. Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
+El corte de la tabla no es un top-N elegido a mano: son todos los municipios con alquiler oficial de 2024 que superan el 35 % de esfuerzo, en orden descendente. Por debajo, las posiciones se apelotonan y el orden deja de ser informativo.
 
-![Tier de confianza](figuras/fig-tier.png){width=12cm}
+| Municipio | Territorio | Alquiler oficial (€/mes) | Esfuerzo 18–34 (2024) |
+|---|---|---:|---:|
+| Barakaldo | Bizkaia | {{datos.mun_barakaldo_alquiler}} € | {{datos.mun_barakaldo_esfuerzo}} % |
+| Donostia / San Sebastián | Gipuzkoa | {{datos.mun_donostia_alquiler}} € | {{datos.mun_donostia_esfuerzo}} % |
+| Sestao | Bizkaia | {{datos.mun_sestao_alquiler}} € | {{datos.mun_sestao_esfuerzo}} % |
+| Bilbao | Bizkaia | {{datos.mun_bilbao_alquiler}} € | {{datos.mun_bilbao_esfuerzo}} % |
+| Erandio | Bizkaia | {{datos.mun_erandio_alquiler}} € | {{datos.mun_erandio_esfuerzo}} % |
+| Pasaia | Gipuzkoa | {{datos.mun_pasaia_alquiler}} € | {{datos.mun_pasaia_esfuerzo}} % |
+| Lasarte-Oria | Gipuzkoa | {{datos.mun_lasarte_oria_alquiler}} € | {{datos.mun_lasarte_oria_esfuerzo}} % |
+| Errenteria | Gipuzkoa | {{datos.mun_errenteria_alquiler}} € | {{datos.mun_errenteria_esfuerzo}} % |
+| Astigarraga | Gipuzkoa | {{datos.mun_astigarraga_alquiler}} € | {{datos.mun_astigarraga_esfuerzo}} % |
+| Basauri | Bizkaia | {{datos.mun_basauri_alquiler}} € | {{datos.mun_basauri_esfuerzo}} % |
+| Santurtzi | Bizkaia | {{datos.mun_santurtzi_alquiler}} € | {{datos.mun_santurtzi_esfuerzo}} % |
+| Portugalete | Bizkaia | {{datos.mun_portugalete_alquiler}} € | {{datos.mun_portugalete_esfuerzo}} % |
+| Lezo | Gipuzkoa | {{datos.mun_lezo_alquiler}} € | {{datos.mun_lezo_esfuerzo}} % |
+| Irun | Gipuzkoa | {{datos.mun_irun_alquiler}} € | {{datos.mun_irun_esfuerzo}} % |
 
-*Figura 6.3. Tier A/B/C/D según cobertura y tamaño de muestra. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
+Los catorce tienen alquiler oficial de 2024, ninguno imputado, así que el esfuerzo es dato administrativo y no estimación: alquiler oficial de 2024 sobre renta joven de 2024. El orden es el del esfuerzo, no el del alquiler, y esa diferencia es el resultado: Barakaldo encabeza el ranking con {{datos.mun_barakaldo_esfuerzo}} % y un alquiler de {{datos.mun_barakaldo_alquiler}} €, por debajo del de Donostia ({{datos.mun_donostia_alquiler}} €). Lo que empuja el esfuerzo arriba no es el precio de la vivienda sino la renta joven: Sestao, con {{datos.mun_sestao_alquiler}} €, es el tercero del ranking.
 
-El Tier A concentra {{datos.tier_a}} municipios; el B, {{datos.tier_b}}; el C, {{datos.tier_c}}; el D, {{datos.tier_d}}. La conclusión territorial se apoya en el Tier A y se contrasta con el B; el resto se usa para contexto, no para afirmar un ranking.
+El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en {{datos.mun_getxo_esfuerzo}} % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 
-## 6.3 O3 · Lo que dicen los anuncios
+Ningún municipio de esta tabla se elige por la muestra de anuncios de 2026. Esa regla pertenece a la capa de oferta y se explica en la sección 6.4.
 
-![Oficial frente a anuncios](figuras/fig-oficial-vs-anuncios.png){width=15cm}
+## 6.3 O4. La capa 2024: la vivienda protegida
 
-*Figura 6.4. Discrepancia entre el alquiler oficial y la oferta observada. Fuente: `data/resultados/P_oficial_vs_anuncios_por_TH.png`.*
+Las {{datos.vpo_promociones}} promociones de Etxebide son flujo de promoción, y el reparto por estado lo confirma: 347 terminadas, 39 en curso, 19 en convenio y 1 en proyecto. Es un registro de promociones cerradas, no un flujo vivo. El campo `NumViviendas` está vacío en {{datos.vpo_sin_dato}} de {{datos.vpo_promociones}}, así que no permiten contar viviendas disponibles; y la fecha de sorteo solo existe en parte del registro, entre 2001 y 2014. Por eso este registro sirve para describir el estado de la promoción, no para datar cuánta vivienda protegida se ha terminado.
 
-De los {{datos.municipios}} municipios, {{datos.anuncios_municipios}} tienen algún anuncio y {{datos.precio_observable}} tienen precio medio. La cobertura es suficiente para describir la oferta, no para sustituir el dato oficial en todos los municipios.
+El dato datado de vivienda protegida es otro: las viviendas protegidas terminadas en el último quinquenio por mil habitantes (Udalmap, indicador 73, edición 2024), cargado para {{mongo.vpo_municipal_docs}} municipios, con Usansolo sin dato. Es un flujo acumulado de cinco años, no un stock, y su reparto es muy desigual: la mayoría de los municipios están en cero y el flujo se concentra en unos pocos. El stock de vivienda protegida no es público, así que no se estima.
 
-![Modalidades de alquiler](figuras/fig-modalidades.png){width=12cm}
+![VPO terminadas por mil habitantes](figuras/fig-vpo-flujo.png){width=12cm}\
+*Figura 6.3. Viviendas protegidas terminadas en el último quinquenio por mil habitantes: flujo 2020-2024 (Udalmap, indicador 73, edición 2024), 251 de 252 municipios con dato y 211 en cero. Fuente: `data/resultados/H5_vpo_terminadas_por_mil.png`.*
 
-*Figura 6.5. Precio por metro cuadrado según modalidad. Fuente: `data/resultados/H8b_modalidad_mediana_eur_m2.png`.*
+![Serie de VPO terminada 2004-2024](figuras/fig-vpo-serie.png){width=15cm}\
+*Figura 6.4. VPO terminada por mil habitantes en Euskadi y por territorio histórico, 2004-2024 (Udalmap, indicador 73, edición 2024). Cada punto resume los cinco años anteriores, así que no es el flujo de un año suelto. Euskadi, Bizkaia y Gipuzkoa comparten escala; Araba/Álava va en un panel propio, con su escala, porque su tasa llega a 40,1 ‰ en 2011 y en una escala común aplastaría a las demás series. Fuente: `data/resultados/S_serie_vpo_2004_2024.png`.*
 
-## 6.4 O4 · Vivienda protegida
+La serie sitúa el dato de 2024: la tasa de Euskadi pasó de un máximo de 11,5 ‰ en 2011 a 2,7 ‰ en 2024. La caída no es un año malo, es una tendencia de más de una década, y se mantiene en los tres territorios históricos. Araba/Álava, con un denominador mucho menor, se comporta igual pero con un perfil mucho más agudo: 40,1 ‰ en 2011 y 3,8 ‰ en 2024, casi sin término medio entre ambos extremos. Esa volatilidad no es un error del dato, es lo que hace una tasa sobre una población pequeña.
 
-![VPO por estado](figuras/fig-vpo.png){width=12cm}
+## 6.4 O3. La capa 2026: qué hay
 
-*Figura 6.6. Promociones de vivienda protegida por estado. Fuente: `data/resultados/C_vpo_por_estado.png`.*
+La capa 2026 es una fotografía de la oferta publicada, no una segunda medición del alquiler registrado. Se construye porque el dato oficial es de 2024, tarda en publicarse y no cubre a todos los municipios; la oferta dice qué se pide hoy, con la limitación de que un anuncio no es un contrato.
 
-Las {{datos.vpo_promociones}} promociones de Etxebide son flujo de promoción, no stock terminado. El campo `NumViviendas` está vacío en {{datos.vpo_sin_dato}} de {{datos.vpo_promociones}}, así que no se puede leer como un stock de viviendas disponibles.
+De los {{datos.anuncios_total}} anuncios extraídos en 2026, {{datos.anuncios_larga}} son de larga estancia ({{datos.anuncios_larga_municipios}} municipios) y {{datos.anuncios_temporal}} temporales ({{datos.anuncios_temporal_municipios}}). El temporal se descarta porque no es comparable con un contrato de vivienda habitual. Al filtro de validez —precio y superficie utilizables— le quedan los {{datos.anuncios_2026}} anuncios que sostienen todas las cifras de esta capa, en {{datos.municipios_2026}} municipios. Otros {{datos.anuncios_sin}} municipios no tienen ningún anuncio.
 
-## 6.5 La capa 2026
+![Oficial frente a anuncios](figuras/fig-oficial-vs-anuncios.png){width=15cm}\
+*Figura 6.5. Discrepancia entre el alquiler oficial de 2024 y la oferta observada en 2026: mezcla declarada, no comparable. Fuente: `data/resultados/P_oficial_vs_anuncios_por_TH.png`.*
 
-![Mapa de oferta 2026](figuras/fig-mapa-2026.png){width=15cm}
+Solo {{datos.n_precio_positivo}} municipios conservan `n_precio > 0`; los {{datos.precio_sin_muestra}} restantes son Tier C/D: tienen precio en la colección, pero no muestra suficiente para publicarlo como estadística municipal. La cobertura describe la oferta; no sustituye el dato oficial en todos los municipios.
 
-*Figura 6.7. Esfuerzo con oferta de mercado 2026. Capa separada de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
+![Modalidades de alquiler](figuras/fig-modalidades.png){width=12cm}\
+*Figura 6.6. Precio por metro cuadrado según modalidad, anuncios de 2026. Fuente: `data/resultados/H8b_modalidad_mediana_eur_m2.png`.*
 
-![Histograma de esfuerzo 2026](figuras/fig-hist-2026.png){width=13cm}
+La oferta de habitaciones es minoritaria: solo {{datos.habitaciones_municipios}} municipios tienen un conjunto suficiente para analizarla por separado. Es un indicador de nicho, no una alternativa general al alquiler de vivienda completa.
 
-*Figura 6.8. Distribución del esfuerzo con anuncios 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
+El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene {{datos.tier_a}} municipios, el B {{datos.tier_b}}, el C {{datos.tier_c}} y el D {{datos.tier_d}}. Solo {{datos.tier_ab}} llegan a A o B, y de ellos los {{datos.tier_a}} del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
-La capa 2026 responde a “qué se paga hoy en el mercado”, no a “qué alquiler oficial hay”. Se presenta después de la capa 2024 y con su propia escala.
+![Tier de confianza](figuras/fig-tier.png){width=12cm}\
+*Figura 6.7. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
 
-## 6.6 Qué se puede afirmar
+La cobertura se mide en población joven, no en municipios: los {{datos.municipios_2026}} municipios con dato son el {{datos.cobertura_municipios_pct}} % del total, pero concentran el {{datos.cobertura_poblacion_pct}} % de la población de 18 a 34 años ({{datos.cobertura_poblacion}} personas). Los {{datos.tier_a}} municipios del Tier A reúnen el {{datos.cobertura_anuncios_n30_pct}} % de los anuncios. La capa no es todo el territorio, pero cubre a la mayoría de la población joven.
 
-Se puede afirmar que el esfuerzo mediano supera el 30 % en una parte relevante de los municipios con dato, que la evidencia se concentra en el Tier A y que la oferta de anuncios no cubre todo el territorio. No se puede afirmar que un municipio sin dato sea asequible, ni que la diferencia entre 2024 y 2026 sea una evolución: son fuentes distintas.
+![Cobertura de la capa 2026](figuras/fig-cobertura-2026.png){width=13cm}\
+*Figura 6.8. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
+
+## 6.5 O3. La capa 2026: qué dice el esfuerzo
+
+![Mapa de oferta 2026](figuras/fig-mapa-2026.png){width=15cm}\
+*Figura 6.9. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
+
+El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven de 2024 ajustado por IPC: el numerador es de 2026 y el denominador se actualiza para no mezclar años. En los cuatro municipios con muestra suficiente el resultado no admite duda de signo:
+
+| Municipio | Anuncios válidos | Esfuerzo 18–34 (2024) | Precio mediano 2026 | Esfuerzo 2026 |
+|---|---:|---:|---:|---:|
+| Bilbao | {{datos.mun_bilbao_n_2026}} | {{datos.mun_bilbao_esfuerzo}} % | {{datos.mun_bilbao_precio_2026}} € | {{datos.mun_bilbao_esfuerzo_2026}} % |
+| Donostia / San Sebastián | {{datos.mun_donostia_n_2026}} | {{datos.mun_donostia_esfuerzo}} % | {{datos.mun_donostia_precio_2026}} € | {{datos.mun_donostia_esfuerzo_2026}} % |
+| Getxo | {{datos.mun_getxo_n_2026}} | {{datos.mun_getxo_esfuerzo}} % | {{datos.mun_getxo_precio_2026}} € | {{datos.mun_getxo_esfuerzo_2026}} % |
+| Vitoria-Gasteiz | {{datos.mun_vitoria_n_2026}} | {{datos.mun_vitoria_esfuerzo}} % | {{datos.mun_vitoria_precio_2026}} € | {{datos.mun_vitoria_esfuerzo_2026}} % |
+
+![Esfuerzo 2026 y su muestra](figuras/fig-ranking-2026.png){width=15cm}\
+*Figura 6.10. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
+
+Donostia ({{datos.mun_donostia_esfuerzo_2026}} %) y Bilbao ({{datos.mun_bilbao_esfuerzo_2026}} %) ponen el alquiler de anuncio por encima del salario joven mensual: trabajar no cubre el alquiler. Getxo y Vitoria-Gasteiz se quedan en {{datos.mun_getxo_esfuerzo_2026}} % y {{datos.mun_vitoria_esfuerzo_2026}} %. Santurtzi, Zarautz y Sopela, con 4 a 8 anuncios comparables, no entran en la comparación y se leen como indicativo.
+
+![Histograma de esfuerzo 2026](figuras/fig-hist-2026.png){width=13cm}\
+*Figura 6.11. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
+
+La mediana de la capa es {{datos.esfuerzo_2026_salario}} % con el salario ajustado y {{datos.esfuerzo_2026_renta}} % con la renta de 2024 como denominador. En esos mismos {{datos.municipios_2026}} municipios, la mediana oficial de 2024 era {{datos.esfuerzo_2024_canonico}} % y la base salario de 2024, {{datos.esfuerzo_2024_salario}} %. No son comparables: cambia el numerador (anuncio frente a contrato) y, en la primera cifra, también el denominador.
+
+Por tipo, la mediana es {{datos.esfuerzo_2026_tipo_1_2}} % para 1–2 habitaciones ({{datos.anuncios_2026_tipo_1_2}} anuncios), {{datos.esfuerzo_2026_tipo_3}} % para 3 ({{datos.anuncios_2026_tipo_3}}) y {{datos.esfuerzo_2026_tipo_4}} % para 4 o más ({{datos.anuncios_2026_tipo_4}}). El esfuerzo sube con el tamaño. La cifra de 4+ no describe el precio típico de una persona sola.
+
+![Diferencia de nivel 2024 a 2026](figuras/fig-brecha-2026.png){width=15cm}\
+*Figura 6.12. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
+
+La distancia entre las dos capas se puede medir sin restarlas como serie: en los {{datos.brecha_municipios_n5}} municipios con al menos 5 anuncios, la diferencia de nivel mediana es de {{datos.brecha_mediana_n5}} puntos porcentuales. Parte de esa distancia es el cambio de fuente y parte es el tipo de vivienda: la superficie mediana del anuncio es de {{datos.sesgo_superficie_anuncios}} m² y la del alquiler registrado, de {{datos.sesgo_superficie_oficial}} m². Un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando.
+
+## 6.6 La respuesta y sus límites
+
+En la capa registrada, el esfuerzo mediano en los {{datos.alquiler_oficial}} municipios con alquiler oficial es {{datos.esfuerzo_mediana_oficial}} %, y {{datos.esfuerzo_oficial_sobre30}} municipios ({{datos.esfuerzo_oficial_sobre30_pct}} %) superan el 30 %. El máximo oficial es Barakaldo, con {{datos.mun_barakaldo_esfuerzo}} %, y la tabla de la sección 6.2 lo ordena por renta joven, no por precio: los municipios industriales de la ría y de Pasaia pesan más que los de renta alta, y Getxo, con la renta joven más alta, se queda en {{datos.mun_getxo_esfuerzo}} %.
+
+En la capa de oferta, la mediana sube a {{datos.esfuerzo_2026_salario}} % con el salario ajustado. En los cuatro municipios con muestra suficiente, el esfuerzo va de {{datos.mun_vitoria_esfuerzo_2026}} % en Vitoria-Gasteiz a {{datos.mun_donostia_esfuerzo_2026}} % en Donostia, y en Donostia y Bilbao el alquiler de anuncio supera el salario joven mensual. Esa capa cubre el {{datos.cobertura_poblacion_pct}} % de la población de 18 a 34 años con el {{datos.cobertura_municipios_pct}} % de los municipios.
+
+Las dos respuestas no se suman ni se restan. La diferencia de nivel mediana entre ambas es de {{datos.brecha_mediana_n5}} puntos porcentuales (sección 6.5), y una parte es cambio de fuente: anuncio frente a contrato y vivienda de {{datos.sesgo_superficie_anuncios}} m² frente a {{datos.sesgo_superficie_oficial}} m². Leerla como evolución sería el error que el capítulo 1 advierte.
+
+Lo que no se puede afirmar: un municipio sin dato no es asequible, un esfuerzo alto no prueba causalidad y la vivienda protegida es flujo, nunca stock. Los {{datos.alquiler_imputado}} municipios interpolados y los que tienen anuncio sin muestra no permiten ordenar municipios.

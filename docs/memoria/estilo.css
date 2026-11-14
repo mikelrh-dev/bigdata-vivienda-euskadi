@@ -25,7 +25,24 @@ h1 {
   margin: 0 0 10pt;
   padding-bottom: 4pt;
   border-bottom: 2px solid #1f4e79;
+  /* Sin salto forzado: los capítulos fluyen (el DOCX sí lleva salto). Forzarlo
+     en todos dejaba páginas de una línea al final de cada capítulo. */
+  page-break-before: auto;
+}
+
+h1#índice,
+h1#contexto-y-pregunta,
+h1#resultados-y-conclusiones,
+h1#anexos {
   page-break-before: always;
+}
+
+h1, h2 {
+  page-break-after: avoid;
+}
+
+p:has(img) {
+  page-break-inside: avoid;
 }
 
 h2 {
@@ -61,6 +78,16 @@ table {
   margin: 8pt 0 12pt;
   font-family: "Segoe UI", Arial, sans-serif;
   font-size: 9pt;
+}
+
+/* La tabla larga (7.1) no cabe en una página: si se le prohíbe partir,
+   Chrome la empuja a la siguiente y deja el título del capítulo solo.
+   Se permite cortar entre filas y se repite la cabecera. */
+thead {
+  display: table-header-group;
+}
+
+tr {
   page-break-inside: avoid;
 }
 

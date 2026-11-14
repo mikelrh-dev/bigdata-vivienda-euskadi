@@ -1,31 +1,7 @@
 <!-- cap: 9 | titulo: Anexos | criterios: Trazabilidad | estado: borrador -->
 # 9. Anexos
 
-## A. Mapa de la rúbrica
-
-| ID | Criterio | Sección |
-|---|---|---|
-| C1 | Extracción mediante Python (API y scraping) | 2.1, 3.1 |
-| C2 | Almacenamiento HDFS y recuperación | 2.3, 3.3 |
-| C3 | Kafka: tópico, productor y consumidor | 2.3, 3.2 |
-| C4 | Integración completa hasta MongoDB | 2.4, 3.4 |
-| C5 | Integración de 2+ fuentes por campo común | 3.2, 4.2 |
-| C6 | 2+ colecciones y relación embedding/referencing | 4.1, 4.2 |
-| C7 | Limpieza: nulos, duplicados y tipos | 3.3, 7.2 |
-| C8 | Automatización de carga, limpieza y transformación | 3.6, 8.3 |
-| C9 | Modelado con decisión embedding/referencing explicada | 4.1 |
-| C10 | CRUD con PyMongo y comprobación | 4.5 |
-| C11 | 5 consultas útiles, anidados y 2+ condiciones | 5.3 |
-| C12 | 3 pipelines, 5 etapas, `$group` y `$lookup`/`$unwind` | 5.2 |
-| C13 | Índice y `explain()` con COLLSCAN/IXSCAN | 5.4 |
-| C14 | Operación atómica y justificación de no transacción | 4.5 |
-| C15 | Datos heterogéneos adaptados con PyMongo | 3.3, 4.3 |
-| C16 | Script que ejecuta todos los análisis | 5.2, 8.3 |
-| C17 | 5 indicadores con 2+ fuentes | 5.1, 6.1–6.4 |
-| C18 | 3+ municipios comparados y conclusión ligada a indicador | 6.6 |
-| C19 | 3+ conjuntos preparados para visualización | 6.1–6.5 |
-
-## B. Glosario
+## A. Glosario
 
 | Término | Definición |
 |---|---|
@@ -37,26 +13,50 @@
 | IDW | Interpolación por distancia inversa para municipios sin alquiler oficial |
 | Esfuerzo | Porcentaje de la renta que consume el alquiler |
 
-## C. Comandos
+## B. Fragmentos de código
 
-```bash
-pytest -q tests
-python scripts/verificar_gobernanza.py
-python scripts/run_pipeline.py --check
-python scripts/verificar_cifras_deck.py
-python docs/memoria/build.py --check
-python scripts/hdfs_recuperacion_un_fichero.py
+**Carga idempotente** (`storage/mongo.py:152`). La colección se construye en staging, la anterior se copia a backup y el rename publica el resultado de una vez.
+
+```python
+def replace_collection(name, docs):
+    db = get_db()
+    staging = f"{name}__staging"
+    backup = f"{name}__backup"
+    db[staging].drop()
+    db[staging].insert_many(docs)
+    if name in db.list_collection_names():
+        db[backup].drop()
+        db[name].aggregate([{"$out": backup}])
+    db[staging].rename(name, dropTarget=True)
+    return len(docs)
 ```
 
-## D. Índice de figuras
+**Explain antes/después** (`analysis/mongo_indexes.py:125`). El `hint` fuerza el barrido completo; la segunda llamada usa el índice ESR.
 
-| Figura | Archivo | Sección |
-|---|---|---|
-| 6.1 | `figuras/fig-mapa-2024.png` | 6.1 |
-| 6.2 | `figuras/fig-ranking-2024.png` | 6.2 |
-| 6.3 | `figuras/fig-tier.png` | 6.2 |
-| 6.4 | `figuras/fig-oficial-vs-anuncios.png` | 6.3 |
-| 6.5 | `figuras/fig-modalidades.png` | 6.3 |
-| 6.6 | `figuras/fig-vpo.png` | 6.4 |
-| 6.7 | `figuras/fig-mapa-2026.png` | 6.5 |
-| 6.8 | `figuras/fig-hist-2026.png` | 6.5 |
+```python
+filtro = {
+    "ubicacion.codigo_ine": "20069",
+    "modalidad": "larga_estancia",
+    "precio_eur": {"$lte": Decimal128("1000")},
+}
+antes = _explain(an, filtro, hint={"$natural": 1})  # COLLSCAN 594
+despues = _explain(an, filtro)                     # IXSCAN 1
+```
+
+**CRUD y comprobación** (`storage/clean_mongo.py:311`). Las cuatro operaciones se ejecutan sobre una colección temporal que se borra al final.
+
+```python
+coll.insert_one({"nombre": "demo", "precio": 100})
+coll.find_one({"nombre": "demo"}, {"_id": 0})
+coll.update_one({"nombre": "demo"}, {"$set": {"precio": 120}, "$inc": {"visitas": 1}})
+coll.delete_one({"nombre": "x"})
+```
+
+**Tier y `n_precio`** (`analysis/mongo_aggregations.py:658`). El tier sale solo de `n_anuncios`; en C y D el precio municipal se anula por diseño.
+
+```python
+{"$addFields": {
+    "tier": _tier_expr(),  # A >=30, B 10-29, C 1-9, D 0
+    "n_precio": {"$cond": [{"$in": ["$tier", ["A", "B"]]}, "$_n_precio", 0]},
+}}
+```

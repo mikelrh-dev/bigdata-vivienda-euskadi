@@ -95,6 +95,7 @@ def test_preparacion_visualizacion_tres_conjuntos(tmp_path: Path) -> None:
     assert {
         "modalidad", "n", "precio_medio", "n_precio", "mediana_precio_eur",
         "n_eur_m2", "mediana_eur_m2",
+        "n_superficie", "mediana_superficie_m2",
     } <= set(cab_modalidades)
     # Coincidencia con los pipelines en memoria: conteos y una fila clave.
     assert len(filas_esfuerzo) == len(resultados["pipeline_indicadores_municipio"])
@@ -110,6 +111,10 @@ def test_preparacion_visualizacion_tres_conjuntos(tmp_path: Path) -> None:
         for f in resultados["pipeline_modalidades"]
     }
     assert {f["modalidad"]: f["n"] for f in filas_modalidades} == modalidades_memoria
+    assert all(
+        fila["n_superficie"] == fila["n_eur_m2"]
+        for fila in filas_modalidades
+    )
     # Regenerar en un segundo directorio reproduce cabeceras y conteos.
     tmp2 = tmp_path / "re"
     rutas2 = exportar_tres_csv(resultados, tmp2)

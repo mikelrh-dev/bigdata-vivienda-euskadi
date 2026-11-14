@@ -124,8 +124,8 @@ Límites y cierre van al final, no en medio.
   - **13** familias de fuentes · **355** entradas de manifiesto SHA (**352 canónicos + 3 legado**)
   - **353** objetos en HDFS (**352 canónicos + 1 manifiesto**)
   - Eustat alquiler · INE renta joven · Lanbide/Udalmap paro · Etxebide 5.040 solicitudes y 406 promociones
-- **Gráfica:** `H11_imputacion_oficial_idw_por_TH.png` (oficial vs IDW por territorio;
-  el IDW va separado y rayado).
+- **Gráfica:** `H11_imputacion_oficial_idw_por_TH.png` (2024: oficial vs IDW por
+  territorio; el IDW va separado y rayado).
 - **Evidencia:** `config/fuentes.yaml`, `docs/raw_manifest_sha256.txt`, `mongo_tier_confianza.csv`.
 - **Rúbrica:** C1, C5, C6, C15.
 - **Nota oral:** «Eustat nos da el alquiler municipal, el INE la renta joven, Lanbide y
@@ -141,7 +141,7 @@ Límites y cierre van al final, no en medio.
 - **Mensaje:** el esfuerzo tiene geografía: capitales y costa arriba; interior y sur, abajo.
 - **En pantalla:** coroplético municipal, 159 oficiales (color) + 93 IDW (trama) con
   leyenda propia; escala 20,3–30 % y el color saturado por encima de 30 %.
-- **Gráfica:** `mapa_coroplastico_esfuerzo_18_34.png`.
+- **Gráfica:** `mapa_coroplastico_esfuerzo_18_34.png` (esfuerzo 2024).
 - **Evidencia:** figura generada desde `mongo_esfuerzo_por_municipio.csv`.
 - **Rúbrica:** C19, C18.
 - **Nota oral:** «Cada municipio con alquiler oficial, coloreado por esfuerzo; la trama es
@@ -159,7 +159,7 @@ Límites y cierre van al final, no en medio.
   - **119** por debajo del 30 % · **26** entre 30 % y 35 % · **14** por encima del 35 %
   - **40/159** por encima del 30 % (25,2 %)
   - Con IDW: mediana 25,37 % y **47/252** por encima del 30 %
-- **Gráfica:** `hist_esfuerzo_18_34_umbral30.png`.
+- **Gráfica:** `hist_esfuerzo_18_34_umbral30.png` (esfuerzo 2024).
 - **Evidencia:** `mongo_esfuerzo_por_municipio.csv`, `sensibilidad_idw.csv`.
 - **Rúbrica:** C16, C19.
 - **Nota oral:** «Tres cuartas partes del territorio con dato están por debajo del 30 %,
@@ -179,7 +179,7 @@ Límites y cierre van al final, no en medio.
   - **Derecha (bootstrap):** Bilbao 33,75–40,95 · Getxo 27,54–31,77 · Donostia 32,4–45,8.
     Se solapan: no hay orden firme entre ellos. **Qué mide:** el nivel es Eustat 2024 y el
     ancho es dispersión de precios de anuncio 2026; **no** es el error del estimador Eustat.
-- **Gráfica:** `O_ranking_bloqueado_n30.png`.
+- **Gráfica:** `O_ranking_bloqueado_n30.png` (esfuerzo 2024; la muestra n≥30 sí es 2026).
 - **Evidencia:** `validacion_alquiler_2024_serpavi.csv`, `bootstrap_robustos.csv`.
 - **Rúbrica:** C8, C19, C18.
 - **Nota oral:** «La pregunta incómoda es si el alquiler oficial está maquillado. Lo
@@ -195,28 +195,32 @@ Límites y cierre van al final, no en medio.
 
 # Acto 2 — 2026, la capa de oferta
 
-## D8 · De dónde sale el 2026 (6:20–6:55)
-
-- **Mensaje:** la capa 2026 no es un número mágico: son 287 anuncios de tres portales,
-  después de descartar más de la mitad de lo capturado.
+## D8 · De dónde sale el 2026 (6:20–6:55)- **Mensaje:** la capa 2026 no es un número mágico: son 287 anuncios de tres portales.
+  Y lo que no entra no es descarte: es **otro producto**.
 - **En pantalla:**
-  - **843** crudos → **594** vigentes (dedup entre portales y 45 en cuarentena fuera de Euskadi)
-    → **326** vivienda completa con precio (**268** habitaciones/sin precio separados)
+  - **845** crudos → **594** vigentes (dedup entre portales y 45 en cuarentena fuera de Euskadi)
+    → **326** vivienda completa (**297** con precio; **29** sin precio) + **268** temporales (**264** con precio)
     → **287** válidos
-  - 10 excluidos por el propio pipeline (900 m², 9.500 €) · 29 sin precio · 2 municipios
+  - Composición de los **795** productos de oferta 2026 (594 + 201): **41 %** piso larga
+    (**326**) · **34 %** piso temporal (**268**) · **25 %** habitación (**201**). Los 287
+    válidos son el **36 %** del total.
+  - **201 habitaciones** en **9 municipios**, colección aparte; no entran en el 594.
+  - 10 excluidos por el propio pipeline (900 m², 9.500 €) · 2 municipios
     caen a 0 anuncios (Amorebieta-Etxano, Laguardia): el mapa pasa de 52 a 50
   - Por portal (mediana): Fotocasa 152 · 1.432 € · 15,36 €/m² | Pisos 60 · 1.500 € · 16,67 |
     RealtyAPI 75 · 1.690 € · 19,43
 - **Gráfica:** ninguna; tabla de portales.
 - **Evidencia:** `data/resultados/validacion_portales_2026.csv`, `transform/_anuncios_2026.py`.
-- **Rúbrica:** C1, C5, C15.
-- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. De 843
+- **Rúbrica:** C1, C5, C15.- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. De 845
   anuncios crudos quedan 594 vigentes después de quitar duplicados y 45 en cuarentena
-  fuera de Euskadi; 326 tienen precio, y de esos descartamos 10 que el propio pipeline
-  había marcado como imposibles —pisos de 900 metros, alquileres de 9.500 euros— y 29 sin
-  precio. Quedan 287. Y aquí ya se ve un problema: RealtyAPI es un 26 % más caro por metro
-  cuadrado que Fotocasa. No son tres cámaras iguales, y por eso lo medimos antes de
-  mezclarlo.»
+  fuera de Euskadi; 326 son vivienda completa, 297 con precio y 29 sin precio. De los 297
+  descartamos 10 que el propio pipeline había marcado como imposibles —pisos de 900  metros, alquileres de 9.500 euros—. Quedan 287. Y aquí ya se ve un problema: RealtyAPI
+  es un 26 % más caro por metro cuadrado que Fotocasa. No son tres cámaras iguales, y por
+  eso lo medimos antes de mezclarlo.»
+- **Nota oral (composición):** «Y ojo con lo que no entra: de los 594 vigentes, 268 son
+  temporales, y aparte hay 201 habitaciones. No es que hayamos perdido dos tercios de los
+  anuncios: es que dos tercios de lo capturado son otro producto. Lo que no podemos es
+  usar el temporal como sustituto de la vivienda de larga estancia.»
 - **Transición:** «Con esa muestra, el resultado.»
 
 ## D9 · El resultado de 2026 (6:55–7:40)
@@ -230,7 +234,7 @@ Límites y cierre van al final, no en medio.
   - **98,3 %** de los 287 anuncios supera el 30 %
   - Caja warn: 43 de los 50 municipios tienen n<5; solo 4 tienen n≥30. El 78,6 % se
     defiende como nivel agregado, **no como mapa municipal**.
-- **Gráfica:** `M26_hist_esfuerzo_mercado.png`.
+- **Gráfica:** `M26_hist_esfuerzo_mercado.png` (esfuerzo 2026).
 - **Evidencia:** `data/procesado/esfuerzo_mercado_2026.csv`, `validacion_portales_2026.csv`.
 - **Rúbrica:** C17, C19.
 - **Nota oral:** «Esta es la capa de oferta. Limpiamos los diez anuncios que nuestro propio
@@ -251,7 +255,7 @@ Límites y cierre van al final, no en medio.
   - **71,2 %** de la población 18-34
   - **70,4 %** de los anuncios se concentra en 4 municipios
   - **43 municipios con n<5**: sin mediana publicada
-- **Gráficas:** `M26_cobertura.png` + `M26_mapa_cobertura.png`.
+- **Gráficas:** `M26_cobertura.png` + `M26_mapa_cobertura.png` (capa de anuncios 2026).
 - **Evidencia:** `cobertura_representatividad_2026.csv`.
 - **Rúbrica:** C16, C19.
 - **Nota oral:** «Antes de que nadie lo pregunte: esta capa no cubre los 252 municipios,
@@ -277,7 +281,7 @@ Límites y cierre van al final, no en medio.
   - **Barakaldo: n=2** → cualquier mediana municipal es ruido, no ranking
   - **Vintages distintos:** esfuerzo 2024 = alquiler oficial; precio y esfuerzo 2026 =
     anuncio; paro = Udalmap 2024 general 16-64
-- **Gráfica:** `O_ranking_bloqueado_n30.png` (IC y resto en gris).
+- **Gráfica:** `O_ranking_bloqueado_n30.png` (esfuerzo 2024 con muestra 2026; IC y resto en gris).
 - **Evidencia:** `esfuerzo_mercado_2026.csv`, `comparativa_3_municipios_mongo.csv`,
   `pipeline_indicadores_municipio`.
 - **Rúbrica:** C18 (núcleo), C17.
@@ -299,7 +303,7 @@ Límites y cierre van al final, no en medio.
   - **4+ hab:** 116,4 % (n=60; IC95 % 110,5–128,0)
   - Mediana a nivel de anuncio. El CSV municipal conserva el ponderado (80,4 / 85,2 /
     120,1): los dos estimadores se publican.
-- **Gráfica:** `M26_esfuerzo_por_tipo.png`.
+- **Gráfica:** `M26_esfuerzo_por_tipo.png` (anuncios 2026).
 - **Evidencia:** `esfuerzo_por_tipo_nivel_anuncio_2026.csv`.
 - **Rúbrica:** C8, C17.
 - **Nota oral:** «Desglosamos el esfuerzo por tamaño de vivienda, siempre con los anuncios
@@ -321,7 +325,7 @@ Límites y cierre van al final, no en medio.
     municipio (**1,41×** en €/m²)
   - Extremos: **+122,6 pp con n=1**; bajan **Barakaldo (−15,2)**, **Basauri (−12,8)**,
     **Eibar (−1,7)**, los tres con n≤2; en el gráfico van en gris. Solo Donostia en color (n=58).
-- **Gráfica:** `M26_brecha_2024_2026.png` (15 mayores diferencias; gris = n<5, no concluyente).
+- **Gráfica:** `M26_brecha_2024_2026.png` (2024 → 2026: 15 mayores diferencias; gris = n<5, no concluyente).
 - **Evidencia:** `brecha_esfuerzo_2024_2026.csv`, `comparacion_esfuerzo_2024_2026_resumen.csv`,
   `calibrar_premium_oferta.py`.
 - **Rúbrica:** C8, C17.
@@ -581,11 +585,12 @@ Límites y cierre van al final, no en medio.
 | # | Tema | Qué enseñar |
 |---|---|---|
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
-| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 53 gold / 17+15 colecciones / 25 índices / 287 tests |
+| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 54 gold / 17+15 colecciones / 25 índices / 295 tests |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
-| B4 | Habitaciones | `H6_habitaciones_mediana_rango.png`; 201 anuncios en 9 municipios; solo Bilbao (96) y Donostia (66) firmes |
-| B5 | Modalidades | `H8b_modalidad_mediana_eur_m2.png`; misma mediana mensual (1.500 €), distinto €/m² (80 vs 92,5 m²) |
-| B6 | VPO | `C_vpo_por_estado.png`; 406 promociones, 251/252 con flujo terminadas, stock no público |
+| B4 | Habitaciones | `H6_habitaciones_mediana_rango.png`; 201 anuncios en 9 municipios (25 % de los 795 productos 2026); ranking n≥10 (Bilbao 600, Donostia 1.200; Vitoria/Barakaldo indicativos); mediana global 640 €; 61 % ≤700 €; esfuerzo individual 37,2 % (Donostia 69,8 %, Bilbao 34,9 %) |
+| B5 | Modalidades | `H8b_modalidad_mediana_eur_m2.png`; misma mediana mensual (1.500 €), distinto €/m² (18,95 vs 16,67; 80 vs 90 m²); sobre los 594 vigentes (326 larga + 268 temporal) |
+| B6 | VPO | `H5_vpo_terminadas_por_mil.png`; VPO terminada 2020-2024 (Udalmap 73, 2024), 251/252 municipios, stock no público; el registro de 406 promociones da estado, no fechas |
+| B6b | VPO, serie | `S_serie_vpo_2004_2024.png`; Euskadi 11,5 ‰ en 2011 → 2,7 ‰ en 2024; ventana móvil de 5 años; Araba/Álava en panel propio con su escala (40,1 ‰ en 2011, 3,8 ‰ en 2024) |
 | B7 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; ratio 1,96 y Spearman 0,18: no comparable |
 | B8 | Dos mapas 2026 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png`; gris = sin dato |
 
@@ -622,26 +627,31 @@ Límites y cierre van al final, no en medio.
 
 ## Gráficas: origen y destino
 
-| Diapositiva | Figura | Fuente |
-|---|---|---|
-| 04 | `H11_imputacion_oficial_idw_por_TH.png` | `mongo_alquiler_por_municipio.csv` |
-| 05 | `mapa_coroplastico_esfuerzo_18_34.png` | `mongo_esfuerzo_por_municipio.csv` |
-| 06 | `hist_esfuerzo_18_34_umbral30.png` | idem |
-| 07 | `O_ranking_bloqueado_n30.png` | idem + bootstrap |
-| 09 | `M26_hist_esfuerzo_mercado.png` | `esfuerzo_mercado_2026.csv` |
-| 10 | `M26_cobertura.png` + `M26_mapa_cobertura.png` | `cobertura_representatividad_2026.csv` |
-| 11 | `O_ranking_bloqueado_n30.png` | `esfuerzo_mercado_2026.csv` |
-| 12 | `M26_esfuerzo_por_tipo.png` | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
-| 13 | `M26_brecha_2024_2026.png` | `brecha_esfuerzo_2024_2026.csv` |
-| B4 | `H6_habitaciones_mediana_rango.png` | `mongo_habitaciones_por_municipio.csv` |
-| B5 | `H8b_modalidad_mediana_eur_m2.png` | `mongo_modalidades.csv` |
-| B6 | `C_vpo_por_estado.png` | `mongo_vpo_por_municipio.csv` |
-| B7 | `P_oficial_vs_anuncios_por_TH.png` | `mongo_alquiler_por_municipio.csv` |
-| B8 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png` | `esfuerzo_mercado_2026.csv` |
+El vintage de cada figura lo declara `config/vintage_figuras.yaml` y el PNG lo
+lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
+
+| Diapositiva | Figura | Vintage | Fuente |
+|---|---|---|---|
+| 04 | `H11_imputacion_oficial_idw_por_TH.png` | 2024 | `mongo_alquiler_por_municipio.csv` |
+| 05 | `mapa_coroplastico_esfuerzo_18_34.png` | 2024 | `mongo_esfuerzo_por_municipio.csv` |
+| 06 | `hist_esfuerzo_18_34_umbral30.png` | 2024 | idem |
+| 07 | `O_ranking_bloqueado_n30.png` | 2024 (muestra 2026) | idem + bootstrap |
+| 09 | `M26_hist_esfuerzo_mercado.png` | 2026 | `esfuerzo_mercado_2026.csv` |
+| 10 | `M26_cobertura.png` + `M26_mapa_cobertura.png` | 2026 | `cobertura_representatividad_2026.csv` |
+| 12 | `M26_esfuerzo_por_tipo.png` | 2026 | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
+| 13 | `M26_brecha_2024_2026.png` | 2024 → 2026 | `brecha_esfuerzo_2024_2026.csv` |
+| B4 | `H6_habitaciones_mediana_rango.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + precios de habitaciones + salario joven 2026 (Mongo) |
+| B5 | `H8b_modalidad_mediana_eur_m2.png` | 2026 | `mongo_modalidades.csv` |
+| B6 | `H5_vpo_terminadas_por_mil.png` | flujo 2020-2024 | `mongo_vpo_terminadas_por_municipio.csv` |
+| B6b | `S_serie_vpo_2004_2024.png` | flujo 2004-2024 (ventana 5 años) | `data/raw/udalmap_vpo_terminadas.csv` |
+| B7 | `P_oficial_vs_anuncios_por_TH.png` | 2024 + 2026, no comparable | `mongo_alquiler_por_municipio.csv` |
+| B8 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` |
 
 ## Reglas de puesta en escena
 
 - **Una cifra por diapositiva** como titular; el resto, apoyo.
+- **Cada figura lleva su año** (sello en el PNG y pie): 2024 oficial, 2026 oferta.
+  Si es mixta, se dice «no comparable» en voz alta; nunca se presenta como serie.
 - **Nunca** decir «Docker», «759», «182 silver», «54/65/40», «62/252», «84,4 % con y sin»,
   «2,0×», «15 colecciones vivas», «24 índices», «63/63» ni «corrida real OK».
 - Decir «no lo sabemos» siempre que aparezca gris.

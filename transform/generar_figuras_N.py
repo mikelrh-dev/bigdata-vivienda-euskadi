@@ -16,10 +16,15 @@ Genera en data/resultados/:
   F_comparativa_th.png, H8_tier_mediana_temporal_vs_larga.png,
   J_tier_confianza_vs_precio.png, P_oficial_vs_anuncios_por_TH.png
   (títulos/ejes con €/mes vs €/m2 y Territorio Histórico (TH))
+  S_serie_vpo_2004_2024.png (serie de VPO terminada, ventana móvil de 5 años;
+  se lee de data/raw/udalmap_vpo_terminadas.csv)
 """
 from __future__ import annotations
 
+import csv
+import io
 import json
+import sys
 import textwrap
 from pathlib import Path
 
@@ -37,7 +42,24 @@ from matplotlib.patches import Polygon as MplPolygon
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "data" / "resultados"
 PROC = ROOT / "data" / "procesado"
+RAW_VPO = ROOT / "data" / "raw" / "udalmap_vpo_terminadas.csv"
 PARAMS = ROOT / "config" / "parametros_estudio.yaml"
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from analysis.vintage_figuras import anotar, metadatos, sincronizar  # noqa: E402
+
+
+def _guardar(fig, nombre: str, **savefig_kwargs) -> Path:
+    """Sella el vintage (config/vintage_figuras.yaml) y escribe la figura."""
+    anotar(fig, nombre)
+    out = RES / nombre
+    kwargs = {"dpi": 150, "facecolor": "white"}
+    kwargs.update(savefig_kwargs)
+    fig.savefig(out, metadata=metadatos(nombre), **kwargs)
+    plt.close(fig)
+    return out
 
 
 def _umbrales() -> tuple[float, float]:
@@ -162,9 +184,8 @@ def generar_N1() -> Path:
     for spine in ax.spines.values():
         spine.set_visible(False)
     fig.tight_layout(rect=[0, 0.04, 1, 0.94])
-    out = RES / "mapa_coroplastico_esfuerzo_18_34.png"
-    fig.savefig(out, dpi=150, facecolor="white", bbox_inches="tight", pad_inches=0.08)
-    plt.close(fig)
+    out = _guardar(fig, "mapa_coroplastico_esfuerzo_18_34.png",
+                   bbox_inches="tight", pad_inches=0.08)
     print(f"OK N1: {out} ({out.stat().st_size} bytes)")
     return out
 
@@ -195,9 +216,7 @@ def generar_N2() -> Path:
     fig.text(0.5, 0.01, "Capa oficial Eustat 2024 (159) y IDW comarcal (93) por separado. Umbrales config/parametros_estudio.yaml.",
              ha="center", fontsize=8)
     fig.tight_layout(rect=[0, 0.04, 1, 0.94])
-    out = RES / "hist_esfuerzo_18_34_umbral30.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "hist_esfuerzo_18_34_umbral30.png")
     print(f"OK N2: {out} ({out.stat().st_size} bytes)")
     return out
 
@@ -237,12 +256,16 @@ def generar_N3() -> Path:
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.09), ncol=4, fontsize=8)
     ax.grid(axis="x", alpha=0.3)
     txt = "; ".join(f"{th}: 18-24 {r['e1824']:.1f}%, 25-34 {r['e2534']:.1f}%" for th, r in med_th.iterrows())
-    fig.text(0.5, 0.01, f"Medianas por Territorio Histórico (TH): {txt} | Fuente: mongo_esfuerzo_por_municipio.csv + poblacion_joven_municipal.csv (252).",
-             ha="center", fontsize=7, wrap=True)
+    # A la izquierda y en dos lineas: centrada llegaba al sello de vintage, que
+    # vive en la franja inferior derecha (analysis/vintage_figuras.BANDA_SELLO).
+    nota = (
+        f"Medianas por Territorio Histórico (TH): {txt}. "
+        "Fuente: mongo_esfuerzo_por_municipio.csv + "
+        "poblacion_joven_municipal.csv (252)."
+    )
+    fig.text(0.012, 0.010, textwrap.fill(nota, 104), ha="left", va="bottom", fontsize=6.5)
     fig.tight_layout(rect=[0, 0.05, 1, 0.96])
-    out = RES / "dumbbell_esfuerzo_18_24_vs_25_34.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "dumbbell_esfuerzo_18_24_vs_25_34.png")
     print(f"OK N3: {out} ({out.stat().st_size} bytes, top20, medianas {med1824:.1f}%/{med2534:.1f}%)")
     return out
 
@@ -277,12 +300,14 @@ def generar_N7() -> Path:
     ax.set_title(f"N7 Oferta transporte vs esfuerzo joven 18-34 — {len(m)} municipios (complementa H7 OSRM)")
     ax.legend()
     ax.grid(alpha=0.3)
-    fig.text(0.5, 0.01, "Fuente: transporte_paradas_municipio_enriquecido.csv + mongo_esfuerzo_por_municipio.csv (join codigo_ine). H7 usa minutos OSRM a capital; N7 usa oferta (paradas/1000).",
-             ha="center", fontsize=8)
-    fig.tight_layout()
-    out = RES / "transporte_oferta_vs_esfuerzo.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    # Pie a la izquierda y en dos lineas: el sello de vintage ocupa la esquina
+    # inferior derecha y antes tapaba el final de la fuente.
+    fig.text(0.01, 0.012,
+             "Fuente: transporte_paradas_municipio_enriquecido.csv + mongo_esfuerzo_por_municipio.csv\n"
+             "(join codigo_ine). H7 usa minutos OSRM a capital; N7 usa oferta (paradas/1000).",
+             ha="left", va="bottom", fontsize=7.5)
+    fig.tight_layout(rect=[0, 0.08, 1, 0.96])
+    out = _guardar(fig, "transporte_oferta_vs_esfuerzo.png")
     print(f"OK N7: {out} ({out.stat().st_size} bytes, n={len(m)}, con tren={len(con)})")
     return out
 
@@ -313,9 +338,7 @@ def regenerar_H2() -> Path:
                bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.4"))
     fig.suptitle("H2 Tier confianza A/B/C/D por Territorio Histórico (TH) — A4/B3/C57/D188", fontsize=11)
     fig.tight_layout(rect=[0, 0, 1, 0.94])
-    out = RES / "H2_tier_confianza_ABCD.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "H2_tier_confianza_ABCD.png")
     print(f"OK H2: {out} ({out.stat().st_size} bytes, A/B={len(ab)})")
     return out
 
@@ -331,9 +354,7 @@ def regenerar_F() -> Path:
     ax.set_title("Cuantía media alquiler por TH — €/mes, solo oficial 2024 (Mongo)")
     ax.set_ylabel("€/mes (cuantía media)")
     fig.tight_layout()
-    out = RES / "F_comparativa_th.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "F_comparativa_th.png")
     print(f"OK F: {out} ({out.stat().st_size} bytes)")
     return out
 
@@ -362,9 +383,7 @@ def regenerar_H8() -> Path:
     ax.set_title("H8 Mediana temporal vs larga - Tier A/B (Mongo) — €/mes, no comparable; ver H8b (€/m²)")
     ax.legend()
     fig.tight_layout()
-    out = RES / "H8_tier_mediana_temporal_vs_larga.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "H8_tier_mediana_temporal_vs_larga.png")
     print(f"OK H8: {out} ({out.stat().st_size} bytes)")
     return out
 
@@ -391,9 +410,7 @@ def regenerar_J() -> Path:
     ax.set_title("J Tier confianza vs precio (Mongo, solo Tier A/B con precio municipal) — €/mes")
     ax.legend()
     fig.tight_layout()
-    out = RES / "J_tier_confianza_vs_precio.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "J_tier_confianza_vs_precio.png")
     print(f"OK J: {out} ({out.stat().st_size} bytes)")
     return out
 
@@ -423,18 +440,166 @@ def regenerar_P() -> Path:
     ax.set_xticks(x)
     ax.set_xticklabels(ths)
     ax.set_ylabel("€/mes")
-    ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes (no comparable; ratio 1,96; Spearman 0,18)")
+    # Dos lineas: en una sola el titulo se sale del lienzo de 8" y se corta.
+    ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes\n"
+                 "(no comparable; ratio 1,96; Spearman 0,18)")
     ax.legend()
     fig.tight_layout()
-    out = RES / "P_oficial_vs_anuncios_por_TH.png"
-    fig.savefig(out, dpi=150, facecolor="white")
-    plt.close(fig)
+    out = _guardar(fig, "P_oficial_vs_anuncios_por_TH.png")
     print(f"OK P: {out} ({out.stat().st_size} bytes)")
     return out
 
 
+def _leer_serie_vpo() -> tuple[list[int], dict[str, list[float | None]]]:
+    """Serie 2004-2024 del indicador 73 (VPO terminada, ventana de 5 anos).
+
+    El CSV de Udalmap llega en latin-1 y por bloques. El primero, "Resumen de
+    datos", trae una fila por entidad (Araba/Alava, Bizkaia, CAE, Gipuzkoa) y
+    una columna por ano, de 2024 hacia atras. Cada celda es la tasa del
+    quinquenio que termina en ese ano, no el flujo de ese ano suelto.
+    """
+    texto = RAW_VPO.read_text(encoding="latin-1")
+    filas = list(csv.reader(io.StringIO(texto, newline=""), delimiter=";"))
+    cabecera = next(
+        (i for i, f in enumerate(filas) if f and f[0].strip().lower() == "entidad"),
+        None,
+    )
+    if cabecera is None:
+        raise SystemExit(f"No encuentro el bloque 'Entidad' en {RAW_VPO}")
+    anios = [int(c) for c in (x.strip() for x in filas[cabecera][2:]) if c.isdigit()]
+    serie: dict[str, list[float | None]] = {}
+    for fila in filas[cabecera + 1:]:
+        nombre = (fila[0].strip().strip('"') if fila else "")
+        if not nombre:
+            break
+        valores: list[float | None] = []
+        for celda in fila[2:2 + len(anios)]:
+            try:
+                valores.append(float(celda.strip().replace(",", ".")))
+            except ValueError:
+                valores.append(None)
+        serie[nombre] = valores
+    if "CAE" not in serie or not anios:
+        raise SystemExit("La serie de Udalmap no trae la fila CAE (Euskadi)")
+    return anios, serie
+
+
+def regenerar_serie_vpo() -> Path:
+    """VPO terminada en Euskadi y por territorio, 2004-2024.
+
+    Es la unica serie larga de vivienda protegida que tenemos, y la que
+    responde a "y antes de 2024?". Ventana movil: no se lee ano a ano como
+    si fuera el flujo de ese ano.
+
+    Dos paneles: Euskadi y los dos territorios grandes comparten escala;
+    Araba/Alava va aparte porque con un denominador mucho menor su tasa llega
+    a 40,1 por mil y en una escala comun aplastaria a las demas. No se
+    esconde: se dibuja, en su propia escala y con su aviso.
+    """
+    anios, serie = _leer_serie_vpo()
+    orden = sorted(range(len(anios)), key=lambda i: anios[i])
+    xs = [anios[i] for i in orden]
+
+    def _ys(entidad: str) -> list[float | None]:
+        return [serie[entidad][i] for i in orden]
+
+    fig, (ax, ax_l) = plt.subplots(
+        1, 2, figsize=(12.2, 4.9), gridspec_kw={"width_ratios": [1.9, 1.1]}
+    )
+
+    # --- panel izquierdo: Euskadi + territorios grandes -----------------
+    colores = {
+        "CAE": ("#111111", 2.6, "Euskadi (CAE)"),
+        "Bizkaia": ("#0072B2", 1.6, "Bizkaia"),
+        "Gipuzkoa": ("#009E73", 1.6, "Gipuzkoa"),
+    }
+    for entidad, (color, grosor, etiqueta) in colores.items():
+        if entidad not in serie:
+            continue
+        ax.plot(
+            xs, _ys(entidad), marker="o", ms=3.0, lw=grosor, color=color,
+            label=etiqueta, zorder=5 if entidad == "CAE" else 3,
+        )
+    ys_cae = _ys("CAE")
+    i_max = max(range(len(xs)), key=lambda j: ys_cae[j])
+    ax.annotate(
+        f"{ys_cae[i_max]:.1f}".replace(".", ",") + " ‰",
+        xy=(xs[i_max], ys_cae[i_max]), xytext=(0, 8), textcoords="offset points",
+        ha="center", fontsize=8, fontweight="bold", color="#111111",
+    )
+    ax.annotate(
+        f"{ys_cae[-1]:.1f}".replace(".", ",") + " ‰",
+        xy=(xs[-1], ys_cae[-1]), xytext=(-4, 11), textcoords="offset points",
+        ha="right", fontsize=8, fontweight="bold", color="#111111",
+        bbox=dict(fc="white", ec="none", alpha=0.8, pad=0.6),
+    )
+    ax.set_title("Euskadi, Bizkaia y Gipuzkoa (misma escala)", fontsize=10)
+    ax.set_xlabel("Año (edición de Udalmap)")
+    ax.set_ylabel("VPO terminada por mil habitantes")
+    ax.set_xticks(xs[::2])
+    ax.grid(alpha=0.3)
+    ax.legend(ncol=3, fontsize=8, loc="upper right", frameon=False)
+    ax.set_ylim(0, max(v for v in ys_cae if v is not None) * 1.38)
+
+    # --- panel derecho: Araba/Alava, escala propia ----------------------
+    ys_al = _ys("Araba/Álava") if "Araba/Álava" in serie else []
+    if ys_al:
+        ax_l.plot(
+            xs, ys_al, marker="o", ms=3.0, lw=1.8, color="#D55E00",
+            label="Araba/Álava",
+        )
+        validos = [(x, y) for x, y in zip(xs, ys_al) if y is not None]
+        x_p, y_p = max(validos, key=lambda par: par[1])
+        ax_l.annotate(
+            f"{y_p:.1f}".replace(".", ",") + " ‰",
+            xy=(x_p, y_p), xytext=(0, 8), textcoords="offset points",
+            ha="center", fontsize=8, fontweight="bold", color="#D55E00",
+        )
+        ax_l.annotate(
+            f"{validos[-1][1]:.1f}".replace(".", ",") + " ‰",
+            xy=validos[-1], xytext=(-4, 10), textcoords="offset points",
+            ha="right", fontsize=8, fontweight="bold", color="#D55E00",
+            bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.6),
+        )
+        ax_l.set_ylim(0, max(y for _, y in validos) * 1.22)
+    ax_l.set_title("Araba/Álava (escala propia)", fontsize=10)
+    ax_l.set_xlabel("Año (edición de Udalmap)")
+    # Panel estrecho: una etiqueta cada cuatro años, si no se pisan.
+    ax_l.set_xticks(xs[::4])
+    ax_l.grid(alpha=0.3)
+    ax_l.text(
+        0.04, 0.05,
+        "Denominador mucho menor:\nla tasa es más volátil",
+        transform=ax_l.transAxes, ha="left", va="bottom", fontsize=7,
+        color="#4D4D4D",
+        bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3", alpha=0.9),
+    )
+
+    fig.suptitle(
+        "VPO terminada, 2004-2024: tasa por mil habitantes "
+        "(cada año resume los cinco anteriores)",
+        fontsize=11,
+    )
+    pico_alava = max((v for v in ys_al if v is not None), default=None)
+    nota = (
+        "Fuente: Udalmap, indicador 73 (edición 2024). Ventana móvil de 5 años: "
+        "no es el flujo de un año suelto."
+    )
+    if pico_alava is not None:
+        nota += (
+            f"\nAraba/Álava va en un panel propio porque su tasa llega a "
+            f"{pico_alava:.1f}".replace(".", ",")
+            + " por mil y en la escala común aplastaría a las demás series."
+        )
+    fig.text(0.01, 0.012, nota, ha="left", va="bottom", fontsize=7.5,
+             color="#4D4D4D")
+    fig.tight_layout(rect=[0, 0.075, 1, 0.94])
+    out = _guardar(fig, "S_serie_vpo_2004_2024.png")
+    print(f"OK serie VPO: {out} ({out.stat().st_size} bytes, {len(xs)} años)")
+    return out
+
 def main() -> int:
-    print("Generando N1, N2, N3, N7 + H2/F/H8/J/P desde CSV (sin Mongo vivo)...")
+    print("Generando N1, N2, N3, N7 + H2/F/H8/J/P + serie VPO desde CSV (sin Mongo vivo)...")
     generar_N1()
     generar_N2()
     generar_N3()
@@ -444,6 +609,10 @@ def main() -> int:
     regenerar_H8()
     regenerar_J()
     regenerar_P()
+    regenerar_serie_vpo()
+    # Este es el ultimo paso que escribe figuras en gold, asi que deja aqui
+    # las copias del deck y de la memoria al dia (config/vintage_figuras.yaml).
+    sincronizar()
     print("Hecho.")
     return 0
 
