@@ -5,7 +5,7 @@
 
 ## 1. Qué es esta memoria
 
-Memoria técnica explicativa para la profesora y el tribunal. Debe responder, con
+Memoria técnica explicativa para el tribunal. Debe responder, con
 datos verificables, a cinco preguntas:
 
 1. **Qué se construyó** y qué pregunta responde.
@@ -140,7 +140,7 @@ python docs/memoria/build.py --all       # las tres cosas
 | Decisión | Valor por defecto | Quién |
 |---|---|---|
 | Nombres de autores y curso | “Equipo bigdata-vivienda-euskadi” | equipo |
-| Formato de entrega | DOCX + PDF | profesora |
+| Formato de entrega | DOCX + PDF | equipo |
 | ¿Capa 2026 en capítulo propio? | Sí, dentro del cap. 6 | equipo |
 | ¿Fragmentos de código? | 4 cortos en anexo | equipo |
 | ¿`informe_final.md` se marca como histórico? | Sí, al cerrar la memoria | equipo |

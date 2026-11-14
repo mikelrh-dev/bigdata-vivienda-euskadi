@@ -12,7 +12,7 @@
 | No hay salario juvenil municipal | Renta media como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
 | Anuncios 2026 y renta/alquiler 2024 | Dos capas separadas, sin resta | `M26_*` y `mongo_*` | No hay serie temporal |
 | {{raw.disco}} ficheros en disco, {{raw.manifest}} en manifiesto y {{infra.hdfs_objetos}} en HDFS | Tres inventarios con propósito distinto | manifiestos y `GETCONTENTSUMMARY` | Hay que explicar la diferencia |
-| HDFS solo conserva raw | Excepción expresa de la profesora | brief del reto | Silver y gold no están en HDFS |
+| HDFS solo conserva raw | Requisito del alcance del reto | brief del reto | Silver y gold no están en HDFS |
 | El `OPEN` de HDFS falló por DNS del datanode el 12-11 | Recuperación por SHA y verificación fechada | `hdfs_recuperacion_un_fichero.py` | El 13-11 devuelve `HDFS_REC OK`; el estado puede cambiar |
 | Kafka no entregaba metadata el 12-11 | Evidencia v8 y tests offline; no se afirma revalidación | `KafkaAdminClient` y tests | El 13-11 el topic responde; se fecha |
 | El topic antiguo `anuncios_inmobiliarios` sigue existiendo | No se borra: el clúster es compartido y sería destructivo | `describe_topics` | 1.420 mensajes de prueba conviven con el topic vigente |

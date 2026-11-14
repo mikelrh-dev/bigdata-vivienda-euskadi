@@ -95,7 +95,7 @@ Silver se carga en 17 colecciones vivas con `replace_collection`. Los pipelines 
 
 ## 2.5 Una excepción declarada: HDFS solo raw
 
-HDFS conserva los originales, no silver ni gold. Es una decisión expresa de la profesora. La reproducibilidad del análisis se apoya en el manifiesto y en los scripts, no en una copia distribuida de los intermedios.
+HDFS conserva los originales, no silver ni gold. Es un requisito del alcance del reto. La reproducibilidad del análisis se apoya en el manifiesto y en los scripts, no en una copia distribuida de los intermedios.
 
 ![Arquitectura de dos ramas y cinco capas](figuras/fig-arquitectura.png){width=17cm}\
 *Figura 2.1. Las dos ramas comparten el raw inmutable. HDFS conserva originales; MongoDB y gold sostienen el análisis. Fuente: `docs/memoria/build.py`, `storage/kafka_hdfs_uploader.py` y `scripts/run_pipeline.py`.*
@@ -400,7 +400,7 @@ Lo que no se puede afirmar: un municipio sin dato no es asequible, un esfuerzo a
 | No hay salario juvenil municipal | Renta media como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
 | Anuncios 2026 y renta/alquiler 2024 | Dos capas separadas, sin resta | `M26_*` y `mongo_*` | No hay serie temporal |
 | 357 ficheros en disco, 355 en manifiesto y 353 en HDFS | Tres inventarios con propósito distinto | manifiestos y `GETCONTENTSUMMARY` | Hay que explicar la diferencia |
-| HDFS solo conserva raw | Excepción expresa de la profesora | brief del reto | Silver y gold no están en HDFS |
+| HDFS solo conserva raw | Requisito del alcance del reto | brief del reto | Silver y gold no están en HDFS |
 | El `OPEN` de HDFS falló por DNS del datanode el 12-11 | Recuperación por SHA y verificación fechada | `hdfs_recuperacion_un_fichero.py` | El 13-11 devuelve `HDFS_REC OK`; el estado puede cambiar |
 | Kafka no entregaba metadata el 12-11 | Evidencia v8 y tests offline; no se afirma revalidación | `KafkaAdminClient` y tests | El 13-11 el topic responde; se fecha |
 | El topic antiguo `anuncios_inmobiliarios` sigue existiendo | No se borra: el clúster es compartido y sería destructivo | `describe_topics` | 1.420 mensajes de prueba conviven con el topic vigente |

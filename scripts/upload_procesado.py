@@ -1,6 +1,6 @@
 """Entrypoint de subida de procesado a HDFS con --dry-run (bloque 2, paso 5).
 
-Sin confirmación de la profesora, NO se sube el procesado a HDFS.
+Sin autorización explícita, NO se sube el procesado a HDFS.
 Este script solo lista lo que subiría (ficheros, bytes, SHA-256) con
 cero escrituras. Sin --dry-run rehúsa y sale con código 2.
 
@@ -59,7 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     if not args.dry_run:
-        print("REFUSADO: sin confirmación de la profesora no se sube procesado (usa --dry-run)")
+        print("REFUSADO: sin autorización explícita no se sube procesado (usa --dry-run)")
         return 2
     if not PROCESADO_DIR.exists():
         print(f"NO existe {PROCESADO_DIR}")

@@ -518,7 +518,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <div class="branch" style="margin-top:18px;padding-top:18px">
         <div class="grid2" style="gap:22px">
           <div class="box" style="padding:16px 18px"><span class="n">CONSERVACIÓN</span><b style="font-size:22px">raw → Kafka → HDFS</b><div class="mini">productor lee manifiesto SHA → topic <span class="mono">vivienda_euskadi</span> → consumidor <span class="mono">hdfs_centro</span> → 353 objetos (352 canónicos + 1 manifiesto). Nunca Kafka → Mongo.</div></div>
-          <div class="box" style="padding:16px 18px"><span class="n">EXCEPCIÓN DECLARADA</span><b style="font-size:22px">HDFS solo raw</b><div class="mini">Silver y Gold se procesan en local por indicación expresa de la profesora. 352 canónicos + 1 manifiesto; recuperación por SHA.</div></div>
+          <div class="box" style="padding:16px 18px"><span class="n">EXCEPCIÓN DECLARADA</span><b style="font-size:22px">HDFS solo raw</b><div class="mini">Silver y Gold se procesan en local por requisito del alcance del reto. 352 canónicos + 1 manifiesto; recuperación por SHA.</div></div>
         </div>
       </div>
       <p class="small" style="margin-top:12px;font-size:16px"><b>Estado 2026-11-12:</b> el NameNode responde y el inventario da 353 objetos; <span class="mono">OPEN</span> falla por DNS del datanode y Kafka acepta TCP pero no entrega metadata. La última evidencia funcional es v8: 352/352, lag 0. No se afirma como revalidado hoy.</p>
@@ -734,7 +734,7 @@ db.anuncios.find(
       <div class="warn" style="margin-top:28px;max-width:100ch">
         <b>Nos tumbaría:</b> una fuente independiente con n≥30 que, en la misma ventana, mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso de los 45 en cuarentena que sí esté en Euskadi.
       </div>
-      <p class="small" style="margin-top:16px">Excepción declarada: HDFS guarda solo raw (352 canónicos + 1 manifiesto); los procesados se quedan en local por indicación de la profesora. Con más datos, lo primero sería subir la muestra de los 57 Tier C y separar temporal de larga.</p>
+      <p class="small" style="margin-top:16px">Excepción declarada: HDFS guarda solo raw (352 canónicos + 1 manifiesto); los procesados se quedan en local por requisito del alcance. Con más datos, lo primero sería subir la muestra de los 57 Tier C y separar temporal de larga.</p>
       <footer class="ft"><span class="proof">openspec/audit/v11_2026-11-12/auditoria_completa_v11.md</span><span class="proof">C18 · C19 · P-05</span></footer>
     </div>
   </section>
