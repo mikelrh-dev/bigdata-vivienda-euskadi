@@ -13,9 +13,10 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
   `visuals/assets_presentacion_esfuerzo_mercado_2026.py` (lee los CSV de
   `data/procesado`, no teclea cifras): top20 con IC, histograma, territorio,
   tipología, diferencia de nivel, intervalos, cobertura y los dos mapas.
-- `presentacion_v2.pdf` — exportación a 1920×1080, 30 páginas (22 + 8 backups).
+- `presentacion_v2.pdf` — exportación a 1920×1080, 31 páginas (22 + 9 backups).
 - H8b (`H8b_modalidad_mediana_eur_m2.png`) se genera en `run_analisis_mongo.py` desde
-  `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` por modalidad. Gold pasa a 53/53.
+  `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` y `mediana_superficie_m2`
+  por modalidad. Gold pasa a 53/53.
 
 ## Estado de infraestructura (evidencia v11, 2026-11-12)
 
@@ -25,6 +26,28 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 - Kafka: sin metadata en la comprobación de hoy (`NodeNotReadyError`); la última
   evidencia buena es v8 (352/352, lag 0).
 - Gold: **53 artefactos** (24 CSV + 29 PNG).
+
+## Año de cada figura
+
+Toda figura del deck declara su vintage en `config/vintage_figuras.yaml`. El PNG
+lleva la etiqueta impresa abajo a la derecha (`Datos: 2024`, `Datos: 2026`,
+`Datos: 2024 + 2026 (no comparable)`) y el pie de la diapositiva lo repite, para
+que no haya que adivinar el año ni en pantalla ni en el PDF.
+
+- 2024 = alquiler Eustat Bizilagun + renta INE Atlas (ancla oficial).
+- 2026 = anuncios Fotocasa/Pisos/RealtyAPI (capa de oferta).
+- `mixto` = mezcla declarada; se dice «no comparable» en voz alta, nunca «serie».
+- `acumulado` = registro Etxebide: no hay un año único. Solo las promociones
+  terminadas traen fecha de sorteo (2001-2014); las de en curso, convenio y
+  proyecto no la traen, así que el sello declara el rango y la limitación.
+
+```bash
+.venv/Scripts/python.exe scripts/verificar_vintage_figuras.py
+```
+
+El mismo comando del gold (`run_pipeline.py --fase gold`) copia los 12 PNG
+compartidos a `assets/` y los 8 de la memoria a `docs/memoria/figuras`; antes se
+copiaban a mano y H2, H8 y P se quedaron atrás.
 
 ## Cómo se usa
 
@@ -58,6 +81,7 @@ Cifras que alimentan el bloque 2026 (diapositivas 8 a 13):
 | Mediana esfuerzo 2026 (50 mun) | 78,6 % | `esfuerzo_mercado_2026.csv` |
 | Anuncios usados / excluidos | 287 / 10 | `_anuncios_2026.py` (conciliado en test) |
 | Anuncios > 30 % del salario | 98,3 % | mismo CSV, nivel anuncio |
+| Composición oferta 2026 (795 = 594 + 201) | 41 % larga · 34 % temporal · 25 % habitación; 287 = 36 % | `mongo_modalidades.csv` + `anuncios_habitaciones_unificados.csv` |
 | Cobertura población 18-34 | 71,2 % | `data/resultados/cobertura_representatividad_2026.csv` |
 | 2024 oficial → 2026 oferta (misma base) | 44,6 % → 78,6 % | `data/resultados/comparacion_esfuerzo_2024_2026_resumen.csv` |
 | 2026 con denominador canónico | 57,8 % | mismo CSV |
@@ -68,13 +92,18 @@ Cifras que alimentan el bloque 2026 (diapositivas 8 a 13):
 Los productos de `analysis/` van a `data/resultados` (capa gold): `data/procesado`
 queda reservado a `transform/`, que es lo que vigila el manifest silver.
 
+H6 (`H6_habitaciones_mediana_rango.png`) se genera en `run_analisis_mongo.py`:
+ranking n≥10 con IC95, distribución global y esfuerzo individual sobre el salario
+joven 2026. Esa misma ejecución copia H6/H8b a `assets/`, así que el deck no
+depende de un `cp` manual.
+
 ## Comprobar que el deck no se ha desincronizado
 
 ```
 python scripts/verificar_cifras_deck.py
 ```
 
-Lee `index.html`, saca **44 comprobaciones** de los CSV gold y falla si alguna ya no
+Lee `index.html`, saca **hasta 63 comprobaciones** de los CSV gold y falla si alguna ya no
 coincide. Existe porque el deck se quedó una vez con el corte viejo (79,3 % / 52
 municipios) mientras los CSV ya daban 78,6 % / 50. Se ejecuta antes de exportar el PDF.
 

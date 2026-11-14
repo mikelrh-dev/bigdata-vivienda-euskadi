@@ -20,6 +20,7 @@ Uso:
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -36,6 +37,11 @@ except ImportError as exc:  # pragma: no cover
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROC = PROJECT_ROOT / "data" / "procesado"
 OUT_DIR = PROJECT_ROOT / "visuals" / "esfuerzo_mercado_2026"
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from analysis.vintage_figuras import anotar, metadatos  # noqa: E402
 
 GEOJSON = PROC / "municipios_euskadi_252.geojson"
 MERCADO_2026 = PROC / "esfuerzo_mercado_2026.csv"
@@ -143,7 +149,8 @@ def main() -> int:
     ax.legend(handles=leyenda, loc="lower left", frameon=True, fontsize=9)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT, dpi=150, bbox_inches="tight")
+    anotar(fig, OUT.name)
+    fig.savefig(OUT, dpi=150, bbox_inches="tight", metadata=metadatos(OUT.name))
     plt.close(fig)
     print(
         f"OK: {OUT.name} ({n_con_dato} municipios con dato, "
@@ -178,7 +185,11 @@ def main() -> int:
         "(gris = sin anuncio: 'sin dato', no 'asequible')",
         fontsize=12, pad=12,
     )
-    fig2.savefig(OUT_COBERTURA, dpi=150, bbox_inches="tight")
+    anotar(fig2, OUT_COBERTURA.name)
+    fig2.savefig(
+        OUT_COBERTURA, dpi=150, bbox_inches="tight",
+        metadata=metadatos(OUT_COBERTURA.name),
+    )
     plt.close(fig2)
     print(f"OK: {OUT_COBERTURA.name} ({len(valores_n)} municipios con anuncio)")
     return 0

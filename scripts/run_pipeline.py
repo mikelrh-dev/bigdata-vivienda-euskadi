@@ -109,6 +109,9 @@ FASES: dict[str, Fase] = {
         Paso("comparativa_mongo", _py("analysis/comparativa_mongo.py")),
         Paso("sensibilidad", _py("analysis/sensibilidad.py")),
         Paso("generar_figuras_N", _py("transform/generar_figuras_N.py")),
+        # Ultimo: copia gold -> deck y gold -> memoria. Los nombres los declara
+        # config/vintage_figuras.yaml. Idempotente (generar_figuras_N ya copia).
+        Paso("sincronizar_figuras", _py("scripts/sincronizar_figuras.py")),
     )),
 }
 

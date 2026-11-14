@@ -323,6 +323,11 @@ def pipeline_modalidades() -> list[dict[str, Any]]:
     `precio_eur` y `superficie_m2` validos (10-500 m2), el mismo filtro que
     aplica el pipeline de indicadores. Mediana = elemento `floor(n/2)` de la
     lista ordenada, igual que en `pipeline_tier_por_municipio`.
+
+    Tambien devuelve la mediana de superficie sobre esa misma base, para
+    explicar el tamano sin mezclar filtros: la superficie de 92,5 m2 que se
+    usaba en el deck incluia viviendas de mas de 500 m2 y no era comparable
+    con los 80 m2 temporales.
     """
     return list(get_collection("anuncios").aggregate([
         {"$match": {}},
@@ -342,12 +347,24 @@ def pipeline_modalidades() -> list[dict[str, Any]]:
                 {"$divide": ["$precio_eur", "$superficie_m2"]},
                 None,
             ]}},
+            "_superficies": {"$push": {"$cond": [
+                {"$and": [
+                    {"$ne": ["$precio_eur", None]},
+                    {"$ne": ["$superficie_m2", None]},
+                    {"$gte": ["$superficie_m2", 10]},
+                    {"$lte": ["$superficie_m2", 500]},
+                ]},
+                "$superficie_m2",
+                None,
+            ]}},
         }},
         {"$addFields": {
             "_precios": {"$filter": {"input": "$_precios", "as": "p",
                                      "cond": {"$ne": ["$$p", None]}}},
             "_ratios_m2": {"$filter": {"input": "$_ratios_m2", "as": "r",
                                         "cond": {"$ne": ["$$r", None]}}},
+            "_superficies": {"$filter": {"input": "$_superficies", "as": "s",
+                                           "cond": {"$ne": ["$$s", None]}}},
         }},
         {"$addFields": {
             "n_precio": {"$size": "$_precios"},
@@ -360,21 +377,51 @@ def pipeline_modalidades() -> list[dict[str, Any]]:
                 {"$sortArray": {"input": "$_ratios_m2", "sortBy": 1}},
                 {"$floor": {"$divide": [{"$size": "$_ratios_m2"}, 2]}},
             ]},
+            "n_superficie": {"$size": "$_superficies"},
+            "mediana_superficie_m2": {"$arrayElemAt": [
+                {"$sortArray": {"input": "$_superficies", "sortBy": 1}},
+                {"$floor": {"$divide": [{"$size": "$_superficies"}, 2]}},
+            ]},
         }},
         {"$sort": {"n": -1}},
         {"$project": {"modalidad": "$_id", "n": 1, "precio_medio": 1,
                       "n_precio": 1, "mediana_precio_eur": 1,
-                      "n_eur_m2": 1, "mediana_eur_m2": 1, "_id": 0}},
+                      "n_eur_m2": 1, "mediana_eur_m2": 1,
+                      "n_superficie": 1, "mediana_superficie_m2": 1, "_id": 0}},
     ]))
 
 
-def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]]:
-    # JOVEN-18-34: ranking por canonico 18-34 (fallback legacy 16-29 si el
-    # campo nuevo aun no esta cargado); se devuelve tambien el legacy.
-    # M3 (CONCLUSION-01): ningun ranking con n_anuncios<30; los municipios
-    # con n<30 quedan como «n insuficiente» y nunca ordenan por encima de
-    # un Tier A (p. ej. Barakaldo n=6 no ranking vs Donostia n=126).
+def pipeline_top_municipios_por_esfuerzo(
+    limit: int = 12,
+    min_anuncios: int | None = None,
+    min_esfuerzo: float | None = None,
+) -> list[dict[str, Any]]:
+    """Ranking de esfuerzo 18-34 sobre alquiler OFICIAL de 2024.
+
+    JOVEN-18-34: ranking por canonico 18-34 (fallback legacy 16-29 si el
+    campo nuevo aun no esta cargado); se devuelve tambien el legacy.
+
+    Este ranking es de la capa 2024 y su numerador es administrativo (alquiler
+    oficial de Eustat), no la oferta de anuncios: la muestra de 2026 no
+    interviene en el valor ni en el orden. Por eso NO se filtra por
+    `n_anuncios` — hacerlo metia un criterio de 2026 (Tier A) en una tabla de
+    2024 y dejaba fuera a Barakaldo (38,50 %, el maximo) por tener 6 anuncios.
+    La regla M3 (CONCLUSION-01: ningun ranking con n<30) sigue vigente para los
+    rankings construidos sobre anuncios de 2026, que son los de Tier A/B
+    (`pipeline_tier_por_municipio` y la figura M26).
+
+    `min_anuncios`: si se pasa, recupera el comportamiento M3 (filtro duro por
+    muestra de anuncios) para cualquier uso que si mezcle las dos capas; la
+    figura O lo usa con 30.
+
+    `min_esfuerzo`: corte por umbral en vez de por longitud. La tabla de §6.2
+    publica todos los municipios oficiales que superan el 35 %, no un top-N
+    elegido a mano: con top-12 el 12.º (Portugalete 35,65) quedaba a 0,03 pp de
+    Lezo (35,62), un corte que la precision publicada no sostiene. Con el
+    umbral el margen es de 0,45 pp (Irun 35,44 -> Urduliz 34,99).
+    """
     pipeline: list[dict[str, Any]] = [
+        {"$match": {"tiene_alquiler_oficial": True}},
         {"$match": {"$or": [
             {"demografia.renta_joven_estimada_18_34": {"$gt": 0}},
             {"demografia.renta_joven_estimada_16_29": {"$gt": 0}},
@@ -382,10 +429,14 @@ def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]
         {"$lookup": {"from": "anuncios", "localField": "_id",
                      "foreignField": "ubicacion.codigo_ine", "as": "ann"}},
         {"$addFields": {"n_anuncios": {"$size": "$ann"}}},
-        {"$match": {"n_anuncios": {"$gte": 30}}},
         {"$lookup": {"from": "alquiler_municipal", "localField": "_id", "foreignField": "_id", "as": "alq"}},
         {"$addFields": {"alq": {"$arrayElemAt": ["$alq", 0]}}},
-        {"$match": {"alq.cuantia_media_eur_mes_mediana": {"$ne": None}}},
+        {"$match": {"alq.metodo_imputacion": "oficial",
+                     "alq.cuantia_media_eur_mes_mediana": {"$ne": None}}},
+    ]
+    if min_anuncios is not None:
+        pipeline.append({"$match": {"n_anuncios": {"$gte": min_anuncios}}})
+    pipeline += [
         {"$addFields": {
             "renta_canonica": {"$ifNull": ["$demografia.renta_joven_estimada_18_34", "$demografia.renta_joven_estimada_16_29"]},
         }},
@@ -401,7 +452,13 @@ def pipeline_top_municipios_por_esfuerzo(limit: int = 10) -> list[dict[str, Any]
             ]},
         }},
         {"$addFields": {"esfuerzo_joven_pct": "$esfuerzo_joven_pct_16_29"}},
-        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "n_anuncios": 1, "esfuerzo_joven_pct": 1, "esfuerzo_joven_pct_16_29": 1, "esfuerzo_joven_pct_18_34": 1}},
+    ]
+    if min_esfuerzo is not None:
+        pipeline.append({"$match": {"esfuerzo_joven_pct_18_34": {"$gte": min_esfuerzo}}})
+    pipeline += [
+        {"$project": {"nombre": "$nombre_canonico", "territorio": 1, "n_anuncios": 1,
+                     "cuantia_alquiler_mes": "$alq.cuantia_media_eur_mes_mediana",
+                     "esfuerzo_joven_pct": 1, "esfuerzo_joven_pct_16_29": 1, "esfuerzo_joven_pct_18_34": 1}},
         {"$sort": {"esfuerzo_joven_pct_18_34": -1}},
         {"$limit": limit},
     ]
@@ -771,6 +828,20 @@ def _hab_col():
     except Exception:
         pass
     return get_collection("anuncios_habitaciones_unificados")
+
+
+def pipeline_habitaciones_precios() -> list[dict[str, Any]]:
+    """Precios individuales de habitaciones para H6.
+
+    Consulta auxiliar, no entra en `PIPELINE_ORDER`: el ranking y la
+    distribucion necesitan los precios individuales, no solo la mediana
+    municipal. Devuelve solo documentos con `precio_eur` no nulo.
+    """
+    cursor = _hab_col().find(
+        {"precio_eur": {"$ne": None}},
+        {"_id": 0, "codigo_ine": 1, "municipio": 1, "precio_eur": 1},
+    ).sort([("codigo_ine", 1), ("precio_eur", 1)])
+    return list(cursor)
 
 
 def pipeline_habitaciones_por_municipio(limit: int | None = None) -> list[dict[str, Any]]:

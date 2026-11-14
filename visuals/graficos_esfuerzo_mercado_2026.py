@@ -13,6 +13,7 @@ No toca raw ni esfuerzo canonico 2024. Solo lectura del silver generado.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -28,6 +29,11 @@ except ImportError as exc:  # pragma: no cover
 ROOT = Path(__file__).resolve().parents[1]
 PROC = ROOT / "data" / "procesado"
 OUT = ROOT / "visuals" / "esfuerzo_mercado_2026"
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from analysis.vintage_figuras import anotar, metadatos  # noqa: E402
 
 SRC = PROC / "esfuerzo_mercado_2026.csv"
 
@@ -54,7 +60,8 @@ def _cargar() -> pd.DataFrame:
 def _guardar(fig, nombre: str) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     ruta = OUT / nombre
-    fig.savefig(ruta, dpi=150, bbox_inches="tight")
+    anotar(fig, nombre)
+    fig.savefig(ruta, dpi=150, bbox_inches="tight", metadata=metadatos(nombre))
     plt.close(fig)
     print(f"OK: {ruta}")
 

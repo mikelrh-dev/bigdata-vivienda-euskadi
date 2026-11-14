@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-13T18:11:47+00:00",
+    "generado_utc": "2026-11-14T17:12:19+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -15,6 +15,26 @@
       "valor": 159,
       "formato": "int",
       "fuente": "mongo_esfuerzo_por_municipio.csv · tiene_alquiler_oficial"
+    },
+    "datos.anuncios_2026": {
+      "valor": 287,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · n_anuncios"
+    },
+    "datos.anuncios_2026_tipo_1_2": {
+      "valor": 123,
+      "formato": "int",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 1-2 hab"
+    },
+    "datos.anuncios_2026_tipo_3": {
+      "valor": 94,
+      "formato": "int",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 3 hab"
+    },
+    "datos.anuncios_2026_tipo_4": {
+      "valor": 60,
+      "formato": "int",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 4+ hab"
     },
     "datos.anuncios_larga": {
       "valor": 326,
@@ -51,6 +71,71 @@
       "formato": "int",
       "fuente": "mongo_esfuerzo_por_municipio.csv · n_anuncios"
     },
+    "datos.brecha_mediana_n5": {
+      "valor": 52.67,
+      "formato": "1d",
+      "fuente": "brecha_esfuerzo_2024_2026.csv · mediana de brecha_pp_18_34 con n>=5"
+    },
+    "datos.brecha_municipios_n5": {
+      "valor": 7,
+      "formato": "int",
+      "fuente": "brecha_esfuerzo_2024_2026.csv · municipios con n>=5"
+    },
+    "datos.cobertura_anuncios_n30_pct": {
+      "valor": 70.38,
+      "formato": "2d",
+      "fuente": "cobertura_representatividad_2026.csv · pct_anuncios_en_municipios_n_mayor_igual_30"
+    },
+    "datos.cobertura_municipios_pct": {
+      "valor": 19.84,
+      "formato": "2d",
+      "fuente": "cobertura_representatividad_2026.csv · pct_municipios_cubiertos"
+    },
+    "datos.cobertura_poblacion": {
+      "valor": 334753,
+      "formato": "int",
+      "fuente": "cobertura_representatividad_2026.csv · poblacion_18_34_cubierta"
+    },
+    "datos.cobertura_poblacion_pct": {
+      "valor": 71.21,
+      "formato": "2d",
+      "fuente": "cobertura_representatividad_2026.csv · pct_poblacion_18_34_cubierta"
+    },
+    "datos.esfuerzo_2024_canonico": {
+      "valor": 30.7,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · 2024 canónico"
+    },
+    "datos.esfuerzo_2024_salario": {
+      "valor": 44.57,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · 2024 base salario"
+    },
+    "datos.esfuerzo_2026_renta": {
+      "valor": 57.77,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · 2026 base renta 2024"
+    },
+    "datos.esfuerzo_2026_salario": {
+      "valor": 78.55,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · 2026 base salario"
+    },
+    "datos.esfuerzo_2026_tipo_1_2": {
+      "valor": 78.55,
+      "formato": "2d",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 1-2 hab"
+    },
+    "datos.esfuerzo_2026_tipo_3": {
+      "valor": 81.95,
+      "formato": "2d",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 3 hab"
+    },
+    "datos.esfuerzo_2026_tipo_4": {
+      "valor": 116.37,
+      "formato": "2d",
+      "fuente": "esfuerzo_por_tipo_nivel_anuncio_2026.csv · 4+ hab"
+    },
     "datos.esfuerzo_idw_sobre30": {
       "valor": 47,
       "formato": "int",
@@ -86,20 +171,260 @@
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · filas"
     },
+    "datos.mun_astigarraga_alquiler": {
+      "valor": 867.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20903 · cuantia_alquiler_mes"
+    },
+    "datos.mun_astigarraga_esfuerzo": {
+      "valor": 36.37469713974051,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20903"
+    },
+    "datos.mun_barakaldo_alquiler": {
+      "valor": 746.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48013 · cuantia_alquiler_mes"
+    },
+    "datos.mun_barakaldo_esfuerzo": {
+      "valor": 38.49594055318563,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48013"
+    },
+    "datos.mun_basauri_alquiler": {
+      "valor": 672.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48015 · cuantia_alquiler_mes"
+    },
+    "datos.mun_basauri_esfuerzo": {
+      "valor": 36.093456270700926,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48015"
+    },
+    "datos.mun_bilbao_alquiler": {
+      "valor": 850.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48020 · cuantia_alquiler_mes"
+    },
+    "datos.mun_bilbao_esfuerzo": {
+      "valor": 37.68858146830279,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48020"
+    },
+    "datos.mun_bilbao_esfuerzo_2026": {
+      "valor": 98.19,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48020 · esfuerzo 2026 base salario"
+    },
+    "datos.mun_bilbao_n_2026": {
+      "valor": 68,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48020 · n_anuncios_2026"
+    },
+    "datos.mun_bilbao_precio_2026": {
+      "valor": 1687.5,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48020 · precio mediano 2026"
+    },
+    "datos.mun_donostia_alquiler": {
+      "valor": 995.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20069 · cuantia_alquiler_mes"
+    },
+    "datos.mun_donostia_esfuerzo": {
+      "valor": 38.17037927418736,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20069"
+    },
+    "datos.mun_donostia_esfuerzo_2026": {
+      "valor": 116.37,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 20069 · esfuerzo 2026 base salario"
+    },
+    "datos.mun_donostia_n_2026": {
+      "valor": 58,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 20069 · n_anuncios_2026"
+    },
+    "datos.mun_donostia_precio_2026": {
+      "valor": 2000.0,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 20069 · precio mediano 2026"
+    },
+    "datos.mun_erandio_alquiler": {
+      "valor": 720.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48902 · cuantia_alquiler_mes"
+    },
+    "datos.mun_erandio_esfuerzo": {
+      "valor": 37.65460615199561,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48902"
+    },
+    "datos.mun_errenteria_alquiler": {
+      "valor": 705.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20067 · cuantia_alquiler_mes"
+    },
+    "datos.mun_errenteria_esfuerzo": {
+      "valor": 36.40698359964368,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20067"
+    },
+    "datos.mun_getxo_esfuerzo": {
+      "valor": 28.59530020498134,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48044"
+    },
+    "datos.mun_getxo_esfuerzo_2026": {
+      "valor": 78.55,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48044 · esfuerzo 2026 base salario"
+    },
+    "datos.mun_getxo_n_2026": {
+      "valor": 39,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48044 · n_anuncios_2026"
+    },
+    "datos.mun_getxo_precio_2026": {
+      "valor": 1350.0,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 48044 · precio mediano 2026"
+    },
+    "datos.mun_irun_alquiler": {
+      "valor": 729.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20045 · cuantia_alquiler_mes"
+    },
+    "datos.mun_irun_esfuerzo": {
+      "valor": 35.43895611451628,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20045"
+    },
+    "datos.mun_lasarte_oria_alquiler": {
+      "valor": 766.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20902 · cuantia_alquiler_mes"
+    },
+    "datos.mun_lasarte_oria_esfuerzo": {
+      "valor": 36.47228273161209,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20902"
+    },
+    "datos.mun_lezo_alquiler": {
+      "valor": 702.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20053 · cuantia_alquiler_mes"
+    },
+    "datos.mun_lezo_esfuerzo": {
+      "valor": 35.6211071128044,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20053"
+    },
+    "datos.mun_pasaia_alquiler": {
+      "valor": 691.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20064 · cuantia_alquiler_mes"
+    },
+    "datos.mun_pasaia_esfuerzo": {
+      "valor": 36.872507036992566,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 20064"
+    },
+    "datos.mun_portugalete_alquiler": {
+      "valor": 702.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48078 · cuantia_alquiler_mes"
+    },
+    "datos.mun_portugalete_esfuerzo": {
+      "valor": 35.65125757017889,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48078"
+    },
+    "datos.mun_santurtzi_alquiler": {
+      "valor": 697.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48082 · cuantia_alquiler_mes"
+    },
+    "datos.mun_santurtzi_esfuerzo": {
+      "valor": 36.01756954612006,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48082"
+    },
+    "datos.mun_sestao_alquiler": {
+      "valor": 650.0,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48084 · cuantia_alquiler_mes"
+    },
+    "datos.mun_sestao_esfuerzo": {
+      "valor": 38.1023095861503,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 48084"
+    },
+    "datos.mun_vitoria_esfuerzo": {
+      "valor": 33.36895336688767,
+      "formato": "2d",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · 01059"
+    },
+    "datos.mun_vitoria_esfuerzo_2026": {
+      "valor": 75.64,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 01059 · esfuerzo 2026 base salario"
+    },
+    "datos.mun_vitoria_n_2026": {
+      "valor": 37,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 01059 · n_anuncios_2026"
+    },
+    "datos.mun_vitoria_precio_2026": {
+      "valor": 1300.0,
+      "formato": "2d",
+      "fuente": "comparacion_esfuerzo_2024_2026.csv · 01059 · precio mediano 2026"
+    },
     "datos.municipios": {
       "valor": 252,
       "formato": "int",
       "fuente": "mongo_esfuerzo_por_municipio.csv · filas"
+    },
+    "datos.municipios_2026": {
+      "valor": 50,
+      "formato": "int",
+      "fuente": "comparacion_esfuerzo_2024_2026_resumen.csv · n_municipios"
+    },
+    "datos.n_precio_positivo": {
+      "valor": 7,
+      "formato": "int",
+      "fuente": "mongo_esfuerzo_por_municipio.csv · n_precio > 0"
     },
     "datos.precio_observable": {
       "valor": 60,
       "formato": "int",
       "fuente": "precio_medio_eur no nulo"
     },
+    "datos.precio_sin_muestra": {
+      "valor": 53,
+      "formato": "int",
+      "fuente": "precio_medio_eur no nulo con n_precio = 0 (Tier C/D)"
+    },
+    "datos.sesgo_superficie_anuncios": {
+      "valor": 90.0,
+      "formato": "1d",
+      "fuente": "cobertura_representatividad_2026.csv · superficie_mediana_anuncios"
+    },
+    "datos.sesgo_superficie_oficial": {
+      "valor": 80.7,
+      "formato": "1d",
+      "fuente": "cobertura_representatividad_2026.csv · superficie_mediana_oficial_2024"
+    },
     "datos.tier_a": {
       "valor": 4,
       "formato": "int",
       "fuente": "mongo_tier_confianza.csv · tier A"
+    },
+    "datos.tier_ab": {
+      "valor": 7,
+      "formato": "int",
+      "fuente": "mongo_tier_confianza.csv · A + B"
     },
     "datos.tier_b": {
       "valor": 3,
@@ -132,7 +457,7 @@
       "fuente": "data/resultados/anexo/*.png"
     },
     "gold.artefactos": {
-      "valor": 53,
+      "valor": 54,
       "formato": "int",
       "fuente": "CSV + PNG de la raíz"
     },
@@ -142,7 +467,7 @@
       "fuente": "data/resultados/*.csv"
     },
     "gold.png": {
-      "valor": 29,
+      "valor": 30,
       "formato": "int",
       "fuente": "data/resultados/*.png"
     },
@@ -171,15 +496,30 @@
       "formato": "str",
       "fuente": "KafkaAdminClient.describe_topics · 2026-11-13"
     },
+    "mongo.anuncios_docs": {
+      "valor": 594,
+      "formato": "int",
+      "fuente": "_facts.json · anuncios.docs"
+    },
     "mongo.backup": {
       "valor": 15,
       "formato": "int",
       "fuente": "_facts.json · collections_backup"
     },
+    "mongo.certificados_docs": {
+      "valor": 252,
+      "formato": "int",
+      "fuente": "_facts.json · certificados_energeticos.docs"
+    },
     "mongo.csv_salidas": {
       "valor": 8,
       "formato": "int",
       "fuente": "_facts.json · pipelines.csv_outputs"
+    },
+    "mongo.esfuerzo_2026_docs": {
+      "valor": 252,
+      "formato": "int",
+      "fuente": "_facts.json · esfuerzo_mercado_2026.docs"
     },
     "mongo.habitaciones": {
       "valor": 201,
@@ -195,6 +535,11 @@
       "valor": 10,
       "formato": "int",
       "fuente": "_facts.json · defined_indexes"
+    },
+    "mongo.municipios_docs": {
+      "valor": 252,
+      "formato": "int",
+      "fuente": "_facts.json · municipios.docs"
     },
     "mongo.pipelines": {
       "valor": 11,
@@ -221,6 +566,11 @@
       "formato": "int",
       "fuente": "_facts.json · collections_live"
     },
+    "mongo.vpo_municipal_docs": {
+      "valor": 252,
+      "formato": "int",
+      "fuente": "_facts.json · vpo_municipal.docs"
+    },
     "raw.disco": {
       "valor": 357,
       "formato": "int",
@@ -246,6 +596,11 @@
       "formato": "int",
       "fuente": "data/procesado/manifest_sha256.txt · líneas"
     },
+    "verif.deck_checks": {
+      "valor": 41,
+      "formato": "int",
+      "fuente": "scripts/verificar_cifras_deck.py · 2026-11-13"
+    },
     "verif.gobernanza_cabeceras": {
       "valor": 53,
       "formato": "int",
@@ -267,19 +622,19 @@
       "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
     },
     "verif.tests_collected": {
-      "valor": 287,
+      "valor": 295,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-13"
+      "fuente": "pytest -q tests · 2026-11-14"
     },
     "verif.tests_passed": {
-      "valor": 285,
+      "valor": 293,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-13"
+      "fuente": "pytest -q tests · 2026-11-14"
     },
     "verif.tests_skipped": {
       "valor": 2,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-13"
+      "fuente": "pytest -q tests · 2026-11-14"
     }
   }
 }

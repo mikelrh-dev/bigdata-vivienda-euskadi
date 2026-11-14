@@ -105,6 +105,42 @@ def main() -> int:
     add("municipios con anuncio", f"{len(serie)}/252")
     add("anuncios validos", f"{int(mercado['n_anuncios_2026'].sum())} anuncios")
 
+    # ---------- Modalidades y embudo 2026 (B5/D8) ----------
+    mod = pd.read_csv(RES / "mongo_modalidades.csv", encoding="utf-8-sig")
+    mod = mod.set_index("modalidad")
+    sup_t = float(mod.loc["temporal", "mediana_superficie_m2"])
+    sup_l = float(mod.loc["larga_estancia", "mediana_superficie_m2"])
+    m2_t = float(mod.loc["temporal", "mediana_eur_m2"])
+    m2_l = float(mod.loc["larga_estancia", "mediana_eur_m2"])
+    add("B5 superficie temporal", f"{es(sup_t, 0)} m²")
+    add("B5 superficie larga", f"{es(sup_l, 0)} m²")
+    add("B5 €/m2", f"{es(m2_t, 2)} vs {es(m2_l, 2)}")
+    add("B5 +13,7 %", f"+{es((m2_t / m2_l - 1) * 100)} %")
+    add("D8 piso temporal", "piso completo · temporal")
+    add("D8 habitaciones aparte", "habitación · colección aparte")
+    add("D8 297 con precio", "297 con precio")
+
+    # Composicion de los 795 productos de oferta 2026 (594 vivienda + 201 habitaciones).
+    n_larga = int(mod.loc["larga_estancia", "n"])
+    n_temp = int(mod.loc["temporal", "n"])
+    n_hab = len(pd.read_csv(PROC / "anuncios_habitaciones_unificados.csv", encoding="utf-8-sig"))
+    n_795 = n_larga + n_temp + n_hab
+    add("D8 % piso larga", f"{es(n_larga / n_795 * 100, 0)} %")
+    add("D8 % piso temporal", f"{es(n_temp / n_795 * 100, 0)} %")
+    add("D8 % habitacion", f"{es(n_hab / n_795 * 100, 0)} %")
+    add("D8 % 287 sobre 795", f"{es(int(mercado['n_anuncios_2026'].sum()) / n_795 * 100, 0)} %")
+
+    # ---------- Habitaciones (B4) ----------
+    hab = pd.read_csv(PROC / "anuncios_habitaciones_unificados.csv", encoding="utf-8-sig")
+    hp = pd.to_numeric(hab["precio_eur"], errors="coerce").dropna()
+    add("B4 mediana global", f"{es(hp.median(), 0)} €")
+    add("B4 61% <=700", f"{es((hp <= 700).mean() * 100, 0)} %")
+    add("B4 esfuerzo global", f"{es(hp.median() / salario * 100)} %")
+    hab = pd.read_csv(RES / "mongo_habitaciones_por_municipio.csv", encoding="utf-8-sig")
+    for municipio, etiqueta in (("Donostia - San Sebastián", "Donostia"), ("Bilbao", "Bilbao")):
+        med = float(hab.loc[hab["municipio"] == municipio, "mediana_precio_eur"].iloc[0])
+        add(f"B4 esfuerzo {etiqueta}", f"{es(med / salario * 100)} %")
+
     # ---------- Tipologia ----------
     tipo = pd.read_csv(RES / "esfuerzo_por_tipo_nivel_anuncio_2026.csv", encoding="utf-8-sig")
     for _, r in tipo.iterrows():
@@ -148,8 +184,8 @@ def main() -> int:
     add("gold", f"{gold}/{gold}")
     add("353 HDFS", "353 objetos")
     add("352 canonicos", "352 canónicos")
-    add("tests", "287 tests")
-    add("tests pasan", "285 pasan")
+    add("tests", "295 tests")
+    add("tests pasan", "293 pasan")
 
     mongo = _mongo_counts()
     if mongo is None:
@@ -172,6 +208,9 @@ def main() -> int:
         ("corrida real OK", "corrida real OK"),
         ("municipios.codigo_ine", "municipios.codigo_ine"),
         ("compartir 3-4", "compartir un piso de 3-4"),
+        ("B5 92,5", "92,5 m²"),
+        ("B5 +23,2", "+23,2 %"),
+        ("D8 268 habitaciones", "268 habitaciones"),
     ]
     for etiqueta, aguja in prohibidas:
         add(f"prohibido: {etiqueta}", aguja, ok=False)

@@ -36,7 +36,11 @@ vintage:
   alquiler_oficial: 2024
   renta: 2024
   poblacion: 2025
-  paro_lanbide: 2026
+  # `tasa_paro_lanbide_pct` es el indicador 13 de Udalmap (paro registrado
+  # 16-64) entregado como valor_2024: 249 municipios 2024 + 3 de Lanbide
+  # directo. No es una serie 2026; ver docs/matriz-comparabilidad.md.
+  paro_udalmap: 2024
+  paro_lanbide_declarativo: 2026
   udalmap: 2024
 
 pesos_indice_compuesto:

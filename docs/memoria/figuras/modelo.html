@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; width: 2000px; height: 1100px; background: #fff;
+    font-family: "Segoe UI", Arial, sans-serif; color: #1a1a1a;
+    padding: 46px 60px;
+  }
+  h1 { font-size: 50px; margin: 0 0 6px; color: #1f4e79; letter-spacing: -0.5px; }
+  .sub { font-size: 24px; color: #555; margin-bottom: 24px; }
+  .canvas { position: relative; height: 860px; }
+  .box { position: absolute; border: 3px solid #1f4e79; border-radius: 14px; background: #f7fafc; padding: 18px 22px; width: 420px; }
+  .box.core { border-color: #c55a11; background: #fdf6f0; width: 440px; }
+  .box b { display: block; font-size: 30px; margin-bottom: 6px; }
+  .box .id { font-family: Consolas, monospace; font-size: 24px; color: #c55a11; margin-bottom: 8px; }
+  .box .f { font-size: 22px; color: #444; line-height: 1.45; }
+  .box .f .mono { font-family: Consolas, monospace; font-size: 21px; }
+  svg { position: absolute; inset: 0; width: 2000px; height: 860px; }
+  .legend { position: absolute; bottom: 0; left: 0; font-size: 22px; color: #444; }
+  .legend b { color: #1f4e79; }
+  .kicker { font-size: 17px; letter-spacing: .14em; color: #c55a11; font-weight: 700; }
+</style>
+</head>
+<body>
+  <h1>Un <span style="font-family:Consolas,monospace">_id</span>, seis colecciones</h1>
+  <div class="sub"><span style="font-family:Consolas,monospace">municipios</span> usa el código INE como clave natural; el resto lo referencia o comparte el mismo código.</div>
+
+  <div class="canvas">
+    <svg>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f4e79"/>
+        </marker>
+      </defs>
+      <!-- izquierda -> centro -->
+      <path d="M 480 175 C 560 175, 560 390, 640 390" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 480 445 L 640 445" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 480 715 C 560 715, 560 500, 640 500" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+      <!-- derecha -> centro -->
+      <path d="M 1520 175 C 1440 175, 1440 390, 1080 390" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 1520 445 L 1080 445" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 1520 715 C 1440 715, 1440 500, 1080 500" fill="none" stroke="#1f4e79" stroke-width="3" marker-end="url(#arrow)"/>
+    </svg>
+
+    <!-- centro -->
+    <div class="box core" style="left: 640px; top: 300px;">
+      <div class="kicker">CLAVE NATURAL</div>
+      <b>municipios</b>
+      <div class="id">_id: "48020"</div>
+      <div class="f">252 documentos<br><span class="mono">demografia{}</span> · <span class="mono">empleo{}</span><br><span class="mono">demanda_social{}</span> · <span class="mono">vivienda_contexto{}</span><br><span class="mono">transporte{}</span></div>
+    </div>
+
+    <!-- izquierda: referencia -->
+    <div class="box" style="left: 60px; top: 70px;">
+      <div class="kicker">REFERENCIA · N:1</div>
+      <b>anuncios</b>
+      <div class="id">594 documentos</div>
+      <div class="f"><span class="mono">ubicacion.codigo_ine</span><br><span class="mono">equipamiento[]</span> · <span class="mono">historico_precios[]</span></div>
+    </div>
+    <div class="box" style="left: 60px; top: 350px;">
+      <div class="kicker">REFERENCIA · N:1</div>
+      <b>alquiler_municipal</b>
+      <div class="id">codigo_ine</div>
+      <div class="f"><span class="mono">distrito</span> · <span class="mono">nivel_geografico</span><br><span class="mono">metodo_imputacion</span></div>
+    </div>
+    <div class="box" style="left: 60px; top: 620px;">
+      <div class="kicker">REFERENCIA · N:1</div>
+      <b>etxebide_promociones</b>
+      <div class="id">406 documentos</div>
+      <div class="f"><span class="mono">codigo_ine</span> · <span class="mono">num_viviendas</span><br>vacío en 406/406</div>
+    </div>
+
+    <!-- derecha: mismo código -->
+    <div class="box" style="left: 1520px; top: 70px;">
+      <div class="kicker">MISMO CÓDIGO · 1:1</div>
+      <b>certificados_energeticos</b>
+      <div class="id">_id = codigo_ine</div>
+      <div class="f"><span class="mono">distribucion{A..G}</span><br><span class="mono">cert_moda</span></div>
+    </div>
+    <div class="box" style="left: 1520px; top: 350px;">
+      <div class="kicker">MISMO CÓDIGO · 1:1</div>
+      <b>vpo_municipal</b>
+      <div class="id">_id = codigo_ine</div>
+      <div class="f"><span class="mono">vpo_terminadas_por_mil</span><br><span class="mono">anio_fuente</span></div>
+    </div>
+    <div class="box" style="left: 1520px; top: 620px;">
+      <div class="kicker">MISMO CÓDIGO · 1:1</div>
+      <b>esfuerzo_mercado_2026</b>
+      <div class="id">_id = codigo_ine</div>
+      <div class="f"><span class="mono">esfuerzo_2026_pct_18_34</span><br>incluye municipios sin anuncio</div>
+    </div>
+
+    <div class="legend"><b>Embebido:</b> lo que se lee junto y cambia poco (contexto del municipio). <b>Referenciado:</b> lo que crece y se consulta por municipio (anuncios, promociones).</div>
+  </div>
+</body>
+</html>

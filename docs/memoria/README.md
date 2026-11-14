@@ -63,6 +63,6 @@ Si cambia un dato, se ejecuta `--refresh` y se revisa el diff de `_cifras.json`.
 
 ## Estado
 
-- Capítulos: esqueletos con objetivo y secciones; falta la prosa final.
-- Figuras: 8 copiadas; faltan las de arquitectura y modelo.
+- Capítulos: primera versión completa con datos contrastados; falta pulido de estilo y revisión final.
+- Figuras: 10 (8 de datos + arquitectura y modelo), con fuente HTML editable.
 - Portada: autor genérico pendiente de sustituir.
