@@ -256,7 +256,7 @@ La mediana oficial es 26,61 %. La interpolación asigna un valor a los 93 munici
 ## 6.2 O2. La capa 2024: dónde pesa más
 
 ![Ranking de esfuerzo 18-34](figuras/fig-ranking-2024.png){width=15cm}\
-*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. El valor y el orden son administrativos; el color y la n solo describen la cobertura de oferta de 2026 (azul, Tier A; azul claro, B; gris, C/D). Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
+*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. El valor y el orden son administrativos y no dependen de ninguna muestra de anuncios: la figura es 2024 pura, sin Tier ni cobertura. Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
 
 El corte de la tabla no es un top-N elegido a mano: son todos los municipios con alquiler oficial de 2024 que superan el 35 % de esfuerzo, en orden descendente. Por debajo, las posiciones se apelotonan y el orden deja de ser informativo.
 
@@ -279,7 +279,7 @@ El corte de la tabla no es un top-N elegido a mano: son todos los municipios con
 
 Los catorce tienen alquiler oficial de 2024, ninguno imputado, así que el esfuerzo es dato administrativo y no estimación: alquiler oficial de 2024 sobre renta joven de 2024. El orden es el del esfuerzo, no el del alquiler, y esa diferencia es el resultado: Barakaldo encabeza el ranking con 38,50 % y un alquiler de 746 €, por debajo del de Donostia (995 €). Lo que empuja el esfuerzo arriba no es el precio de la vivienda sino la renta joven: Sestao, con 650 €, es el tercero del ranking.
 
-La última columna es solo cobertura: el total de anuncios de 2026 de cada municipio y su Tier entre paréntesis, el mismo color que en la figura. No es la muestra comparable de 6.5 (allí Bilbao son 68 anuncios y aquí 204), y sirve para leer el otro eje del problema: Barakaldo encabeza el esfuerzo con 6 anuncios, mientras Donostia lo hace con 126.
+La última columna es solo cobertura: el total de anuncios de 2026 de cada municipio y su Tier entre paréntesis. Va en la tabla y no en la figura a propósito: colorear un valor administrativo de 2024 por la muestra de anuncios de 2026 insinuaría que el valor depende de ella. No es la muestra comparable de 6.5 (allí Bilbao son 68 anuncios y aquí 204), y sirve para leer el otro eje del problema: Barakaldo encabeza el esfuerzo con 6 anuncios, mientras Donostia lo hace con 126.
 
 El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en 28,60 % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 
