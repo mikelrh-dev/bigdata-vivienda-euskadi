@@ -22,28 +22,30 @@ La mediana oficial es {{datos.esfuerzo_mediana_oficial}} %. La interpolación as
 ## 6.2 O2. La capa 2024: dónde pesa más
 
 ![Ranking de esfuerzo 18-34](figuras/fig-ranking-2024.png){width=15cm}\
-*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. Sin Tier ni muestra de anuncios: el numerador es administrativo y no depende de la oferta. Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
+*Figura 6.2. Los catorce municipios con alquiler oficial cuyo esfuerzo supera el 35 %, datos de 2024. El valor y el orden son administrativos; el color y la n solo describen la cobertura de oferta de 2026 (azul, Tier A; azul claro, B; gris, C/D). Fuente: `data/resultados/H1_ranking_esfuerzo_18_34.png`.*
 
 El corte de la tabla no es un top-N elegido a mano: son todos los municipios con alquiler oficial de 2024 que superan el 35 % de esfuerzo, en orden descendente. Por debajo, las posiciones se apelotonan y el orden deja de ser informativo.
 
-| Municipio | Territorio | Alquiler oficial (€/mes) | Esfuerzo 18–34 (2024) |
-|---|---|---:|---:|
-| Barakaldo | Bizkaia | {{datos.mun_barakaldo_alquiler}} € | {{datos.mun_barakaldo_esfuerzo}} % |
-| Donostia / San Sebastián | Gipuzkoa | {{datos.mun_donostia_alquiler}} € | {{datos.mun_donostia_esfuerzo}} % |
-| Sestao | Bizkaia | {{datos.mun_sestao_alquiler}} € | {{datos.mun_sestao_esfuerzo}} % |
-| Bilbao | Bizkaia | {{datos.mun_bilbao_alquiler}} € | {{datos.mun_bilbao_esfuerzo}} % |
-| Erandio | Bizkaia | {{datos.mun_erandio_alquiler}} € | {{datos.mun_erandio_esfuerzo}} % |
-| Pasaia | Gipuzkoa | {{datos.mun_pasaia_alquiler}} € | {{datos.mun_pasaia_esfuerzo}} % |
-| Lasarte-Oria | Gipuzkoa | {{datos.mun_lasarte_oria_alquiler}} € | {{datos.mun_lasarte_oria_esfuerzo}} % |
-| Errenteria | Gipuzkoa | {{datos.mun_errenteria_alquiler}} € | {{datos.mun_errenteria_esfuerzo}} % |
-| Astigarraga | Gipuzkoa | {{datos.mun_astigarraga_alquiler}} € | {{datos.mun_astigarraga_esfuerzo}} % |
-| Basauri | Bizkaia | {{datos.mun_basauri_alquiler}} € | {{datos.mun_basauri_esfuerzo}} % |
-| Santurtzi | Bizkaia | {{datos.mun_santurtzi_alquiler}} € | {{datos.mun_santurtzi_esfuerzo}} % |
-| Portugalete | Bizkaia | {{datos.mun_portugalete_alquiler}} € | {{datos.mun_portugalete_esfuerzo}} % |
-| Lezo | Gipuzkoa | {{datos.mun_lezo_alquiler}} € | {{datos.mun_lezo_esfuerzo}} % |
-| Irun | Gipuzkoa | {{datos.mun_irun_alquiler}} € | {{datos.mun_irun_esfuerzo}} % |
+| Municipio | Territorio | Alquiler oficial (€/mes) | Esfuerzo 18–34 (2024) | Anuncios 2026 |
+|---|---|---:|---:|---:|
+| Barakaldo | Bizkaia | {{datos.mun_barakaldo_alquiler}} € | {{datos.mun_barakaldo_esfuerzo}} % | {{datos.mun_barakaldo_n_cobertura}} ({{datos.mun_barakaldo_tier_cobertura}}) |
+| Donostia / San Sebastián | Gipuzkoa | {{datos.mun_donostia_alquiler}} € | {{datos.mun_donostia_esfuerzo}} % | {{datos.mun_donostia_n_cobertura}} ({{datos.mun_donostia_tier_cobertura}}) |
+| Sestao | Bizkaia | {{datos.mun_sestao_alquiler}} € | {{datos.mun_sestao_esfuerzo}} % | {{datos.mun_sestao_n_cobertura}} ({{datos.mun_sestao_tier_cobertura}}) |
+| Bilbao | Bizkaia | {{datos.mun_bilbao_alquiler}} € | {{datos.mun_bilbao_esfuerzo}} % | {{datos.mun_bilbao_n_cobertura}} ({{datos.mun_bilbao_tier_cobertura}}) |
+| Erandio | Bizkaia | {{datos.mun_erandio_alquiler}} € | {{datos.mun_erandio_esfuerzo}} % | {{datos.mun_erandio_n_cobertura}} ({{datos.mun_erandio_tier_cobertura}}) |
+| Pasaia | Gipuzkoa | {{datos.mun_pasaia_alquiler}} € | {{datos.mun_pasaia_esfuerzo}} % | {{datos.mun_pasaia_n_cobertura}} ({{datos.mun_pasaia_tier_cobertura}}) |
+| Lasarte-Oria | Gipuzkoa | {{datos.mun_lasarte_oria_alquiler}} € | {{datos.mun_lasarte_oria_esfuerzo}} % | {{datos.mun_lasarte_oria_n_cobertura}} ({{datos.mun_lasarte_oria_tier_cobertura}}) |
+| Errenteria | Gipuzkoa | {{datos.mun_errenteria_alquiler}} € | {{datos.mun_errenteria_esfuerzo}} % | {{datos.mun_errenteria_n_cobertura}} ({{datos.mun_errenteria_tier_cobertura}}) |
+| Astigarraga | Gipuzkoa | {{datos.mun_astigarraga_alquiler}} € | {{datos.mun_astigarraga_esfuerzo}} % | {{datos.mun_astigarraga_n_cobertura}} ({{datos.mun_astigarraga_tier_cobertura}}) |
+| Basauri | Bizkaia | {{datos.mun_basauri_alquiler}} € | {{datos.mun_basauri_esfuerzo}} % | {{datos.mun_basauri_n_cobertura}} ({{datos.mun_basauri_tier_cobertura}}) |
+| Santurtzi | Bizkaia | {{datos.mun_santurtzi_alquiler}} € | {{datos.mun_santurtzi_esfuerzo}} % | {{datos.mun_santurtzi_n_cobertura}} ({{datos.mun_santurtzi_tier_cobertura}}) |
+| Portugalete | Bizkaia | {{datos.mun_portugalete_alquiler}} € | {{datos.mun_portugalete_esfuerzo}} % | {{datos.mun_portugalete_n_cobertura}} ({{datos.mun_portugalete_tier_cobertura}}) |
+| Lezo | Gipuzkoa | {{datos.mun_lezo_alquiler}} € | {{datos.mun_lezo_esfuerzo}} % | {{datos.mun_lezo_n_cobertura}} ({{datos.mun_lezo_tier_cobertura}}) |
+| Irun | Gipuzkoa | {{datos.mun_irun_alquiler}} € | {{datos.mun_irun_esfuerzo}} % | {{datos.mun_irun_n_cobertura}} ({{datos.mun_irun_tier_cobertura}}) |
 
 Los catorce tienen alquiler oficial de 2024, ninguno imputado, así que el esfuerzo es dato administrativo y no estimación: alquiler oficial de 2024 sobre renta joven de 2024. El orden es el del esfuerzo, no el del alquiler, y esa diferencia es el resultado: Barakaldo encabeza el ranking con {{datos.mun_barakaldo_esfuerzo}} % y un alquiler de {{datos.mun_barakaldo_alquiler}} €, por debajo del de Donostia ({{datos.mun_donostia_alquiler}} €). Lo que empuja el esfuerzo arriba no es el precio de la vivienda sino la renta joven: Sestao, con {{datos.mun_sestao_alquiler}} €, es el tercero del ranking.
+
+La última columna es solo cobertura: el total de anuncios de 2026 de cada municipio y su Tier entre paréntesis, el mismo color que en la figura. No es la muestra comparable de 6.5 (allí Bilbao son {{datos.mun_bilbao_n_2026}} anuncios y aquí {{datos.mun_bilbao_n_cobertura}}), y sirve para leer el otro eje del problema: Barakaldo encabeza el esfuerzo con {{datos.mun_barakaldo_n_cobertura}} anuncios, mientras Donostia lo hace con {{datos.mun_donostia_n_cobertura}}.
 
 El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en {{datos.mun_getxo_esfuerzo}} % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 

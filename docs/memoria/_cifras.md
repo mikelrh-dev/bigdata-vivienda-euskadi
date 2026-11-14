@@ -1,6 +1,6 @@
 # Cifras vigentes
 
-Generado: `2026-11-14T18:18:04+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
+Generado: `2026-11-14T19:38:44+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
 
 > No editar a mano: se regenera con `python docs/memoria/build.py --refresh`.
 
@@ -95,42 +95,70 @@ Generado: `2026-11-14T18:18:04+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 | `datos.modalidad_temporal_superficie` | 80 | mongo_modalidades.csv · mediana_superficie_m2 de temporal |
 | `datos.mun_astigarraga_alquiler` | 867 | mongo_esfuerzo_por_municipio.csv · 20903 · cuantia_alquiler_mes |
 | `datos.mun_astigarraga_esfuerzo` | 36,37 | mongo_esfuerzo_por_municipio.csv · 20903 |
+| `datos.mun_astigarraga_n_cobertura` | 0 | mongo_esfuerzo_por_municipio.csv · 20903 · n_anuncios |
+| `datos.mun_astigarraga_tier_cobertura` | D | mongo_tier_confianza.csv · 20903 · tier |
 | `datos.mun_barakaldo_alquiler` | 746 | mongo_esfuerzo_por_municipio.csv · 48013 · cuantia_alquiler_mes |
 | `datos.mun_barakaldo_esfuerzo` | 38,50 | mongo_esfuerzo_por_municipio.csv · 48013 |
+| `datos.mun_barakaldo_n_cobertura` | 6 | mongo_esfuerzo_por_municipio.csv · 48013 · n_anuncios |
+| `datos.mun_barakaldo_tier_cobertura` | C | mongo_tier_confianza.csv · 48013 · tier |
 | `datos.mun_basauri_alquiler` | 672 | mongo_esfuerzo_por_municipio.csv · 48015 · cuantia_alquiler_mes |
 | `datos.mun_basauri_esfuerzo` | 36,09 | mongo_esfuerzo_por_municipio.csv · 48015 |
+| `datos.mun_basauri_n_cobertura` | 1 | mongo_esfuerzo_por_municipio.csv · 48015 · n_anuncios |
+| `datos.mun_basauri_tier_cobertura` | C | mongo_tier_confianza.csv · 48015 · tier |
 | `datos.mun_bilbao_alquiler` | 850 | mongo_esfuerzo_por_municipio.csv · 48020 · cuantia_alquiler_mes |
 | `datos.mun_bilbao_esfuerzo` | 37,69 | mongo_esfuerzo_por_municipio.csv · 48020 |
 | `datos.mun_bilbao_esfuerzo_2026` | 98,19 | comparacion_esfuerzo_2024_2026.csv · 48020 · esfuerzo 2026 base salario |
 | `datos.mun_bilbao_n_2026` | 68 | comparacion_esfuerzo_2024_2026.csv · 48020 · n_anuncios_2026 |
+| `datos.mun_bilbao_n_cobertura` | 204 | mongo_esfuerzo_por_municipio.csv · 48020 · n_anuncios |
 | `datos.mun_bilbao_precio_2026` | 1.687,50 | comparacion_esfuerzo_2024_2026.csv · 48020 · precio mediano 2026 |
+| `datos.mun_bilbao_tier_cobertura` | A | mongo_tier_confianza.csv · 48020 · tier |
 | `datos.mun_donostia_alquiler` | 995 | mongo_esfuerzo_por_municipio.csv · 20069 · cuantia_alquiler_mes |
 | `datos.mun_donostia_esfuerzo` | 38,17 | mongo_esfuerzo_por_municipio.csv · 20069 |
 | `datos.mun_donostia_esfuerzo_2026` | 116,37 | comparacion_esfuerzo_2024_2026.csv · 20069 · esfuerzo 2026 base salario |
 | `datos.mun_donostia_n_2026` | 58 | comparacion_esfuerzo_2024_2026.csv · 20069 · n_anuncios_2026 |
+| `datos.mun_donostia_n_cobertura` | 126 | mongo_esfuerzo_por_municipio.csv · 20069 · n_anuncios |
 | `datos.mun_donostia_precio_2026` | 2.000,00 | comparacion_esfuerzo_2024_2026.csv · 20069 · precio mediano 2026 |
+| `datos.mun_donostia_tier_cobertura` | A | mongo_tier_confianza.csv · 20069 · tier |
 | `datos.mun_erandio_alquiler` | 720 | mongo_esfuerzo_por_municipio.csv · 48902 · cuantia_alquiler_mes |
 | `datos.mun_erandio_esfuerzo` | 37,65 | mongo_esfuerzo_por_municipio.csv · 48902 |
+| `datos.mun_erandio_n_cobertura` | 4 | mongo_esfuerzo_por_municipio.csv · 48902 · n_anuncios |
+| `datos.mun_erandio_tier_cobertura` | C | mongo_tier_confianza.csv · 48902 · tier |
 | `datos.mun_errenteria_alquiler` | 705 | mongo_esfuerzo_por_municipio.csv · 20067 · cuantia_alquiler_mes |
 | `datos.mun_errenteria_esfuerzo` | 36,41 | mongo_esfuerzo_por_municipio.csv · 20067 |
+| `datos.mun_errenteria_n_cobertura` | 0 | mongo_esfuerzo_por_municipio.csv · 20067 · n_anuncios |
+| `datos.mun_errenteria_tier_cobertura` | D | mongo_tier_confianza.csv · 20067 · tier |
 | `datos.mun_getxo_esfuerzo` | 28,60 | mongo_esfuerzo_por_municipio.csv · 48044 |
 | `datos.mun_getxo_esfuerzo_2026` | 78,55 | comparacion_esfuerzo_2024_2026.csv · 48044 · esfuerzo 2026 base salario |
 | `datos.mun_getxo_n_2026` | 39 | comparacion_esfuerzo_2024_2026.csv · 48044 · n_anuncios_2026 |
 | `datos.mun_getxo_precio_2026` | 1.350,00 | comparacion_esfuerzo_2024_2026.csv · 48044 · precio mediano 2026 |
 | `datos.mun_irun_alquiler` | 729 | mongo_esfuerzo_por_municipio.csv · 20045 · cuantia_alquiler_mes |
 | `datos.mun_irun_esfuerzo` | 35,44 | mongo_esfuerzo_por_municipio.csv · 20045 |
+| `datos.mun_irun_n_cobertura` | 4 | mongo_esfuerzo_por_municipio.csv · 20045 · n_anuncios |
+| `datos.mun_irun_tier_cobertura` | C | mongo_tier_confianza.csv · 20045 · tier |
 | `datos.mun_lasarte_oria_alquiler` | 766 | mongo_esfuerzo_por_municipio.csv · 20902 · cuantia_alquiler_mes |
 | `datos.mun_lasarte_oria_esfuerzo` | 36,47 | mongo_esfuerzo_por_municipio.csv · 20902 |
+| `datos.mun_lasarte_oria_n_cobertura` | 1 | mongo_esfuerzo_por_municipio.csv · 20902 · n_anuncios |
+| `datos.mun_lasarte_oria_tier_cobertura` | C | mongo_tier_confianza.csv · 20902 · tier |
 | `datos.mun_lezo_alquiler` | 702 | mongo_esfuerzo_por_municipio.csv · 20053 · cuantia_alquiler_mes |
 | `datos.mun_lezo_esfuerzo` | 35,62 | mongo_esfuerzo_por_municipio.csv · 20053 |
+| `datos.mun_lezo_n_cobertura` | 2 | mongo_esfuerzo_por_municipio.csv · 20053 · n_anuncios |
+| `datos.mun_lezo_tier_cobertura` | C | mongo_tier_confianza.csv · 20053 · tier |
 | `datos.mun_pasaia_alquiler` | 691 | mongo_esfuerzo_por_municipio.csv · 20064 · cuantia_alquiler_mes |
 | `datos.mun_pasaia_esfuerzo` | 36,87 | mongo_esfuerzo_por_municipio.csv · 20064 |
+| `datos.mun_pasaia_n_cobertura` | 2 | mongo_esfuerzo_por_municipio.csv · 20064 · n_anuncios |
+| `datos.mun_pasaia_tier_cobertura` | C | mongo_tier_confianza.csv · 20064 · tier |
 | `datos.mun_portugalete_alquiler` | 702 | mongo_esfuerzo_por_municipio.csv · 48078 · cuantia_alquiler_mes |
 | `datos.mun_portugalete_esfuerzo` | 35,65 | mongo_esfuerzo_por_municipio.csv · 48078 |
+| `datos.mun_portugalete_n_cobertura` | 5 | mongo_esfuerzo_por_municipio.csv · 48078 · n_anuncios |
+| `datos.mun_portugalete_tier_cobertura` | C | mongo_tier_confianza.csv · 48078 · tier |
 | `datos.mun_santurtzi_alquiler` | 697 | mongo_esfuerzo_por_municipio.csv · 48082 · cuantia_alquiler_mes |
 | `datos.mun_santurtzi_esfuerzo` | 36,02 | mongo_esfuerzo_por_municipio.csv · 48082 |
+| `datos.mun_santurtzi_n_cobertura` | 11 | mongo_esfuerzo_por_municipio.csv · 48082 · n_anuncios |
+| `datos.mun_santurtzi_tier_cobertura` | B | mongo_tier_confianza.csv · 48082 · tier |
 | `datos.mun_sestao_alquiler` | 650 | mongo_esfuerzo_por_municipio.csv · 48084 · cuantia_alquiler_mes |
 | `datos.mun_sestao_esfuerzo` | 38,10 | mongo_esfuerzo_por_municipio.csv · 48084 |
+| `datos.mun_sestao_n_cobertura` | 4 | mongo_esfuerzo_por_municipio.csv · 48084 · n_anuncios |
+| `datos.mun_sestao_tier_cobertura` | C | mongo_tier_confianza.csv · 48084 · tier |
 | `datos.mun_vitoria_esfuerzo` | 33,37 | mongo_esfuerzo_por_municipio.csv · 01059 |
 | `datos.mun_vitoria_esfuerzo_2026` | 75,64 | comparacion_esfuerzo_2024_2026.csv · 01059 · esfuerzo 2026 base salario |
 | `datos.mun_vitoria_n_2026` | 37 | comparacion_esfuerzo_2024_2026.csv · 01059 · n_anuncios_2026 |
