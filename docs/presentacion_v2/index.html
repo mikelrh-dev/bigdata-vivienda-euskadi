@@ -716,7 +716,7 @@ db.anuncios.aggregate([
             </tbody>
           </table>
           <p class="small" style="font-size:18.5px">Índice <span class="mono">{ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1}</span> — orden <b>ESR</b>: igualdad, orden, rango.</p>
-          <p class="small" style="margin-top:10px;font-size:18.5px">12 pipelines, <b>11 en orden de dependencia</b> y uno fuera; 8 CSV de salida. Idempotencia: upsert + único <span class="mono">(portal, id_anuncio)</span> + descarte por SHA.</p>
+          <p class="small" style="margin-top:10px;font-size:18px">12 pipelines, <b>11 en orden de dependencia</b> y uno fuera; 8 CSV de salida. <b>Idempotencia:</b> SHA en ingesta, único <span class="mono">(portal, id_anuncio)</span> y upsert con <span class="mono">renameCollection</span>. <b>Atomicidad:</b> por documento, sin transacciones multidocumento; a escala estatal, shard key <span class="mono">{codigo_ine, _id}</span>.</p>
         </div>
       </div>
       <p class="small" style="margin-top:28px;font-size:18px;max-width:118ch"><b>Recorte, no imputación:</b> lo que no pasa la puerta M1 se queda fuera y se declara. La diferencia entre 594 anuncios y 287 válidos no se esconde dentro del pipeline: se ve en la diapositiva 9.</p>
@@ -752,7 +752,13 @@ db.anuncios.aggregate([
       <div class="warn" style="margin-top:28px;max-width:100ch">
         <b>Nos tumbaría:</b> una fuente independiente con n≥30 que, en la misma ventana, mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso de los 45 en cuarentena que sí esté en Euskadi.
       </div>
-      <p class="small" style="margin-top:16px">Excepción declarada: HDFS guarda solo raw (352 canónicos + 1 manifiesto); los procesados se quedan en local por requisito del alcance. Con más datos, lo primero sería subir la muestra de los 57 Tier C y separar temporal de larga.</p>
+      <div class="grid4" style="margin-top:26px;align-items:baseline">
+        <div><span style="font-size:32px;font-weight:700">295</span><br><span class="cap">tests · 293 pasan · 2 skipped</span></div>
+        <div><span style="font-size:32px;font-weight:700">183/183</span><br><span class="cap">silver reconstruidos desde cero</span></div>
+        <div><span style="font-size:32px;font-weight:700">55/55</span><br><span class="cap">gold byte a byte</span></div>
+        <div><span style="font-size:32px;font-weight:700;color:var(--accent)">FAIL 07</span><br><span class="cap">en rojo, no imputado</span></div>
+      </div>
+      <p class="small" style="margin-top:22px">Excepción declarada: HDFS guarda solo raw (352 canónicos + 1 manifiesto); los procesados se quedan en local por requisito del alcance. Con más datos, lo primero sería subir la muestra de los 57 Tier C y separar temporal de larga.</p>
       <footer class="ft"><span class="proof">openspec/audit/v11_2026-11-12/auditoria_completa_v11.md</span><span class="proof">C18 · C19 · P-05</span></footer>
     </div>
   </section>

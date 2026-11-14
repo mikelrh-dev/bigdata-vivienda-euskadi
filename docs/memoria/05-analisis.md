@@ -38,7 +38,7 @@ Los minutos a la capital no se interpolan: se piden a OSRM para cada municipio y
 
 Hay {{mongo.pipelines}} pipelines en orden y {{mongo.pipelines_fuera_orden}} fuera del orden principal, {{mongo.pipelines_total}} en total. Los pipelines escriben {{mongo.csv_salidas}} CSV en gold. El orden importa: un pipeline que depende de otro no puede ejecutarse antes.
 
-Las etapas usadas en el código son `$match` (16), `$lookup` (17), `$unwind` (5), `$group` (4), `$project` (12), `$sort` (12) y `$addFields` (34). `$lookup` cruza anuncios con municipios; `$unwind` abre los arrays de equipamiento e histórico; `$group` resume por municipio. No se usa `$facet`: no hace falta para las preguntas del reto y añadiría una etapa que el código no necesita.
+Las etapas usadas en el código son `$match` (16), `$lookup` (17), `$unwind` (5), `$group` (4), `$project` (12), `$sort` (12), `$limit` (12) y `$addFields` (34). `$lookup` cruza anuncios con municipios; `$unwind` abre los arrays de equipamiento e histórico; `$group` resume por municipio. No se usa `$facet`: no hace falta para las preguntas del reto y añadiría una etapa que el código no necesita.
 
 ## 5.4 Un pipeline, paso a paso
 

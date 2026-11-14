@@ -585,6 +585,9 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 ## D22 · Mongo IV: aggregation y explain (15:15–15:55)
 
 - **Mensaje:** 12 pipelines, 11 en orden; uno entero, y el mismo filtro con y sin índice:
+- **Consistencia en la misma diapositiva:** idempotencia (SHA en ingesta, único
+  `(portal, id_anuncio)`, upsert con `renameCollection`), atomicidad por documento sin
+  transacciones multidocumento y shard key `{codigo_ine, _id}` si escalara.
   594 documentos examinados → 1.
 - **En pantalla (dos columnas):**
   - **Izquierda, el pipeline de indicadores en cinco bloques:** `$match` + `$lookup` a
@@ -618,6 +621,8 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 ## D23 · Lo que sostenemos y lo que no (15:55–17:05)
 
 - **Mensaje:** sabemos qué afirmamos, qué no y qué nos tumbaría.
+- **Tira de KPIs al pie:** 295 tests (293 pasan, 2 skipped) · 183/183 silver · 55/55 gold
+  · **FAIL 07 en rojo**, no imputado. Es la prueba de C8 y C16 sin diapositiva propia.
 - **En pantalla (dos columnas):**
   - **Sostenemos:** 4 municipios con n≥30 y su esfuerzo; 40/159 > 30 %; Bilbao/Donostia
     ~38 % en 2024 y 98/116 % en 2026; el 87,3 % como nivel de la capa 2026, no como mapa.
@@ -678,15 +683,15 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 | C5 Fuentes + campo común | 4, 8 |
 | C6 2+ colecciones + relación | 4, 19 |
 | C7 Limpieza | 7, 18, 19 |
-| C8 Automatización | 9, 15, 16 |
+| C8 Automatización | 9, 15, 16, 23 |
 | C9 Modelado justificado | 19, B1 |
 | C10 CRUD | 20, B2 |
 | C11 Consultas | 20, 21, B2 |
 | C12 Aggregation | 22 |
 | C13 Índices/explain | 20, 22 |
-| C14 Consistencia | sin diapositiva (B2, si preguntan) |
+| C14 Consistencia | 22 |
 | C15 Heterogéneos | 4, 8, 10, 16, B5 |
-| C16 Automatización análisis | 7, 16 |
+| C16 Automatización análisis | 7, 16, 23 |
 | C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, B5 |
 | C18 Respuesta | 2, 5, 6, 13 |
 | C19 Visualización | 5, 6, 7, 13, 15, 16, 17, B6 |
