@@ -1,6 +1,6 @@
 # Cifras vigentes
 
-Generado: `2026-11-14T17:47:15+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
+Generado: `2026-11-14T18:00:03+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
 
 > No editar a mano: se regenera con `python docs/memoria/build.py --refresh`.
 
