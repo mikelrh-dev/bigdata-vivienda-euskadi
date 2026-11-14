@@ -123,6 +123,8 @@ figuras:
 # se quedan con la versión anterior (pasó con H2, H8 y P).
 sincronizacion:
   deck:
+    - H1_ranking_esfuerzo_18_34.png
+    - C_vpo_por_estado.png
     - H5_vpo_terminadas_por_mil.png
     - S_serie_vpo_2004_2024.png
     - H10_tension_vs_esfuerzo.png

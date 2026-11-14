@@ -197,6 +197,56 @@ def main() -> int:
     add("40 de 159", f"{int((of['esfuerzo_joven_pct_18_34'] > 30).sum())} de 159")
     add("47 de 252", f"{int((mun['esfuerzo_joven_pct_18_34'] > 30).sum())} de 252")
 
+    # ---------- Ranking 2024 (slide 07) ----------
+    cmp = pd.read_csv(
+        RES / "comparacion_esfuerzo_2024_2026.csv", encoding="utf-8-sig", dtype={"codigo_ine": str}
+    )
+    ranking = {str(r["nombre_canonico"]): r for _, r in cmp.iterrows()}
+    for nombre, etiqueta in (
+        ("Barakaldo", "Barakaldo"),
+        ("Donostia / San Sebastián", "Donostia"),
+        ("Sestao", "Sestao"),
+    ):
+        fila = ranking[nombre]
+        # El simbolo va en un `unit` span (38,5<span>%</span>) o en texto (38,2 %):
+        # se comprueba la cifra sola, que es la que viene del CSV.
+        add(
+            f"{etiqueta} esfuerzo 2024",
+            es(fila["esfuerzo_2024_canonico_pct_18_34"]),
+        )
+        add(
+            f"{etiqueta} alquiler 2024",
+            f"{es(fila['cuantia_media_eur_mes_mediana'], 0)} €",
+        )
+    add("ranking 14 filas", f"<b>14</b> que pasan del 35 %", raw=True)
+
+    # ---------- VPO (slide 10) ----------
+    vpo_term = pd.read_csv(
+        RES / "mongo_vpo_terminadas_por_municipio.csv", encoding="utf-8-sig"
+    )
+    add("VPO municipios con dato", f"{len(vpo_term)} municipios con dato")
+    add(
+        "VPO municipios en cero",
+        f"{int((vpo_term['vpo_terminadas_por_mil'] == 0).sum())} en cero",
+    )
+    vpo_prom = pd.read_csv(RES / "mongo_vpo_por_municipio.csv", encoding="utf-8-sig")
+    add("VPO promociones", f"{int(vpo_prom['n_promociones'].sum())}</b>, en {vpo_prom['codigo_ine'].nunique()} municipios", raw=True)
+    add("VPO sin viviendas", f"{int(vpo_prom['n_promociones'].sum())} de {int(vpo_prom['n_promociones'].sum())}", raw=True)
+    # Serie Udalmap: la fila CAE resume Euskadi; el CSV llega en formato ancho.
+    wide = pd.read_csv(
+        ROOT / "data" / "raw" / "udalmap_vpo_terminadas.csv",
+        encoding="latin-1",
+        sep=";",
+        header=None,
+    )
+    cae = wide[wide[0].astype(str).str.strip() == "CAE"].iloc[0]
+    serie = dict(zip([str(x) for x in wide.iloc[3, 2:].tolist()], cae[2:].tolist()))
+    for anio in ("2024", "2011"):
+        add(
+            f"VPO CAE {anio}",
+            f"{es(float(str(serie[anio]).replace(',', '.')), 1)} ‰",
+        )
+
     # ---------- Validacion SERPAVI (slide 7) ----------
     # Solo los municipios con alquiler oficial en ambos registros: incluir la
     # fila sin oficial movia Spearman de 0,988 a 0,979.
