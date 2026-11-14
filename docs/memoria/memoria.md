@@ -317,22 +317,25 @@ La colección de habitaciones se puede usar, pero no tal cual. Son 201 anuncios 
 
 El corte deja 140 anuncios utilizables y descarta 60 (30,0 %), que son precisamente los pisos enteros colados en la sección. Con ese conjunto, la mediana de una habitación en Euskadi es de 545 €/mes, el 31,7 % del salario joven de 2026. Por municipios, Bilbao queda en 580 € (80 anuncios, 33,7 %), Donostia en 600 € (29, 34,9 %), Barakaldo en 500 €, Vitoria-Gasteiz en 400 € y Getxo en 560 €.
 
+![Precio de habitación y esfuerzo](figuras/fig-habitaciones.png){width=15cm}\
+*Figura 6.7. Precio de habitación por municipio y distribución de los 140 anuncios utilizables, ya sin los pisos enteros que el portal lista en la sección de vivienda compartida. El ranking exige n≥10 y el color separa la muestra firme (n≥30) de la indicativa. Fuente: `data/resultados/H6_habitaciones_mediana_rango.png`.*
+
 La comparación con el piso entero es el resultado que importa: en Bilbao una habitación cuesta 580 € frente a los 850 € del alquiler mediano de vivienda, un 31,8 % menos; en Donostia, 600 € frente a 995 €, un 39,7 % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con esos precios el esfuerzo se queda en el 33,7 % y el 34,9 %, por encima del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30 anuncios utilizables, Donostia se queda en 29 y el resto es indicativo, sin ranking municipal.
 
 El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene 4 municipios, el B 3, el C 57 y el D 188. Solo 7 llegan a A o B, y de ellos los 4 del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
 ![Tier de confianza](figuras/fig-tier.png){width=12cm}\
-*Figura 6.7. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
+*Figura 6.8. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
 
 La cobertura se mide en población joven, no en municipios: los 50 municipios con dato son el 19,84 % del total, pero concentran el 71,21 % de la población de 18 a 34 años (334.753 personas). Los 4 municipios del Tier A reúnen el 70,38 % de los anuncios. La capa no es todo el territorio, pero cubre a la mayoría de la población joven.
 
 ![Cobertura de la capa 2026](figuras/fig-cobertura-2026.png){width=13cm}\
-*Figura 6.8. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
+*Figura 6.9. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
 
 ## 6.5 O3. La capa 2026: qué dice el esfuerzo
 
 ![Mapa de oferta 2026](figuras/fig-mapa-2026.png){width=15cm}\
-*Figura 6.9. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
+*Figura 6.10. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
 
 El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven de 2024 ajustado por IPC: el numerador es de 2026 y el denominador se actualiza para no mezclar años. En los cuatro municipios con muestra suficiente el resultado no admite duda de signo:
 
@@ -344,19 +347,19 @@ El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven 
 | Vitoria-Gasteiz | 37 | 33,37 % | 1.300,00 € | 75,64 % |
 
 ![Esfuerzo 2026 y su muestra](figuras/fig-ranking-2026.png){width=15cm}\
-*Figura 6.10. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
+*Figura 6.11. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
 
 Donostia (116,37 %) y Bilbao (98,19 %) ponen el alquiler de anuncio por encima del salario joven mensual: trabajar no cubre el alquiler. Getxo y Vitoria-Gasteiz se quedan en 78,55 % y 75,64 %. Santurtzi, Zarautz y Sopela, con 4 a 8 anuncios comparables, no entran en la comparación y se leen como indicativo.
 
 ![Histograma de esfuerzo 2026](figuras/fig-hist-2026.png){width=13cm}\
-*Figura 6.11. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
+*Figura 6.12. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
 
 La mediana de la capa es 78,55 % con el salario ajustado y 57,77 % con la renta de 2024 como denominador. En esos mismos 50 municipios, la mediana oficial de 2024 era 30,70 % y la base salario de 2024, 44,57 %. No son comparables: cambia el numerador (anuncio frente a contrato) y, en la primera cifra, también el denominador.
 
 Por tipo, la mediana es 78,55 % para 1–2 habitaciones (123 anuncios), 81,95 % para 3 (94) y 116,37 % para 4 o más (60). El esfuerzo sube con el tamaño. La cifra de 4+ no describe el precio típico de una persona sola.
 
 ![Diferencia de nivel 2024 a 2026](figuras/fig-brecha-2026.png){width=15cm}\
-*Figura 6.12. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
+*Figura 6.13. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
 
 La distancia entre las dos capas se puede medir sin restarlas como serie: en los 7 municipios con al menos 5 anuncios, la diferencia de nivel mediana es de 52,7 puntos porcentuales. Parte de esa distancia es el cambio de fuente y parte es el tipo de vivienda: la superficie mediana del anuncio es de 90,0 m² y la del alquiler registrado, de 80,7 m². Un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando.
 

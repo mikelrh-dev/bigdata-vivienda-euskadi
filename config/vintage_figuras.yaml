@@ -136,6 +136,7 @@ sincronizacion:
     - hist_esfuerzo_18_34_umbral30.png
     - mapa_coroplastico_esfuerzo_18_34.png
   memoria:
+    fig-habitaciones.png: data/resultados/H6_habitaciones_mediana_rango.png
     fig-mapa-2024.png: data/resultados/mapa_coroplastico_esfuerzo_18_34.png
     fig-ranking-2024.png: data/resultados/H1_ranking_esfuerzo_18_34.png
     fig-tier.png: data/resultados/H2_tier_confianza_ABCD.png
