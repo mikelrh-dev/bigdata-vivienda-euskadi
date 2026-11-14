@@ -272,28 +272,30 @@ def main() -> int:
     modal = pd.read_csv(RES / "mongo_modalidades.csv", encoding="utf-8-sig")
     n_mod = {str(r["modalidad"]): int(r["n"]) for _, r in modal.iterrows()}
     n_2026 = n_mod["larga_estancia"] + n_mod["temporal"]
-    add(
-        "contexto 2026 total",
-        f'<div class="big xs">{n_2026}</div><div class="cap">anuncios de 2026',
-        raw=True,
-    )
-    add(
-        "contexto validos",
-        f'<div class="big xs">{len(v)}</div><div class="cap">válidos tras calidad',
-        raw=True,
-    )
+    # La 11 se reconstruyo con la figura de los cuatro: el contexto del embudo
+    # va en una linea de texto, no en tres cifras grandes.
+    add("contexto 594", f"{n_2026} anuncios de 2026")
+    add("contexto 287", f"{len(v)} válidos")
     n_cuatro = int(
         mercado.loc[
             mercado["codigo_ine"].isin(["48020", "20069", "48044", "01059"]),
             _col(mercado, "n_precio"),
         ].sum()
     )
+    add("contexto cuatro municipios", f"reúnen {n_cuatro}")
+    add("contexto resto", f"{len(v) - n_cuatro} válidos")
+    cob_pob = pd.read_csv(RES / "cobertura_representatividad_2026.csv", encoding="utf-8-sig")
     add(
-        "contexto cuatro municipios",
-        f'<div class="big xs">{n_cuatro}</div><div class="cap">de los {len(v)} válidos',
-        raw=True,
+        "cobertura poblacion",
+        f"{es(float(cob_pob.loc[cob_pob['metrica'] == 'pct_poblacion_18_34_cubierta', 'valor'].iloc[0]))} %",
     )
-    add("contexto resto", f"{len(v) - n_cuatro} anuncios válidos")
+    tier_conteo = tier.groupby("tier").size().to_dict()
+    add(
+        "tier conteos",
+        "A {} , B {} , C {} , D {}".format(
+            tier_conteo.get("A"), tier_conteo.get("B"), tier_conteo.get("C"), tier_conteo.get("D")
+        ).replace(" ,", ","),
+    )
 
     resumen = pd.read_csv(RES / "comparacion_esfuerzo_2024_2026_resumen.csv", encoding="utf-8-sig")
     for metrica in ("esfuerzo_2024_base_salario_pct_18_34", "esfuerzo_2026_base_renta2024_pct_18_34"):

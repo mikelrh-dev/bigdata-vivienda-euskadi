@@ -334,7 +334,10 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
           <p class="small" style="margin-top:20px"><b>98,3 %</b> de los 287 anuncios supera el 30 % del salario joven.</p>
           <div class="warn" style="margin-top:14px;font-size:20px">43 de los 50 municipios tienen n&lt;5 y solo 4 tienen n≥30: el 78,6 % se defiende como nivel agregado, <b>no como mapa municipal</b>. Esos <b>50/252</b> municipios con dato cubren el <b>71,2 %</b> de los jóvenes de 18 a 34 y el <b>70,4 %</b> de los anuncios está en cuatro.</div>
         </div>
-        <div class="fig"><img src="assets/M26_hist_esfuerzo_mercado.png" alt="Histograma esfuerzo mercado 2026" style="max-height:560px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">M26 · esfuerzo de mercado 2026 · 50 municipios con anuncio</div></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="fig"><img src="assets/M26_hist_esfuerzo_mercado.png" alt="Histograma esfuerzo mercado 2026" style="max-height:360px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">M26 · esfuerzo de mercado 2026 · 50 municipios con anuncio</div></div>
+          <div class="fig"><img src="assets/M26_cobertura.png" alt="Cobertura de la capa 2026 por población de 18 a 34" style="max-height:235px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">M26 · cobertura por población 18-34, no por municipios · 71,2 % del total</div></div>
+        </div>
       </div>
       <footer class="ft"><span class="proof">data/procesado/esfuerzo_mercado_2026.csv · validacion_portales_2026.csv</span><span class="proof">C17 · C19</span></footer>
     </div>
@@ -365,32 +368,27 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
   <section class="slide">
     <div class="pad">
       <header class="hd"><span class="kicker">C · 2026, la capa de oferta</span><span class="pg">11 / 23</span></header>
-      <h2>Solo cuatro municipios sostienen comparación firme (n ≥ 30).</h2>
-      <div class="grid2" style="grid-template-columns:1.52fr .48fr;gap:40px;align-items:start">
+      <h2>Solo cuatro municipios sostienen comparación firme<br>(n ≥ 30).</h2>
+      <div class="grid2" style="grid-template-columns:1.18fr .82fr;gap:44px;align-items:center">
+        <div class="fig"><img src="assets/M26_ranking_esfuerzo_muestra_2026.png" alt="Esfuerzo 2026 de los cuatro municipios con n mayor o igual a 30" style="max-height:500px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">M26 · esfuerzo 2026 (anuncio de larga estancia / salario 2026) · esfuerzo de anuncio 2026 de los cuatro del Tier A, ordenado, con su n comparable · sin umbral dibujado: el 30 % es de 2024</div></div>
         <div>
           <table class="s compact">
-            <thead><tr><th>Municipio</th><th>n comparable</th><th>Esfuerzo 2024</th><th>Precio 2026</th><th>Esfuerzo 2026</th><th>Paro 2024</th></tr></thead>
+            <thead><tr><th>Municipio</th><th>2024</th><th>2026</th><th>n</th></tr></thead>
             <tbody>
-              <tr><td>Bilbao</td><td>68</td><td>37,69 %</td><td>1.687,50 €</td><td>98,19 %</td><td>9,71 %</td></tr>
-              <tr><td>Donostia / San Sebastián</td><td>58</td><td>38,17 %</td><td>2.000,00 €</td><td>116,37 %</td><td>5,82 %</td></tr>
-              <tr><td>Getxo</td><td>39</td><td>28,60 %</td><td>1.350,00 €</td><td>78,55 %</td><td>6,40 %</td></tr>
-              <tr><td>Vitoria-Gasteiz</td><td>37</td><td>33,37 %</td><td>1.300,00 €</td><td>75,64 %</td><td>8,89 %</td></tr>
+              <tr><td>Bilbao</td><td>37,69 %</td><td>98,19 %</td><td>68</td></tr>
+              <tr><td>Donostia / San Sebastián</td><td>38,17 %</td><td>116,37 %</td><td>58</td></tr>
+              <tr><td>Getxo</td><td>28,60 %</td><td>78,55 %</td><td>39</td></tr>
+              <tr><td>Vitoria-Gasteiz</td><td>33,37 %</td><td>75,64 %</td><td>37</td></tr>
             </tbody>
           </table>
-          <p class="small" style="margin-top:18px;font-size:19px">Cada columna va fechada porque viene de una capa distinta: el esfuerzo 2024 es alquiler oficial; el precio y el esfuerzo 2026 son anuncio; el paro es Udalmap 2024 general 16-64. El n comparable es larga estancia con precio: el Tier A suma <b>204/126/50/39</b> y el bootstrap de la 7 usa 67/60 por el filtro de superficie.</p>
-          <div class="grid3" style="gap:26px;margin-top:34px">
-            <div><div class="big xs">594</div><div class="cap">anuncios de 2026: <b>326</b> de larga estancia y <b>268</b> temporales, antes de calidad</div></div>
-            <div><div class="big xs">287</div><div class="cap">válidos tras calidad: larga estancia con precio, en 50 municipios</div></div>
-            <div><div class="big xs">202</div><div class="cap">de los 287 válidos están aquí: <b>70,4 %</b> de la capa de oferta</div></div>
+          <div class="warn" style="margin-top:16px;font-size:19px">
+            Getxo y Vitoria se separan en <b>2 anuncios</b> comparables (39 frente a 37): no hay podio 3.º/4.º. <b>Barakaldo, con n=2</b>, no se lee como ranking: cualquier mediana municipal es ruido.
           </div>
-          <p class="small" style="margin-top:26px;font-size:19px;max-width:80ch">La tabla no es una muestra del mapa: reúne el <b>70,4 %</b> de la capa 2026. Los otros 46 municipios se reparten <b>85</b> anuncios válidos.</p>
-        </div>
-        <div>
-          <div class="warn" style="font-size:20px">Getxo vs Vitoria: <b>2 anuncios</b> de diferencia. Sin podio 3º/4º.<br><br>Barakaldo, con <b>n=2</b>, no se lee como ranking: cualquier mediana municipal es ruido.</div>
-          <p class="small" style="margin-top:20px;font-size:19px">Es la única tabla donde las dos capas se tocan. Aquí sí hay muestra; en el resto del mapa, no.</p>
+          <p class="small" style="margin-top:14px;font-size:18px">El 2024 es alquiler oficial sobre renta 2024; el 2026, anuncio sobre salario 2026: <b>diferencia de nivel, no serie</b>. El n es larga estancia con precio; el Tier A suma 204/126/50/39.</p>
         </div>
       </div>
-      <footer class="ft"><span class="proof">esfuerzo_mercado_2026.csv · comparativa_3_municipios_mongo.csv</span><span class="proof">C18 · C17</span></footer>
+      <p class="small" style="margin-top:12px">De <b>594</b> anuncios de 2026 a <b>287</b> válidos: estos cuatro reúnen <b>202</b> (70,4 % de la capa). Los otros 46 municipios se reparten <b>85</b> válidos.</p>
+      <footer class="ft"><span class="proof">esfuerzo_mercado_2026.csv · mongo_tier_confianza.csv · comparacion_esfuerzo_2024_2026.csv</span><span class="proof">C17 · C18</span></footer>
     </div>
   </section>
 
@@ -725,13 +723,13 @@ db.anuncios.find(
   </section>
 
   <!-- ============================================================ -->
-  <!-- BACKUP · B1-B9                                               -->
+  <!-- BACKUP · B1-B10                                              -->
   <!-- ============================================================ -->
 
   <!-- B1 MODELADO -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B1 Modelado</span><span class="pg">B1 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B1 Modelado</span><span class="pg">B1 / 11</span></header>
       <h2>Las 7 preguntas del Tema 8.</h2>
       <div class="grid2" style="font-size:21px;line-height:1.45">
         <div>
@@ -753,7 +751,7 @@ db.anuncios.find(
   <!-- B2 CONTEOS -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B2 Conteos auditados</span><span class="pg">B2 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B2 Conteos auditados</span><span class="pg">B2 / 11</span></header>
       <h2>Los números, en crudo.</h2>
       <div class="grid3" style="font-size:22px;line-height:1.65">
         <div><b>Datos</b><br>355 SHA · 357 ficheros en disco<br>352 canónicos + 3 legado<br>353 objetos en HDFS (352 + 1 manifiesto)<br>183 silver · 42 CSV<br>594 anuncios (326 larga + 268 temporal)<br>64 municipios con anuncio<br>287 válidos en 50 municipios<br>201 habitaciones / 9 municipios<br>5.040 solicitudes · 406 promociones</div>
@@ -767,7 +765,7 @@ db.anuncios.find(
   <!-- B3 HDFS Y KAFKA -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B3 HDFS y Kafka</span><span class="pg">B3 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B3 HDFS y Kafka</span><span class="pg">B3 / 11</span></header>
       <h2>Lo que está verificado y lo que hoy no.</h2>
       <ul class="clean" style="font-size:22px;max-width:82ch">
         <li><b>Inventario HDFS (2026-11-12):</b> 353 objetos, 895.597.901 B; <span class="mono">/data/raw</span> con 202 hijos; <span class="mono">/data/procesado</span> responde 404 por la excepción declarada.</li>
@@ -782,7 +780,7 @@ db.anuncios.find(
   <!-- B4 HABITACIONES -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B4 Habitaciones</span><span class="pg">B4 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B4 Habitaciones</span><span class="pg">B4 / 11</span></header>
       <h2>Habitación vs vivienda entera.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
         <div class="fig"><img src="assets/H6_habitaciones_mediana_rango.png" alt="Ranking y distribución de habitaciones"><div class="cap">H6 · 2026 · solo precios plausibles (por debajo del alquiler mediano de vivienda del municipio); ranking n≥10 con IC95; n&lt;10 fuera de ranking</div></div>
@@ -800,7 +798,7 @@ db.anuncios.find(
   <!-- B5 MODALIDADES -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B5 Modalidades</span><span class="pg">B5 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B5 Modalidades</span><span class="pg">B5 / 11</span></header>
       <h2>Temporal y larga estancia: mismo alquiler, distinto metro.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;align-items:center">
         <div class="fig"><img src="assets/H8b_modalidad_mediana_eur_m2.png" alt="Temporal vs larga: mediana mensual y por m²"><div class="cap">H8b · 2026 · mediana €/mes y €/m² por modalidad (594 anuncios)</div></div>
@@ -817,7 +815,7 @@ db.anuncios.find(
   <!-- B6 VPO, promociones -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B6 VPO, promociones</span><span class="pg">B6 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B6 VPO, promociones</span><span class="pg">B6 / 11</span></header>
       <h2>El registro da estado, no viviendas.</h2>
       <div class="grid2" style="grid-template-columns:1.4fr .6fr;gap:40px;align-items:center">
         <div class="fig"><img src="assets/C_vpo_por_estado.png" alt="Promociones de VPO por estado de obra"><div class="cap">C · promociones VPO por estado de obra (registro Etxebide, sin año único) · 406 promociones en 77 municipios</div></div>
@@ -835,7 +833,7 @@ db.anuncios.find(
   <!-- B6b VPO serie -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B6b VPO, serie</span><span class="pg">B6b / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B6b VPO, serie</span><span class="pg">B6b / 11</span></header>
       <h2>La VPO terminada se ha dividido por cuatro.</h2>
       <div class="fig"><img src="assets/S_serie_vpo_2004_2024.png" alt="VPO terminada por mil habitantes, 2004-2024, Euskadi y los tres territorios históricos"><div class="cap">S · VPO terminada por mil habitantes, 2004-2024 (Udalmap 73, edición 2024) · ventana móvil de 5 años</div></div>
       <p class="small" style="margin-top:8px">Euskadi: <b>11,5 ‰</b> en 2011 → <b>2,7 ‰</b> en 2024. Cada punto resume los cinco años anteriores: no es el flujo de un año suelto. Araba/Álava va en panel propio, con su escala, porque su tasa llega a <b>40,1 ‰</b> y en la escala común aplastaría a las demás series.</p>
@@ -846,7 +844,7 @@ db.anuncios.find(
   <!-- B7 OFICIAL VS ANUNCIOS -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B7 Oficial vs anuncios</span><span class="pg">B7 / 11</span></header>
       <h2>El alquiler oficial y el de anuncio no son lo mismo.</h2>
       <div class="grid2" style="grid-template-columns:1.45fr .55fr;align-items:center">
         <div class="fig"><img src="assets/P_oficial_vs_anuncios_por_TH.png" alt="Cuantía oficial vs anuncios por territorio"><div class="cap">P · cuantía oficial 2024 vs anuncios 2026 por TH — ratio 1,96; Spearman 0,18</div></div>
@@ -859,7 +857,7 @@ db.anuncios.find(
   <!-- B8 DOS MAPAS 2026 -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B8 Dos mapas 2026</span><span class="pg">B8 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B8 Dos mapas 2026</span><span class="pg">B8 / 11</span></header>
       <h2>Cuánto cuesta y cuánto sabemos.</h2>
       <div class="grid2" style="grid-template-columns:1fr 1fr;gap:40px;align-items:start">
         <div class="fig"><img src="assets/M26_mapa_coropletico_2026.png" alt="Mapa coroplético esfuerzo mercado 2026"><div class="cap">esfuerzo de mercado 2026 por municipio · gris = sin anuncio</div></div>
@@ -873,7 +871,7 @@ db.anuncios.find(
   <!-- B9 AUDITORÍA: SERPAVI + BOOTSTRAP -->
   <section class="slide">
     <div class="pad">
-      <header class="hd"><span class="kicker">Backup · B9 Auditoría</span><span class="pg">B9 / 10</span></header>
+      <header class="hd"><span class="kicker">Backup · B9 Auditoría</span><span class="pg">B9 / 11</span></header>
       <h2>El dato oficial aguanta la auditoría externa.</h2>
       <div class="grid2" style="grid-template-columns:1.02fr .98fr;gap:44px;align-items:start">
         <div>
@@ -901,6 +899,24 @@ db.anuncios.find(
         </div>
       </div>
       <footer class="ft"><span class="proof">validacion_alquiler_2024_serpavi.csv · bootstrap_robustos.csv</span><span class="proof">C8 · C19 · C18</span></footer>
+    </div>
+  </section>
+
+  <!-- B10 TIER -->
+  <section class="slide">
+    <div class="pad">
+      <header class="hd"><span class="kicker">Backup · B10 Tier</span><span class="pg">B10 / 11</span></header>
+      <h2>El Tier mide la muestra, no el mérito.</h2>
+      <div class="grid2" style="grid-template-columns:1.3fr .7fr;gap:44px;align-items:center">
+        <div class="fig"><img src="assets/H2_tier_confianza_ABCD.png" alt="Municipios por Tier de confianza" style="max-height:600px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">H2 · municipios por Tier de confianza (252) · A 4, B 3, C 57, D 188 · sobre los anuncios de 2026</div></div>
+        <div>
+          <p class="small">El Tier se deriva solo del número de anuncios: <b>A ≥ 30</b>, <b>B 10–29</b>, <b>C 1–9</b>, <b>D sin anuncios</b>.</p>
+          <p class="small" style="margin-top:14px">Solo <b>7</b> municipios llegan a A o B, y los <b>4</b> del Tier A son los que sostienen el ranking.</p>
+          <p class="small" style="margin-top:14px">El <b>n</b> de la barra es menor que el del Tier porque exige larga estancia con precio: Bilbao <b>68</b> frente a <b>204</b>; Donostia <b>58</b> frente a <b>126</b>.</p>
+          <div class="warn" style="margin-top:16px;font-size:19px">D no es «asequible»: es <b>sin dato</b>. No se rellena.</div>
+        </div>
+      </div>
+      <footer class="ft"><span class="proof">mongo_tier_confianza.csv</span><span class="proof">C17</span></footer>
     </div>
   </section>
 

@@ -6,14 +6,14 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 ## Qué hay aquí
 
 - `guion.md` — guion oral slide por slide, con cifras, gráficas, backups y mapa de rúbrica.
-- `index.html` — deck completo, **23 diapositivas + 9 de backup**, en cuatro actos:
+- `index.html` — deck completo, **23 diapositivas + 11 de backup**, en cuatro actos:
   2024 oficial → 2026 de oferta → cómo se construyó → límites y cierre. Estilo
   **Swiss Modern**, una sola página, CSS/JS inline, sin red: se abre con doble clic.
 - `assets/` — PNG portables. Los del bloque 2026 salen de
   `visuals/assets_presentacion_esfuerzo_mercado_2026.py` (lee los CSV de
   `data/procesado`, no teclea cifras): top20 con IC, histograma, territorio,
   tipología, diferencia de nivel, intervalos, cobertura y los dos mapas.
-- `presentacion_v2.pdf` — exportación a 1920×1080, 33 páginas (23 + 10 backups).
+- `presentacion_v2.pdf` — exportación a 1920×1080, 34 páginas (23 + 11 backups).
 - H8b (`H8b_modalidad_mediana_eur_m2.png`) se genera en `run_analisis_mongo.py` desde
   `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` y `mediana_superficie_m2`
   por modalidad. Gold pasa a 53/53.
@@ -126,7 +126,7 @@ Invocación en el agente: skill `frontend-slides`. El flujo del skill es:
 
 **A · Swiss Modern**: papel `#F5F4F0`, tinta `#121212`, acento bermellón `#C8451B`, rejilla
 visible, titulares en Bahnschrift (fallback DIN / Helvetica), cifras tabulares y figuras
-enmarcadas con pie mono. Los backups van numerados `B1…B8` para no confundirlos con las 22.
+enmarcadas con pie mono. Los backups van numerados `B1…B10` para no confundirlos con las 23.
 
 ## Reglas para no romper lo que ya funciona
 
