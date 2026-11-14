@@ -210,19 +210,38 @@ La carga no usa una transacción multi-documento: cada colección se reemplaza c
 
 Cada indicador tiene fórmula, fuente y límite documentados. El esfuerzo es el principal; los demás explican por qué un municipio no se puede rankear con la misma confianza que otro.
 
-## 5.2 Pipelines
+## 5.2 Los proxys, uno a uno
+
+El indicador necesita dos números que no están publicados: lo que gana una persona joven en cada municipio y el alquiler donde Eustat no publica. Los dos se construyen, y cómo se construyen forma parte del resultado.
+
+| Proxy | Cómo se construye | Fuente | Qué se pierde |
+|---|---|---|---|
+| Renta joven 18-34 | renta neta media por hogar × 56,9 %, el ratio 18-34 de la CAE ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para cada uno de los tres siguientes) | INE Atlas de la Renta 2024 y Eustat renta por edad | es renta de hogar, no salario individual; el ratio es autonómico |
+| Salario de 2026 | salario neto joven de 2024 que publica el OVJ, actualizado con el IPC medio del INE (107,2 en 2024 y 117,8 en 2026), que deja 1.719 € al mes | OVJ (Irekia) e INE | constante autonómica: no permite ordenar municipios por salario |
+| Alquiler de los 93 | IDW con los 5 municipios oficiales más cercanos y peso 1/d², con d haversine entre centroides | Eustat alquiler y centroides municipales | no es precio observado: nunca entra en la conclusión |
+| Accesibilidad | minutos de conducción reales a la capital, municipio a municipio | OSRM sobre OpenStreetMap | no mide transporte público ni el viaje real de cada persona |
+
+La renta municipal está completa en los 252 municipios, con renta de hogar del Atlas del INE y renta personal de Eustat en la misma fila. El denominador del esfuerzo es siempre renta de hogar por ratio, nunca renta personal: las dos familias que calcula el pipeline —la fiscal, sobre renta personal, y la salarial— quedan en el CSV como columnas de contraste y no alimentan el indicador canónico.
+
+El salario, en cambio, es una sola cifra para toda la comunidad. Por eso el orden municipal lo mueve la renta y no el salario, y por eso el escalón entre los municipios industriales de la ría y los de renta alta se lee con la renta: el salario es el mismo en Sestao y en Getxo.
+
+El alquiler imputado existe para medir cuánto depende el resultado de él, no para publicarlo: con los 252 municipios la mediana del esfuerzo es 25,37 % y con los 159 oficiales, 26,61 %. La cifra que se defiende es siempre la segunda.
+
+Los minutos a la capital no se interpolan: se piden a OSRM para cada municipio y se guardan con el resto de la capa. La distancia en línea recta solo se usa en el IDW, donde lo que importa es la proximidad y no el viaje.
+
+## 5.3 Pipelines
 
 Hay 11 pipelines en orden y 1 fuera del orden principal, 12 en total. Los pipelines escriben 8 CSV en gold. El orden importa: un pipeline que depende de otro no puede ejecutarse antes.
 
 Las etapas usadas en el código son `$match` (16), `$lookup` (17), `$unwind` (5), `$group` (4), `$project` (12), `$sort` (12) y `$addFields` (34). `$lookup` cruza anuncios con municipios; `$unwind` abre los arrays de equipamiento e histórico; `$group` resume por municipio. No se usa `$facet`: no hace falta para las preguntas del reto y añadiría una etapa que el código no necesita.
 
-## 5.3 Un pipeline, paso a paso
+## 5.4 Un pipeline, paso a paso
 
 `pipeline_indicadores_municipio` empieza en `municipios` (252 documentos), hace `$lookup` a `anuncios` por `ubicacion.codigo_ine`, filtra anuncios con `precio_m2` válido y superficie entre 10 y 500 m², ordena los precios por m² y calcula la mediana winsorizada al percentil 1–99. El `precio_medio_eur` excluye los valores fuera de 1,5·IQR por municipio. La mediana cruda no se usa para conclusiones.
 
 `pipeline_tier_por_municipio` deriva el tier solo de `n_anuncios`: A ≥30, B 10–29, C 1–9, D 0. En C y D, `n_precio`, mínimo, máximo y mediana se ponen a cero o nulo por diseño: hay precio, pero no muestra suficiente para publicarlo como estadística municipal.
 
-## 5.4 Índices y `explain`
+## 5.5 Índices y `explain`
 
 La comprobación es explícita. El filtro es `ubicacion.codigo_ine = "20069"`, `modalidad = "larga_estancia"` y `precio_eur ≤ 1000`. Antes, forzando `hint={"$natural": 1}`, el plan es `COLLSCAN`: 1 documento devuelto y 594 examinados. Después, con el índice ESR, es `IXSCAN`: 1 documento devuelto, 1 examinado y 1 clave leída. El índice evita examinar 593 documentos que no cumplen el filtro.
 
@@ -436,6 +455,10 @@ Quedan cinco deudas: dos índices 2026 sin crear, dos colecciones de habitacione
 
 - La renta es media, no salario juvenil municipal.
 - El alquiler oficial no cubre todos los municipios; la interpolación no crea evidencia.
+- El ratio de edad es autonómico: la renta joven de un municipio se mueve con su renta, no con su estructura de edad.
+- El campo `nivel_geografico` de las filas imputadas dice `comarcal` por herencia del nombre; el método es distancia entre centroides, no una media de comarca.
+- El IPC de 2026 es la media anual disponible en el corte, no el cierre del año.
+- El área funcional se asigna por el centroide del municipio: uno que cruce dos áreas se queda con la del centro.
 - Los anuncios no representan el parque completo ni el alquiler regulado.
 - La capa 2026 y la 2024 no son comparables como serie temporal.
 - La VPO es flujo de promoción, no stock disponible.
@@ -479,7 +502,10 @@ Tres mejoras pendientes: completar los dos índices 2026, unificar las coleccion
 | Silver | CSV normalizado y cruzado por `codigo_ine` |
 | Gold | CSV y PNG listos para el informe |
 | Tier | Nivel de confianza A/B/C/D según cobertura y muestra |
-| IDW | Interpolación por distancia inversa para municipios sin alquiler oficial |
+| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d² |
+| Proxy | Estimación construida desde un dato disponible cuando el exacto no está publicado |
+| Ratio 18-34 | Proporción entre la renta media de 18 a 34 años y la renta media total de la CAE, ponderada por la anchura de cada tramo |
+| Haversine | Distancia en línea recta entre dos puntos de la esfera a partir de sus coordenadas |
 | Esfuerzo | Porcentaje de la renta que consume el alquiler |
 
 ## B. Fragmentos de código

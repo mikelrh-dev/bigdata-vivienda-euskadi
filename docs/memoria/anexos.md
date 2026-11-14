@@ -10,7 +10,10 @@
 | Silver | CSV normalizado y cruzado por `codigo_ine` |
 | Gold | CSV y PNG listos para el informe |
 | Tier | Nivel de confianza A/B/C/D según cobertura y muestra |
-| IDW | Interpolación por distancia inversa para municipios sin alquiler oficial |
+| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d² |
+| Proxy | Estimación construida desde un dato disponible cuando el exacto no está publicado |
+| Ratio 18-34 | Proporción entre la renta media de 18 a 34 años y la renta media total de la CAE, ponderada por la anchura de cada tramo |
+| Haversine | Distancia en línea recta entre dos puntos de la esfera a partir de sus coordenadas |
 | Esfuerzo | Porcentaje de la renta que consume el alquiler |
 
 ## B. Fragmentos de código

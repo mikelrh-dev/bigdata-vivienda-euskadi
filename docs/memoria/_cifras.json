@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T20:08:05+00:00",
+    "generado_utc": "2026-11-14T21:09:08+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -795,6 +795,31 @@
       "valor": "vivienda_euskadi",
       "formato": "str",
       "fuente": "KafkaAdminClient.describe_topics · 2026-11-13"
+    },
+    "metodo.idw_vecinos": {
+      "valor": 5,
+      "formato": "int",
+      "fuente": "completar_alquiler_comarca.py · K_VECINOS"
+    },
+    "metodo.ipc_2024": {
+      "valor": 107.2,
+      "formato": "1d",
+      "fuente": "ipc_ine_2024_2026.csv · 2024"
+    },
+    "metodo.ipc_2026": {
+      "valor": 117.8,
+      "formato": "1d",
+      "fuente": "ipc_ine_2024_2026.csv · 2026"
+    },
+    "metodo.ratio_18_34_pct": {
+      "valor": 56.916627228641026,
+      "formato": "1d",
+      "fuente": "renta_joven_estimada_18_34 / renta_hogar · analisis_variables_base.csv"
+    },
+    "metodo.salario_2026": {
+      "valor": 1719,
+      "formato": "int",
+      "fuente": "esfuerzo_mercado_2026.csv · salario_joven_2026_ajustado_18_34_eur_mes"
     },
     "mongo.anuncios_docs": {
       "valor": 594,
