@@ -1,4 +1,4 @@
-# Guion — Presentación v3 (26 diapositivas + 8 backups)
+# Guion — Presentación v3 (27 diapositivas + 8 backups)
 
 **Duración objetivo:** 19:00 · **Recorte a 12:00** al final.
 **Público:** tribunal SBD + BDA (perfil técnico, poco tiempo, mucha pregunta).
@@ -10,7 +10,7 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 > **Cifras congeladas (2026-11-13).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **352 canónicos +
 > 3 legado** · **353 objetos en HDFS** (352 + 1 manifiesto) · **183 silver** · **55 gold**
-> (24 CSV + 31 PNG) · **17 colecciones vivas + 15 backup = 32** · **25 índices** ·
+> (24 CSV + 31 PNG) · **17 colecciones vivas + 15 backup = 32** · **8 índices de trabajo (25 con los `_id`)** ·
 > **295 tests** (293 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
 > **78,6 % municipal** · **87,3 % de anuncio** · **1.350 € mediana de medianas
 > municipales** · **1.500 € mediana de anuncios** · **1.719 € salario joven ajustado**.
@@ -24,7 +24,7 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 ## Estructura y tiempos
 
 | # | Diapositiva | Inicio | Fin | Acto |
-|---|---|---|---:|---|
+|---|---|---:|---:|---|
 | 1 | La pregunta | 0:00 | 0:30 | Apertura |
 | 2 | La respuesta en dos capas | 0:30 | 1:50 | Apertura |
 | 3 | Cómo se mide | 1:50 | 2:40 | 2024, el ancla |
@@ -34,20 +34,24 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 | 7 | El ranking de 2024 | 5:20 | 6:15 | 2024, el ancla |
 | 8 | De dónde sale el 2026 | 6:15 | 6:50 | 2026, la oferta |
 | 9 | El resultado de 2026 | 6:50 | 7:35 | 2026, la oferta |
-| 10 | La vía protegida: VPO | 7:35 | 8:20 | 2026, la oferta |
-| 12 | Los cuatro municipios robustos | 8:20 | 9:20 | 2026, la oferta |
-| 13 | Esfuerzo por tipología | 9:20 | 9:40 | 2026, la oferta |
-| 14 | Diferencia de nivel 2024 vs 2026 | 9:40 | 10:10 | 2026, la oferta |
-| 15 | Compartir: habitación vs piso | 10:10 | 10:50 | 2026, la oferta |
-| 15 | Arquitectura: ingesta, Kafka, HDFS y medallion | 10:50 | 11:50 | Cómo se construyó |
-| 16 | Mongo I: modelado documental | 11:50 | 12:45 | Cómo se construyó |
-| 17 | Mongo II: CRUD y consultas | 12:45 | 13:35 | Cómo se construyó |
-| 18 | Mongo III: aggregation e índices | 13:35 | 14:25 | Cómo se construyó |
-| 19 | Consistencia e idempotencia | 14:25 | 15:10 | Cómo se construyó |
-| 20 | Calidad y quality gate | 15:10 | 16:00 | Cómo se construyó |
-| 21 | Síntesis: qué dicen juntas las dos capas | 16:00 | 17:05 | Límites y cierre |
-| 22 | Lo que sostenemos y lo que no | 17:05 | 17:20 | Límites y cierre |
-| 23 | Cierre | 17:20 | 17:35 | Límites y cierre |
+| 10 | Temporal y larga estancia | 7:35 | 8:05 | 2026, la oferta |
+| 11 | La vía protegida: VPO | 8:05 | 8:50 | 2026, la oferta |
+| 12 | La serie de la VPO | 8:50 | 9:20 | 2026, la oferta |
+| 13 | Los cuatro municipios robustos | 9:20 | 10:10 | 2026, la oferta |
+| 14 | Esfuerzo por tipología | 10:10 | 10:30 | 2026, la oferta |
+| 15 | Diferencia de nivel 2024 vs 2026 | 10:30 | 11:05 | 2026, la oferta |
+| 16 | Habitaciones: muestra y ranking | 11:05 | 11:35 | 2026, la oferta |
+| 17 | Compartir: habitación vs piso | 11:35 | 12:15 | 2026, la oferta |
+| 18 | Arquitectura: ingesta, Kafka, HDFS y medallion | 12:15 | 13:15 | Cómo se construyó |
+| 19 | Mongo I: modelado documental | 13:15 | 13:55 | Cómo se construyó |
+| 20 | Mongo II: colecciones e índices | 13:55 | 14:35 | Cómo se construyó |
+| 21 | Mongo III: consultas de negocio | 14:35 | 15:15 | Cómo se construyó |
+| 22 | Mongo IV: aggregation y explain | 15:15 | 15:55 | Cómo se construyó |
+| 23 | Consistencia e idempotencia | 15:55 | 16:35 | Cómo se construyó |
+| 24 | Calidad y quality gate | 16:35 | 17:25 | Cómo se construyó |
+| 25 | Síntesis: qué dicen juntas las dos capas | 17:25 | 18:30 | Límites y cierre |
+| 26 | Lo que sostenemos y lo que no | 18:30 | 18:45 | Límites y cierre |
+| 27 | Cierre | 18:45 | 19:00 | Límites y cierre |
 
 La charla son dos historias separadas —primero 2024 oficial, después 2026 de oferta— y
 solo al final se explica cómo se construyó. La 11 es el puente: la única tabla donde las
@@ -55,6 +59,11 @@ dos capas se tocan, y va **después** del embudo para que el precio no aparezca 
 La 7 cierra el acto oficial con el ranking municipal; la 10 mete la vía protegida dentro
 del acto de oferta y la 14, ya al final, cierra con las habitaciones. Límites y cierre van
 al final, no en medio.
+
+El bloque Mongo son **cinco diapositivas en 3:20** (40 s cada una): modelado, colecciones e
+índices, tres consultas, un pipeline con su explain y consistencia. Si el reloj aprieta,
+D20 se queda en la lista de índices y D22 en la tabla del explain; el modelado y las tres
+consultas no se tocan, porque son las que enseñan lo que el tribunal va a buscar.
 
 ---
 
@@ -467,7 +476,7 @@ al final, no en medio.
   revalidado hoy. La evidencia funcional es la de v8: 352/352, lag 0.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
 
-## D19 · Mongo I: modelado documental (13:15–14:10)
+## D19 · Mongo I: modelado documental (13:15–13:55)
 
 - **Mensaje:** lo que se lee junto se embebe; lo que crece sin límite se referencia por la
   clave natural `codigo_ine`.
@@ -506,48 +515,85 @@ al final, no en medio.
   rompería el límite de 16 MB. Y una precisión que importa: el `_id` del municipio no es un
   ObjectId, es el código INE de cinco dígitos; por eso `ubicacion.codigo_ine` apunta a
   `municipios._id` y la relación es una clave natural, no un puntero opaco.»
-- **Transición:** «Y con eso, consultas y agregaciones.»
+- **Transición:** «Esas decisiones dan 17 colecciones: las pongo en pantalla con sus índices.»
 
-## D20 · Mongo II: CRUD y consultas (14:10–15:00)
+## D20 · Mongo II: colecciones e índices (13:55–14:35)
 
-- **Mensaje:** 30 consultas útiles y CRUD completo, con comprobación por código; nada se
-  edita a mano en Mongo.
-- **En pantalla (dos columnas):**
-  - **CRUD:** `insert_one/many`, `find`, `update_one`, `find_one_and_update`, `upsert`,
-    `$unset`, `$rename`, `$pull`, `bulk_write`, `delete_one/many`. Cada operación comprueba
-    `inserted_id`, `matched_count`, `modified_count` o `deleted_count`.
-  - **30 consultas:** dot notation, `$all`, `$elemMatch`, `$size`, `$exists`, `$type`,
-    regex, comparación, `$and/$or`, proyección, `sort/limit`, paginación.
-  - **Ejemplo real:** una consulta con campo anidado, array, dos condiciones, proyección y
-    orden.
-- **Código (derecha):**
-  ```python
-  db.anuncios.find(
-      {
-          "ubicacion.codigo_ine": "48020",
-          "equipamiento": {"$all": ["ascensor", "terraza"]},
-          "precio_eur": {"$lte": 1200},
-      },
-      {"_id": 0, "precio_eur": 1, "ubicacion.municipio": 1},
-  ).sort({"precio_eur": 1}).limit(5)
-  ```
-- **Footer:** `analysis/mongo_queries.py · storage/clean_mongo.py` | `C10 · C11 · T2`.
+- **Mensaje:** 17 colecciones en tres familias y 8 índices de trabajo; lo que falta, dicho
+  por nosotros antes de que lo pregunte el tribunal.
+- **En pantalla (dos columnas + pie):**
+  - **Izquierda, tres familias con sus nombres y tamaños:**
+    - **Núcleo municipal (5):** `municipios` 252, `indicadores` 252, `alquiler_municipal`
+      252, `esfuerzo_mercado_2026` 252, `vpo_municipal` 252.
+    - **Oferta y demanda (6):** `anuncios` 594, `anuncios_habitaciones_unificados` 201 +
+      `…_bigdata` 201, `etxebide_solicitudes` 5.040, `etxebide_promociones` 406,
+      `certificados_energeticos` 252.
+    - **Contexto (6):** `udalmap_indicadores`, `udalmap_empleo`, `udalmap_extendido` (252
+      cada una), `osrm_tiempos` 252, `ecvi_compraventa` 29, `emancipacion_juventud` 1.
+  - **Derecha, los 8 índices con su consulta:** `anuncios` ESR
+    `(codigo_ine, modalidad, precio_eur)`; `anuncios` `2dsphere (ubicacion.coordenadas)`;
+    `anuncios` único `(portal, id_anuncio)`; `anuncios` multikey `(equipamiento)`;
+    `municipios` `(territorio, nombre_canonico)`; `alquiler_municipal`
+    `(codigo_ine, distrito, nivel_geografico)`; `etxebide_promociones`
+    `(codigo_ine, estado_obra, tipologia)`; `certificados_energeticos` `(cert_moda)`.
+  - **Pie:** **25** contando los 17 `_id`; **2 definidos sin crear**
+    (`idx_esfuerzo_2026_pct_18_34`, `idx_esfuerzo_2026_ter_nombre`) y
+    `etxebide_solicitudes` (5.040) sin índice secundario. **CRUD comprobado:**
+    `insert / find / update_one / find_one_and_update / upsert / $unset / $rename / $pull /
+    bulk_write / delete`, cada uno mirando `inserted_id`, `matched_count`,
+    `modified_count` o `deleted_count`.
+- **Footer:** `analysis/mongo_indexes.py · analysis/mongo_queries.py · storage/clean_mongo.py`
+  | `C10 · C11 · C13 · T2`.
+- **Rúbrica:** C10, C11, C13, T2.
+- **Nota oral:** «Diecisiete colecciones, y no todas pesan lo mismo: cinco son el núcleo
+  municipal con un documento por municipio; seis son oferta y demanda, donde están los 594
+  anuncios y las 5.040 solicitudes de Etxebide; seis son contexto. Ocho índices, cada uno
+  con la consulta que lo justifica: el ESR de anuncios, el `2dsphere` de coordenadas, el
+  único de portal e id que nos da la idempotencia, el multikey de equipamiento y cuatro más
+  en municipios, alquiler, promociones y certificados. Si cuentan los `_id`, son 25; los
+  `_id` los pone Mongo, no los diseñamos nosotros. Y dos índices que están definidos en el
+  código y no creados en la instancia: no cambian ninguna consulta que hagamos hoy, así que
+  los declaro deuda en vez de contarlos como hechos.»
+- **Transición:** «Con el mapa en la cabeza, tres consultas que responden al reto.»
+
+## D21 · Mongo III: consultas de negocio (14:35–15:15)
+
+- **Mensaje:** tres consultas que responden preguntas del reto, no tres ejercicios de
+  operadores; las otras 30 viven en código con su assert.
+- **En pantalla (tres columnas, código + resultado):**
+  1. **`$lookup` · ¿dónde pesa más el alquiler?** Cruza `municipios` con `anuncios` y con
+     `alquiler_municipal`, calcula `esfuerzo = cuantía × 12 / renta 18-34 × 100` y filtra
+     `n≥30`. Resultado: **Donostia 38,17 · Bilbao 37,69 · Vitoria 33,37 · Getxo 28,60**.
+  2. **`$group` · ¿en qué estado está la VPO?** `347 terminadas · 39 en curso · 19 en
+     convenio · 1 en proyecto = 406`. `viviendas` vuelve 0: `num_viviendas` está vacío en
+     las 406, y por eso la VPO se cuenta como promociones y no como stock.
+  3. **`$geoNear` · ¿qué hay a 5 km del centro?** Radio de 5.000 m sobre
+     `ubicacion.coordenadas`; 594 anuncios con coordenadas y el plan resuelto por
+     `2dsphere`, no por COLLSCAN.
+- **Pie:** las otras 30 consultas (`$all`, `$elemMatch`, `$size`, `$exists`, `$type`, regex,
+  `$and/$or`, paginación determinista) están en `analysis/mongo_queries.py` con su assert.
+- **Footer:** `analysis/mongo_queries.py · analysis/mongo_aggregations.py` | `C10 · C11 · T2`.
 - **Rúbrica:** C10, C11, T2.
-- **Nota oral:** «Las consultas responden preguntas, no son ejercicios: esfuerzo,
-  accesibilidad, VPO, habitaciones. Esta de la derecha tiene todo lo que pide la rúbrica:
-  campo anidado, array con `$all`, dos condiciones, proyección, orden y límite. El CRUD se
-  comprueba por código: no basta con lanzar el update, miramos `matched_count` y
-  `modified_count`. Y la carga es staging, backup y rename atómico: nadie edita a mano en
-  Mongo.»
-- **Transición:** «¿Y cómo sabemos que el índice se usa?»
+- **Nota oral:** «Tres consultas, tres preguntas. La primera es la del reto: cuánto pesa el
+  alquiler en la renta joven. Cruza municipios con anuncios y con alquiler, calcula el
+  esfuerzo y se queda solo con los municipios que tienen muestra suficiente: Donostia,
+  Bilbao, Vitoria y Getxo. La segunda cuenta las promociones de Etxebide por estado: 347
+  terminadas, 39 en curso, 19 en convenio y una en proyecto. Fíjense en un detalle honesto:
+  la suma de viviendas devuelve cero porque el campo viene vacío en las 406; por eso la VPO
+  se cuenta como promociones, no como stock. La tercera usa el índice geoespacial: un radio
+  de cinco kilómetros sobre las coordenadas, que es lo que justifica el `2dsphere`.»
+- **Transición:** «Y el pipeline completo, con el explain al lado.»
 
-## D21 · Mongo III: aggregation e índices (15:00–15:50)
+## D22 · Mongo IV: aggregation y explain (15:15–15:55)
 
-- **Mensaje:** 11 pipelines con 8 etapas; un índice convierte 594 documentos examinados en 1.
+- **Mensaje:** 12 pipelines, 11 en orden; uno entero, y el mismo filtro con y sin índice:
+  594 documentos examinados → 1.
 - **En pantalla (dos columnas):**
-  - **Izquierda:** 11 pipelines; 8 etapas (`$match`, `$group`, `$lookup`, `$unwind`,
-    `$project`, `$sort`, `$limit`, `$addFields`); `$lookup` cruza `anuncios` y
-    `municipios` por `codigo_ine`; `$group` calcula medianas y conteos.
+  - **Izquierda, el pipeline de indicadores en cinco bloques:** `$match` + `$lookup` a
+    `anuncios` y `alquiler_municipal`; puerta M1 (`precio_m2` 3–50, `superficie_m2` 10–500,
+    habitaciones enteras); `$sortArray` + `$arrayElemAt` para los cuantiles (**la mediana es
+    por documento, sin `$group`**); winsorización p1–p99 antes de la mediana e IQR para el
+    precio medio; `tier` y `estado` (n≥30 rankeable).
   - **Derecha (explain):**
 
 | Filtro `20069` + larga + ≤1.000 € | Docs | Claves |
@@ -555,19 +601,23 @@ al final, no en medio.
 | Sin índice · COLLSCAN | 594 | 0 |
 | Con ESR · IXSCAN | 1 | 1 |
 
-  - Índice `{ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1}`; orden ESR: igualdad,
-    orden, rango. **25 índices** en total; 5 en `anuncios` (ESR, `2dsphere`, único
-    `(portal, id_anuncio)`, multikey `equipamiento`).
-- **Footer:** `analysis/mongo_aggregations.py · mongo_indexes.py` | `C12 · C13 · T3 · T4`.
+  - Índice `{ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1}`; orden ESR. 12
+    pipelines (11 en orden, uno fuera), 8 CSV de salida. 8 etapas distintas
+    (`$match $lookup $unwind $group $project $sort $limit $addFields`) y operadores
+    (`$filter $map $cond $sortArray`). `$facet` no se usa: ninguna pregunta pide dos
+    salidas en una pasada.
+- **Footer:** `analysis/mongo_aggregations.py · analysis/mongo_indexes.py` | `C12 · C13 · T3 · T4`.
 - **Rúbrica:** C12, C13, T3, T4.
-- **Nota oral:** «Los pipelines responden preguntas, no son ejercicios: esfuerzo, VPO,
-  accesibilidad, habitaciones. El de la derecha es el mismo filtro con y sin índice: antes
-  Mongo examina 594 documentos, después 1. El orden ESR importa: igualdad por municipio,
-  orden por modalidad, rango por precio. Y no forzamos una transacción que el modelo no
-  necesita: la atomicidad de un documento y el índice único ya garantizan la idempotencia.»
-- **Transición:** «¿Cómo sabemos que no está roto?»
+- **Nota oral:** «Doce pipelines, once en orden de dependencia. El de indicadores cabe en
+  cinco decisiones: cruzar municipio con su oferta y su alquiler; filtrar lo que no es un
+  anuncio válido; ordenar los precios por metro dentro de cada documento con `$sortArray`
+  —aquí no hay `$group`, la mediana se calcula por documento—; recortar el 1 % y el 99 %
+  antes de la mediana, que es recorte y no imputación; y marcar el tier, porque con menos de
+  30 anuncios no ordenamos. Y la prueba del índice: el mismo filtro sin índice examina 594
+  documentos y ninguna clave; con el ESR examina uno y una.»
+- **Transición:** «¿Y cómo sabemos que no está roto?»
 
-## D22 · Consistencia e idempotencia (15:50–16:35)
+## D23 · Consistencia e idempotencia (15:55–16:35)
 
 - **Mensaje:** consistencia sin sobreingeniería: atomicidad de documento, tres barreras de
   idempotencia y una shard key razonada, no implementada.
@@ -592,7 +642,7 @@ al final, no en medio.
   la shard key sería el código INE más el `_id`, no el `_id` solo.»
 - **Transición:** «¿Y cómo sabemos que el dato no miente?»
 
-## D23 · Calidad y quality gate (16:35–17:25)
+## D24 · Calidad y quality gate (16:35–17:25)
 
 - **Mensaje:** no es una demo: es un sistema que se reconstruye y que falla cuando debe.
 - **En pantalla (cuatro KPIs + caja warn):**
@@ -616,7 +666,7 @@ al final, no en medio.
 
 # Acto 4 — Límites y cierre
 
-## D24 · Síntesis: qué dicen juntas las dos capas (17:25–18:30)
+## D25 · Síntesis: qué dicen juntas las dos capas (17:25–18:30)
 
 - **Mensaje:** las dos capas no se restan; se leen juntas. Una dice dónde es estructural,
   la otra cuánto cuesta entrar hoy.
@@ -638,7 +688,7 @@ al final, no en medio.
   subido un 34 %: son fuentes distintas.»
 - **Transición:** «¿Qué sostenemos y qué nos tumbaría?»
 
-## D25 · Lo que sostenemos y lo que no (18:30–18:45)
+## D26 · Lo que sostenemos y lo que no (18:30–18:45)
 
 - **Mensaje:** sabemos qué afirmamos, qué no y qué nos tumbaría.
 - **En pantalla (dos columnas):**
@@ -661,7 +711,7 @@ al final, no en medio.
   primero sería subir la muestra de los 57 Tier C y separar temporal de larga en todo.»
 - **Transición:** «Una frase y abrimos preguntas.»
 
-## D26 · Cierre (18:45–19:00)
+## D27 · Cierre (18:45–19:00)
 
 - **Mensaje:** cerrar con la misma frase del principio, sin añadir nada nuevo.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; en el mercado
@@ -680,7 +730,7 @@ al final, no en medio.
 | # | Tema | Qué enseñar |
 |---|---|---|
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
-| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 25 índices / 295 tests |
+| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 8 índices de trabajo (25 con los `_id`) / 295 tests |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
 | B4 | VPO, promociones | `C_vpo_por_estado.png`; 406 promociones en 77 municipios por estado de obra; 406 de 406 sin `NumViviendas`; solo las terminadas traen sorteo (2001-2014), así que no se puede contar stock disponible |
 | B5 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; ratio 1,96 y Spearman 0,18: no comparable |
@@ -697,22 +747,22 @@ al final, no en medio.
 | C1 Extracción API + scraping | 4, 8, 18 |
 | C2 HDFS | 18, B3 |
 | C3 Kafka | 18, B3 |
-| C4 Integración | 18, 20 |
+| C4 Integración | 18, 19 |
 | C5 Fuentes + campo común | 4, 8 |
 | C6 2+ colecciones + relación | 4, 19 |
 | C7 Limpieza | 7, 18, 19 |
-| C8 Automatización | 9, 15, 16, 23 |
+| C8 Automatización | 9, 15, 16, 24 |
 | C9 Modelado justificado | 19, B1 |
 | C10 CRUD | 20, B2 |
-| C11 Consultas | 20, B2 |
-| C12 Aggregation | 21 |
-| C13 Índices/explain | 21 |
-| C14 Consistencia | 22 |
+| C11 Consultas | 20, 21, B2 |
+| C12 Aggregation | 22 |
+| C13 Índices/explain | 20, 22 |
+| C14 Consistencia | 23 |
 | C15 Heterogéneos | 4, 8, 10, 16, B5 |
-| C16 Automatización análisis | 7, 16, 23 |
-| C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, 24, B5 |
-| C18 Respuesta | 2, 5, 6, 13, 24 |
-| C19 Visualización | 5, 6, 7, 13, 15, 16, 17, 24, B6 |
+| C16 Automatización análisis | 7, 16, 24 |
+| C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, 25, B5 |
+| C18 Respuesta | 2, 5, 6, 13, 25 |
+| C19 Visualización | 5, 6, 7, 13, 15, 16, 17, 25, B6 |
 | T1–T7 | 19, 20, 21, 22, 23, B1–B3 |
 
 ---
@@ -751,7 +801,8 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 - **Cada figura lleva su año** (sello en el PNG y pie): 2024 oficial, 2026 oferta.
   Si es mixta, se dice «no comparable» en voz alta; nunca se presenta como serie.
 - **Nunca** decir «Docker», «759», «182 silver», «54/65/40», «62/252», «84,4 % con y sin»,
-  «2,0×», «15 colecciones vivas», «24 índices», «63/63», «287 tests», «54/54» ni
+  «2,0×», «15 colecciones vivas», «24 índices», «25 índices», «11 pipelines», «63/63»,
+  «287 tests», «54/54» ni
   «corrida real OK».
 - Decir «no lo sabemos» siempre que aparezca gris.
 - Distinguir siempre: **78,6 % municipal** · **87,3 % anuncio** · **1.350 € mediana de
@@ -762,12 +813,12 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 
 ## Recorte a 12 minutos
 
-1. Fusionar 16 y 17 (modelo + CRUD) en una sola diapositiva técnica.
-2. Fusionar 18 y 19 (aggregation + consistencia) en otra.
+1. Fusionar 20 y 21 (colecciones + consultas) en una sola diapositiva técnica.
+2. Fusionar 22 y 23 (aggregation + consistencia) en otra.
 3. 10 (VPO) a 30 s: la cifra, el sello de fecha y seguir.
 4. 4 y 14 a 40 s cada una.
 5. 12 y 13 a 20 s cada una, o citarlas de palabra.
-6. Mantener 2, 9, 11, 15, 20, 22 y 23.
+6. Mantener 2, 9, 11, 15, 17, 25 y 27.
 
 ## Comprobar que el deck no se ha desincronizado
 
