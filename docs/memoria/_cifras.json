@@ -922,9 +922,9 @@
       "fuente": "data/procesado/manifest_sha256.txt · líneas"
     },
     "verif.deck_checks": {
-      "valor": 41,
+      "valor": 115,
       "formato": "int",
-      "fuente": "scripts/verificar_cifras_deck.py · 2026-11-13"
+      "fuente": "scripts/verificar_cifras_deck.py · 2026-11-14"
     },
     "verif.gobernanza_cabeceras": {
       "valor": 53,

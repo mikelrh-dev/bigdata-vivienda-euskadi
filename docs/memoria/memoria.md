@@ -233,7 +233,7 @@ Los minutos a la capital no se interpolan: se piden a OSRM para cada municipio y
 
 Hay 11 pipelines en orden y 1 fuera del orden principal, 12 en total. Los pipelines escriben 8 CSV en gold. El orden importa: un pipeline que depende de otro no puede ejecutarse antes.
 
-Las etapas usadas en el código son `$match` (16), `$lookup` (17), `$unwind` (5), `$group` (4), `$project` (12), `$sort` (12) y `$addFields` (34). `$lookup` cruza anuncios con municipios; `$unwind` abre los arrays de equipamiento e histórico; `$group` resume por municipio. No se usa `$facet`: no hace falta para las preguntas del reto y añadiría una etapa que el código no necesita.
+Las etapas usadas en el código son `$match` (16), `$lookup` (17), `$unwind` (5), `$group` (4), `$project` (12), `$sort` (12), `$limit` (12) y `$addFields` (34). `$lookup` cruza anuncios con municipios; `$unwind` abre los arrays de equipamiento e histórico; `$group` resume por municipio. No se usa `$facet`: no hace falta para las preguntas del reto y añadiría una etapa que el código no necesita.
 
 ## 5.4 Un pipeline, paso a paso
 
@@ -474,7 +474,7 @@ El proyecto describe asociaciones territoriales, no relaciones causales. Un esfu
 | Tests | `pytest -q tests` | 293 passed, 2 skipped (295 recogidos) |
 | Gobernanza | `python scripts/verificar_gobernanza.py` | 53 cabeceras, 49 ids, 47 scripts, 40 nodos |
 | Manifiestos | `python scripts/run_pipeline.py --check` | 355 raw + 183 silver, 0 errores |
-| Deck | `python scripts/verificar_cifras_deck.py` | 41/41 |
+| Deck | `python scripts/verificar_cifras_deck.py` | 115/115 |
 | Memoria | `python docs/memoria/build.py --check` | tokens y figuras resueltos |
 | HDFS | `python scripts/hdfs_recuperacion_un_fichero.py` | `HDFS_REC OK SHA_TAMANO_IGUALES` |
 | Índices | `python analysis/mongo_indexes.py` | `COLLSCAN` 594 → `IXSCAN` 1 |

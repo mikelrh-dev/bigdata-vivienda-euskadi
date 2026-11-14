@@ -75,7 +75,7 @@ MANUAL_DEFAULT = {
     "verif.gobernanza_ids": (49, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
     "verif.gobernanza_scripts": (47, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
     "verif.gobernanza_dag": (40, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
-    "verif.deck_checks": (41, "int", "scripts/verificar_cifras_deck.py · 2026-11-13"),
+    "verif.deck_checks": (115, "int", "scripts/verificar_cifras_deck.py · 2026-11-14"),
 }
 
 GROUP_LABELS = {

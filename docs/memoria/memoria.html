@@ -654,12 +654,12 @@ Los pipelines escriben 8 CSV en gold. El orden importa: un pipeline que
 depende de otro no puede ejecutarse antes.</p>
 <p>Las etapas usadas en el código son <code>$match</code> (16),
 <code>$lookup</code> (17), <code>$unwind</code> (5), <code>$group</code>
-(4), <code>$project</code> (12), <code>$sort</code> (12) y
-<code>$addFields</code> (34). <code>$lookup</code> cruza anuncios con
-municipios; <code>$unwind</code> abre los arrays de equipamiento e
-histórico; <code>$group</code> resume por municipio. No se usa
-<code>$facet</code>: no hace falta para las preguntas del reto y
-añadiría una etapa que el código no necesita.</p>
+(4), <code>$project</code> (12), <code>$sort</code> (12),
+<code>$limit</code> (12) y <code>$addFields</code> (34).
+<code>$lookup</code> cruza anuncios con municipios; <code>$unwind</code>
+abre los arrays de equipamiento e histórico; <code>$group</code> resume
+por municipio. No se usa <code>$facet</code>: no hace falta para las
+preguntas del reto y añadiría una etapa que el código no necesita.</p>
 <h2 id="un-pipeline-paso-a-paso">5.4 Un pipeline, paso a paso</h2>
 <p><code>pipeline_indicadores_municipio</code> empieza en
 <code>municipios</code> (252 documentos), hace <code>$lookup</code> a
@@ -1370,7 +1370,7 @@ ordena la evidencia; no es una medida de calidad de vida.</p>
 <tr>
 <td>Deck</td>
 <td><code>python scripts/verificar_cifras_deck.py</code></td>
-<td>41/41</td>
+<td>115/115</td>
 </tr>
 <tr>
 <td>Memoria</td>
