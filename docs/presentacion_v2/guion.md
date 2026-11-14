@@ -235,7 +235,9 @@ al final, no en medio.
   - Caja warn: 43 de los 50 municipios tienen n<5; solo 4 tienen n≥30. El 78,6 % se
     defiende como nivel agregado, **no como mapa municipal**. Los 50/252 cubren el 71,2 %
     de los jóvenes y el 70,4 % de los anuncios está en cuatro.
-- **Gráfica:** `M26_hist_esfuerzo_mercado.png` (esfuerzo 2026).
+- **Gráficas:** `M26_hist_esfuerzo_mercado.png` (esfuerzo 2026) y, debajo,
+  `M26_cobertura.png` (cobertura de población joven por territorio: Bizkaia 78,0 %,
+  Araba 75,1 %, Gipuzkoa 58,5 %, total 71,2 %).
 - **Evidencia:** `data/procesado/esfuerzo_mercado_2026.csv`, `validacion_portales_2026.csv`.
 - **Rúbrica:** C17, C19.
 - **Nota oral:** «Esta es la capa de oferta. Limpiamos los diez anuncios que nuestro propio
@@ -269,33 +271,37 @@ al final, no en medio.
 
 ## D11 · Los cuatro municipios robustos (8:20–9:20)
 
-- **Mensaje:** cuatro municipios sostienen la comparación; el orden 3º/4º es frágil y lo decimos.
-- **En pantalla (tabla, cada columna fechada):**
+- **Mensaje:** de los 287 anuncios válidos, 202 están en cuatro municipios con n ≥ 30; ahí
+  el esfuerzo 2026 pasa del 75 % en todos y el orden 3º/4º no se puede sostener.
+- **En pantalla:**
+  - Figura `M26_ranking_esfuerzo_muestra_2026.png`: cuatro barras, Donostia **116,4 %**,
+    Bilbao **98,2 %**, Getxo **78,6 %**, Vitoria **75,6 %**, con su **n** en la etiqueta
+  - Tabla compacta de cuatro filas (municipio · n · esfuerzo 2024 · esfuerzo 2026):
 
-| Municipio | n comparable | Esfuerzo 2024 | Precio 2026 | Esfuerzo 2026 | Paro 2024 |
-|---|---:|---:|---:|---:|---:|
-| Bilbao | 68 | 37,69 % | 1.687,50 € | 98,19 % | 9,71 % |
-| Donostia / San Sebastián | 58 | 38,17 % | 2.000,00 € | 116,37 % | 5,82 % |
-| Getxo | 39 | 28,60 % | 1.350,00 € | 78,55 % | 6,40 % |
-| Vitoria-Gasteiz | 37 | 33,37 % | 1.300,00 € | 75,64 % | 8,89 % |
+| Municipio | n | Esfuerzo 2024 | Esfuerzo 2026 |
+|---|---:|---:|---:|
+| Bilbao | 68 | 37,69 % | 98,19 % |
+| Donostia / San Sebastián | 58 | 38,17 % | 116,37 % |
+| Getxo | 39 | 28,60 % | 78,55 % |
+| Vitoria-Gasteiz | 37 | 33,37 % | 75,64 % |
 
-  - Contexto de la capa: **594** anuncios 2026 (326 larga + 268 temporal) → **287** válidos
-    → **202** aquí (70,4 %); los otros 46 municipios se reparten 85
-  - Getxo vs Vitoria: **2 anuncios comparables** de diferencia (39 frente a 37; el Tier A
-    suma 50 frente a 39) → sin ranking firme 3º/4º
-  - **Barakaldo: n=2** → cualquier mediana municipal es ruido, no ranking
-  - **Vintages distintos:** esfuerzo 2024 = alquiler oficial; precio y esfuerzo 2026 =
-    anuncio; paro = Udalmap 2024 general 16-64
-- **Gráfica:** ninguna; la tabla y las cajas son el argumento. (El gráfico de IC vive en B9.)
+  - Caja de fragilidad: Getxo vs Vitoria, **2 anuncios** de diferencia → sin podio 3º/4º;
+    Barakaldo con **n=2** no se lee como ranking
+  - Nota de embudo en una línea: **594** anuncios 2026 → **287** válidos → **202** aquí
+    (**70,4 %** de la capa); los otros 46 municipios se reparten **85**
+  - **Dos capas, dos fechas:** esfuerzo 2024 = alquiler oficial; esfuerzo 2026 = anuncio.
+    Es la única tabla donde las dos capas se tocan
+- **Gráfica:** `M26_ranking_esfuerzo_muestra_2026.png` (muestra 2026, n por municipio).
 - **Evidencia:** `esfuerzo_mercado_2026.csv`, `comparativa_3_municipios_mongo.csv`,
-  `pipeline_indicadores_municipio`.
-- **Rúbrica:** C18 (núcleo), C17.
-- **Nota oral:** «Bilbao y Donostia están en el 38 % con la muestra más grande. Getxo está
-  por debajo del 30 % pero por 1,4 puntos, y solo tiene 11 anuncios más que Vitoria: no
-  convertimos eso en un podio. Barakaldo, con dos anuncios, no se lee como ranking. Lo que
-  sí decimos: en Bilbao la tensión es precio más paro; en Donostia es precio puro, con el
-  paro más bajo, y el esfuerzo de anuncio se va al 116 % del salario. Y ojo: cada columna
-  viene de una capa distinta. Esta es la única tabla donde las dos capas se tocan.»
+  `mongo_tier_confianza.csv`, `pipeline_indicadores_municipio`.
+- **Rúbrica:** C18 (núcleo), C17, C19.
+- **Nota oral:** «De los 287 anuncios válidos, 202 están en cuatro municipios que pasan de
+  treinta anuncios: Bilbao, Donostia, Getxo y Vitoria. Solo ahí nos atrevemos a comparar
+  municipio contra municipio. Bilbao y Donostia están en el 38 % con la muestra de 2024 y
+  se van al 98 % y al 116 % con el anuncio de 2026. Getxo y Vitoria quedan por debajo, y
+  entre ellos hay dos anuncios de diferencia: no convertimos eso en un podio. Barakaldo,
+  con dos anuncios, no se lee como ranking. Y ojo: cada barra viene de una capa distinta,
+  por eso van fechadas.»
 - **Transición:** «¿Y dentro de esa capa, todos los pisos pesan igual?»
 
 ## D12 · Esfuerzo por tipología (9:20–9:40)
@@ -622,6 +628,7 @@ al final, no en medio.
 | B7 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; ratio 1,96 y Spearman 0,18: no comparable |
 | B8 | Dos mapas 2026 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png`; gris = sin dato |
 | B9 | Auditoría del ancla | `O_ranking_bloqueado_n30.png`; SERPAVI: ratio **0,977**, Spearman **0,988**, **159/159** dentro de ±25 %; bootstrap de los cuatro: los IC se solapan, se defiende el umbral y no un podio |
+| B10 | Tier de confianza | `H2_tier_confianza_ABCD.png`; el Tier solo mide muestra: **A ≥ 30** (4 municipios), **B 10–29** (3), **C 1–9** (57), **D** sin anuncios (188); D es sin dato, no «asequible»; el n de la barra es menor que el del Tier (Bilbao 68 frente a 204; Donostia 58 frente a 126) por el filtro de larga estancia con precio |
 
 ---
 
@@ -668,6 +675,7 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 | 09 | `M26_hist_esfuerzo_mercado.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` · `cobertura_representatividad_2026.csv` |
 | 10 | `H5_vpo_terminadas_por_mil.png` | flujo 2020-2024 | `mongo_vpo_terminadas_por_municipio.csv` |
 | 12 | `M26_esfuerzo_por_tipo.png` | 2026 | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
+| 11 | `M26_ranking_esfuerzo_muestra_2026.png` | 2026 (muestra) | `esfuerzo_mercado_2026.csv` |
 | 13 | `M26_brecha_2024_2026.png` | 2024 → 2026 | `brecha_esfuerzo_2024_2026.csv` |
 | 14 | `H6b_esfuerzo_habitacion_vs_piso.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + `esfuerzo_mercado_2026.csv` |
 | B4 | `H6_habitaciones_mediana_rango.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + precios de habitaciones + salario joven 2026 (Mongo) |
@@ -676,6 +684,7 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 | B6b | `S_serie_vpo_2004_2024.png` | flujo 2004-2024 (ventana 5 años) | `data/raw/udalmap_vpo_terminadas.csv` |
 | B7 | `P_oficial_vs_anuncios_por_TH.png` | 2024 + 2026, no comparable | `mongo_alquiler_por_municipio.csv` |
 | B8 | `M26_mapa_coropletico_2026.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` |
+| B10 | `H2_tier_confianza_ABCD.png` | 2026 (muestra) | `mongo_tier_confianza.csv` |
 | B9 | `O_ranking_bloqueado_n30.png` | 2024 (muestra 2026) | idem + `bootstrap_robustos.csv` |
 
 ## Reglas de puesta en escena
