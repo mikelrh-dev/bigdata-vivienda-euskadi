@@ -10,8 +10,8 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 > **Cifras congeladas (2026-11-13).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **352 canónicos +
 > 3 legado** · **353 objetos en HDFS** (352 + 1 manifiesto) · **183 silver** · **55 gold**
-> (24 CSV + 29 PNG) · **17 colecciones vivas + 15 backup = 32** · **25 índices** ·
-> **287 tests** (285 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
+> (24 CSV + 31 PNG) · **17 colecciones vivas + 15 backup = 32** · **25 índices** ·
+> **295 tests** (293 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
 > **78,6 % municipal** · **87,3 % de anuncio** · **1.350 € mediana de medianas
 > municipales** · **1.500 € mediana de anuncios** · **1.719 € salario joven ajustado**.
 
@@ -34,10 +34,10 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 | 7 | Qué aguanta el ancla | 5:20 | 6:20 | 2024, el ancla |
 | 8 | De dónde sale el 2026 | 6:20 | 6:55 | 2026, la oferta |
 | 9 | El resultado de 2026 | 6:55 | 7:40 | 2026, la oferta |
-| 10 | Cobertura de la capa 2026 | 7:40 | 8:05 | 2026, la oferta |
-| 11 | Los cuatro municipios robustos | 8:05 | 9:05 | 2026, la oferta |
-| 12 | Esfuerzo por tipología | 9:05 | 9:35 | 2026, la oferta |
-| 13 | Diferencia de nivel 2024 vs 2026 | 9:35 | 10:10 | 2026, la oferta |
+| 10 | Compartir: habitación vs piso | 7:40 | 8:20 | 2026, la oferta |
+| 11 | Los cuatro municipios robustos | 8:20 | 9:20 | 2026, la oferta |
+| 12 | Esfuerzo por tipología | 9:20 | 9:40 | 2026, la oferta |
+| 13 | Diferencia de nivel 2024 vs 2026 | 9:40 | 10:10 | 2026, la oferta |
 | 14 | Arquitectura: ingesta, Kafka, HDFS y medallion | 10:10 | 11:10 | Cómo se construyó |
 | 15 | Mongo I: modelado documental | 11:10 | 12:05 | Cómo se construyó |
 | 16 | Mongo II: CRUD y consultas | 12:05 | 12:55 | Cómo se construyó |
@@ -233,7 +233,8 @@ Límites y cierre van al final, no en medio.
   - **1.500 €** precio mediano del anuncio · **1.719 €** salario joven 18-34 ajustado 2026
   - **98,3 %** de los 287 anuncios supera el 30 %
   - Caja warn: 43 de los 50 municipios tienen n<5; solo 4 tienen n≥30. El 78,6 % se
-    defiende como nivel agregado, **no como mapa municipal**.
+    defiende como nivel agregado, **no como mapa municipal**. Los 50/252 cubren el 71,2 %
+    de los jóvenes y el 70,4 % de los anuncios está en cuatro.
 - **Gráfica:** `M26_hist_esfuerzo_mercado.png` (esfuerzo 2026).
 - **Evidencia:** `data/procesado/esfuerzo_mercado_2026.csv`, `validacion_portales_2026.csv`.
 - **Rúbrica:** C17, C19.
@@ -246,38 +247,43 @@ Límites y cierre van al final, no en medio.
   población joven, así que la cobertura es defendible aunque el mapa tenga huecos.»
 - **Transición:** «Antes de seguir: ¿a quién representa esta capa?»
 
-## D10 · Cobertura de la capa 2026 (7:40–8:05)
+## D10 · Compartir: habitación vs piso (7:40–8:20)
 
-- **Mensaje:** la capa 2026 no cubre el mapa entero, cubre el 20 % del territorio y el
-  71 % de la población joven; el resto es ausencia de dato, no baratura.
+- **Mensaje:** compartir baja el esfuerzo a un tercio, pero no por debajo del umbral: es
+  alivio, no solución.
 - **En pantalla:**
-  - **50 de 252** municipios con anuncio válido (**19,8 %** del territorio)
-  - **71,2 %** de la población 18-34
-  - **70,4 %** de los anuncios se concentra en 4 municipios
-  - **43 municipios con n<5**: sin mediana publicada
-- **Gráficas:** `M26_cobertura.png` + `M26_mapa_cobertura.png` (capa de anuncios 2026).
-- **Evidencia:** `cobertura_representatividad_2026.csv`.
-- **Rúbrica:** C16, C19.
-- **Nota oral:** «Antes de que nadie lo pregunte: esta capa no cubre los 252 municipios,
-  cubre 50. Pero no son 50 cualesquiera: son el 71,2 % de la población de 18 a 34 años. Y
-  de los 287 anuncios, 202 están en cuatro municipios. Por eso el 78,6 % se puede defender
-  como nivel y no como mapa: en los 43 municipios con menos de cinco anuncios no publicamos
-  mediana. El gris es falta de dato, no un precio bueno.»
-- **Transición:** «Y si alguien desconfía del anuncio, ¿qué municipios aguantan?»
+  - **31,7 %** esfuerzo mediano de una habitación (545 € sobre 1.719 €)
+  - **140 de 200** anuncios con precio utilizables: **60** pisos enteros colados (**30 %**)
+    se descartan si superan el alquiler mediano del municipio
+  - Bilbao **33,7 %** (580 €) frente al **98,2 %** del piso entero; Donostia **34,9 %**
+    (600 €) frente al **116,4 %**
+  - Caja warn: solo Bilbao pasa de 30 habitaciones; Getxo (5) y Vitoria (11) van
+    indicativos; Barakaldo (10) no tiene piso comparable en 2026
+- **Gráfica:** `H6b_esfuerzo_habitacion_vs_piso.png` (dos barras por municipio, mismo salario).
+- **Evidencia:** `mongo_habitaciones_por_municipio.csv`, `esfuerzo_mercado_2026.csv`.
+- **Rúbrica:** C15, C19.
+- **Nota oral:** «La sección de compartir no trae solo habitaciones: 60 de los 200 anuncios
+  con precio eran pisos enteros, y los quitamos con una regla explícita, no a ojo. Con los
+  140 que quedan, la habitación mediana son 545 euros, el 31,7 % del salario joven. En
+  Bilbao, 580 euros frente a los 850 del piso entero: el esfuerzo pasa del 98 % al 33,7 %.
+  Sigue por encima del 30 %, así que compartir alivia el problema, no lo resuelve. Y la
+  muestra manda: solo Bilbao pasa de 30 habitaciones; Getxo y Vitoria son indicativos.»
+- **Transición:** «Si compartir no resuelve, ¿qué municipios aguantan la comparación?»
 
 ## D11 · Los cuatro municipios robustos (8:05–9:05)
 
 - **Mensaje:** cuatro municipios sostienen la comparación; el orden 3º/4º es frágil y lo decimos.
 - **En pantalla (tabla, cada columna fechada):**
 
-| Municipio | n 2026 | Esfuerzo 2024 | Precio 2026 | Esfuerzo 2026 | Paro 2024 |
+| Municipio | n comparable | Esfuerzo 2024 | Precio 2026 | Esfuerzo 2026 | Paro 2024 |
 |---|---:|---:|---:|---:|---:|
 | Bilbao | 68 | 37,69 % | 1.687,50 € | 98,19 % | 9,71 % |
 | Donostia / San Sebastián | 58 | 38,17 % | 2.000,00 € | 116,37 % | 5,82 % |
 | Getxo | 39 | 28,60 % | 1.350,00 € | 78,55 % | 6,40 % |
 | Vitoria-Gasteiz | 37 | 33,37 % | 1.300,00 € | 75,64 % | 8,89 % |
 
-  - Getxo vs Vitoria: **2 anuncios** de diferencia → sin ranking firme 3º/4º
+  - Getxo vs Vitoria: **2 anuncios comparables** de diferencia (39 frente a 37; el Tier A
+    suma 50 frente a 39) → sin ranking firme 3º/4º
   - **Barakaldo: n=2** → cualquier mediana municipal es ruido, no ranking
   - **Vintages distintos:** esfuerzo 2024 = alquiler oficial; precio y esfuerzo 2026 =
     anuncio; paro = Udalmap 2024 general 16-64
@@ -504,15 +510,15 @@ Límites y cierre van al final, no en medio.
   - **287** tests (285 pasan, 2 skipped)
   - **355** SHA del raw verificados
   - **183/183** silver validados en esquema y tipos
-  - **53/53** gold reproducibles byte a byte
+  - **55/55** gold reproducibles byte a byte
   - **FAIL 07, visible:** Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el
     INE con tasa no nula en Lanbide. Preferimos enseñarlo en rojo antes que imputarlo para
     que salga verde.
 - **Footer:** `pytest · verificar_gobernanza.py · gate_extremo_a_extremo.py --offline` | `C8 · C16 · P-08`.
 - **Rúbrica:** C8, C16, P-08.
-- **Nota oral:** «Tenemos 287 tests: 285 pasan y 2 se saltan. El gate verifica las 355
+- **Nota oral:** «Tenemos 295 tests: 293 pasan y 2 se saltan. El gate verifica las 355
   entradas SHA del raw y los 183 ficheros de silver. Reconstruimos la capa entera desde
-  cero y salen 53 artefactos idénticos. Y hay un check que falla a propósito: tres
+  cero y salen 55 artefactos idénticos. Y hay un check que falla a propósito: tres
   municipios con paro cero en el INE y tasa no nula en Lanbide. Preferimos enseñarlo en
   rojo antes que imputarlo para que salga verde.»
 - **Transición:** «Y hasta aquí lo que sostenemos.»
@@ -572,7 +578,7 @@ Límites y cierre van al final, no en medio.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; en el mercado
   de entrada actual, prohibitivo; y en 188 municipios no lo sabemos.» + «Gracias. Abrimos el
   código, los datos y el CSV de cada cifra.»
-- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 287 tests` | `C18 · C19`.
+- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 295 tests` | `C18 · C19`.
 - **Rúbrica:** C18, C19.
 - **Nota oral:** «Y hasta aquí. En la mayoría del territorio, justo; en las capitales, no;
   en el mercado de entrada actual, prohibitivo; y en 188 municipios no lo sabemos. Gracias;
@@ -636,8 +642,8 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 | 05 | `mapa_coroplastico_esfuerzo_18_34.png` | 2024 | `mongo_esfuerzo_por_municipio.csv` |
 | 06 | `hist_esfuerzo_18_34_umbral30.png` | 2024 | idem |
 | 07 | `O_ranking_bloqueado_n30.png` | 2024 (muestra 2026) | idem + bootstrap |
-| 09 | `M26_hist_esfuerzo_mercado.png` | 2026 | `esfuerzo_mercado_2026.csv` |
-| 10 | `M26_cobertura.png` + `M26_mapa_cobertura.png` | 2026 | `cobertura_representatividad_2026.csv` |
+| 09 | `M26_hist_esfuerzo_mercado.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` · `cobertura_representatividad_2026.csv` |
+| 10 | `H6b_esfuerzo_habitacion_vs_piso.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + `esfuerzo_mercado_2026.csv` |
 | 12 | `M26_esfuerzo_por_tipo.png` | 2026 | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
 | 13 | `M26_brecha_2024_2026.png` | 2024 → 2026 | `brecha_esfuerzo_2024_2026.csv` |
 | B4 | `H6_habitaciones_mediana_rango.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + precios de habitaciones + salario joven 2026 (Mongo) |
@@ -653,7 +659,8 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 - **Cada figura lleva su año** (sello en el PNG y pie): 2024 oficial, 2026 oferta.
   Si es mixta, se dice «no comparable» en voz alta; nunca se presenta como serie.
 - **Nunca** decir «Docker», «759», «182 silver», «54/65/40», «62/252», «84,4 % con y sin»,
-  «2,0×», «15 colecciones vivas», «24 índices», «63/63» ni «corrida real OK».
+  «2,0×», «15 colecciones vivas», «24 índices», «63/63», «287 tests», «54/54» ni
+  «corrida real OK».
 - Decir «no lo sabemos» siempre que aparezca gris.
 - Distinguir siempre: **78,6 % municipal** · **87,3 % anuncio** · **1.350 € mediana de
   medianas** · **1.500 € mediana de anuncios**.

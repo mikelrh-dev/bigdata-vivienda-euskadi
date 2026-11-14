@@ -157,6 +157,18 @@ def main() -> int:
     add("B4 mediana global", f"{es(hp.median(), 0)} €")
     add("B4 87% <=700", f"{es((hp <= 700).mean() * 100, 0)} %")
     add("B4 esfuerzo global", f"{es(hp.median() / salario * 100)} %")
+    # Slide 10: el conjunto plausible y su comparacion con el piso entero de 2026.
+    add(
+        "habitacion utilizables",
+        f"<b>{len(hp)}</b> utilizables de los <b>{len(con_precio)}</b> con precio",
+        raw=True,
+    )
+    add(
+        "habitacion descartados",
+        f"<b>{len(con_precio) - len(hp)}</b> pisos enteros",
+        raw=True,
+    )
+    add("habitacion mediana y salario", f"{es(hp.median(), 0)} € sobre {es(salario, 0)} €")
     for municipio, etiqueta, clave in (
         ("Donostia - San Sebastián", "Donostia", "donostia"),
         ("Bilbao", "Bilbao", "bilbao"),
@@ -184,6 +196,27 @@ def main() -> int:
     add("mediana oficial 2024", f"{es(med24, 2)} %")
     add("40 de 159", f"{int((of['esfuerzo_joven_pct_18_34'] > 30).sum())} de 159")
     add("47 de 252", f"{int((mun['esfuerzo_joven_pct_18_34'] > 30).sum())} de 252")
+
+    # ---------- Validacion SERPAVI (slide 7) ----------
+    # Solo los municipios con alquiler oficial en ambos registros: incluir la
+    # fila sin oficial movia Spearman de 0,988 a 0,979.
+    ser = pd.read_csv(RES / "validacion_alquiler_2024_serpavi.csv", encoding="utf-8-sig")
+    ser = ser[ser["tiene_alquiler_oficial"].astype(str).str.lower() == "true"]
+    ser = ser.dropna(subset=["eustat_eur_m2", "serpavi_eur_m2"])
+    add("SERPAVI ratio", f"{es((ser['serpavi_eur_m2'] / ser['eustat_eur_m2']).median(), 3)}")
+    add(
+        "SERPAVI spearman",
+        f"{es(ser[['eustat_eur_m2', 'serpavi_eur_m2']].corr(method='spearman').iloc[0, 1], 3)}",
+    )
+    add(
+        "SERPAVI dentro 25",
+        f"{int((ser['diff_eur_m2'].abs() / ser['eustat_eur_m2'] <= 0.25).sum())}/{len(ser)}",
+    )
+
+    # ---------- Tier A (nota de la slide 11) ----------
+    tier = pd.read_csv(RES / "mongo_tier_confianza.csv", encoding="utf-8-sig")
+    ns_tier_a = tier[tier["tier"] == "A"].sort_values("n_anuncios", ascending=False)["n_anuncios"]
+    add("tier A n", "/".join(str(int(x)) for x in ns_tier_a))
 
     resumen = pd.read_csv(RES / "comparacion_esfuerzo_2024_2026_resumen.csv", encoding="utf-8-sig")
     for metrica in ("esfuerzo_2024_base_salario_pct_18_34", "esfuerzo_2026_base_renta2024_pct_18_34"):
@@ -244,6 +277,8 @@ def main() -> int:
         ("B4 1.200 habitaciones", "1.200 €"),
         ("B4 69,8", "69,8 %"),
         ("B4 37,2", "37,2 %"),
+        ("287 tests", "287 tests"),
+        ("54/54", "54/54"),
     ]
     for etiqueta, aguja in prohibidas:
         add(f"prohibido: {etiqueta}", aguja, ok=False)
