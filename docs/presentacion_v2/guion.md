@@ -587,7 +587,7 @@ Límites y cierre van al final, no en medio.
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
 | B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 54 gold / 17+15 colecciones / 25 índices / 295 tests |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
-| B4 | Habitaciones | `H6_habitaciones_mediana_rango.png`; 201 anuncios en 9 municipios (25 % de los 795 productos 2026); ranking n≥10 (Bilbao 600, Donostia 1.200; Vitoria/Barakaldo indicativos); mediana global 640 €; 61 % ≤700 €; esfuerzo individual 37,2 % (Donostia 69,8 %, Bilbao 34,9 %) |
+| B4 | Habitaciones | `H6_habitaciones_mediana_rango.png`; 201 anuncios en 9 municipios (25 % de los 795 productos 2026), 140 utilizables tras descartar 60 pisos enteros (30 %); filtro precio < alquiler mediano de vivienda del municipio; ranking n≥10 (Donostia 600, Bilbao 580; Vitoria/Barakaldo indicativos); mediana global 545 €; 87 % ≤700 €; esfuerzo 31,7 % (Donostia 34,9 %, Bilbao 33,7 %); comparación 580 vs 850 € y 600 vs 995 € de piso entero |
 | B5 | Modalidades | `H8b_modalidad_mediana_eur_m2.png`; misma mediana mensual (1.500 €), distinto €/m² (18,95 vs 16,67; 80 vs 90 m²); sobre los 594 vigentes (326 larga + 268 temporal) |
 | B6 | VPO | `H5_vpo_terminadas_por_mil.png`; VPO terminada 2020-2024 (Udalmap 73, 2024), 251/252 municipios, stock no público; el registro de 406 promociones da estado, no fechas |
 | B6b | VPO, serie | `S_serie_vpo_2004_2024.png`; Euskadi 11,5 ‰ en 2011 → 2,7 ‰ en 2024; ventana móvil de 5 años; Araba/Álava en panel propio con su escala (40,1 ‰ en 2011, 3,8 ‰ en 2024) |

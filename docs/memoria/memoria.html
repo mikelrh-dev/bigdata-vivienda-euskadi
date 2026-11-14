@@ -662,8 +662,14 @@ habitual en los estudios de asequibilidad; aquí se usa como línea de
 lectura, no como frontera estadística.</p>
 <p>La mediana oficial es 26,61 %. La interpolación asigna un valor a los
 93 municipios sin alquiler oficial y baja la mediana a 25,37 %, pero no
-crea evidencia donde no la hay. Por eso el ranking principal usa los 159
-municipios oficiales.</p>
+crea evidencia donde no la hay. El recuento de municipios por encima del
+30 % sube de 40 a 47 solo porque se añaden 93 municipios: en proporción
+baja del 25,16 % al 18,65 %, así que la imputación no aumenta la
+tensión, la diluye. Los 7 municipios que la imputación empuja por encima
+del 30 % son Beizama, Navaridas, Kuartango, Galdames, Munitibar,
+Villabuena de Álava y Añana: núcleos rurales pequeños, no un cambio de
+patrón. Por eso el ranking principal usa los 159 municipios
+oficiales.</p>
 <p><img src="figuras/fig-mapa-2024.png" style="width:15cm"
 alt="Mapa de esfuerzo por municipio" /><br />
 <em>Figura 6.1. Esfuerzo de la población joven por municipio, datos de
@@ -867,9 +873,43 @@ alt="Modalidades de alquiler" /><br />
 <em>Figura 6.6. Precio por metro cuadrado según modalidad, anuncios de
 2026. Fuente:
 <code>data/resultados/H8b_modalidad_mediana_eur_m2.png</code>.</em></p>
-<p>La oferta de habitaciones es minoritaria: solo 9 municipios tienen un
-conjunto suficiente para analizarla por separado. Es un indicador de
-nicho, no una alternativa general al alquiler de vivienda completa.</p>
+<p>El alquiler temporal no entra en la capa y conviene decir cuánto
+pesa. De los 594 anuncios, 268 son temporales, en 38 municipios, casi la
+mitad de la oferta publicada. Se descartan porque un contrato temporal
+no es vivienda habitual: el precio incluye amueblado y suministros y la
+estancia no se rige por la ley de arrendamientos urbanos. La diferencia
+se ve en la figura: por mes cuesta lo mismo que la larga estancia (1.500
+€ de mediana en ambas), pero se pide sobre 80 m² en vez de 90 m², de
+modo que el metro cuadrado sale un 13,7 % más caro (18,95 €/m² frente a
+16,67 €/m²). Incluirlo habría subido el precio por metro cuadrado de la
+capa sin mover la mediana mensual, que es justo el error que se evita al
+separarlas.</p>
+<p>La colección de habitaciones se puede usar, pero no tal cual. Son 201
+anuncios en 9 municipios, extraídos de la sección de vivienda
+compartida, y esa sección no solo lista habitaciones: mezcla también
+pisos completos con el alquiler entero. La prueba está en el extremo
+alto de la colección bruta, que llega a 109.000 €/mes, una cifra
+imposible para una habitación y normal para una vivienda. En vez de
+descartar la colección entera se aplica una regla de plausibilidad
+explícita y reproducible: se elimina el anuncio cuyo precio alcanza o
+supera el alquiler mediano de una vivienda completa en su propio
+municipio, tomado de la misma fuente oficial de 2024 que el resto de la
+capa. Una habitación no puede costar más que el piso entero típico del
+municipio; si lo cuesta, el anuncio no es una habitación.</p>
+<p>El corte deja 140 anuncios utilizables y descarta 60 (30,0 %), que
+son precisamente los pisos enteros colados en la sección. Con ese
+conjunto, la mediana de una habitación en Euskadi es de 545 €/mes, el
+31,7 % del salario joven de 2026. Por municipios, Bilbao queda en 580 €
+(80 anuncios, 33,7 %), Donostia en 600 € (29, 34,9 %), Barakaldo en 500
+€, Vitoria-Gasteiz en 400 € y Getxo en 560 €.</p>
+<p>La comparación con el piso entero es el resultado que importa: en
+Bilbao una habitación cuesta 580 € frente a los 850 € del alquiler
+mediano de vivienda, un 31,8 % menos; en Donostia, 600 € frente a 995 €,
+un 39,7 % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con
+esos precios el esfuerzo se queda en el 33,7 % y el 34,9 %, por encima
+del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30
+anuncios utilizables, Donostia se queda en 29 y el resto es indicativo,
+sin ranking municipal.</p>
 <p>El Tier se deriva solo del número de anuncios: A con 30 o más, B de
 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene 4 municipios, el B
 3, el C 57 y el D 188. Solo 7 llegan a A o B, y de ellos los 4 del Tier

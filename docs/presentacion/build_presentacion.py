@@ -521,10 +521,13 @@ def chart_habitaciones_medianas(
     Dibuja tres series nunca agregadas ni promediadas: residencia temporal,
     residencia larga y habitaciones (una barra por municipio y serie).
     Cada barra de habitaciones muestra `mediana_precio_eur` con min-max
-    (`min_precio_eur`/`max_precio_eur`) y `n_precio` visible. Solo Bilbao
-    (96) y Donostia (66) con n>=30 sostienen comparación firme; el resto
-    (Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango 2,
-    Eibar 1) es indicativo/n_insuficiente, sin ranking ni imputación.
+    (`min_precio_eur`/`max_precio_eur`) y `n_precio` visible. `n_precio`
+    cuenta solo los anuncios plausibles (precio por debajo del alquiler
+    mediano de vivienda del municipio): 140 de los 201, tras descartar los
+    60 pisos enteros que el portal lista en la sección de compartir. Solo
+    Bilbao (80) con n>=30 sostiene comparación firme; Donostia (29) queda en
+    el límite y el resto es indicativo/n_insuficiente, sin ranking ni
+    imputación.
     """
     hab = habitaciones.copy()
     hab["codigo_ine"] = hab["codigo_ine"].astype(str).str.zfill(5)
@@ -548,7 +551,7 @@ def chart_habitaciones_medianas(
     for _, r in hab.iterrows():
         mun = _etiqueta_mun(r["municipio"])
         n = int(r["n_precio"])
-        estado = "firme" if n >= 30 else "indicativo"
+        estado = "firme" if n >= 30 else ("sin muestra" if n == 0 else "indicativo")
         etiquetas.append(f"{mun} (n={n} · {estado})")
 
     n_mun = len(hab)
@@ -622,9 +625,28 @@ def chart_habitaciones_medianas(
         "temporal y larga nunca se promedian · habitaciones: mediana + min–max + n_precio",
         transform=ax.transAxes, ha="right", fontsize=9, color=MUTED,
     )
+    # Nota de firmeza derivada de la propia muestra, no tecleada: si el corte
+    # de plausibilidad cambia, la nota cambia con él.
+    firmes = [
+        (hab.loc[i, "municipio"], int(hab.loc[i, "n_precio"]))
+        for i in range(n_mun)
+        if int(hab.loc[i, "n_precio"]) >= 30
+    ]
+    limite = [
+        (hab.loc[i, "municipio"], int(hab.loc[i, "n_precio"]))
+        for i in range(n_mun)
+        if 25 <= int(hab.loc[i, "n_precio"]) < 30
+    ]
+    nota = "firme " + " y ".join(
+        f"{_etiqueta_mun(m)} ({n})" for m, n in firmes
+    ) if firmes else "sin municipio firme"
+    if limite:
+        nota += " · " + ", ".join(
+            f"{_etiqueta_mun(m)} ({n}) en el límite" for m, n in limite
+        )
+    nota += " n≥30 · resto indicativo n_insuficiente, sin ranking"
     ax.text(
-        0.99, -0.13,
-        "firme solo Bilbao (96) y Donostia (66) n≥30 · resto indicativo n_insuficiente, sin ranking",
+        0.99, -0.13, nota,
         transform=ax.transAxes, ha="right", fontsize=9, color=MUTED,
     )
     from matplotlib.patches import Patch

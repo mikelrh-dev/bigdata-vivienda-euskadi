@@ -93,9 +93,10 @@ Los productos de `analysis/` van a `data/resultados` (capa gold): `data/procesad
 queda reservado a `transform/`, que es lo que vigila el manifest silver.
 
 H6 (`H6_habitaciones_mediana_rango.png`) se genera en `run_analisis_mongo.py`:
-ranking n≥10 con IC95, distribución global y esfuerzo individual sobre el salario
-joven 2026. Esa misma ejecución copia H6/H8b a `assets/`, así que el deck no
-depende de un `cp` manual.
+ranking n≥10 con IC95, distribución y esfuerzo individual sobre el salario joven
+2026, calculados solo sobre los anuncios plausibles (precio por debajo del
+alquiler mediano de vivienda del municipio, `_hab_tope_stages`). Esa misma
+ejecución copia H6/H8b a `assets/`, así que el deck no depende de un `cp` manual.
 
 ## Comprobar que el deck no se ha desincronizado
 

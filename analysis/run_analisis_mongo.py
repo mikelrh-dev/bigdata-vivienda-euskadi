@@ -891,6 +891,9 @@ def exportar_png_desde_mongo(
     # H6: ranking n>=10 + distribucion global de precios de habitacion.
     # Fuente: pipeline_habitaciones_por_municipio (n/mediana) y
     # pipeline_habitaciones_precios (precios individuales para IC y distribucion).
+    # Ambas aplican el filtro de plausibilidad de `_hab_tope_stages`
+    # (precio < alquiler mediano de vivienda del municipio): la seccion de
+    # vivienda compartida mezcla habitaciones con pisos enteros.
     precios_hab = pipeline_habitaciones_precios()
     precios_por_codigo: dict[str, list[float]] = {}
     for d in precios_hab:
@@ -924,7 +927,10 @@ def exportar_png_desde_mongo(
         med_global = float(np.median(arr_todos))
         q1, q3 = (float(x) for x in np.percentile(arr_todos, [25, 75]))
         pct700 = float(np.mean(arr_todos <= 700) * 100)
-        max_global = float(np.max(arr_todos))
+        n_brutos = sum(
+            int(d.get("n_precio") or 0) + int(d.get("n_descartados_precio") or 0)
+            for d in hab
+        )
         salarios = [
             _fnum(d.get("salario_joven_2026_ajustado_18_34_eur_mes"))
             for d in pipeline_esfuerzo_mercado_2026()
@@ -961,31 +967,31 @@ def exportar_png_desde_mongo(
         ax_rank.set_yticklabels(etiquetas, fontsize=8)
         ax_rank.invert_yaxis()
         ax_rank.set_xlim(0, max(meds) * 1.35)
-        ax_rank.set_xlabel("Mediana €/habitación (IC95 bootstrap)")
+        ax_rank.set_xlabel(
+            "Mediana €/habitación (IC95 bootstrap)\n"
+            "precio < alquiler mediano de vivienda del municipio"
+        )
         ax_rank.set_title("Ranking n≥10 · azul oscuro = firme (n≥30)")
 
-        arr_vis = arr_todos[arr_todos <= 2500]
-        ax_dist.hist(arr_vis, bins=20, color="#0072B2", alpha=0.78, edgecolor="white")
+        ax_dist.hist(arr_todos, bins=20, color="#0072B2", alpha=0.78, edgecolor="white")
         ax_dist.axvline(med_global, color="#D55E00", linestyle="--", linewidth=1.2,
                         label=f"mediana {med_global:,.0f} €".replace(",", "."))
         ax_dist.axvline(q1, color="#777777", linestyle=":", linewidth=1.0,
                         label=f"Q1 {q1:,.0f} €".replace(",", "."))
         ax_dist.axvline(q3, color="#777777", linestyle=":", linewidth=1.0,
                         label=f"Q3 {q3:,.0f} €".replace(",", "."))
-        ax_dist.set_xlim(0, 2500)
-        ax_dist.set_xlabel("€/habitación (hasta 2.500; outlier fuera)")
+        ax_dist.set_xlim(0, 1500)
+        ax_dist.set_xlabel("€/habitación")
         ax_dist.set_ylabel("Anuncios")
-        titulo_dist = f"Impresión general · n={len(arr_todos)} · {pct700:.0f} % ≤700 €"
+        titulo_dist = (
+            f"{len(arr_todos)} de {n_brutos} plausibles"
+            f" · {pct700:.0f} % ≤700 €"
+        )
         if esfuerzo_global is not None:
             eff_txt = f"{esfuerzo_global:.1f}".replace(".", ",")
             titulo_dist += f"\nEsfuerzo mediano {eff_txt} % del salario joven 2026"
         ax_dist.set_title(titulo_dist, fontsize=9.5)
         ax_dist.legend(fontsize=7, loc="upper right")
-        if max_global > 2500:
-            ax_dist.text(
-                0.98, 0.62, f"máx. {max_global:,.0f} €".replace(",", "."),
-                transform=ax_dist.transAxes, ha="right", fontsize=7, color="#555555",
-            )
         fig.suptitle("H6 Habitaciones: ranking, distribución y esfuerzo (Mongo)")
         _save(fig, "H6_habitaciones_mediana_rango.png")
     else:

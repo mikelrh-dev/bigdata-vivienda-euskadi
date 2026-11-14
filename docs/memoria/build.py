@@ -220,6 +220,12 @@ def refresh() -> None:
     add("datos.esfuerzo_mediana_idw", med_idw, "2d", "mediana de esfuerzo_joven_pct_18_34 · 252 municipios")
     add("datos.esfuerzo_idw_sobre30", sobre30_idw, "int", "esfuerzo_joven_pct_18_34 > 30 · 252 municipios")
     add(
+        "datos.idw_suma_sobre30",
+        sobre30_idw - sobre30_of,
+        "int",
+        "municipios que la imputacion empuja por encima del 30 % (47 - 40)",
+    )
+    add(
         "datos.esfuerzo_idw_sobre30_pct",
         sobre30_idw / len(e) * 100,
         "2d",
@@ -275,6 +281,156 @@ def refresh() -> None:
 
     h = _csv("mongo_habitaciones_por_municipio.csv")
     add("datos.habitaciones_municipios", len(h), "int", "mongo_habitaciones_por_municipio.csv · filas")
+
+    # Habitaciones (HAB-02). La seccion "compartir vivienda" mezcla habitaciones
+    # con pisos enteros, asi que el pipeline descarta el anuncio cuyo precio
+    # alcanza el alquiler mediano de vivienda del municipio (`_hab_tope_stages`)
+    # y `n_precio` pasa a contar solo los utilizables.
+    utilizables = int(h["n_precio"].sum())
+    descartados = int(h["n_descartados_precio"].sum())
+    add(
+        "datos.habitaciones_utilizables",
+        utilizables,
+        "int",
+        "mongo_habitaciones_por_municipio.csv · suma de n_precio (plausibles)",
+    )
+    add(
+        "datos.habitaciones_descartados",
+        descartados,
+        "int",
+        "mongo_habitaciones_por_municipio.csv · suma de n_descartados_precio",
+    )
+    add(
+        "datos.habitaciones_descartados_pct",
+        descartados / (descartados + utilizables) * 100,
+        "1d",
+        "n_descartados_precio / anuncios con precio (mongo_habitaciones_por_municipio.csv)",
+    )
+
+    # Mediana global sobre precios individuales: al silver se le aplica el mismo
+    # tope municipal que al pipeline, para no publicar un corte y calcular otro.
+    import pandas as pd
+
+    precios_hab = pd.read_csv(
+        ROOT / "data" / "procesado" / "anuncios_habitaciones_unificados.csv",
+        encoding="utf-8-sig",
+        dtype={"codigo_ine": str},
+    )
+    precios_hab["precio_eur"] = pd.to_numeric(precios_hab["precio_eur"], errors="coerce")
+    tope_por_municipio = dict(
+        zip(h["codigo_ine"].astype(str).str.zfill(5), h["tope_alquiler_eur_mes"])
+    )
+    precios_hab["_tope"] = precios_hab["codigo_ine"].str.zfill(5).map(tope_por_municipio)
+    precios_ok = precios_hab.loc[
+        precios_hab["precio_eur"] < precios_hab["_tope"], "precio_eur"
+    ].dropna()
+    mediana_hab = float(precios_ok.median())
+    add(
+        "datos.habitaciones_mediana_global",
+        mediana_hab,
+        "int",
+        "mediana de los precios plausibles (anuncios_habitaciones_unificados.csv + tope municipal)",
+    )
+    add(
+        "datos.habitaciones_precio_max_bruto",
+        float(precios_hab["precio_eur"].max()),
+        "int",
+        "anuncios_habitaciones_unificados.csv · precio_eur maximo de la coleccion bruta",
+    )
+
+    # Salario joven 2026 ajustado: misma fuente y estadistico que la capa 2026.
+    mercado_2026 = pd.read_csv(
+        ROOT / "data" / "procesado" / "esfuerzo_mercado_2026.csv", encoding="utf-8-sig"
+    )
+    salario_2026 = float(mercado_2026["salario_joven_2026_ajustado_18_34_eur_mes"].median())
+    add(
+        "datos.habitaciones_esfuerzo_global",
+        mediana_hab / salario_2026 * 100,
+        "1d",
+        "mediana de habitacion plausible / salario joven 2026 ajustado",
+    )
+
+    for clave, municipio in (
+        ("bilbao", "Bilbao"),
+        ("donostia", "Donostia"),
+        ("barakaldo", "Barakaldo"),
+        ("vitoria", "Vitoria"),
+        ("getxo", "Getxo"),
+    ):
+        fila = h[h["municipio"].astype(str).str.startswith(municipio)].iloc[0]
+        mediana = float(fila["mediana_precio_eur"])
+        add(
+            f"datos.habitaciones_{clave}_mediana",
+            mediana,
+            "int",
+            f"mongo_habitaciones_por_municipio.csv · mediana_precio_eur de {municipio}",
+        )
+        if clave in ("bilbao", "donostia"):
+            tope = float(fila["tope_alquiler_eur_mes"])
+            add(
+                f"datos.habitaciones_{clave}_n",
+                int(fila["n_precio"]),
+                "int",
+                f"mongo_habitaciones_por_municipio.csv · n_precio de {municipio}",
+            )
+            add(
+                f"datos.habitaciones_{clave}_esfuerzo",
+                mediana / salario_2026 * 100,
+                "1d",
+                f"mediana de {municipio} / salario joven 2026 ajustado",
+            )
+            add(
+                f"datos.habitaciones_{clave}_tope",
+                tope,
+                "int",
+                f"mongo_habitaciones_por_municipio.csv · tope_alquiler_eur_mes de {municipio} (alquiler mediano de vivienda)",
+            )
+            add(
+                f"datos.habitaciones_{clave}_ahorro_pct",
+                (1 - mediana / tope) * 100,
+                "1d",
+                f"1 - mediana_precio_eur / tope_alquiler_eur_mes de {municipio}",
+            )
+
+    modal = _csv("mongo_modalidades.csv")
+    larga = modal[modal["modalidad"] == "larga_estancia"].iloc[0]
+    temporal = modal[modal["modalidad"] == "temporal"].iloc[0]
+    add(
+        "datos.modalidad_mediana_eur_mes",
+        float(larga["mediana_precio_eur"]),
+        "int",
+        "mongo_modalidades.csv · mediana_precio_eur de larga_estancia",
+    )
+    add(
+        "datos.modalidad_larga_eur_m2",
+        float(larga["mediana_eur_m2"]),
+        "2d",
+        "mongo_modalidades.csv · mediana_eur_m2 de larga_estancia",
+    )
+    add(
+        "datos.modalidad_temporal_eur_m2",
+        float(temporal["mediana_eur_m2"]),
+        "2d",
+        "mongo_modalidades.csv · mediana_eur_m2 de temporal",
+    )
+    add(
+        "datos.modalidad_temporal_sobrecoste_pct",
+        (float(temporal["mediana_eur_m2"]) / float(larga["mediana_eur_m2"]) - 1) * 100,
+        "1d",
+        "temporal / larga - 1 en mediana_eur_m2",
+    )
+    add(
+        "datos.modalidad_larga_superficie",
+        float(larga["mediana_superficie_m2"]),
+        "int",
+        "mongo_modalidades.csv · mediana_superficie_m2 de larga_estancia",
+    )
+    add(
+        "datos.modalidad_temporal_superficie",
+        float(temporal["mediana_superficie_m2"]),
+        "int",
+        "mongo_modalidades.csv · mediana_superficie_m2 de temporal",
+    )
 
     add(
         "datos.vpo_promociones",
