@@ -297,7 +297,7 @@ def main() -> int:
     resumen = pd.read_csv(RES / "comparacion_esfuerzo_2024_2026_resumen.csv", encoding="utf-8-sig")
     for metrica in ("esfuerzo_2024_base_salario_pct_18_34", "esfuerzo_2026_base_renta2024_pct_18_34"):
         val = float(resumen[resumen["metrica"] == metrica].iloc[0]["mediana"])
-        add(metrica.split("_")[1] + " base comun", f"{es(val)} %")
+        pass  # diapositiva de sintesis retirada: 44,6 % y 57,8 % ya no se muestran
 
     # ---------- Diferencia de nivel (slide 15): solo municipios con muestra ----------
     brecha = pd.read_csv(RES / "brecha_esfuerzo_2024_2026.csv", encoding="utf-8-sig")

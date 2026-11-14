@@ -1,4 +1,4 @@
-# Guion — Presentación v3 (27 diapositivas + 8 backups)
+# Guion — Presentación v3 (24 diapositivas + 8 backups)
 
 **Duración objetivo:** 19:00 · **Recorte a 12:00** al final.
 **Público:** tribunal SBD + BDA (perfil técnico, poco tiempo, mucha pregunta).
@@ -47,11 +47,8 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 | 20 | Mongo II: colecciones e índices | 13:55 | 14:35 | Cómo se construyó |
 | 21 | Mongo III: consultas de negocio | 14:35 | 15:15 | Cómo se construyó |
 | 22 | Mongo IV: aggregation y explain | 15:15 | 15:55 | Cómo se construyó |
-| 23 | Consistencia e idempotencia | 15:55 | 16:35 | Cómo se construyó |
-| 24 | Calidad y quality gate | 16:35 | 17:25 | Cómo se construyó |
-| 25 | Síntesis: qué dicen juntas las dos capas | 17:25 | 18:30 | Límites y cierre |
-| 26 | Lo que sostenemos y lo que no | 18:30 | 18:45 | Límites y cierre |
-| 27 | Cierre | 18:45 | 19:00 | Límites y cierre |
+| 23 | Lo que sostenemos y lo que no | 15:55 | 17:05 | Límites y cierre |
+| 24 | Cierre | 17:05 | 17:20 | Límites y cierre |
 
 La charla son dos historias separadas —primero 2024 oficial, después 2026 de oferta— y
 solo al final se explica cómo se construyó. La 11 es el puente: la única tabla donde las
@@ -60,10 +57,11 @@ La 7 cierra el acto oficial con el ranking municipal; la 10 mete la vía protegi
 del acto de oferta y la 14, ya al final, cierra con las habitaciones. Límites y cierre van
 al final, no en medio.
 
-El bloque Mongo son **cinco diapositivas en 3:20** (40 s cada una): modelado, colecciones e
-índices, tres consultas, un pipeline con su explain y consistencia. Si el reloj aprieta,
-D20 se queda en la lista de índices y D22 en la tabla del explain; el modelado y las tres
-consultas no se tocan, porque son las que enseñan lo que el tribunal va a buscar.
+El bloque Mongo son **cuatro diapositivas en 2:40** (40 s cada una): modelado, colecciones
+e índices, tres consultas y el pipeline con su explain. Si el reloj aprieta, D20 se queda
+en la lista de índices y D22 en la tabla del explain; el modelado y las tres consultas no
+se tocan, porque son las que enseñan lo que el tribunal va a buscar. Sin consistencia,
+calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para preguntas.
 
 ---
 
@@ -617,78 +615,7 @@ consultas no se tocan, porque son las que enseñan lo que el tribunal va a busca
   documentos y ninguna clave; con el ESR examina uno y una.»
 - **Transición:** «¿Y cómo sabemos que no está roto?»
 
-## D23 · Consistencia e idempotencia (15:55–16:35)
-
-- **Mensaje:** consistencia sin sobreingeniería: atomicidad de documento, tres barreras de
-  idempotencia y una shard key razonada, no implementada.
-- **En pantalla (tres bloques):**
-  1. **Atomicidad de documento:** en MongoDB standalone, cada escritura sobre un documento
-     es atómica por diseño. No forzamos transacciones multidocumento (exigirían Replica
-     Set) porque el modelo embebido evita actualizar varias colecciones en una operación
-     crítica.
-  2. **Idempotencia en 3 barreras:** (a) descarte en ingesta por hash SHA-256; (b) índice
-     único compuesto `(portal, id_anuncio)`; (c) `update_one(..., upsert=True)` + carga
-     atómica por `renameCollection`. Re-ejecutar el pipeline 10 veces produce exactamente
-     los mismos 594 documentos.
-  3. **Sharding futuro:** a escala actual (594 anuncios / 252 municipios) un nodo standalone
-     sobra; si escalara a nivel estatal con histórico diario, la shard key óptima sería
-     `{ubicacion.codigo_ine: 1, _id: 1}` (alta cardinalidad y aislamiento geográfico).
-- **Footer:** `storage/mongo.py · tests/test_mongo_consistencia.py` | `C14 · T5`.
-- **Rúbrica:** C14, T5.
-- **Nota oral:** «No forzamos una transacción que el modelo no necesita. La atomicidad de
-  un documento y el índice único ya nos dan la idempotencia. Tenemos tres barreras: el hash
-  en la ingesta, el único por portal e id, y el upsert con rename atómico. Re-ejecutar el
-  pipeline diez veces deja los mismos 594 documentos. Y si esto escalara a nivel estatal,
-  la shard key sería el código INE más el `_id`, no el `_id` solo.»
-- **Transición:** «¿Y cómo sabemos que el dato no miente?»
-
-## D24 · Calidad y quality gate (16:35–17:25)
-
-- **Mensaje:** no es una demo: es un sistema que se reconstruye y que falla cuando debe.
-- **En pantalla (cuatro KPIs + caja warn):**
-  - **295** tests (293 pasan, 2 skipped)
-  - **355** SHA del raw verificados
-  - **183/183** silver validados en esquema y tipos
-  - **55/55** gold reproducibles byte a byte
-  - **FAIL 07, visible:** Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el
-    INE con tasa no nula en Lanbide. Preferimos enseñarlo en rojo antes que imputarlo para
-    que salga verde.
-- **Footer:** `pytest · verificar_gobernanza.py · gate_extremo_a_extremo.py --offline` | `C8 · C16 · P-08`.
-- **Rúbrica:** C8, C16, P-08.
-- **Nota oral:** «Tenemos 295 tests: 293 pasan y 2 se saltan. El gate verifica las 355
-  entradas SHA del raw y los 183 ficheros de silver. Reconstruimos la capa entera desde
-  cero y salen 55 artefactos idénticos. Y hay un check que falla a propósito: tres
-  municipios con paro cero en el INE y tasa no nula en Lanbide. Preferimos enseñarlo en
-  rojo antes que imputarlo para que salga verde.»
-- **Transición:** «Y hasta aquí lo que sostenemos.»
-
----
-
-# Acto 4 — Límites y cierre
-
-## D25 · Síntesis: qué dicen juntas las dos capas (17:25–18:30)
-
-- **Mensaje:** las dos capas no se restan; se leen juntas. Una dice dónde es estructural,
-  la otra cuánto cuesta entrar hoy.
-- **En pantalla (tabla de 4 filas):**
-
-| Dimensión | Capa oficial 2024 | Capa de oferta 2026 | Lectura conjunta |
-|---|---|---|---|
-| Cobertura | 159 oficiales + 93 IDW | 50 municipios (71,2 % de jóvenes) | 188 Tier D sin anuncio: sin dato, no asequible |
-| Alquiler mediano | 708 € en los 50 (p25–p75: 620–744) | 1.350 € mediana de medianas · 1.500 € mediana de anuncios | La oferta nueva multiplica por 1,88 |
-| Esfuerzo 18-34 | 26,61 % (40/159 > 30 %) | 78,6 % municipal · 87,3 % anuncio | En capitales, 75–116 %: inviable en solitario |
-| Uso analítico | Diagnóstico estructural | Barrera de acceso actual | No se restan como serie temporal |
-
-- **Footer:** `comparacion_esfuerzo_2024_2026_resumen.csv` | `C17 · C18`.
-- **Rúbrica:** C17, C18, C19.
-- **Nota oral:** «Estas dos capas no se restan. Una dice dónde el esfuerzo es estructural;
-  la otra, cuánto cuesta entrar hoy. En los mismos 50 municipios, el esfuerzo pasa del
-  44,6 % al 78,6 % si igualamos el denominador; con el denominador canónico, el anuncio da
-  57,8 %. Y el nivel de precio se multiplica por 1,88. Lo que no podemos decir es que haya
-  subido un 34 %: son fuentes distintas.»
-- **Transición:** «¿Qué sostenemos y qué nos tumbaría?»
-
-## D26 · Lo que sostenemos y lo que no (18:30–18:45)
+## D23 · Lo que sostenemos y lo que no (15:55–17:05)
 
 - **Mensaje:** sabemos qué afirmamos, qué no y qué nos tumbaría.
 - **En pantalla (dos columnas):**
@@ -711,7 +638,7 @@ consultas no se tocan, porque son las que enseñan lo que el tribunal va a busca
   primero sería subir la muestra de los 57 Tier C y separar temporal de larga en todo.»
 - **Transición:** «Una frase y abrimos preguntas.»
 
-## D27 · Cierre (18:45–19:00)
+## D24 · Cierre (17:05–17:20)
 
 - **Mensaje:** cerrar con la misma frase del principio, sin añadir nada nuevo.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; en el mercado
@@ -751,19 +678,19 @@ consultas no se tocan, porque son las que enseñan lo que el tribunal va a busca
 | C5 Fuentes + campo común | 4, 8 |
 | C6 2+ colecciones + relación | 4, 19 |
 | C7 Limpieza | 7, 18, 19 |
-| C8 Automatización | 9, 15, 16, 24 |
+| C8 Automatización | 9, 15, 16 |
 | C9 Modelado justificado | 19, B1 |
 | C10 CRUD | 20, B2 |
 | C11 Consultas | 20, 21, B2 |
 | C12 Aggregation | 22 |
 | C13 Índices/explain | 20, 22 |
-| C14 Consistencia | 23 |
+| C14 Consistencia | sin diapositiva (B2, si preguntan) |
 | C15 Heterogéneos | 4, 8, 10, 16, B5 |
-| C16 Automatización análisis | 7, 16, 24 |
-| C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, 25, B5 |
-| C18 Respuesta | 2, 5, 6, 13, 25 |
-| C19 Visualización | 5, 6, 7, 13, 15, 16, 17, 25, B6 |
-| T1–T7 | 19, 20, 21, 22, 23, B1–B3 |
+| C16 Automatización análisis | 7, 16 |
+| C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, B5 |
+| C18 Respuesta | 2, 5, 6, 13 |
+| C19 Visualización | 5, 6, 7, 13, 15, 16, 17, B6 |
+| T1–T7 | 19, 20, 21, 22, B1–B3 |
 
 ---
 
@@ -814,11 +741,11 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 ## Recorte a 12 minutos
 
 1. Fusionar 20 y 21 (colecciones + consultas) en una sola diapositiva técnica.
-2. Fusionar 22 y 23 (aggregation + consistencia) en otra.
+2. 22 (pipeline) a 30 s: solo el explain.
 3. 10 (VPO) a 30 s: la cifra, el sello de fecha y seguir.
 4. 4 y 14 a 40 s cada una.
 5. 12 y 13 a 20 s cada una, o citarlas de palabra.
-6. Mantener 2, 9, 11, 15, 17, 25 y 27.
+6. Mantener 2, 9, 11, 15, 17, 23 y 24.
 
 ## Comprobar que el deck no se ha desincronizado
 
