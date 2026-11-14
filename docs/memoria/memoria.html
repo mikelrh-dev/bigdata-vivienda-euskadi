@@ -576,7 +576,79 @@ cómo se comprueba que el índice se usa.</p>
 <p>Cada indicador tiene fórmula, fuente y límite documentados. El
 esfuerzo es el principal; los demás explican por qué un municipio no se
 puede rankear con la misma confianza que otro.</p>
-<h2 id="pipelines">5.2 Pipelines</h2>
+<h2 id="los-proxys-uno-a-uno">5.2 Los proxys, uno a uno</h2>
+<p>El indicador necesita dos números que no están publicados: lo que
+gana una persona joven en cada municipio y el alquiler donde Eustat no
+publica. Los dos se construyen, y cómo se construyen forma parte del
+resultado.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Proxy</th>
+<th>Cómo se construye</th>
+<th>Fuente</th>
+<th>Qué se pierde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Renta joven 18-34</td>
+<td>renta neta media por hogar × 56,9 %, el ratio 18-34 de la CAE
+ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para
+cada uno de los tres siguientes)</td>
+<td>INE Atlas de la Renta 2024 y Eustat renta por edad</td>
+<td>es renta de hogar, no salario individual; el ratio es
+autonómico</td>
+</tr>
+<tr>
+<td>Salario de 2026</td>
+<td>salario neto joven de 2024 que publica el OVJ, actualizado con el
+IPC medio del INE (107,2 en 2024 y 117,8 en 2026), que deja 1.719 € al
+mes</td>
+<td>OVJ (Irekia) e INE</td>
+<td>constante autonómica: no permite ordenar municipios por salario</td>
+</tr>
+<tr>
+<td>Alquiler de los 93</td>
+<td>IDW con los 5 municipios oficiales más cercanos y peso 1/d², con d
+haversine entre centroides</td>
+<td>Eustat alquiler y centroides municipales</td>
+<td>no es precio observado: nunca entra en la conclusión</td>
+</tr>
+<tr>
+<td>Accesibilidad</td>
+<td>minutos de conducción reales a la capital, municipio a
+municipio</td>
+<td>OSRM sobre OpenStreetMap</td>
+<td>no mide transporte público ni el viaje real de cada persona</td>
+</tr>
+</tbody>
+</table>
+<p>La renta municipal está completa en los 252 municipios, con renta de
+hogar del Atlas del INE y renta personal de Eustat en la misma fila. El
+denominador del esfuerzo es siempre renta de hogar por ratio, nunca
+renta personal: las dos familias que calcula el pipeline —la fiscal,
+sobre renta personal, y la salarial— quedan en el CSV como columnas de
+contraste y no alimentan el indicador canónico.</p>
+<p>El salario, en cambio, es una sola cifra para toda la comunidad. Por
+eso el orden municipal lo mueve la renta y no el salario, y por eso el
+escalón entre los municipios industriales de la ría y los de renta alta
+se lee con la renta: el salario es el mismo en Sestao y en Getxo.</p>
+<p>El alquiler imputado existe para medir cuánto depende el resultado de
+él, no para publicarlo: con los 252 municipios la mediana del esfuerzo
+es 25,37 % y con los 159 oficiales, 26,61 %. La cifra que se defiende es
+siempre la segunda.</p>
+<p>Los minutos a la capital no se interpolan: se piden a OSRM para cada
+municipio y se guardan con el resto de la capa. La distancia en línea
+recta solo se usa en el IDW, donde lo que importa es la proximidad y no
+el viaje.</p>
+<h2 id="pipelines">5.3 Pipelines</h2>
 <p>Hay 11 pipelines en orden y 1 fuera del orden principal, 12 en total.
 Los pipelines escriben 8 CSV en gold. El orden importa: un pipeline que
 depende de otro no puede ejecutarse antes.</p>
@@ -588,7 +660,7 @@ municipios; <code>$unwind</code> abre los arrays de equipamiento e
 histórico; <code>$group</code> resume por municipio. No se usa
 <code>$facet</code>: no hace falta para las preguntas del reto y
 añadiría una etapa que el código no necesita.</p>
-<h2 id="un-pipeline-paso-a-paso">5.3 Un pipeline, paso a paso</h2>
+<h2 id="un-pipeline-paso-a-paso">5.4 Un pipeline, paso a paso</h2>
 <p><code>pipeline_indicadores_municipio</code> empieza en
 <code>municipios</code> (252 documentos), hace <code>$lookup</code> a
 <code>anuncios</code> por <code>ubicacion.codigo_ine</code>, filtra
@@ -602,7 +674,7 @@ conclusiones.</p>
 <code>n_precio</code>, mínimo, máximo y mediana se ponen a cero o nulo
 por diseño: hay precio, pero no muestra suficiente para publicarlo como
 estadística municipal.</p>
-<h2 id="índices-y-explain">5.4 Índices y <code>explain</code></h2>
+<h2 id="índices-y-explain">5.5 Índices y <code>explain</code></h2>
 <p>La comprobación es explícita. El filtro es
 <code>ubicacion.codigo_ine = "20069"</code>,
 <code>modalidad = "larga_estancia"</code> y
@@ -1246,6 +1318,15 @@ describe y reúne los comandos que permiten comprobarlo.</p>
 <li>La renta es media, no salario juvenil municipal.</li>
 <li>El alquiler oficial no cubre todos los municipios; la interpolación
 no crea evidencia.</li>
+<li>El ratio de edad es autonómico: la renta joven de un municipio se
+mueve con su renta, no con su estructura de edad.</li>
+<li>El campo <code>nivel_geografico</code> de las filas imputadas dice
+<code>comarcal</code> por herencia del nombre; el método es distancia
+entre centroides, no una media de comarca.</li>
+<li>El IPC de 2026 es la media anual disponible en el corte, no el
+cierre del año.</li>
+<li>El área funcional se asigna por el centroide del municipio: uno que
+cruce dos áreas se queda con la del centro.</li>
 <li>Los anuncios no representan el parque completo ni el alquiler
 regulado.</li>
 <li>La capa 2026 y la 2024 no son comparables como serie temporal.</li>
@@ -1360,8 +1441,23 @@ mejoran la confianza.</p>
 </tr>
 <tr>
 <td>IDW</td>
-<td>Interpolación por distancia inversa para municipios sin alquiler
-oficial</td>
+<td>Interpolación por distancia inversa: media de los cinco municipios
+oficiales más cercanos, con peso 1/d²</td>
+</tr>
+<tr>
+<td>Proxy</td>
+<td>Estimación construida desde un dato disponible cuando el exacto no
+está publicado</td>
+</tr>
+<tr>
+<td>Ratio 18-34</td>
+<td>Proporción entre la renta media de 18 a 34 años y la renta media
+total de la CAE, ponderada por la anchura de cada tramo</td>
+</tr>
+<tr>
+<td>Haversine</td>
+<td>Distancia en línea recta entre dos puntos de la esfera a partir de
+sus coordenadas</td>
 </tr>
 <tr>
 <td>Esfuerzo</td>

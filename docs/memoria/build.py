@@ -81,6 +81,7 @@ MANUAL_DEFAULT = {
 GROUP_LABELS = {
     "mongo": "MongoDB",
     "datos": "Datos y análisis",
+    "metodo": "Método (proxys)",
     "gold": "Gold",
     "raw": "Raw",
     "silver": "Silver",
@@ -232,6 +233,39 @@ def refresh() -> None:
         "sobre30 / 252 * 100",
     )
 
+    # --- Método: los proxys del capítulo 5 --------------------------------
+    # Con token para que el capítulo explique el cálculo sin teclear cifras.
+    import pandas as pd
+
+    base = pd.read_csv(ROOT / "data" / "procesado" / "analisis_variables_base.csv", encoding="utf-8-sig")
+    add(
+        "metodo.ratio_18_34_pct",
+        float((base["renta_joven_estimada_18_34"] / base["renta_hogar"]).median() * 100),
+        "1d",
+        "renta_joven_estimada_18_34 / renta_hogar · analisis_variables_base.csv",
+    )
+
+    try:
+        ipc = pd.read_csv(ROOT / "data" / "raw" / "ipc_ine_2024_2026.csv", encoding="utf-8-sig")
+    except Exception:  # noqa: BLE001
+        ipc = None
+    for anio in (("2024", "2026") if ipc is not None else ()):
+        fila_ipc = ipc[ipc["ano"].astype(str) == anio]
+        if not fila_ipc.empty:
+            add(
+                f"metodo.ipc_{anio}",
+                float(fila_ipc.iloc[0]["ipc_medio_anual"]),
+                "1d",
+                f"ipc_ine_2024_2026.csv · {anio}",
+            )
+
+    try:
+        sys.path.insert(0, str(ROOT / "transform"))
+        from completar_alquiler_comarca import K_VECINOS  # noqa: E402
+    except Exception:  # noqa: BLE001
+        K_VECINOS = 5
+    add("metodo.idw_vecinos", int(K_VECINOS), "int", "completar_alquiler_comarca.py · K_VECINOS")
+
     add("datos.anuncios_total", int(e["n_anuncios"].sum()), "int", "mongo_esfuerzo_por_municipio.csv · n_anuncios")
     add("datos.anuncios_larga", int(e["n_larga_estancia"].sum()), "int", "n_larga_estancia")
     add("datos.anuncios_temporal", int(e["n_temporal"].sum()), "int", "n_temporal")
@@ -345,6 +379,12 @@ def refresh() -> None:
         ROOT / "data" / "procesado" / "esfuerzo_mercado_2026.csv", encoding="utf-8-sig"
     )
     salario_2026 = float(mercado_2026["salario_joven_2026_ajustado_18_34_eur_mes"].median())
+    add(
+        "metodo.salario_2026",
+        round(salario_2026),
+        "int",
+        "esfuerzo_mercado_2026.csv · salario_joven_2026_ajustado_18_34_eur_mes",
+    )
     add(
         "datos.habitaciones_esfuerzo_global",
         mediana_hab / salario_2026 * 100,

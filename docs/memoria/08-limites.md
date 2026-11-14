@@ -7,6 +7,10 @@
 
 - La renta es media, no salario juvenil municipal.
 - El alquiler oficial no cubre todos los municipios; la interpolación no crea evidencia.
+- El ratio de edad es autonómico: la renta joven de un municipio se mueve con su renta, no con su estructura de edad.
+- El campo `nivel_geografico` de las filas imputadas dice `comarcal` por herencia del nombre; el método es distancia entre centroides, no una media de comarca.
+- El IPC de 2026 es la media anual disponible en el corte, no el cierre del año.
+- El área funcional se asigna por el centroide del municipio: uno que cruce dos áreas se queda con la del centro.
 - Los anuncios no representan el parque completo ni el alquiler regulado.
 - La capa 2026 y la 2024 no son comparables como serie temporal.
 - La VPO es flujo de promoción, no stock disponible.

@@ -108,6 +108,8 @@ al final, no en medio.
   - mediana, no media (los alquileres tienen outliers)
   - umbral 30 % (literatura de emancipación; 35-40 % es exclusión efectiva)
   - **18-34 es el canónico**; 16-29 queda **legacy** (42,9 % de mediana, no comparable)
+  - **franja de los tres proxys:** renta del hogar × 56,9 % en los 252 municipios ·
+    salario OVJ 2024 con IPC = 1.719 € · IDW con cinco vecinos y 1/d², solo sensibilidad
 - **Gráfica:** ninguna.
 - **Evidencia:** `analysis/mongo_aggregations.py` → `pipeline_indicadores_municipio`.
 - **Rúbrica:** C17, JOVEN-18-34.
@@ -115,7 +117,9 @@ al final, no en medio.
   las bandas de Eustat 18-19, 20-24, 25-29 y 30-34, ponderando por anchura, y la aplicamos
   a la renta municipal. Es un proxy, y lo decimos: no es un salario. El 16-29 antiguo da
   42,9 % de mediana y no es comparable; está en la base como legacy y no sostiene ninguna
-  conclusión.»
+  conclusión. El salario de 2026 tampoco es municipal: es el del OVJ para toda la comunidad,
+  actualizado con el IPC, y por eso el orden lo mueve la renta. Y donde no hay alquiler
+  oficial, los 93 municipios van con IDW de cinco vecinos: solo sensibilidad.»
 - **Transición:** «¿De dónde sale ese alquiler oficial?»
 
 ## D4 · De dónde sale el 2024 (2:40–3:40)

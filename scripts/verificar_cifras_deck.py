@@ -344,6 +344,13 @@ def main() -> int:
         add("colecciones backup", f"{backup} backup")
         add("indices", f"{indices} índices")
 
+    # ---------- Slide 03: los tres proxys ----------
+    base = pd.read_csv(PROC / "analisis_variables_base.csv", encoding="utf-8-sig")
+    ratio_1834 = float((base["renta_joven_estimada_18_34"] / base["renta_hogar"]).median() * 100)
+    add("proxy ratio 18-34", f"{es(ratio_1834, 1)} %")
+    add("proxy salario 2026", f"IPC del INE: {es(salario, 0)} €")
+    add("proxy 93 sin alquiler", "93 SIN ALQUILER OFICIAL")
+
     # ---------- Afirmaciones que no deben volver ----------
     prohibidas = [
         ("84,4 con y sin", "84,4 % con y sin"),

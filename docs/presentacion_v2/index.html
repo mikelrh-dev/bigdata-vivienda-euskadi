@@ -182,7 +182,11 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div><h3>Cohorte 18-34 canónica</h3><p class="small">El tramo 16-29 queda como legacy (42,9 % de mediana, no comparable por baja actividad).</p></div>
       </div>
       <p class="lead" style="margin-top:34px;max-width:54ch">El indicador no es nuestro. Lo que aportamos es calcularlo municipal y decir dónde <b>no</b> se puede calcular.</p>
-      <p class="small" style="margin-top:14px;max-width:92ch">La renta joven no está publicada por municipio y edad: la estimamos con las bandas de Eustat y la aplicamos a la renta municipal. Es un proxy, no un salario.</p>
+      <div class="grid3" style="margin-top:18px;gap:16px">
+        <div class="box" style="padding:12px 14px"><span class="n">RENTA JOVEN · 252 MUNICIPIOS</span><div class="mini">Renta del hogar (Atlas INE) × 56,9 %, el ratio 18-34 ponderado por anchura, en los 252 municipios.</div></div>
+        <div class="box" style="padding:12px 14px"><span class="n">SALARIO DE 2026</span><div class="mini">OVJ 2024 actualizado con el IPC del INE: 1.719 €. Constante autonómica: no ordena municipios.</div></div>
+        <div class="box" style="padding:12px 14px"><span class="n">93 SIN ALQUILER OFICIAL</span><div class="mini">IDW con los cinco vecinos con dato, peso 1/d² entre centroides. Solo sensibilidad: nunca en la conclusión.</div></div>
+      </div>
       <footer class="ft"><span class="proof">analysis/mongo_aggregations.py · pipeline_indicadores_municipio</span><span class="proof">C17 · JOVEN-18-34</span></footer>
     </div>
   </section>
