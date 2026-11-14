@@ -1006,6 +1006,57 @@ def exportar_png_desde_mongo(
         _honest("H6_habitaciones_mediana_rango.png", "H6 Habitaciones (sin datos)",
                 "sin habitaciones con n>=10 y precio")
 
+    # H6b: esfuerzo de habitacion frente a piso entero, mismo denominador.
+    # Reutiliza el ranking municipal de habitaciones y el salario joven 2026
+    # ajustado de la capa de oferta: asi las dos barras son comparables.
+    esf26 = {
+        str(d.get("codigo_ine") or d.get("_id")).zfill(5): d
+        for d in pipeline_esfuerzo_mercado_2026()
+    }
+    filas6b = []
+    for d in hab:
+        code = str(d.get("codigo_ine") or "").zfill(5)
+        n_util = int(d.get("n_precio") or 0)
+        med = _fnum(d.get("mediana_precio_eur"))
+        fila = esf26.get(code) or {}
+        sal = _fnum(fila.get("salario_joven_2026_ajustado_18_34_eur_mes"))
+        e_piso = _fnum(fila.get("esfuerzo_mercado_2026_pct_18_34"))
+        n_piso = int(fila.get("n_precio_2026") or 0)
+        # Solo municipios con muestra de habitacion y piso entero comparable:
+        # el piso exige el mismo umbral de 30 anuncios que el ranking de 6.5
+        # (Barakaldo tiene 2 y su mediana no sostiene la comparacion).
+        if n_util < 5 or n_piso < 30 or med is None or not sal or e_piso is None:
+            continue
+        filas6b.append((str(d.get("municipio") or code), n_util, med / sal * 100, e_piso))
+    if filas6b:
+        filas6b.sort(key=lambda t: t[2], reverse=True)
+        fig, ax = plt.subplots(figsize=(9.4, 3.6))
+        y = np.arange(len(filas6b))
+        alto = 0.36
+        ax.barh(y - alto / 2, [f[2] for f in filas6b], height=alto,
+                color="#C8451B", label="habitación")
+        ax.barh(y + alto / 2, [f[3] for f in filas6b], height=alto,
+                color="#0072B2", label="piso entero 2026")
+        for i, (_, _, e_hab, e_piso) in enumerate(filas6b):
+            ax.text(e_hab + 2, i - alto / 2, f"{e_hab:.1f} %".replace(".", ","),
+                    va="center", fontsize=8.5, color="#7A2A10")
+            ax.text(e_piso + 2, i + alto / 2, f"{e_piso:.1f} %".replace(".", ","),
+                    va="center", fontsize=8.5, color="#00456B")
+        ax.set_yticks(y, [f"{f[0]} (n={f[1]})" for f in filas6b], fontsize=8.5)
+        ax.invert_yaxis()
+        ax.set_xlim(0, max(f[3] for f in filas6b) * 1.22)
+        ax.set_xlabel("Esfuerzo (% del salario joven 2026 ajustado)")
+        ax.set_title("H6b Habitación frente a piso entero: mismo salario, distinto esfuerzo")
+        ax.legend(fontsize=8, loc="lower right", frameon=False)
+        ax.grid(axis="x", color="#CFCBC3", linewidth=0.8)
+        ax.set_axisbelow(True)
+        for lado in ("top", "right"):
+            ax.spines[lado].set_visible(False)
+        _save(fig, "H6b_esfuerzo_habitacion_vs_piso.png")
+    else:
+        _honest("H6b_esfuerzo_habitacion_vs_piso.png", "H6b Habitaciones (sin datos)",
+                "sin municipios con n>=5 de habitacion y esfuerzo 2026")
+
     # H7: minutos OSRM a Bilbao/Vitoria vs esfuerzo 18-34.
     by_id_esf = {str(d.get("_id")): _esf(d) for d in ind}
     pts7b, pts7v = [], []

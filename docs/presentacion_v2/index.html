@@ -472,9 +472,9 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div class="arrow">→</div>
         <div class="box" style="padding:16px 18px"><span class="n">04</span><b style="font-size:22px">MongoDB</b><div class="mini">17 vivas · PyMongo</div></div>
         <div class="arrow">→</div>
-        <div class="box" style="padding:16px 18px;border-color:var(--accent)"><span class="n">05</span><b style="font-size:22px">Gold</b><div class="mini">54 artefactos · 24 CSV + 30 PNG</div></div>
+        <div class="box" style="padding:16px 18px;border-color:var(--accent)"><span class="n">05</span><b style="font-size:22px">Gold</b><div class="mini">55 artefactos · 24 CSV + 31 PNG</div></div>
       </div>
-      <p class="small" style="margin-top:14px;font-size:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 183/183 silver · 54/54 gold byte a byte · 40 nodos en el DAG.</p>
+      <p class="small" style="margin-top:14px;font-size:18px"><span class="mono">python scripts/run_pipeline.py --fase silver,quality,gold</span> → 183/183 silver · 55/55 gold byte a byte · 40 nodos en el DAG.</p>
       <div class="branch" style="margin-top:18px;padding-top:18px">
         <div class="grid2" style="gap:22px">
           <div class="box" style="padding:16px 18px"><span class="n">CONSERVACIÓN</span><b style="font-size:22px">raw → Kafka → HDFS</b><div class="mini">productor lee manifiesto SHA → topic <span class="mono">vivienda_euskadi</span> → consumidor <span class="mono">hdfs_centro</span> → 353 objetos (352 canónicos + 1 manifiesto). Nunca Kafka → Mongo.</div></div>
@@ -635,13 +635,13 @@ db.anuncios.find(
         <div><div class="big sm">287</div><div class="cap">tests · 293 pasan · 2 skipped</div></div>
         <div><div class="big sm">355</div><div class="cap">SHA del raw verificados</div></div>
         <div><div class="big sm">183</div><div class="cap">silver validados en esquema y tipos</div></div>
-        <div><div class="big sm">53</div><div class="cap">gold reproducibles byte a byte</div></div>
+        <div><div class="big sm">55</div><div class="cap">gold reproducibles byte a byte</div></div>
       </div>
       <div class="warn" style="margin-top:40px;max-width:78ch">
         <b>FAIL 07, visible:</b> Aramaio 0,28 · Gaintza 1,45 · Usansolo 3,26 — paro cero en el INE con tasa no nula en Lanbide.
         Preferimos enseñarlo en rojo antes que imputarlo para que salga verde.
       </div>
-      <p class="small" style="margin-top:22px">Gobernanza TODO OK · gate offline OK · FAIL 07 es un dato real, no un test roto. 183/183 silver y 54/54 gold reconstruidos desde cero.</p>
+      <p class="small" style="margin-top:22px">Gobernanza TODO OK · gate offline OK · FAIL 07 es un dato real, no un test roto. 183/183 silver y 55/55 gold reconstruidos desde cero.</p>
       <footer class="ft"><span class="proof">pytest · verificar_gobernanza.py · gate_extremo_a_extremo.py --offline</span><span class="proof">C8 · C16 · P-08</span></footer>
     </div>
   </section>
@@ -708,7 +708,7 @@ db.anuncios.find(
       <h2>Conclusión.</h2>
       <p class="final" style="margin-top:44px;max-width:31ch;font-size:60px">En la mayoría del territorio, justo; en las capitales, no; en el mercado de entrada actual, prohibitivo; y en 188 municipios no lo sabemos.</p>
       <p class="lead" style="margin-top:52px;max-width:42ch">Gracias. Abrimos el código, los datos y el CSV de cada cifra de esta charla.</p>
-      <footer class="ft"><span class="proof">Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 53 gold · 295 tests</span><span class="proof">C18 · C19</span></footer>
+      <footer class="ft"><span class="proof">Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 295 tests</span><span class="proof">C18 · C19</span></footer>
     </div>
   </section>
 
