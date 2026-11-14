@@ -151,7 +151,7 @@ def main() -> int:
     hp = hab.loc[hab["precio_eur"] < hab["_tope"], "precio_eur"].dropna()
     add(
         "B4 utilizables",
-        f"{len(hp)} utilizables tras descartar {len(con_precio) - len(hp)} pisos enteros "
+        f"quedan {len(hp)}. Se descartan {len(con_precio) - len(hp)} pisos enteros "
         f"({es((1 - len(hp) / len(con_precio)) * 100, 0)} %)",
     )
     add("B4 mediana global", f"{es(hp.median(), 0)} €")
@@ -177,10 +177,7 @@ def main() -> int:
         med = float(fila["mediana_precio_eur"])
         add(f"B4 esfuerzo {etiqueta}", f"{es(med / salario * 100)} %")
         add(f"B4 n {etiqueta}", f"{etiqueta} ({int(fila['n_precio'])})")
-        add(
-            f"B4 {etiqueta} vs piso entero",
-            f"{es(med, 0)} € frente a {es(float(fila['tope_alquiler_eur_mes']), 0)} €",
-        )
+        add(f"B4 tope {etiqueta}", f"más que el piso típico")
 
     # ---------- Tipologia ----------
     tipo = pd.read_csv(RES / "esfuerzo_por_tipo_nivel_anuncio_2026.csv", encoding="utf-8-sig")
@@ -302,14 +299,24 @@ def main() -> int:
         val = float(resumen[resumen["metrica"] == metrica].iloc[0]["mediana"])
         add(metrica.split("_")[1] + " base comun", f"{es(val)} %")
 
-    alq = pd.read_csv(RES / "mongo_alquiler_por_municipio.csv", encoding="utf-8-sig", dtype={"_id": str})
-    alq["codigo_ine"] = alq["_id"].str.zfill(5)
-    base = mercado[mercado["n_anuncios_2026"] > 0][["codigo_ine", pr, _col(mercado, "mediana_m2")]]
-    j = base.merge(alq[["codigo_ine", "cuantia_media", "renta_m2_media"]], on="codigo_ine")
-    ratio = float((j[pr] / j["cuantia_media"]).median())
-    ratio_m2 = float((j[_col(mercado, "mediana_m2")] / j["renta_m2_media"]).median())
-    add("ratio precio 2026/2024", f"{es(ratio, 2)}×")
-    add("ratio €/m2 2026/2024", f"{es(ratio_m2, 2)}×")
+    # ---------- Diferencia de nivel (slide 15): solo municipios con muestra ----------
+    brecha = pd.read_csv(RES / "brecha_esfuerzo_2024_2026.csv", encoding="utf-8-sig")
+    cob_brecha = pd.read_csv(RES / "cobertura_representatividad_2026.csv", encoding="utf-8-sig")
+    b5 = brecha[brecha["n_anuncios_2026"] >= 5]
+    add("brecha municipios n5", f"solo los {len(b5)} municipios con n")
+    med_b5 = es(float(b5["brecha_pp_18_34"].median()))
+    add("brecha mediana n5", f"{med_b5} puntos")
+    add("brecha mediana n5 (cifra)", f'>{med_b5}<span class="unit">pp</span>', raw=True)
+    add("brecha minimo", f"{es(float(b5['brecha_pp_18_34'].min()))} pp")
+    add("brecha maximo", f"{es(float(b5['brecha_pp_18_34'].max()))} pp")
+    add(
+        "brecha superficie anuncio",
+        f"{es(float(_fila(cob_brecha, 'superficie_mediana_anuncios')))} m² de anuncio",
+    )
+    add(
+        "brecha superficie oficial",
+        f"{es(float(_fila(cob_brecha, 'superficie_mediana_oficial_2024')))} m² del registrado",
+    )
 
     # ---------- Cobertura ----------
     cob = pd.read_csv(RES / "cobertura_representatividad_2026.csv", encoding="utf-8-sig")
