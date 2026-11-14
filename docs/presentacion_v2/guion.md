@@ -282,6 +282,8 @@ Límites y cierre van al final, no en medio.
 | Getxo | 39 | 28,60 % | 1.350,00 € | 78,55 % | 6,40 % |
 | Vitoria-Gasteiz | 37 | 33,37 % | 1.300,00 € | 75,64 % | 8,89 % |
 
+  - Contexto de la capa: **594** anuncios 2026 (326 larga + 268 temporal) → **287** válidos
+    → **202** aquí (70,4 %); los otros 46 municipios se reparten 85
   - Getxo vs Vitoria: **2 anuncios comparables** de diferencia (39 frente a 37; el Tier A
     suma 50 frente a 39) → sin ranking firme 3º/4º
   - **Barakaldo: n=2** → cualquier mediana municipal es ruido, no ranking
