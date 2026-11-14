@@ -179,7 +179,7 @@ al final, no en medio.
   - **38,5 %** Barakaldo, 746 € · Donostia **38,2 %**, 995 € · Sestao **38,1 %**, 650 €
   - **14** municipios pasan del 35 % de los **159** con alquiler oficial; **40** pasan del 30 %
   - El corte no es un top-N a mano: son todos los que superan el 35 %, en orden
-- **Gráfica:** `H1_ranking_esfuerzo_18_34.png` (esfuerzo 2024; color y n = cobertura 2026).
+- **Gráfica:** `H1_ranking_esfuerzo_18_34.png` (esfuerzo 2024 puro: sin Tier ni muestra; la cobertura vive en la tabla de la 11).
 - **Evidencia:** `comparacion_esfuerzo_2024_2026.csv`, `mongo_esfuerzo_por_municipio.csv`.
 - **Rúbrica:** C7, C19.
 - **Nota oral:** «El mapa dice dónde, pero no quién está peor. Ordenamos los 159 municipios

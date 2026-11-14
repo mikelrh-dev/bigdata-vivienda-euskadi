@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T19:38:44+00:00",
+    "generado_utc": "2026-11-14T20:08:05+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
