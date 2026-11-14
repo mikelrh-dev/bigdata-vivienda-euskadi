@@ -337,12 +337,37 @@ def main() -> int:
 
     mongo = _mongo_counts()
     if mongo is None:
-        print("  SKIP Mongo no disponible: no se comprueban 17 vivas / 25 indices")
+        print("  SKIP Mongo no disponible: no se comprueban 17 vivas / 8 indices")
     else:
         vivas, backup, indices = mongo
         add("colecciones vivas", f"{vivas} colecciones vivas")
         add("colecciones backup", f"{backup} backup")
-        add("indices", f"{indices} índices")
+        add("indices de trabajo", "8 índices de trabajo")
+        add("indices contando _id", f"{indices} contando")
+        add("indices sin crear", "2 definidos sin crear")
+
+    # ---------- Slide 21: las tres consultas de negocio ----------
+    esf = pd.read_csv(RES / "mongo_esfuerzo_por_municipio.csv", encoding="utf-8-sig")
+    tier_a = esf[
+        (esf["tiene_alquiler_oficial"].astype(str).str.lower() == "true")
+        & (esf["n_anuncios"] >= 30)
+    ].sort_values("esfuerzo_joven_pct_18_34", ascending=False)
+    top4 = " · ".join(
+        f"{r.nombre.split(' / ')[0].split('-')[0]} {es(r.esfuerzo_joven_pct_18_34, 2)}"
+        for r in tier_a.itertuples()
+    )
+    add("top4 esfuerzo Tier A", top4)
+    print(f"  (Tier A: {len(tier_a)} municipios)")
+
+    vpo = pd.read_csv(RES / "mongo_vpo_por_municipio.csv", encoding="utf-8-sig")
+    estados = vpo.groupby("estado")["n_promociones"].sum().astype(int).to_dict()
+    for etiqueta, clave, sufijo in (
+        ("VPO terminadas", "Terminada", "terminadas"),
+        ("VPO en curso", "En Curso", "en curso"),
+        ("VPO en convenio", "En Convenio", "en convenio"),
+        ("VPO en proyecto", "En Proyecto", "en proyecto"),
+    ):
+        add(etiqueta, f"{estados.get(clave, 0)} {sufijo}")
 
     # ---------- Slide 03: los tres proxys ----------
     base = pd.read_csv(PROC / "analisis_variables_base.csv", encoding="utf-8-sig")
@@ -358,6 +383,7 @@ def main() -> int:
         ("2,0x", "2,0×"),
         ("15 vivas", "15 colecciones vivas"),
         ("24 indices", "24 índices"),
+        ("25 indices", "25 índices"),
         ("63 gold", "63/63"),
         ("63 artefactos", "63 artefactos"),
         ("corrida real OK", "corrida real OK"),
@@ -372,6 +398,7 @@ def main() -> int:
         ("B4 37,2", "37,2 %"),
         ("287 tests", "287 tests"),
         ("54/54", "54/54"),
+        ("11 pipelines", "11 pipelines"),
     ]
     for etiqueta, aguja in prohibidas:
         add(f"prohibido: {etiqueta}", aguja, ok=False)
