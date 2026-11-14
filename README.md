@@ -158,7 +158,7 @@ erDiagram
     }
 ```
 
-> **HDFS: solo `raw` (excepción acordada con la profesora).** Se publican los 353
+> **HDFS: solo `raw` (excepción de alcance declarada).** Se publican los 353
 > ficheros canónicos de `data/raw`; `data/procesado` **no** se sube. El criterio se
 > cubre con la organización de originales, la recuperación verificada con
 > `scripts/hdfs_recuperacion_un_fichero.py` (cotejo de tamaño y SHA, solo lectura) y

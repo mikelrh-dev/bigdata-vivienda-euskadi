@@ -33,7 +33,7 @@ Silver se carga en {{mongo.vivas}} colecciones vivas con `replace_collection`. L
 
 ## 2.5 Una excepción declarada: HDFS solo raw
 
-HDFS conserva los originales, no silver ni gold. Es una decisión expresa de la profesora. La reproducibilidad del análisis se apoya en el manifiesto y en los scripts, no en una copia distribuida de los intermedios.
+HDFS conserva los originales, no silver ni gold. Es un requisito del alcance del reto. La reproducibilidad del análisis se apoya en el manifiesto y en los scripts, no en una copia distribuida de los intermedios.
 
 ![Arquitectura de dos ramas y cinco capas](figuras/fig-arquitectura.png){width=17cm}\
 *Figura 2.1. Las dos ramas comparten el raw inmutable. HDFS conserva originales; MongoDB y gold sostienen el análisis. Fuente: `docs/memoria/build.py`, `storage/kafka_hdfs_uploader.py` y `scripts/run_pipeline.py`.*

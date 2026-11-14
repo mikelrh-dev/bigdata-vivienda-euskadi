@@ -451,7 +451,7 @@ al final, no en medio.
     `OPEN` falla por DNS del datanode; Kafka acepta TCP pero no entrega metadata. La última
     evidencia funcional es v8: 352/352, lag 0. No se afirma como revalidado hoy.
   - **Excepción declarada:** HDFS custodia solo la capa Raw; Silver y Gold se procesan en
-    local por indicación expresa de la profesora.
+    local por requisito del alcance del reto.
 - **Footer:** `scripts/run_pipeline.py · storage/kafka_hdfs_uploader.py` | `C1-C4 · C7`.
 - **Rúbrica:** C1, C2, C3, C4, C7, ENTREGABLES-01, ARQUITECTURA-01.
 - **Nota oral:** «Hay dos caminos sobre los mismos ficheros. El analítico: original
@@ -646,7 +646,7 @@ al final, no en medio.
   mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso
   de los 45 en cuarentena que sí esté en Euskadi.»
 - **Nota:** excepción declarada: HDFS solo raw (352 canónicos + 1 manifiesto); procesados en
-  local por indicación de la profesora. Con más datos, lo primero sería subir la muestra de
+  local por requisito del alcance. Con más datos, lo primero sería subir la muestra de
   los 57 Tier C y separar temporal de larga.
 - **Footer:** `openspec/audit/v11_2026-11-12/auditoria_completa_v11.md` | `C18 · C19 · P-05`.
 - **Rúbrica:** C18, C19, P-05.
