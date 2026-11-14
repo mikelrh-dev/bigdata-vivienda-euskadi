@@ -6,14 +6,14 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 ## Qué hay aquí
 
 - `guion.md` — guion oral slide por slide, con cifras, gráficas, backups y mapa de rúbrica.
-- `index.html` — deck completo, **22 diapositivas + 8 de backup**, en cuatro actos:
+- `index.html` — deck completo, **23 diapositivas + 9 de backup**, en cuatro actos:
   2024 oficial → 2026 de oferta → cómo se construyó → límites y cierre. Estilo
   **Swiss Modern**, una sola página, CSS/JS inline, sin red: se abre con doble clic.
 - `assets/` — PNG portables. Los del bloque 2026 salen de
   `visuals/assets_presentacion_esfuerzo_mercado_2026.py` (lee los CSV de
   `data/procesado`, no teclea cifras): top20 con IC, histograma, territorio,
   tipología, diferencia de nivel, intervalos, cobertura y los dos mapas.
-- `presentacion_v2.pdf` — exportación a 1920×1080, 31 páginas (22 + 9 backups).
+- `presentacion_v2.pdf` — exportación a 1920×1080, 33 páginas (23 + 10 backups).
 - H8b (`H8b_modalidad_mediana_eur_m2.png`) se genera en `run_analisis_mongo.py` desde
   `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` y `mediana_superficie_m2`
   por modalidad. Gold pasa a 53/53.
@@ -25,7 +25,7 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
   WebHDFS falla por DNS del datanode; el script de recuperación coteja, no restaura.
 - Kafka: sin metadata en la comprobación de hoy (`NodeNotReadyError`); la última
   evidencia buena es v8 (352/352, lag 0).
-- Gold: **53 artefactos** (24 CSV + 29 PNG).
+- Gold: **55 artefactos** (24 CSV + 31 PNG).
 
 ## Año de cada figura
 
