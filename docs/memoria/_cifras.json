@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T18:06:42+00:00",
+    "generado_utc": "2026-11-14T18:18:04+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -617,7 +617,7 @@
       "fuente": "data/resultados/anexo/*.png"
     },
     "gold.artefactos": {
-      "valor": 54,
+      "valor": 55,
       "formato": "int",
       "fuente": "CSV + PNG de la raíz"
     },
@@ -627,7 +627,7 @@
       "fuente": "data/resultados/*.csv"
     },
     "gold.png": {
-      "valor": 30,
+      "valor": 31,
       "formato": "int",
       "fuente": "data/resultados/*.png"
     },

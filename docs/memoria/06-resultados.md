@@ -88,31 +88,27 @@ El corte deja {{datos.habitaciones_utilizables}} anuncios utilizables y descarta
 
 La comparación con el piso entero es el resultado que importa: en Bilbao una habitación cuesta {{datos.habitaciones_bilbao_mediana}} € frente a los {{datos.habitaciones_bilbao_tope}} € del alquiler mediano de vivienda, un {{datos.habitaciones_bilbao_ahorro_pct}} % menos; en Donostia, {{datos.habitaciones_donostia_mediana}} € frente a {{datos.habitaciones_donostia_tope}} €, un {{datos.habitaciones_donostia_ahorro_pct}} % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con esos precios el esfuerzo se queda en el {{datos.habitaciones_bilbao_esfuerzo}} % y el {{datos.habitaciones_donostia_esfuerzo}} %, por encima del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30 anuncios utilizables, Donostia se queda en {{datos.habitaciones_donostia_n}} y el resto es indicativo, sin ranking municipal.
 
-Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. Es la tasa de esfuerzo por habitaciones:
+Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. La figura 6.8 lo deja en dos barras por municipio, con el mismo salario para las dos series:
 
-| Municipio | Anuncios utilizables | Mediana habitación | Esfuerzo habitación | Esfuerzo piso 2026 |
-|---|---:|---:|---:|---:|
-| Bilbao | {{datos.habitaciones_bilbao_n}} | {{datos.habitaciones_bilbao_mediana}} € | {{datos.habitaciones_bilbao_esfuerzo}} % | {{datos.mun_bilbao_esfuerzo_2026}} % |
-| Donostia / San Sebastián | {{datos.habitaciones_donostia_n}} | {{datos.habitaciones_donostia_mediana}} € | {{datos.habitaciones_donostia_esfuerzo}} % | {{datos.mun_donostia_esfuerzo_2026}} % |
-| Getxo | {{datos.habitaciones_getxo_n}} | {{datos.habitaciones_getxo_mediana}} € | {{datos.habitaciones_getxo_esfuerzo}} % | {{datos.mun_getxo_esfuerzo_2026}} % |
-| Vitoria-Gasteiz | {{datos.habitaciones_vitoria_n}} | {{datos.habitaciones_vitoria_mediana}} € | {{datos.habitaciones_vitoria_esfuerzo}} % | {{datos.mun_vitoria_esfuerzo_2026}} % |
+Barakaldo queda fuera de la figura: sus {{datos.habitaciones_barakaldo_n}} anuncios de habitación dan un {{datos.habitaciones_barakaldo_esfuerzo}} % de esfuerzo, pero su oferta de piso de 2026 solo tiene dos anuncios comparables. La diferencia entre las dos series es el efecto de compartir: la habitación se queda entre el {{datos.habitaciones_vitoria_esfuerzo}} % de Vitoria-Gasteiz y el {{datos.habitaciones_donostia_esfuerzo}} % de Donostia, con Getxo en el {{datos.habitaciones_getxo_esfuerzo}} % y solo cinco anuncios, mientras el piso entero de 2026 va del {{datos.mun_vitoria_esfuerzo_2026}} % al {{datos.mun_donostia_esfuerzo_2026}} %.
 
-Barakaldo, con {{datos.habitaciones_barakaldo_n}} anuncios, se queda en el {{datos.habitaciones_barakaldo_esfuerzo}} % de esfuerzo de habitación, pero no entra en la tabla porque en 2026 solo tiene dos anuncios comparables de piso. La diferencia entre las dos columnas es el efecto de compartir: la habitación se queda entre el {{datos.habitaciones_vitoria_esfuerzo}} % de Vitoria-Gasteiz y el {{datos.habitaciones_donostia_esfuerzo}} % de Donostia, mientras el piso entero de 2026 va del {{datos.mun_vitoria_esfuerzo_2026}} % al {{datos.mun_donostia_esfuerzo_2026}} %.
+![Esfuerzo de habitación frente a piso entero](figuras/fig-habitaciones-esfuerzo.png){width=15cm}\
+*Figura 6.8. Esfuerzo de una habitación frente al piso entero del mismo año, con el mismo salario joven de 2026 ajustado. Solo aparecen los municipios con al menos 5 anuncios de habitación y 30 de piso en 2026; la muestra de habitación es firme en Bilbao ({{datos.habitaciones_bilbao_n}}) y corta en Getxo ({{datos.habitaciones_getxo_n}}) y Vitoria-Gasteiz ({{datos.habitaciones_vitoria_n}}), así que en esos dos la lectura es indicativa. Fuente: `data/resultados/H6b_esfuerzo_habitacion_vs_piso.png`.*
 
 El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene {{datos.tier_a}} municipios, el B {{datos.tier_b}}, el C {{datos.tier_c}} y el D {{datos.tier_d}}. Solo {{datos.tier_ab}} llegan a A o B, y de ellos los {{datos.tier_a}} del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
 ![Tier de confianza](figuras/fig-tier.png){width=12cm}\
-*Figura 6.8. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
+*Figura 6.9. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
 
 La cobertura se mide en población joven, no en municipios: los {{datos.municipios_2026}} municipios con dato son el {{datos.cobertura_municipios_pct}} % del total, pero concentran el {{datos.cobertura_poblacion_pct}} % de la población de 18 a 34 años ({{datos.cobertura_poblacion}} personas). Los {{datos.tier_a}} municipios del Tier A reúnen el {{datos.cobertura_anuncios_n30_pct}} % de los anuncios. La capa no es todo el territorio, pero cubre a la mayoría de la población joven.
 
 ![Cobertura de la capa 2026](figuras/fig-cobertura-2026.png){width=13cm}\
-*Figura 6.9. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
+*Figura 6.10. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
 
 ## 6.5 O3. La capa 2026: qué dice el esfuerzo
 
 ![Mapa de oferta 2026](figuras/fig-mapa-2026.png){width=15cm}\
-*Figura 6.10. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
+*Figura 6.11. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
 
 El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven de 2024 ajustado por IPC: el numerador es de 2026 y el denominador se actualiza para no mezclar años. En los cuatro municipios con muestra suficiente el resultado no admite duda de signo:
 
@@ -124,19 +120,19 @@ El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven 
 | Vitoria-Gasteiz | {{datos.mun_vitoria_n_2026}} | {{datos.mun_vitoria_esfuerzo}} % | {{datos.mun_vitoria_precio_2026}} € | {{datos.mun_vitoria_esfuerzo_2026}} % |
 
 ![Esfuerzo 2026 y su muestra](figuras/fig-ranking-2026.png){width=15cm}\
-*Figura 6.11. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
+*Figura 6.12. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
 
 Donostia ({{datos.mun_donostia_esfuerzo_2026}} %) y Bilbao ({{datos.mun_bilbao_esfuerzo_2026}} %) ponen el alquiler de anuncio por encima del salario joven mensual: trabajar no cubre el alquiler. Getxo y Vitoria-Gasteiz se quedan en {{datos.mun_getxo_esfuerzo_2026}} % y {{datos.mun_vitoria_esfuerzo_2026}} %. Santurtzi, Zarautz y Sopela, con 4 a 8 anuncios comparables, no entran en la comparación y se leen como indicativo.
 
 ![Histograma de esfuerzo 2026](figuras/fig-hist-2026.png){width=13cm}\
-*Figura 6.12. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
+*Figura 6.13. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
 
 La mediana de la capa es {{datos.esfuerzo_2026_salario}} % con el salario ajustado y {{datos.esfuerzo_2026_renta}} % con la renta de 2024 como denominador. En esos mismos {{datos.municipios_2026}} municipios, la mediana oficial de 2024 era {{datos.esfuerzo_2024_canonico}} % y la base salario de 2024, {{datos.esfuerzo_2024_salario}} %. No son comparables: cambia el numerador (anuncio frente a contrato) y, en la primera cifra, también el denominador.
 
 Por tipo, la mediana es {{datos.esfuerzo_2026_tipo_1_2}} % para 1–2 habitaciones ({{datos.anuncios_2026_tipo_1_2}} anuncios), {{datos.esfuerzo_2026_tipo_3}} % para 3 ({{datos.anuncios_2026_tipo_3}}) y {{datos.esfuerzo_2026_tipo_4}} % para 4 o más ({{datos.anuncios_2026_tipo_4}}). El esfuerzo sube con el tamaño. La cifra de 4+ no describe el precio típico de una persona sola.
 
 ![Diferencia de nivel 2024 a 2026](figuras/fig-brecha-2026.png){width=15cm}\
-*Figura 6.13. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
+*Figura 6.14. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
 
 La distancia entre las dos capas se puede medir sin restarlas como serie: en los {{datos.brecha_municipios_n5}} municipios con al menos 5 anuncios, la diferencia de nivel mediana es de {{datos.brecha_mediana_n5}} puntos porcentuales. Parte de esa distancia es el cambio de fuente y parte es el tipo de vivienda: la superficie mediana del anuncio es de {{datos.sesgo_superficie_anuncios}} m² y la del alquiler registrado, de {{datos.sesgo_superficie_oficial}} m². Un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando.
 

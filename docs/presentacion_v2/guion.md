@@ -9,7 +9,7 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 
 > **Cifras congeladas (2026-11-13).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **352 canónicos +
-> 3 legado** · **353 objetos en HDFS** (352 + 1 manifiesto) · **183 silver** · **53 gold**
+> 3 legado** · **353 objetos en HDFS** (352 + 1 manifiesto) · **183 silver** · **55 gold**
 > (24 CSV + 29 PNG) · **17 colecciones vivas + 15 backup = 32** · **25 índices** ·
 > **287 tests** (285 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
 > **78,6 % municipal** · **87,3 % de anuncio** · **1.350 € mediana de medianas
@@ -572,7 +572,7 @@ Límites y cierre van al final, no en medio.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; en el mercado
   de entrada actual, prohibitivo; y en 188 municipios no lo sabemos.» + «Gracias. Abrimos el
   código, los datos y el CSV de cada cifra.»
-- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 53 gold · 287 tests` | `C18 · C19`.
+- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 287 tests` | `C18 · C19`.
 - **Rúbrica:** C18, C19.
 - **Nota oral:** «Y hasta aquí. En la mayoría del territorio, justo; en las capitales, no;
   en el mercado de entrada actual, prohibitivo; y en 188 municipios no lo sabemos. Gracias;

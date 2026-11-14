@@ -1,6 +1,6 @@
 # Cifras vigentes
 
-Generado: `2026-11-14T18:06:42+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
+Generado: `2026-11-14T18:18:04+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
 
 > No editar a mano: se regenera con `python docs/memoria/build.py --refresh`.
 
@@ -155,9 +155,9 @@ Generado: `2026-11-14T18:06:42+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 | Clave | Valor | Fuente |
 |---|---:|---|
 | `gold.anexo_png` | 8 | data/resultados/anexo/*.png |
-| `gold.artefactos` | 54 | CSV + PNG de la raíz |
+| `gold.artefactos` | 55 | CSV + PNG de la raíz |
 | `gold.csv` | 24 | data/resultados/*.csv |
-| `gold.png` | 30 | data/resultados/*.png |
+| `gold.png` | 31 | data/resultados/*.png |
 
 ## Raw
 

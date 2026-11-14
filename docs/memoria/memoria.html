@@ -262,7 +262,7 @@ continuar en local.</p>
 <td>Gold</td>
 <td>CSV y PNG listos para el informe</td>
 <td><code>data/resultados/</code></td>
-<td>54 (24 CSV + 30 PNG) + 8 anexo</td>
+<td>55 (24 CSV + 31 PNG) + 8 anexo</td>
 </tr>
 </tbody>
 </table>
@@ -290,8 +290,8 @@ conservados suman 895.597.901 bytes.</p>
 <h2 id="la-rama-analítica">2.4 La rama analítica</h2>
 <p>Silver se carga en 17 colecciones vivas con
 <code>replace_collection</code>. Los pipelines de agregación calculan
-los indicadores y escriben 8 CSV en gold. El resultado final son 54
-artefactos (24 CSV y 30 PNG), más 8 PNG de anexo.</p>
+los indicadores y escriben 8 CSV en gold. El resultado final son 55
+artefactos (24 CSV y 31 PNG), más 8 PNG de anexo.</p>
 <h2 id="una-excepción-declarada-hdfs-solo-raw">2.5 Una excepción
 declarada: HDFS solo raw</h2>
 <p>HDFS conserva los originales, no silver ni gold. Es una decisión
@@ -364,7 +364,7 @@ orquestador lo invoca como un paso, no lo replica.</p>
 <tr>
 <td>gold</td>
 <td><code>capa_2026</code> + análisis + figuras</td>
-<td>54 artefactos</td>
+<td>55 artefactos</td>
 </tr>
 </tbody>
 </table>
@@ -399,7 +399,7 @@ no colecciones de trabajo.</p>
 <h2 id="gold-y-una-laguna-declarada">3.6 Gold y una laguna
 declarada</h2>
 <p>Los pipelines de agregación escriben 8 CSV y los scripts de figuras
-generan 30 PNG. Gold es la única capa que el informe consume; no se
+generan 31 PNG. Gold es la única capa que el informe consume; no se
 dibuja directamente desde Mongo para que una figura se pueda reproducir
 sin conexión.</p>
 <p>Cada figura declara su año con un sello en la esquina inferior
@@ -919,62 +919,24 @@ anuncios utilizables, Donostia se queda en 29 y el resto es indicativo,
 sin ranking municipal.</p>
 <p>Ese esfuerzo de la habitación se puede poner en la misma escala que
 el del piso entero, porque las dos cifras dividen entre el mismo salario
-joven de 2026 ajustado que usa la capa de oferta. Es la tasa de esfuerzo
-por habitaciones:</p>
-<table>
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 21%" />
-<col style="width: 21%" />
-<col style="width: 21%" />
-<col style="width: 21%" />
-</colgroup>
-<thead>
-<tr>
-<th>Municipio</th>
-<th style="text-align: right;">Anuncios utilizables</th>
-<th style="text-align: right;">Mediana habitación</th>
-<th style="text-align: right;">Esfuerzo habitación</th>
-<th style="text-align: right;">Esfuerzo piso 2026</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Bilbao</td>
-<td style="text-align: right;">80</td>
-<td style="text-align: right;">580 €</td>
-<td style="text-align: right;">33,7 %</td>
-<td style="text-align: right;">98,19 %</td>
-</tr>
-<tr>
-<td>Donostia / San Sebastián</td>
-<td style="text-align: right;">29</td>
-<td style="text-align: right;">600 €</td>
-<td style="text-align: right;">34,9 %</td>
-<td style="text-align: right;">116,37 %</td>
-</tr>
-<tr>
-<td>Getxo</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">560 €</td>
-<td style="text-align: right;">32,6 %</td>
-<td style="text-align: right;">78,55 %</td>
-</tr>
-<tr>
-<td>Vitoria-Gasteiz</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">400 €</td>
-<td style="text-align: right;">23,3 %</td>
-<td style="text-align: right;">75,64 %</td>
-</tr>
-</tbody>
-</table>
-<p>Barakaldo, con 10 anuncios, se queda en el 29,1 % de esfuerzo de
-habitación, pero no entra en la tabla porque en 2026 solo tiene dos
-anuncios comparables de piso. La diferencia entre las dos columnas es el
-efecto de compartir: la habitación se queda entre el 23,3 % de
-Vitoria-Gasteiz y el 34,9 % de Donostia, mientras el piso entero de 2026
-va del 75,64 % al 116,37 %.</p>
+joven de 2026 ajustado que usa la capa de oferta. La figura 6.8 lo deja
+en dos barras por municipio, con el mismo salario para las dos
+series:</p>
+<p>Barakaldo queda fuera de la figura: sus 10 anuncios de habitación dan
+un 29,1 % de esfuerzo, pero su oferta de piso de 2026 solo tiene dos
+anuncios comparables. La diferencia entre las dos series es el efecto de
+compartir: la habitación se queda entre el 23,3 % de Vitoria-Gasteiz y
+el 34,9 % de Donostia, con Getxo en el 32,6 % y solo cinco anuncios,
+mientras el piso entero de 2026 va del 75,64 % al 116,37 %.</p>
+<p><img src="figuras/fig-habitaciones-esfuerzo.png" style="width:15cm"
+alt="Esfuerzo de habitación frente a piso entero" /><br />
+<em>Figura 6.8. Esfuerzo de una habitación frente al piso entero del
+mismo año, con el mismo salario joven de 2026 ajustado. Solo aparecen
+los municipios con al menos 5 anuncios de habitación y 30 de piso en
+2026; la muestra de habitación es firme en Bilbao (80) y corta en Getxo
+(5) y Vitoria-Gasteiz (11), así que en esos dos la lectura es
+indicativa. Fuente:
+<code>data/resultados/H6b_esfuerzo_habitacion_vs_piso.png</code>.</em></p>
 <p>El Tier se deriva solo del número de anuncios: A con 30 o más, B de
 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene 4 municipios, el B
 3, el C 57 y el D 188. Solo 7 llegan a A o B, y de ellos los 4 del Tier
@@ -983,7 +945,7 @@ proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no
 siete.</p>
 <p><img src="figuras/fig-tier.png" style="width:12cm"
 alt="Tier de confianza" /><br />
-<em>Figura 6.8. Tier A/B/C/D según cobertura y tamaño de muestra,
+<em>Figura 6.9. Tier A/B/C/D según cobertura y tamaño de muestra,
 contada sobre los anuncios de 2026. Fuente:
 <code>data/resultados/H2_tier_confianza_ABCD.png</code>.</em></p>
 <p>La cobertura se mide en población joven, no en municipios: los 50
@@ -993,14 +955,14 @@ Tier A reúnen el 70,38 % de los anuncios. La capa no es todo el
 territorio, pero cubre a la mayoría de la población joven.</p>
 <p><img src="figuras/fig-cobertura-2026.png" style="width:13cm"
 alt="Cobertura de la capa 2026" /><br />
-<em>Figura 6.9. Cobertura de la capa 2026 por población de 18 a 34 años,
-no por número de municipios. Fuente:
+<em>Figura 6.10. Cobertura de la capa 2026 por población de 18 a 34
+años, no por número de municipios. Fuente:
 <code>docs/presentacion_v2/assets/M26_cobertura.png</code>.</em></p>
 <h2 id="o3.-la-capa-2026-qué-dice-el-esfuerzo">6.5 O3. La capa 2026: qué
 dice el esfuerzo</h2>
 <p><img src="figuras/fig-mapa-2026.png" style="width:15cm"
 alt="Mapa de oferta 2026" /><br />
-<em>Figura 6.10. Esfuerzo con oferta de mercado de 2026. Capa separada
+<em>Figura 6.11. Esfuerzo con oferta de mercado de 2026. Capa separada
 de la de 2024; no se resta. Fuente:
 <code>docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png</code>.</em></p>
 <p>El esfuerzo de 2026 divide el precio mediano del anuncio entre el
@@ -1057,7 +1019,7 @@ con muestra suficiente el resultado no admite duda de signo:</p>
 </table>
 <p><img src="figuras/fig-ranking-2026.png" style="width:15cm"
 alt="Esfuerzo 2026 y su muestra" /><br />
-<em>Figura 6.11. Esfuerzo de 2026 con la muestra que lo sostiene, solo
+<em>Figura 6.12. Esfuerzo de 2026 con la muestra que lo sostiene, solo
 Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la
 barra usa solo los de larga estancia con precio válido, que son los
 comparables al contrato oficial: de ahí que cada <code>n</code> sea
@@ -1073,7 +1035,7 @@ Zarautz y Sopela, con 4 a 8 anuncios comparables, no entran en la
 comparación y se leen como indicativo.</p>
 <p><img src="figuras/fig-hist-2026.png" style="width:13cm"
 alt="Histograma de esfuerzo 2026" /><br />
-<em>Figura 6.12. Distribución del esfuerzo con anuncios de 2026. Fuente:
+<em>Figura 6.13. Distribución del esfuerzo con anuncios de 2026. Fuente:
 <code>docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png</code>.</em></p>
 <p>La mediana de la capa es 78,55 % con el salario ajustado y 57,77 %
 con la renta de 2024 como denominador. En esos mismos 50 municipios, la
@@ -1086,7 +1048,7 @@ el tamaño. La cifra de 4+ no describe el precio típico de una persona
 sola.</p>
 <p><img src="figuras/fig-brecha-2026.png" style="width:15cm"
 alt="Diferencia de nivel 2024 a 2026" /><br />
-<em>Figura 6.13. Diferencia de nivel entre el esfuerzo registrado de
+<em>Figura 6.14. Diferencia de nivel entre el esfuerzo registrado de
 2024 y el de oferta de 2026, en puntos porcentuales, solo en los
 municipios con al menos 5 anuncios. No es una variación temporal: cambia
 la fuente del numerador. Fuente:

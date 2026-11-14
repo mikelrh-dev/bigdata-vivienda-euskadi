@@ -79,7 +79,7 @@ La separación es deliberada. Si la transformación cambia, el original sigue di
 | Raw | Original inmutable con SHA-256 y `.FROZEN` | `data/raw/` | 355 manifiesto · 357 disco (355 visibles) · 353 HDFS |
 | Silver | CSV normalizados a `codigo_ine` | `data/procesado/` | 183 manifiesto · 187 disco |
 | MongoDB | Colecciones de análisis y pipelines | `vivienda_euskadi` | 17 vivas + 15 backup |
-| Gold | CSV y PNG listos para el informe | `data/resultados/` | 54 (24 CSV + 30 PNG) + 8 anexo |
+| Gold | CSV y PNG listos para el informe | `data/resultados/` | 55 (24 CSV + 31 PNG) + 8 anexo |
 
 Las tres cifras de raw no son intercambiables: el manifiesto cuenta entradas declaradas, el disco cuenta ficheros y HDFS cuenta objetos conservados. La diferencia se explica en el capítulo 7.
 
@@ -91,7 +91,7 @@ El productor lee el manifiesto SHA y publica un mensaje `raw_manifest` con `rel`
 
 ## 2.4 La rama analítica
 
-Silver se carga en 17 colecciones vivas con `replace_collection`. Los pipelines de agregación calculan los indicadores y escriben 8 CSV en gold. El resultado final son 54 artefactos (24 CSV y 30 PNG), más 8 PNG de anexo.
+Silver se carga en 17 colecciones vivas con `replace_collection`. Los pipelines de agregación calculan los indicadores y escriben 8 CSV en gold. El resultado final son 55 artefactos (24 CSV y 31 PNG), más 8 PNG de anexo.
 
 ## 2.5 Una excepción declarada: HDFS solo raw
 
@@ -124,7 +124,7 @@ La extracción y el volcado a HDFS quedan fuera de este orquestador: se ejecutan
 | silver | `transform/run_all.py` | 183 CSV en `data/procesado` |
 | quality | `normalizar_metadata` + manifiestos | sidecars y manifiesto SHA |
 | mongo | `scripts/run_mongo_pipeline.py` (opt-in) | 17 colecciones |
-| gold | `capa_2026` + análisis + figuras | 54 artefactos |
+| gold | `capa_2026` + análisis + figuras | 55 artefactos |
 
 ## 3.3 Silver: normalizar sin perder el original
 
@@ -140,7 +140,7 @@ La carga usa `replace_collection`: construye la colección en `__staging`, copia
 
 ## 3.6 Gold y una laguna declarada
 
-Los pipelines de agregación escriben 8 CSV y los scripts de figuras generan 30 PNG. Gold es la única capa que el informe consume; no se dibuja directamente desde Mongo para que una figura se pueda reproducir sin conexión.
+Los pipelines de agregación escriben 8 CSV y los scripts de figuras generan 31 PNG. Gold es la única capa que el informe consume; no se dibuja directamente desde Mongo para que una figura se pueda reproducir sin conexión.
 
 Cada figura declara su año con un sello en la esquina inferior derecha, y el mismo texto se repite en el pie de la figura. El sello no se coloca a ojo: antes de escribir el PNG, el generador reserva una franja inferior del lienzo y mide la caja del sello contra la de todos los textos visibles. El recuento de solapes queda en los metadatos del PNG y `scripts/verificar_vintage_figuras.py` falla si alguno no es cero, de modo que una figura nueva no puede publicarse pisando una etiqueta.
 
@@ -322,31 +322,27 @@ El corte deja 140 anuncios utilizables y descarta 60 (30,0 %), que son precisame
 
 La comparación con el piso entero es el resultado que importa: en Bilbao una habitación cuesta 580 € frente a los 850 € del alquiler mediano de vivienda, un 31,8 % menos; en Donostia, 600 € frente a 995 €, un 39,7 % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con esos precios el esfuerzo se queda en el 33,7 % y el 34,9 %, por encima del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30 anuncios utilizables, Donostia se queda en 29 y el resto es indicativo, sin ranking municipal.
 
-Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. Es la tasa de esfuerzo por habitaciones:
+Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. La figura 6.8 lo deja en dos barras por municipio, con el mismo salario para las dos series:
 
-| Municipio | Anuncios utilizables | Mediana habitación | Esfuerzo habitación | Esfuerzo piso 2026 |
-|---|---:|---:|---:|---:|
-| Bilbao | 80 | 580 € | 33,7 % | 98,19 % |
-| Donostia / San Sebastián | 29 | 600 € | 34,9 % | 116,37 % |
-| Getxo | 5 | 560 € | 32,6 % | 78,55 % |
-| Vitoria-Gasteiz | 11 | 400 € | 23,3 % | 75,64 % |
+Barakaldo queda fuera de la figura: sus 10 anuncios de habitación dan un 29,1 % de esfuerzo, pero su oferta de piso de 2026 solo tiene dos anuncios comparables. La diferencia entre las dos series es el efecto de compartir: la habitación se queda entre el 23,3 % de Vitoria-Gasteiz y el 34,9 % de Donostia, con Getxo en el 32,6 % y solo cinco anuncios, mientras el piso entero de 2026 va del 75,64 % al 116,37 %.
 
-Barakaldo, con 10 anuncios, se queda en el 29,1 % de esfuerzo de habitación, pero no entra en la tabla porque en 2026 solo tiene dos anuncios comparables de piso. La diferencia entre las dos columnas es el efecto de compartir: la habitación se queda entre el 23,3 % de Vitoria-Gasteiz y el 34,9 % de Donostia, mientras el piso entero de 2026 va del 75,64 % al 116,37 %.
+![Esfuerzo de habitación frente a piso entero](figuras/fig-habitaciones-esfuerzo.png){width=15cm}\
+*Figura 6.8. Esfuerzo de una habitación frente al piso entero del mismo año, con el mismo salario joven de 2026 ajustado. Solo aparecen los municipios con al menos 5 anuncios de habitación y 30 de piso en 2026; la muestra de habitación es firme en Bilbao (80) y corta en Getxo (5) y Vitoria-Gasteiz (11), así que en esos dos la lectura es indicativa. Fuente: `data/resultados/H6b_esfuerzo_habitacion_vs_piso.png`.*
 
 El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene 4 municipios, el B 3, el C 57 y el D 188. Solo 7 llegan a A o B, y de ellos los 4 del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
 ![Tier de confianza](figuras/fig-tier.png){width=12cm}\
-*Figura 6.8. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
+*Figura 6.9. Tier A/B/C/D según cobertura y tamaño de muestra, contada sobre los anuncios de 2026. Fuente: `data/resultados/H2_tier_confianza_ABCD.png`.*
 
 La cobertura se mide en población joven, no en municipios: los 50 municipios con dato son el 19,84 % del total, pero concentran el 71,21 % de la población de 18 a 34 años (334.753 personas). Los 4 municipios del Tier A reúnen el 70,38 % de los anuncios. La capa no es todo el territorio, pero cubre a la mayoría de la población joven.
 
 ![Cobertura de la capa 2026](figuras/fig-cobertura-2026.png){width=13cm}\
-*Figura 6.9. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
+*Figura 6.10. Cobertura de la capa 2026 por población de 18 a 34 años, no por número de municipios. Fuente: `docs/presentacion_v2/assets/M26_cobertura.png`.*
 
 ## 6.5 O3. La capa 2026: qué dice el esfuerzo
 
 ![Mapa de oferta 2026](figuras/fig-mapa-2026.png){width=15cm}\
-*Figura 6.10. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
+*Figura 6.11. Esfuerzo con oferta de mercado de 2026. Capa separada de la de 2024; no se resta. Fuente: `docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png`.*
 
 El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven de 2024 ajustado por IPC: el numerador es de 2026 y el denominador se actualiza para no mezclar años. En los cuatro municipios con muestra suficiente el resultado no admite duda de signo:
 
@@ -358,19 +354,19 @@ El esfuerzo de 2026 divide el precio mediano del anuncio entre el salario joven 
 | Vitoria-Gasteiz | 37 | 33,37 % | 1.300,00 € | 75,64 % |
 
 ![Esfuerzo 2026 y su muestra](figuras/fig-ranking-2026.png){width=15cm}\
-*Figura 6.11. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
+*Figura 6.12. Esfuerzo de 2026 con la muestra que lo sostiene, solo Tier A. El Tier se calcula sobre todos los anuncios de 2026, pero la barra usa solo los de larga estancia con precio válido, que son los comparables al contrato oficial: de ahí que cada `n` sea menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58 frente a 126). El Tier B queda fuera del ranking porque sus 4 a 8 anuncios comparables no llegan al umbral. Sin línea de umbral: el 30 % es del esfuerzo de 2024 y aquí cambian numerador y denominador. Fuente: `docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png`.*
 
 Donostia (116,37 %) y Bilbao (98,19 %) ponen el alquiler de anuncio por encima del salario joven mensual: trabajar no cubre el alquiler. Getxo y Vitoria-Gasteiz se quedan en 78,55 % y 75,64 %. Santurtzi, Zarautz y Sopela, con 4 a 8 anuncios comparables, no entran en la comparación y se leen como indicativo.
 
 ![Histograma de esfuerzo 2026](figuras/fig-hist-2026.png){width=13cm}\
-*Figura 6.12. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
+*Figura 6.13. Distribución del esfuerzo con anuncios de 2026. Fuente: `docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png`.*
 
 La mediana de la capa es 78,55 % con el salario ajustado y 57,77 % con la renta de 2024 como denominador. En esos mismos 50 municipios, la mediana oficial de 2024 era 30,70 % y la base salario de 2024, 44,57 %. No son comparables: cambia el numerador (anuncio frente a contrato) y, en la primera cifra, también el denominador.
 
 Por tipo, la mediana es 78,55 % para 1–2 habitaciones (123 anuncios), 81,95 % para 3 (94) y 116,37 % para 4 o más (60). El esfuerzo sube con el tamaño. La cifra de 4+ no describe el precio típico de una persona sola.
 
 ![Diferencia de nivel 2024 a 2026](figuras/fig-brecha-2026.png){width=15cm}\
-*Figura 6.13. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
+*Figura 6.14. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
 
 La distancia entre las dos capas se puede medir sin restarlas como serie: en los 7 municipios con al menos 5 anuncios, la diferencia de nivel mediana es de 52,7 puntos porcentuales. Parte de esa distancia es el cambio de fuente y parte es el tipo de vivienda: la superficie mediana del anuncio es de 90,0 m² y la del alquiler registrado, de 80,7 m². Un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando.
 
