@@ -34,7 +34,7 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **54/54** (24
 | `mongo_vpo_por_municipio.csv` | VPO por estado y tipo (promociones) |
 | `mongo_vpo_terminadas_por_municipio.csv` | Flujo de VPO terminadas por mil habitantes (251/252) |
 | `mongo_tier_confianza.csv` | Tier A/B/C/D (4/3/57/188) con rangos de precio |
-| `mongo_habitaciones_por_municipio.csv` | 201 anuncios de habitación en 9 municipios |
+| `mongo_habitaciones_por_municipio.csv` | 201 anuncios de habitación en 9 municipios; `n_precio` cuenta los 140 utilizables tras descartar los 60 cuyo precio alcanza el alquiler mediano de vivienda del municipio (`tope_alquiler_eur_mes`, `n_descartados_precio`) |
 
 ## CSV de análisis (derivados)
 
@@ -49,8 +49,8 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **54/54** (24
 
 - 30 PNG en la raíz (A1, A2, B, C, D, E, F, H1-H13, H8b, J, O, P, S, g2-g5, histograma, mapa
   coroplético, transporte) más 8 PNG en `anexo/`.
-- `H6_habitaciones_mediana_rango.png` — ranking n≥10 con IC95, distribución global de los 200 precios
-  y esfuerzo individual sobre salario joven 2026; se copia al deck al ejecutar
+- `H6_habitaciones_mediana_rango.png` — ranking n≥10 con IC95, distribución de los 140 precios
+  plausibles y esfuerzo individual sobre salario joven 2026; se copia al deck al ejecutar
   `run_analisis_mongo.py` (`sync_deck=True`).
 - `mapa_esquema_silver.html` — grafo de relaciones entre los 42 CSV silver (PyVis, determinista).
 - `auditoria_lagunas_silver.csv` — **pendiente de materializar** en este checkout: la genera

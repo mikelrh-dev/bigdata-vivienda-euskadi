@@ -37,13 +37,13 @@ documento necesita.
 | 3 | Cómo se construyó | 3,5 | C5–C8 | borrador |
 | 4 | Modelo MongoDB | 3,5 | C9, C10, C14 | borrador |
 | 5 | Análisis e indicadores | 2,5 | C11–C13, C16 | borrador |
-| 6 | Resultados y conclusiones | 9 | C17–C19 | borrador |
+| 6 | Resultados y conclusiones | 10 | C17–C19 | borrador |
 | 7 | Dificultades y decisiones | 3 | Todos | borrador |
 | 8 | Límites y verificación | 2 | C8, C16 | borrador |
 | — | Anexos | 2 | Trazabilidad | borrador |
 
-Total previsto: 23 páginas más portada.
-Estado actual (2026-11-14): 23 páginas, 14 figuras y 11 tablas; resumen en la página de índice y cifras contrastadas contra el código y los CSV. El capítulo 6 va en dos bloques (2024 en 6.1–6.3, 2026 en 6.4–6.5) y la síntesis en 6.6. El anexo conserva glosario y fragmentos de código; el mapa de la rúbrica, los comandos y el índice de figuras ya no se imprimen.
+Total previsto: 24 páginas más portada.
+Estado actual (2026-11-14): 24 páginas, 14 figuras y 11 tablas; resumen en la página de índice y cifras contrastadas contra el código y los CSV. El capítulo 6 va en dos bloques (2024 en 6.1–6.3, 2026 en 6.4–6.5) y la síntesis en 6.6. El anexo conserva glosario y fragmentos de código; el mapa de la rúbrica, los comandos y el índice de figuras ya no se imprimen.
 
 ## 4. Mapa de la rúbrica (19 criterios, solo en este guion)
 

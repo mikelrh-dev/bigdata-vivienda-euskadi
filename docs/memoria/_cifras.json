@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T17:12:19+00:00",
+    "generado_utc": "2026-11-14T17:47:15+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -166,10 +166,140 @@
       "formato": "2d",
       "fuente": "sobre30 / oficiales * 100"
     },
+    "datos.habitaciones_barakaldo_mediana": {
+      "valor": 500.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Barakaldo"
+    },
+    "datos.habitaciones_bilbao_ahorro_pct": {
+      "valor": 31.76470588235294,
+      "formato": "1d",
+      "fuente": "1 - mediana_precio_eur / tope_alquiler_eur_mes de Bilbao"
+    },
+    "datos.habitaciones_bilbao_esfuerzo": {
+      "valor": 33.74741803159456,
+      "formato": "1d",
+      "fuente": "mediana de Bilbao / salario joven 2026 ajustado"
+    },
+    "datos.habitaciones_bilbao_mediana": {
+      "valor": 580.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Bilbao"
+    },
+    "datos.habitaciones_bilbao_n": {
+      "valor": 80,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · n_precio de Bilbao"
+    },
+    "datos.habitaciones_bilbao_tope": {
+      "valor": 850.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · tope_alquiler_eur_mes de Bilbao (alquiler mediano de vivienda)"
+    },
+    "datos.habitaciones_descartados": {
+      "valor": 60,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · suma de n_descartados_precio"
+    },
+    "datos.habitaciones_descartados_pct": {
+      "valor": 30.0,
+      "formato": "1d",
+      "fuente": "n_descartados_precio / anuncios con precio (mongo_habitaciones_por_municipio.csv)"
+    },
+    "datos.habitaciones_donostia_ahorro_pct": {
+      "valor": 39.69849246231156,
+      "formato": "1d",
+      "fuente": "1 - mediana_precio_eur / tope_alquiler_eur_mes de Donostia"
+    },
+    "datos.habitaciones_donostia_esfuerzo": {
+      "valor": 34.91112210164955,
+      "formato": "1d",
+      "fuente": "mediana de Donostia / salario joven 2026 ajustado"
+    },
+    "datos.habitaciones_donostia_mediana": {
+      "valor": 600.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Donostia"
+    },
+    "datos.habitaciones_donostia_n": {
+      "valor": 29,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · n_precio de Donostia"
+    },
+    "datos.habitaciones_donostia_tope": {
+      "valor": 995.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · tope_alquiler_eur_mes de Donostia (alquiler mediano de vivienda)"
+    },
+    "datos.habitaciones_esfuerzo_global": {
+      "valor": 31.710935908998337,
+      "formato": "1d",
+      "fuente": "mediana de habitacion plausible / salario joven 2026 ajustado"
+    },
+    "datos.habitaciones_getxo_mediana": {
+      "valor": 560.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Getxo"
+    },
+    "datos.habitaciones_mediana_global": {
+      "valor": 545.0,
+      "formato": "int",
+      "fuente": "mediana de los precios plausibles (anuncios_habitaciones_unificados.csv + tope municipal)"
+    },
     "datos.habitaciones_municipios": {
       "valor": 9,
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · filas"
+    },
+    "datos.habitaciones_precio_max_bruto": {
+      "valor": 109000.0,
+      "formato": "int",
+      "fuente": "anuncios_habitaciones_unificados.csv · precio_eur maximo de la coleccion bruta"
+    },
+    "datos.habitaciones_utilizables": {
+      "valor": 140,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · suma de n_precio (plausibles)"
+    },
+    "datos.habitaciones_vitoria_mediana": {
+      "valor": 400.0,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Vitoria"
+    },
+    "datos.idw_suma_sobre30": {
+      "valor": 7,
+      "formato": "int",
+      "fuente": "municipios que la imputacion empuja por encima del 30 % (47 - 40)"
+    },
+    "datos.modalidad_larga_eur_m2": {
+      "valor": 16.666666666666668,
+      "formato": "2d",
+      "fuente": "mongo_modalidades.csv · mediana_eur_m2 de larga_estancia"
+    },
+    "datos.modalidad_larga_superficie": {
+      "valor": 90.0,
+      "formato": "int",
+      "fuente": "mongo_modalidades.csv · mediana_superficie_m2 de larga_estancia"
+    },
+    "datos.modalidad_mediana_eur_mes": {
+      "valor": 1500.0,
+      "formato": "int",
+      "fuente": "mongo_modalidades.csv · mediana_precio_eur de larga_estancia"
+    },
+    "datos.modalidad_temporal_eur_m2": {
+      "valor": 18.94736842105263,
+      "formato": "2d",
+      "fuente": "mongo_modalidades.csv · mediana_eur_m2 de temporal"
+    },
+    "datos.modalidad_temporal_sobrecoste_pct": {
+      "valor": 13.684210526315766,
+      "formato": "1d",
+      "fuente": "temporal / larga - 1 en mediana_eur_m2"
+    },
+    "datos.modalidad_temporal_superficie": {
+      "valor": 80.0,
+      "formato": "int",
+      "fuente": "mongo_modalidades.csv · mediana_superficie_m2 de temporal"
     },
     "datos.mun_astigarraga_alquiler": {
       "valor": 867.0,

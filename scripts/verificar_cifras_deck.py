@@ -131,15 +131,44 @@ def main() -> int:
     add("D8 % 287 sobre 795", f"{es(int(mercado['n_anuncios_2026'].sum()) / n_795 * 100, 0)} %")
 
     # ---------- Habitaciones (B4) ----------
-    hab = pd.read_csv(PROC / "anuncios_habitaciones_unificados.csv", encoding="utf-8-sig")
-    hp = pd.to_numeric(hab["precio_eur"], errors="coerce").dropna()
+    # El deck publica el conjunto plausible: al silver se le aplica el mismo
+    # tope municipal que el pipeline (`mongo_aggregations._hab_tope_stages`),
+    # leido del gold y no tecleado.
+    hab_gold = pd.read_csv(
+        RES / "mongo_habitaciones_por_municipio.csv",
+        encoding="utf-8-sig",
+        dtype={"codigo_ine": str},
+    )
+    hab = pd.read_csv(
+        PROC / "anuncios_habitaciones_unificados.csv",
+        encoding="utf-8-sig",
+        dtype={"codigo_ine": str},
+    )
+    hab["precio_eur"] = pd.to_numeric(hab["precio_eur"], errors="coerce")
+    tope_hab = dict(zip(hab_gold["codigo_ine"].str.zfill(5), hab_gold["tope_alquiler_eur_mes"]))
+    hab["_tope"] = hab["codigo_ine"].str.zfill(5).map(tope_hab)
+    con_precio = hab["precio_eur"].dropna()
+    hp = hab.loc[hab["precio_eur"] < hab["_tope"], "precio_eur"].dropna()
+    add(
+        "B4 utilizables",
+        f"{len(hp)} utilizables tras descartar {len(con_precio) - len(hp)} pisos enteros "
+        f"({es((1 - len(hp) / len(con_precio)) * 100, 0)} %)",
+    )
     add("B4 mediana global", f"{es(hp.median(), 0)} €")
-    add("B4 61% <=700", f"{es((hp <= 700).mean() * 100, 0)} %")
+    add("B4 87% <=700", f"{es((hp <= 700).mean() * 100, 0)} %")
     add("B4 esfuerzo global", f"{es(hp.median() / salario * 100)} %")
-    hab = pd.read_csv(RES / "mongo_habitaciones_por_municipio.csv", encoding="utf-8-sig")
-    for municipio, etiqueta in (("Donostia - San Sebastián", "Donostia"), ("Bilbao", "Bilbao")):
-        med = float(hab.loc[hab["municipio"] == municipio, "mediana_precio_eur"].iloc[0])
+    for municipio, etiqueta, clave in (
+        ("Donostia - San Sebastián", "Donostia", "donostia"),
+        ("Bilbao", "Bilbao", "bilbao"),
+    ):
+        fila = hab_gold.loc[hab_gold["municipio"] == municipio].iloc[0]
+        med = float(fila["mediana_precio_eur"])
         add(f"B4 esfuerzo {etiqueta}", f"{es(med / salario * 100)} %")
+        add(f"B4 n {etiqueta}", f"{etiqueta} ({int(fila['n_precio'])})")
+        add(
+            f"B4 {etiqueta} vs piso entero",
+            f"{es(med, 0)} € frente a {es(float(fila['tope_alquiler_eur_mes']), 0)} €",
+        )
 
     # ---------- Tipologia ----------
     tipo = pd.read_csv(RES / "esfuerzo_por_tipo_nivel_anuncio_2026.csv", encoding="utf-8-sig")
@@ -211,6 +240,10 @@ def main() -> int:
         ("B5 92,5", "92,5 m²"),
         ("B5 +23,2", "+23,2 %"),
         ("D8 268 habitaciones", "268 habitaciones"),
+        ("B4 640", "640 €"),
+        ("B4 1.200 habitaciones", "1.200 €"),
+        ("B4 69,8", "69,8 %"),
+        ("B4 37,2", "37,2 %"),
     ]
     for etiqueta, aguja in prohibidas:
         add(f"prohibido: {etiqueta}", aguja, ok=False)

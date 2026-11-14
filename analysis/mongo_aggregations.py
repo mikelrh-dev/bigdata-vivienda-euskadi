@@ -830,40 +830,94 @@ def _hab_col():
     return get_collection("anuncios_habitaciones_unificados")
 
 
+def _hab_tope_stages() -> list[dict[str, Any]]:
+    """Etapas que contrastan cada anuncio con el alquiler mediano de su municipio.
+
+    La seccion "compartir vivienda" de los portales lista tambien viviendas
+    completas con el alquiler del piso entero, asi que `tipo_inmueble` no basta
+    para saber que un anuncio es una habitacion. El filtro de plausibilidad es
+    `precio_eur < cuantia_media_eur_mes_mediana` del mismo `codigo_ine` en
+    `alquiler_municipal`: una habitacion no puede costar mas que la vivienda
+    completa mediana del municipio. Deja `_tope` y `_plausible` en el documento.
+    """
+    return [
+        {"$lookup": {
+            "from": "alquiler_municipal",
+            "localField": "codigo_ine",
+            "foreignField": "_id",
+            "as": "_alq",
+        }},
+        {"$addFields": {
+            "_tope": {"$arrayElemAt": ["$_alq.cuantia_media_eur_mes_mediana", 0]},
+        }},
+        {"$addFields": {
+            "_plausible": {"$and": [
+                {"$ne": ["$precio_eur", None]},
+                {"$ne": ["$_tope", None]},
+                {"$lt": ["$precio_eur", "$_tope"]},
+            ]},
+        }},
+    ]
+
+
 def pipeline_habitaciones_precios() -> list[dict[str, Any]]:
-    """Precios individuales de habitaciones para H6.
+    """Precios individuales de habitaciones plausibles para H6.
 
     Consulta auxiliar, no entra en `PIPELINE_ORDER`: el ranking y la
     distribucion necesitan los precios individuales, no solo la mediana
-    municipal. Devuelve solo documentos con `precio_eur` no nulo.
+    municipal. Aplica `_hab_tope_stages`, asi que solo devuelve anuncios con
+    precio por debajo del alquiler mediano de vivienda de su municipio.
     """
-    cursor = _hab_col().find(
-        {"precio_eur": {"$ne": None}},
-        {"_id": 0, "codigo_ine": 1, "municipio": 1, "precio_eur": 1},
-    ).sort([("codigo_ine", 1), ("precio_eur", 1)])
-    return list(cursor)
+    pipeline: list[dict[str, Any]] = [
+        {"$match": {"precio_eur": {"$ne": None}, "codigo_ine": {"$ne": None}}},
+        *_hab_tope_stages(),
+        {"$match": {"_plausible": True}},
+        {"$project": {
+            "_id": 0,
+            "codigo_ine": 1,
+            "municipio": 1,
+            "precio_eur": 1,
+            "tope_alquiler_eur_mes": "$_tope",
+        }},
+        {"$sort": {"codigo_ine": 1, "precio_eur": 1}},
+    ]
+    return list(_hab_col().aggregate(pipeline))
 
 
 def pipeline_habitaciones_por_municipio(limit: int | None = None) -> list[dict[str, Any]]:
-    """Mediana municipal de habitaciones desde anuncios de habitaciones.
+    """Mediana municipal de habitaciones plausibles (HAB-01, HAB-02).
 
     `$group` por `codigo_ine` normalizado (no por texto de municipio) sobre
-    `anuncios_habitaciones_unificados` (201 anuncios; Bilbao 96, Donostia
-    66, Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango 2,
-    Eibar 1). Cada fila expone `codigo_ine`, `municipio`, `n`, `n_precio`,
-    `min_precio_eur`, `max_precio_eur`, `mediana_precio_eur` (mediana cruda,
-    sin winsorizar ni imputar comarcal/IDW). Solo Bilbao y Donostia
-    (n_precio >= 30) sostienen comparación firme; el resto es indicativo
-    (n_insuficiente, sin ranking).
+    `anuncios_habitaciones_unificados` (201 anuncios en 9 municipios: Bilbao
+    96, Donostia 66, Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2,
+    Durango 2, Eibar 1). Antes de agrupar aplica `_hab_tope_stages`: se
+    descarta el anuncio cuyo precio alcanza o supera el alquiler mediano de
+    una vivienda completa en el mismo municipio, porque la seccion de
+    vivienda compartida mezcla habitaciones con pisos enteros.
+
+    Cada fila expone `codigo_ine`, `municipio`, `n` (anuncios de la
+    coleccion), `n_precio` (anuncios utilizables), `n_descartados_precio`
+    (con precio pero no plausibles), `tope_alquiler_eur_mes` (el corte
+    aplicado), `min_precio_eur`, `max_precio_eur`, `mediana_precio_eur`
+    (mediana cruda de los utilizables, sin winsorizar ni imputar
+    comarcal/IDW). Solo Bilbao y Donostia (n_precio >= 30) sostienen
+    comparacion firme; el resto es indicativo (n_insuficiente, sin ranking).
     """
     pipeline: list[dict[str, Any]] = [
         {"$match": {"codigo_ine": {"$ne": None}}},
+        *_hab_tope_stages(),
         {"$group": {
             "_id": "$codigo_ine",
             "municipio": {"$first": "$municipio"},
+            "tope_alquiler_eur_mes": {"$first": "$_tope"},
             "n": {"$sum": 1},
-            "n_precio": {"$sum": {"$cond": [{"$ne": ["$precio_eur", None]}, 1, 0]}},
-            "precios": {"$push": {"$cond": [{"$ne": ["$precio_eur", None]}, "$precio_eur", "$$REMOVE"]}},
+            "n_precio": {"$sum": {"$cond": ["$_plausible", 1, 0]}},
+            "n_descartados_precio": {"$sum": {"$cond": [
+                {"$and": [
+                    {"$ne": ["$precio_eur", None]},
+                    {"$eq": ["$_plausible", False]},
+                ]}, 1, 0]}},
+            "precios": {"$push": {"$cond": ["$_plausible", "$precio_eur", "$$REMOVE"]}},
         }},
         {"$addFields": {
             "_ordenados": {"$sortArray": {"input": "$precios", "sortBy": 1}},
@@ -883,6 +937,8 @@ def pipeline_habitaciones_por_municipio(limit: int | None = None) -> list[dict[s
             "municipio": 1,
             "n": 1,
             "n_precio": 1,
+            "n_descartados_precio": 1,
+            "tope_alquiler_eur_mes": 1,
             "min_precio_eur": 1,
             "max_precio_eur": 1,
             "mediana_precio_eur": 1,
