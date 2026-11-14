@@ -43,7 +43,7 @@ documento necesita.
 | — | Anexos | 2 | Trazabilidad | borrador |
 
 Total previsto: 24 páginas más portada.
-Estado actual (2026-11-14): 24 páginas, 15 figuras y 11 tablas; resumen en la página de índice y cifras contrastadas contra el código y los CSV. El capítulo 6 va en dos bloques (2024 en 6.1–6.3, 2026 en 6.4–6.5) y la síntesis en 6.6. El anexo conserva glosario y fragmentos de código; el mapa de la rúbrica, los comandos y el índice de figuras ya no se imprimen.
+Estado actual (2026-11-14): 24 páginas, 15 figuras y 12 tablas; resumen en la página de índice y cifras contrastadas contra el código y los CSV. El capítulo 6 va en dos bloques (2024 en 6.1–6.3, 2026 en 6.4–6.5) y la síntesis en 6.6. El anexo conserva glosario y fragmentos de código; el mapa de la rúbrica, los comandos y el índice de figuras ya no se imprimen.
 
 ## 4. Mapa de la rúbrica (19 criterios, solo en este guion)
 

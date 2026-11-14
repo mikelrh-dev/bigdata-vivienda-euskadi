@@ -322,6 +322,17 @@ El corte deja 140 anuncios utilizables y descarta 60 (30,0 %), que son precisame
 
 La comparación con el piso entero es el resultado que importa: en Bilbao una habitación cuesta 580 € frente a los 850 € del alquiler mediano de vivienda, un 31,8 % menos; en Donostia, 600 € frente a 995 €, un 39,7 % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con esos precios el esfuerzo se queda en el 33,7 % y el 34,9 %, por encima del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30 anuncios utilizables, Donostia se queda en 29 y el resto es indicativo, sin ranking municipal.
 
+Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. Es la tasa de esfuerzo por habitaciones:
+
+| Municipio | Anuncios utilizables | Mediana habitación | Esfuerzo habitación | Esfuerzo piso 2026 |
+|---|---:|---:|---:|---:|
+| Bilbao | 80 | 580 € | 33,7 % | 98,19 % |
+| Donostia / San Sebastián | 29 | 600 € | 34,9 % | 116,37 % |
+| Getxo | 5 | 560 € | 32,6 % | 78,55 % |
+| Vitoria-Gasteiz | 11 | 400 € | 23,3 % | 75,64 % |
+
+Barakaldo, con 10 anuncios, se queda en el 29,1 % de esfuerzo de habitación, pero no entra en la tabla porque en 2026 solo tiene dos anuncios comparables de piso. La diferencia entre las dos columnas es el efecto de compartir: la habitación se queda entre el 23,3 % de Vitoria-Gasteiz y el 34,9 % de Donostia, mientras el piso entero de 2026 va del 75,64 % al 116,37 %.
+
 El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene 4 municipios, el B 3, el C 57 y el D 188. Solo 7 llegan a A o B, y de ellos los 4 del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
 ![Tier de confianza](figuras/fig-tier.png){width=12cm}\

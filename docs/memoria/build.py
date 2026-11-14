@@ -365,20 +365,22 @@ def refresh() -> None:
             "int",
             f"mongo_habitaciones_por_municipio.csv · mediana_precio_eur de {municipio}",
         )
+        # Mismo denominador que la capa 2026 (salario joven ajustado), para que
+        # el esfuerzo de habitacion y el de piso entero se puedan leer juntos.
+        add(
+            f"datos.habitaciones_{clave}_n",
+            int(fila["n_precio"]),
+            "int",
+            f"mongo_habitaciones_por_municipio.csv · n_precio de {municipio}",
+        )
+        add(
+            f"datos.habitaciones_{clave}_esfuerzo",
+            mediana / salario_2026 * 100,
+            "1d",
+            f"mediana de {municipio} / salario joven 2026 ajustado",
+        )
         if clave in ("bilbao", "donostia"):
             tope = float(fila["tope_alquiler_eur_mes"])
-            add(
-                f"datos.habitaciones_{clave}_n",
-                int(fila["n_precio"]),
-                "int",
-                f"mongo_habitaciones_por_municipio.csv · n_precio de {municipio}",
-            )
-            add(
-                f"datos.habitaciones_{clave}_esfuerzo",
-                mediana / salario_2026 * 100,
-                "1d",
-                f"mediana de {municipio} / salario joven 2026 ajustado",
-            )
             add(
                 f"datos.habitaciones_{clave}_tope",
                 tope,
