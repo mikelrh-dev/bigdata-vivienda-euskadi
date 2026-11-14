@@ -1,6 +1,6 @@
 # Cifras vigentes
 
-Generado: `2026-11-14T18:00:03+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
+Generado: `2026-11-14T18:06:42+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
 
 > No editar a mano: se regenera con `python docs/memoria/build.py --refresh`.
 
@@ -60,7 +60,9 @@ Generado: `2026-11-14T18:00:03+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 | `datos.esfuerzo_mediana_oficial` | 26,61 | mediana de esfuerzo_joven_pct_18_34 · oficiales |
 | `datos.esfuerzo_oficial_sobre30` | 40 | esfuerzo_joven_pct_18_34 > 30 · oficiales |
 | `datos.esfuerzo_oficial_sobre30_pct` | 25,16 | sobre30 / oficiales * 100 |
+| `datos.habitaciones_barakaldo_esfuerzo` | 29,1 | mediana de Barakaldo / salario joven 2026 ajustado |
 | `datos.habitaciones_barakaldo_mediana` | 500 | mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Barakaldo |
+| `datos.habitaciones_barakaldo_n` | 10 | mongo_habitaciones_por_municipio.csv · n_precio de Barakaldo |
 | `datos.habitaciones_bilbao_ahorro_pct` | 31,8 | 1 - mediana_precio_eur / tope_alquiler_eur_mes de Bilbao |
 | `datos.habitaciones_bilbao_esfuerzo` | 33,7 | mediana de Bilbao / salario joven 2026 ajustado |
 | `datos.habitaciones_bilbao_mediana` | 580 | mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Bilbao |
@@ -74,12 +76,16 @@ Generado: `2026-11-14T18:00:03+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 | `datos.habitaciones_donostia_n` | 29 | mongo_habitaciones_por_municipio.csv · n_precio de Donostia |
 | `datos.habitaciones_donostia_tope` | 995 | mongo_habitaciones_por_municipio.csv · tope_alquiler_eur_mes de Donostia (alquiler mediano de vivienda) |
 | `datos.habitaciones_esfuerzo_global` | 31,7 | mediana de habitacion plausible / salario joven 2026 ajustado |
+| `datos.habitaciones_getxo_esfuerzo` | 32,6 | mediana de Getxo / salario joven 2026 ajustado |
 | `datos.habitaciones_getxo_mediana` | 560 | mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Getxo |
+| `datos.habitaciones_getxo_n` | 5 | mongo_habitaciones_por_municipio.csv · n_precio de Getxo |
 | `datos.habitaciones_mediana_global` | 545 | mediana de los precios plausibles (anuncios_habitaciones_unificados.csv + tope municipal) |
 | `datos.habitaciones_municipios` | 9 | mongo_habitaciones_por_municipio.csv · filas |
 | `datos.habitaciones_precio_max_bruto` | 109.000 | anuncios_habitaciones_unificados.csv · precio_eur maximo de la coleccion bruta |
 | `datos.habitaciones_utilizables` | 140 | mongo_habitaciones_por_municipio.csv · suma de n_precio (plausibles) |
+| `datos.habitaciones_vitoria_esfuerzo` | 23,3 | mediana de Vitoria / salario joven 2026 ajustado |
 | `datos.habitaciones_vitoria_mediana` | 400 | mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Vitoria |
+| `datos.habitaciones_vitoria_n` | 11 | mongo_habitaciones_por_municipio.csv · n_precio de Vitoria |
 | `datos.idw_suma_sobre30` | 7 | municipios que la imputacion empuja por encima del 30 % (47 - 40) |
 | `datos.modalidad_larga_eur_m2` | 16,67 | mongo_modalidades.csv · mediana_eur_m2 de larga_estancia |
 | `datos.modalidad_larga_superficie` | 90 | mongo_modalidades.csv · mediana_superficie_m2 de larga_estancia |

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T18:00:03+00:00",
+    "generado_utc": "2026-11-14T18:06:42+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -166,10 +166,20 @@
       "formato": "2d",
       "fuente": "sobre30 / oficiales * 100"
     },
+    "datos.habitaciones_barakaldo_esfuerzo": {
+      "valor": 29.092601751374623,
+      "formato": "1d",
+      "fuente": "mediana de Barakaldo / salario joven 2026 ajustado"
+    },
     "datos.habitaciones_barakaldo_mediana": {
       "valor": 500.0,
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Barakaldo"
+    },
+    "datos.habitaciones_barakaldo_n": {
+      "valor": 10,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · n_precio de Barakaldo"
     },
     "datos.habitaciones_bilbao_ahorro_pct": {
       "valor": 31.76470588235294,
@@ -236,10 +246,20 @@
       "formato": "1d",
       "fuente": "mediana de habitacion plausible / salario joven 2026 ajustado"
     },
+    "datos.habitaciones_getxo_esfuerzo": {
+      "valor": 32.58371396153958,
+      "formato": "1d",
+      "fuente": "mediana de Getxo / salario joven 2026 ajustado"
+    },
     "datos.habitaciones_getxo_mediana": {
       "valor": 560.0,
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Getxo"
+    },
+    "datos.habitaciones_getxo_n": {
+      "valor": 5,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · n_precio de Getxo"
     },
     "datos.habitaciones_mediana_global": {
       "valor": 545.0,
@@ -261,10 +281,20 @@
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · suma de n_precio (plausibles)"
     },
+    "datos.habitaciones_vitoria_esfuerzo": {
+      "valor": 23.2740814010997,
+      "formato": "1d",
+      "fuente": "mediana de Vitoria / salario joven 2026 ajustado"
+    },
     "datos.habitaciones_vitoria_mediana": {
       "valor": 400.0,
       "formato": "int",
       "fuente": "mongo_habitaciones_por_municipio.csv · mediana_precio_eur de Vitoria"
+    },
+    "datos.habitaciones_vitoria_n": {
+      "valor": 11,
+      "formato": "int",
+      "fuente": "mongo_habitaciones_por_municipio.csv · n_precio de Vitoria"
     },
     "datos.idw_suma_sobre30": {
       "valor": 7,

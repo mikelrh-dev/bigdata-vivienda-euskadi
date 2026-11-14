@@ -958,15 +958,23 @@ def exportar_png_desde_mongo(
             ecolor="#333333", elinewidth=1.2, capsize=4,
         )
         for i, (med, err) in enumerate(zip(meds, errs)):
+            # La misma etiqueta lleva la tasa de esfuerzo cuando hay salario:
+            # asi el ranking de precios y el de esfuerzo no se separan.
+            etiqueta_barra = f"{med:,.0f} €".replace(",", ".")
+            if salario_joven:
+                # En dos lineas: el porcentaje al lado del precio desborda el
+                # eje cuando la barra ya llega al 75 % del ancho.
+                tasa = med / salario_joven * 100
+                etiqueta_barra += f"\n{tasa:.1f} %".replace(".", ",")
             ax_rank.text(
                 med + max(20.0, err[1]) + 20, i,
-                f"{med:,.0f} €".replace(",", "."),
+                etiqueta_barra,
                 va="center", fontsize=8,
             )
         ax_rank.set_yticks(y)
         ax_rank.set_yticklabels(etiquetas, fontsize=8)
         ax_rank.invert_yaxis()
-        ax_rank.set_xlim(0, max(meds) * 1.35)
+        ax_rank.set_xlim(0, max(meds) * 1.6)
         ax_rank.set_xlabel(
             "Mediana €/habitación (IC95 bootstrap)\n"
             "precio < alquiler mediano de vivienda del municipio"

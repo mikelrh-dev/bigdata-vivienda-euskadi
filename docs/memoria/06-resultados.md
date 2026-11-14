@@ -88,6 +88,17 @@ El corte deja {{datos.habitaciones_utilizables}} anuncios utilizables y descarta
 
 La comparación con el piso entero es el resultado que importa: en Bilbao una habitación cuesta {{datos.habitaciones_bilbao_mediana}} € frente a los {{datos.habitaciones_bilbao_tope}} € del alquiler mediano de vivienda, un {{datos.habitaciones_bilbao_ahorro_pct}} % menos; en Donostia, {{datos.habitaciones_donostia_mediana}} € frente a {{datos.habitaciones_donostia_tope}} €, un {{datos.habitaciones_donostia_ahorro_pct}} % menos. Compartir alivia el esfuerzo, pero no lo resuelve: con esos precios el esfuerzo se queda en el {{datos.habitaciones_bilbao_esfuerzo}} % y el {{datos.habitaciones_donostia_esfuerzo}} %, por encima del 30 %. Y la muestra no es un censo: solo Bilbao supera los 30 anuncios utilizables, Donostia se queda en {{datos.habitaciones_donostia_n}} y el resto es indicativo, sin ranking municipal.
 
+Ese esfuerzo de la habitación se puede poner en la misma escala que el del piso entero, porque las dos cifras dividen entre el mismo salario joven de 2026 ajustado que usa la capa de oferta. Es la tasa de esfuerzo por habitaciones:
+
+| Municipio | Anuncios utilizables | Mediana habitación | Esfuerzo habitación | Esfuerzo piso 2026 |
+|---|---:|---:|---:|---:|
+| Bilbao | {{datos.habitaciones_bilbao_n}} | {{datos.habitaciones_bilbao_mediana}} € | {{datos.habitaciones_bilbao_esfuerzo}} % | {{datos.mun_bilbao_esfuerzo_2026}} % |
+| Donostia / San Sebastián | {{datos.habitaciones_donostia_n}} | {{datos.habitaciones_donostia_mediana}} € | {{datos.habitaciones_donostia_esfuerzo}} % | {{datos.mun_donostia_esfuerzo_2026}} % |
+| Getxo | {{datos.habitaciones_getxo_n}} | {{datos.habitaciones_getxo_mediana}} € | {{datos.habitaciones_getxo_esfuerzo}} % | {{datos.mun_getxo_esfuerzo_2026}} % |
+| Vitoria-Gasteiz | {{datos.habitaciones_vitoria_n}} | {{datos.habitaciones_vitoria_mediana}} € | {{datos.habitaciones_vitoria_esfuerzo}} % | {{datos.mun_vitoria_esfuerzo_2026}} % |
+
+Barakaldo, con {{datos.habitaciones_barakaldo_n}} anuncios, se queda en el {{datos.habitaciones_barakaldo_esfuerzo}} % de esfuerzo de habitación, pero no entra en la tabla porque en 2026 solo tiene dos anuncios comparables de piso. La diferencia entre las dos columnas es el efecto de compartir: la habitación se queda entre el {{datos.habitaciones_vitoria_esfuerzo}} % de Vitoria-Gasteiz y el {{datos.habitaciones_donostia_esfuerzo}} % de Donostia, mientras el piso entero de 2026 va del {{datos.mun_vitoria_esfuerzo_2026}} % al {{datos.mun_donostia_esfuerzo_2026}} %.
+
 El Tier se deriva solo del número de anuncios: A con 30 o más, B de 10 a 29, C de 1 a 9 y D sin anuncios. El Tier A tiene {{datos.tier_a}} municipios, el B {{datos.tier_b}}, el C {{datos.tier_c}} y el D {{datos.tier_d}}. Solo {{datos.tier_ab}} llegan a A o B, y de ellos los {{datos.tier_a}} del Tier A son los que superan el umbral de 30 anuncios que exige la regla del proyecto. Por eso el ranking de la sección 6.5 tiene cuatro barras y no siete.
 
 ![Tier de confianza](figuras/fig-tier.png){width=12cm}\
