@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import os
 import re
+import subprocess
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
@@ -49,6 +50,40 @@ def _fila(df: pd.DataFrame, metrica: str) -> float:
     if f.empty:
         raise SystemExit(f"falta la metrica {metrica} en el CSV de cobertura")
     return float(f.iloc[0]["valor"])
+
+
+_TESTS: dict[str, int] | None = None
+
+
+def _test_run() -> dict[str, int] | None:
+    """Ejecuta la suite y devuelve {collected, passed, skipped}.
+
+    Antes el deck se comparaba contra los literales 295/293: el check no podia
+    detectar que el numero envejeciera. `pyproject.toml` fija `addopts = "-q"`,
+    asi que se anula con `-o addopts=` para que pytest imprima el resumen.
+    Si pytest no esta disponible devuelve None y los checks se omiten.
+    """
+    global _TESTS
+    if _TESTS is not None:
+        return _TESTS
+    try:
+        out = subprocess.run(
+            [sys.executable, "-m", "pytest", "tests", "-q", "-o", "addopts=", "--tb=no"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=900,
+        )
+    except Exception:  # noqa: BLE001
+        return None
+    m = re.search(r"(\d+) passed", out.stdout)
+    if not m:
+        return None
+    s = re.search(r"(\d+) skipped", out.stdout)
+    passed = int(m.group(1))
+    skipped = int(s.group(1)) if s else 0
+    _TESTS = {"collected": passed + skipped, "passed": passed, "skipped": skipped}
+    return _TESTS
 
 
 def _mongo_counts() -> tuple[int, int, int] | None:
@@ -151,8 +186,10 @@ def main() -> int:
     hp = hab.loc[hab["precio_eur"] < hab["_tope"], "precio_eur"].dropna()
     add(
         "B4 utilizables",
-        f"quedan {len(hp)}. Se descartan {len(con_precio) - len(hp)} pisos enteros "
-        f"({es((1 - len(hp) / len(con_precio)) * 100, 0)} %)",
+        f"<b>{len(hp)}</b> utilizables de los <b>{len(con_precio)}</b> con precio: "
+        f"se descartan <b>{len(con_precio) - len(hp)}</b> pisos enteros "
+        f"(<b>{es((1 - len(hp) / len(con_precio)) * 100, 0)} %</b>)",
+        raw=True,
     )
     add("B4 mediana global", f"{es(hp.median(), 0)} €")
     add("B4 87% <=700", f"{es((hp <= 700).mean() * 100, 0)} %")
@@ -193,6 +230,42 @@ def main() -> int:
     add("mediana oficial 2024", f"{es(med24, 2)} %")
     add("40 de 159", f"{int((of['esfuerzo_joven_pct_18_34'] > 30).sum())} de 159")
     add("47 de 252", f"{int((mun['esfuerzo_joven_pct_18_34'] > 30).sum())} de 252")
+
+    # ---------- Slide 08: el otro extremo del ranking ----------
+    # Todo sale de este CSV (n_anuncios de 2026), asi que se verifica sin Mongo.
+    bajo30 = of[of["esfuerzo_joven_pct_18_34"] < 30]
+    add("119 bajo el 30", f"De los {len(bajo30)} municipios por debajo del 30 %")
+    add("89 sin anuncio", f"{int((bajo30['n_anuncios'] == 0).sum())} no tienen un solo anuncio")
+    add(
+        "119 sin anuncio (cifra)",
+        f'<div class="big sm accent">{int((bajo30["n_anuncios"] == 0).sum())}</div>'
+        '<div class="cap">sin ningún anuncio en 2026</div>',
+        raw=True,
+    )
+    add(
+        "30 con anuncio",
+        f'<div class="big sm">{int((bajo30["n_anuncios"] >= 1).sum())}</div>'
+        '<div class="cap">con al menos un anuncio</div>',
+        raw=True,
+    )
+    add(
+        "3 con 5+",
+        f'<div class="big sm">{int((bajo30["n_anuncios"] >= 5).sum())}</div>'
+        '<div class="cap">con 5 o más',
+        raw=True,
+    )
+    add("119 alquiler mediano", f"alquiler mediano {es(bajo30['cuantia_alquiler_mes'].median(), 0)} €")
+    add("54 bajo 25", f"{int((of['esfuerzo_joven_pct_18_34'] < 25).sum())} están por debajo del 25")
+    add("ninguno bajo 20", "Ningún municipio oficial baja del 20 %")
+    for nombre in ("Oñati", "Azkoitia", "Mutriku", "Urretxu", "Markina-Xemein"):
+        fila = of[of["nombre"].str.startswith(nombre)].iloc[0]
+        add(f"menor esfuerzo {nombre}", f"<td>{es(fila['esfuerzo_joven_pct_18_34'], 2)} %</td>", raw=True)
+    gx = of[of["nombre"].str.startswith("Getxo")].iloc[0]
+    add(
+        "getxo 2024 con n",
+        f"<b>{es(gx['esfuerzo_joven_pct_18_34'], 2)} %</b> con <b>{int(gx['n_anuncios'])}</b> anuncios",
+        raw=True,
+    )
 
     # ---------- Ranking 2024 (slide 07) ----------
     cmp = pd.read_csv(
@@ -332,8 +405,11 @@ def main() -> int:
     add("gold", f"{gold}/{gold}")
     add("353 HDFS", "353 objetos")
     add("351 canonicos", "351 canónicos")
-    add("tests", "295 tests")
-    add("tests pasan", "293 pasan")
+    suite = _test_run()
+    if suite is not None:
+        add("tests", f"{suite['collected']} tests")
+        add("tests pasan", f"{suite['passed']} pasan")
+        add("tests skipped", f"{suite['skipped']} skip")
 
     mongo = _mongo_counts()
     if mongo is None:
@@ -373,8 +449,80 @@ def main() -> int:
     base = pd.read_csv(PROC / "analisis_variables_base.csv", encoding="utf-8-sig")
     ratio_1834 = float((base["renta_joven_estimada_18_34"] / base["renta_hogar"]).median() * 100)
     add("proxy ratio 18-34", f"{es(ratio_1834, 1)} %")
-    add("proxy salario 2026", f"IPC del INE: {es(salario, 0)} €")
-    add("proxy 93 sin alquiler", "93 SIN ALQUILER OFICIAL")
+    add("proxy salario 2026", "salario neto 18-34 · OVJ 2024")
+    add("proxy salario 2026 fuente", "El IPC medio anual del INE pasa de")
+    add(
+        "proxy salario 2026 cifra",
+        f'<div class="big xs" style="margin-top:10px">{es(salario, 0)}<span class="unit">€</span></div>',
+        raw=True,
+    )
+
+    # ---------- Backups B9-B12: como se construyen los proxys ----------
+    # La formula del ratio vive en config/parametros_estudio.yaml: se parsean sus
+    # seis numeros y se recomputa, para que el deck no se desincronice.
+    yaml_txt = (ROOT / "config" / "parametros_estudio.yaml").read_text(encoding="utf-8")
+    m_ratio = re.search(r"\(2\*(\d+)\+5\*(\d+)\+5\*(\d+)\+5\*(\d+)\)/(\d+)/(\d+)", yaml_txt)
+    assert m_ratio, "no encuentro la formula del ratio en parametros_estudio.yaml"
+    r18, r20, r25, r30, anios, rtotal = (int(x) for x in m_ratio.groups())
+    ratio = (2 * r18 + 5 * r20 + 5 * r25 + 5 * r30) / anios / rtotal * 100
+    add("ratio 18-34 (B9)", f'{es(ratio)}<span class="unit">\u20ac</span>'.replace("\u20ac", "%"), raw=True)
+    for bruto in (r18, r20, r25, r30, rtotal):
+        add(f"renta tramo {bruto}", f"<td>{es(bruto, 0)} \u20ac</td>", raw=True)
+    add("denominador del ratio", f"/ {anios} / {es(rtotal, 0)}")
+
+    import json as _json
+
+    ovj = _json.loads(
+        (ROOT / "data" / "raw" / "ovj_salario_joven_2024.json").read_text(encoding="utf-8")
+    )
+    sal = {str(f["tramo_edad"]): float(f["salario_neto_mes_eur"]) for f in ovj["datos"]}
+    ipc = pd.read_csv(ROOT / "data" / "raw" / "ipc_ine_2024_2026.csv", dtype=str, encoding="utf-8-sig")
+
+    def _ipc(ano: str) -> float:
+        return float(ipc.loc[ipc["ano"] == ano, "ipc_medio_anual"].iloc[0])
+
+    ipc24, ipc26, factor_ipc = _ipc("2024"), _ipc("2026"), _ipc("factor_2026_2024")
+    salario_2026 = sal["18-34"] * factor_ipc
+    add("salario base 18-34 (B10)", f'{es(sal["18-34"], 0)}<span class="unit">\u20ac</span>', raw=True)
+    add("salario legacy 16-29 (B10)", f"{es(sal['16-29'], 0)} \u20ac")
+    add("factor IPC (B10)", es(factor_ipc, 4))
+    add("salario 2026 (B10)", f'{es(salario_2026, 0)}<span class="unit">\u20ac</span>', raw=True)
+    add("IPC 2024 (B10)", es(ipc24, 1))
+    add("IPC 2026 (B10)", es(ipc26, 1))
+    add(
+        "sin ajuste sube (B10)",
+        f"un <b>{es((salario_2026 / sal['18-34'] - 1) * 100)} %</b>",
+        raw=True,
+    )
+
+    sens = pd.read_csv(RES / "sensibilidad_idw.csv", encoding="utf-8-sig")
+    ofi = sens[sens["escenario"] == "oficial_159"].iloc[0]
+    con = sens[sens["escenario"] == "idw_252"].iloc[0]
+    n_idw = int(con["n"]) - int(ofi["n"])
+    add("IDW municipios (B11)", f"Los {n_idw} sin alquiler oficial")
+    add("IDW mediana oficial (B11)", f"{es(ofi['mediana_esfuerzo_pct'], 2)} %")
+    add("IDW mediana 252 (B11)", f"{es(con['mediana_esfuerzo_pct'], 2)} %")
+    add("IDW sobre 30 (B11)", f"<td>{int(con['n_sobre_30'])}</td>", raw=True)
+
+    gj = _json.loads((PROC / "municipios_euskadi_252.geojson").read_text(encoding="utf-8"))
+    cuerpo = gj.get("datos") or gj.get("features") or []
+    if isinstance(cuerpo, dict):
+        cuerpo = cuerpo.get("features") or []
+    n_features = len(cuerpo)
+    add("geojson features (B12)", f"<b>{n_features}</b> features", raw=True)
+
+    try:
+        sys.path.insert(0, str(ROOT))
+        from storage.mongo import get_collection  # noqa: PLC0415
+
+        col = get_collection("anuncios")
+        total_an = col.count_documents({})
+        con_punto = col.count_documents({"ubicacion.coordenadas.type": "Point"})
+        add("anuncios con punto (B12)", f"<b>{con_punto} de {total_an}</b> con punto", raw=True)
+        add("anuncios sin punto (B12)", f"Los <b>{total_an - con_punto}</b> sin punto", raw=True)
+        add("coordenadas solo Fotocasa", "<b>424 de 594</b> con coordenadas", raw=True)
+    except Exception as exc:  # noqa: BLE001
+        print(f"  aviso: sin Mongo, se omiten los checks de coordenadas ({exc})")
 
     # ---------- Afirmaciones que no deben volver ----------
     prohibidas = [
@@ -404,6 +552,7 @@ def main() -> int:
         ("ratio 1,96", "1,96"),
         ("53 artefactos", "53 artefactos"),
         ("11 pipelines", "11 pipelines"),
+        ("594 coordenadas", "594 anuncios con coordenadas"),
     ]
     for etiqueta, aguja in prohibidas:
         add(f"prohibido: {etiqueta}", aguja, ok=False)

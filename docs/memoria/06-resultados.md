@@ -49,8 +49,6 @@ La última columna es solo cobertura: el total de anuncios de 2026 de cada munic
 
 El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en {{datos.mun_getxo_esfuerzo}} % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 
-Ningún municipio de esta tabla se elige por la muestra de anuncios de 2026. Esa regla pertenece a la capa de oferta y se explica en la sección 6.4.
-
 ## 6.3 O4. La capa 2024: la vivienda protegida
 
 Las {{datos.vpo_promociones}} promociones de Etxebide son flujo de promoción, y el reparto por estado lo confirma: 347 terminadas, 39 en curso, 19 en convenio y 1 en proyecto. Es un registro de promociones cerradas, no un flujo vivo. El campo `NumViviendas` está vacío en {{datos.vpo_sin_dato}} de {{datos.vpo_promociones}}, así que no permiten contar viviendas disponibles; y la fecha de sorteo solo existe en parte del registro, entre 2001 y 2014. Por eso este registro sirve para describir el estado de la promoción, no para datar cuánta vivienda protegida se ha terminado.

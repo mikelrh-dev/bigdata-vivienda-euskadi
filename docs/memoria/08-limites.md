@@ -36,4 +36,4 @@ El proyecto describe asociaciones territoriales, no relaciones causales. Un esfu
 
 ## 8.4 Trabajo futuro
 
-Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta media por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión; las tres mejoran la confianza.
+Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta media por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión.

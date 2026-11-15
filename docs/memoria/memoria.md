@@ -302,8 +302,6 @@ La última columna es solo cobertura: el total de anuncios de 2026 de cada munic
 
 El contraste está en el otro extremo. Getxo, con la renta joven más alta de los siete con muestra, se queda en 28,60 % y no entra en la tabla: un alquiler alto sobre una renta aún más alta pesa menos. El ranking de 2024 mide dónde el alquiler pesa sobre la renta joven, y ahí mandan los municipios industriales de la ría y de la bahía de Pasaia, no los de renta más alta.
 
-Ningún municipio de esta tabla se elige por la muestra de anuncios de 2026. Esa regla pertenece a la capa de oferta y se explica en la sección 6.4.
-
 ## 6.3 O4. La capa 2024: la vivienda protegida
 
 Las 406 promociones de Etxebide son flujo de promoción, y el reparto por estado lo confirma: 347 terminadas, 39 en curso, 19 en convenio y 1 en proyecto. Es un registro de promociones cerradas, no un flujo vivo. El campo `NumViviendas` está vacío en 406 de 406, así que no permiten contar viviendas disponibles; y la fecha de sorteo solo existe en parte del registro, entre 2001 y 2014. Por eso este registro sirve para describir el estado de la promoción, no para datar cuánta vivienda protegida se ha terminado.
@@ -426,7 +424,7 @@ Lo que no se puede afirmar: un municipio sin dato no es asequible, un esfuerzo a
 | Dos colecciones de habitaciones con 201 documentos cada una | Se declara la deuda; no se borra sin confirmar | `_facts.json` | Duplicado silencioso si no se documenta |
 | 406 de 406 promociones sin `NumViviendas` | VPO como flujo, no como stock | `etxebide_promociones` | No se puede contar viviendas disponibles |
 | Dos índices 2026 definidos pero no creados | Se declaran; no se crean en una demo sin ventana | `mongo_indexes.py` | El pipeline 2026 no está optimizado |
-| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 53 a 54 | `transform/run_all.py --check` | Queda una comprobación en rojo |
+| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 55 a 56 | `transform/run_all.py --check` | Queda una comprobación en rojo |
 
 ## 7.2 Cobertura y proxy
 
@@ -471,10 +469,10 @@ El proyecto describe asociaciones territoriales, no relaciones causales. Un esfu
 
 | Comprobación | Comando | Resultado esperado |
 |---|---|---|
-| Tests | `pytest -q tests` | 293 passed, 2 skipped (295 recogidos) |
+| Tests | `pytest -q tests` | 298 passed, 2 skipped (300 recogidos) |
 | Gobernanza | `python scripts/verificar_gobernanza.py` | 53 cabeceras, 49 ids, 47 scripts, 40 nodos |
 | Manifiestos | `python scripts/run_pipeline.py --check` | 355 raw + 183 silver, 0 errores |
-| Deck | `python scripts/verificar_cifras_deck.py` | 115/115 |
+| Deck | `python scripts/verificar_cifras_deck.py` | 120/120 |
 | Memoria | `python docs/memoria/build.py --check` | tokens y figuras resueltos |
 | HDFS | `python scripts/hdfs_recuperacion_un_fichero.py` | `HDFS_REC OK SHA_TAMANO_IGUALES` |
 | Índices | `python analysis/mongo_indexes.py` | `COLLSCAN` 594 → `IXSCAN` 1 |
@@ -484,7 +482,7 @@ El proyecto describe asociaciones territoriales, no relaciones causales. Un esfu
 
 ## 8.4 Trabajo futuro
 
-Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta media por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión; las tres mejoran la confianza.
+Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta media por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión.
 
 
 ```{=openxml}

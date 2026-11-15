@@ -1,4 +1,4 @@
-# Guion — Presentación v3 (24 diapositivas + 8 backups)
+# Guion — Presentación v3 (26 diapositivas + 12 backups)
 
 **Duración objetivo:** 19:00 · **Recorte a 12:00** al final.
 **Público:** tribunal SBD + BDA (perfil técnico, poco tiempo, mucha pregunta).
@@ -9,9 +9,9 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 
 > **Cifras congeladas (2026-11-13).** Si algo cambia, se regenera el CSV antes de tocar
 > la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **351 canónicos +
-> 4 legado** · **353 objetos en HDFS** (351 + .FROZEN + .gitkeep) · **183 silver** · **55 gold**
+> 4 legado** · **353 objetos en HDFS** (351 + .FROZEN + .gitkeep), **solo raw** · **183 silver** · **55 gold**
 > (24 CSV + 31 PNG) · **17 colecciones vivas + 15 backup = 32** · **8 índices de trabajo (25 con los `_id`)** ·
-> **295 tests** (293 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
+> **300 tests** (298 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
 > **78,6 % municipal** · **87,3 % de anuncio** · **1.350 € mediana de medianas
 > municipales** · **1.500 € mediana de anuncios** · **1.719 € salario joven ajustado**.
 
@@ -27,41 +27,44 @@ de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 |---|---|---:|---:|---|
 | 1 | La pregunta | 0:00 | 0:30 | Apertura |
 | 2 | La respuesta en dos capas | 0:30 | 1:50 | Apertura |
-| 3 | Cómo se mide | 1:50 | 2:40 | 2024, el ancla |
-| 4 | De dónde sale el 2024 | 2:40 | 3:40 | 2024, el ancla |
-| 5 | El mapa de 2024 | 3:40 | 4:30 | 2024, el ancla |
-| 6 | El reparto de 2024 | 4:30 | 5:20 | 2024, el ancla |
-| 7 | El ranking de 2024 | 5:20 | 6:15 | 2024, el ancla |
-| 8 | De dónde sale el 2026 | 6:15 | 6:50 | 2026, la oferta |
-| 9 | El resultado de 2026 | 6:50 | 7:35 | 2026, la oferta |
-| 10 | Temporal y larga estancia | 7:35 | 8:05 | 2026, la oferta |
-| 11 | La vía protegida: VPO | 8:05 | 8:50 | 2026, la oferta |
-| 12 | La serie de la VPO | 8:50 | 9:20 | 2026, la oferta |
-| 13 | Los cuatro municipios robustos | 9:20 | 10:10 | 2026, la oferta |
-| 14 | Esfuerzo por tipología | 10:10 | 10:30 | 2026, la oferta |
-| 15 | Diferencia de nivel 2024 vs 2026 | 10:30 | 11:05 | 2026, la oferta |
-| 16 | Habitaciones: muestra y ranking | 11:05 | 11:35 | 2026, la oferta |
-| 17 | Compartir: habitación vs piso | 11:35 | 12:15 | 2026, la oferta |
-| 18 | Arquitectura: ingesta, Kafka, HDFS y medallion | 12:15 | 13:15 | Cómo se construyó |
-| 19 | Mongo I: modelado documental | 13:15 | 13:55 | Cómo se construyó |
-| 20 | Mongo II: colecciones e índices | 13:55 | 14:35 | Cómo se construyó |
-| 21 | Mongo III: consultas de negocio | 14:35 | 15:15 | Cómo se construyó |
-| 22 | Mongo IV: aggregation y explain | 15:15 | 15:55 | Cómo se construyó |
-| 23 | Lo que sostenemos y lo que no | 15:55 | 17:05 | Límites y cierre |
-| 24 | Cierre | 17:05 | 17:20 | Límites y cierre |
+| 3 | Cómo se mide | 1:50 | 2:30 | 2024, el ancla |
+| 4 | De dónde sale el 2024 | 2:30 | 3:30 | 2024, el ancla |
+| 5 | El mapa de 2024 | 3:30 | 4:20 | 2024, el ancla |
+| 6 | El reparto de 2024 | 4:20 | 5:10 | 2024, el ancla |
+| 7 | El ranking de 2024 | 5:10 | 6:05 | 2024, el ancla |
+| 8 | El otro extremo del ranking | 6:05 | 6:50 | 2024, el ancla |
+| 9 | De dónde sale el 2026 | 6:50 | 7:20 | 2026, la oferta |
+| 10 | Qué no entra y por qué | 7:20 | 7:40 | 2026, la oferta |
+| 11 | El resultado de 2026 | 7:40 | 8:25 | 2026, la oferta |
+| 12 | Temporal y larga estancia | 8:25 | 8:55 | 2026, la oferta |
+| 13 | La vía protegida | 8:55 | 9:40 | 2026, la oferta |
+| 14 | La serie de la VPO | 9:40 | 10:00 | 2026, la oferta |
+| 15 | Los cuatro municipios robustos | 10:00 | 10:50 | 2026, la oferta |
+| 16 | Esfuerzo por tipología | 10:50 | 11:10 | 2026, la oferta |
+| 17 | Diferencia de nivel 2024 vs 2026 | 11:10 | 11:45 | 2026, la oferta |
+| 18 | Habitaciones: qué queda tras el filtro | 11:45 | 12:15 | 2026, la oferta |
+| 19 | Compartir: habitación vs piso | 12:15 | 12:55 | 2026, la oferta |
+| 20 | Arquitectura: ingesta, Kafka, HDFS y medallion | 12:55 | 13:45 | Cómo se construyó |
+| 21 | Mongo I: modelado documental | 13:45 | 14:25 | Cómo se construyó |
+| 22 | Mongo II: colecciones e índices | 14:25 | 15:05 | Cómo se construyó |
+| 23 | Mongo III: consultas de negocio | 15:05 | 15:35 | Cómo se construyó |
+| 24 | Mongo IV: aggregation y explain | 15:35 | 16:15 | Cómo se construyó |
+| 25 | Lo que sostenemos y lo que no | 16:15 | 17:25 | Límites y cierre |
+| 26 | Cierre | 17:25 | 17:40 | Límites y cierre |
 
 La charla son dos historias separadas —primero 2024 oficial, después 2026 de oferta— y
-solo al final se explica cómo se construyó. La 11 es el puente: la única tabla donde las
-dos capas se tocan, y va **después** del embudo para que el precio no aparezca sin muestra.
-La 7 cierra el acto oficial con el ranking municipal; la 10 mete la vía protegida dentro
-del acto de oferta y la 14, ya al final, cierra con las habitaciones. Límites y cierre van
-al final, no en medio.
+solo al final se explica cómo se construyó. La 8 cierra el acto oficial por abajo: los
+municipios de menor esfuerzo y por qué no son la respuesta. La 15 es el puente: la única
+tabla donde las dos capas se tocan, y va **después** del embudo para que el precio no
+aparezca sin muestra. La 7 cierra el ranking municipal; la 10 separa lo que es otro
+producto y la 13 mete la vía protegida dentro del acto de oferta. Límites y cierre van al
+final, no en medio.
 
 El bloque Mongo son **cuatro diapositivas en 2:40** (40 s cada una): modelado, colecciones
-e índices, tres consultas y el pipeline con su explain. Si el reloj aprieta, D20 se queda
-en la lista de índices y D22 en la tabla del explain; el modelado y las tres consultas no
+e índices, tres consultas y el pipeline con su explain. Si el reloj aprieta, la 22 se queda
+en la lista de índices y la 24 en la tabla del explain; el modelado y las tres consultas no
 se tocan, porque son las que enseñan lo que el tribunal va a buscar. Sin consistencia,
-calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para preguntas.
+calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para preguntas.
 
 ---
 
@@ -99,14 +102,14 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   159 municipios con dato pasan del 30 %. En Bilbao y Donostia se roza el 38 %. En 2026
   cambiamos de fuente: no es alquiler efectivo, es precio de anuncio. La mediana municipal
   da 78,6 %, pero la mediana de los 287 anuncios es 87,3 %. Esa diferencia no es un error:
-  es la diferencia entre medir municipios y medir anuncios. Y no la voy a esconder.»
+  es la diferencia entre medir municipios y medir anuncios.»
 - **Transición:** «¿Cómo se mide eso?»
 
 ---
 
 # Acto 1 — 2024, el ancla oficial
 
-## D3 · Cómo se mide (1:50–2:40)
+## D3 · Cómo se mide (1:50–2:30)
 
 - **Mensaje:** el indicador no es nuestro; lo que aportamos es hacerlo municipal y decir
   dónde no se puede calcular.
@@ -120,6 +123,8 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Gráfica:** ninguna.
 - **Evidencia:** `analysis/mongo_aggregations.py` → `pipeline_indicadores_municipio`.
 - **Rúbrica:** C17, JOVEN-18-34.
+- **Si preguntan por los proxys:** B9 la renta joven, B10 el salario con IPC, B11 el IDW
+  y B12 la geometría. Cada una lleva la fórmula y la fuente.
 - **Nota oral:** «La renta joven no existe publicada por municipio y edad. La estimamos con
   las bandas de Eustat 18-19, 20-24, 25-29 y 30-34, ponderando por anchura, y la aplicamos
   a la renta municipal. Es un proxy, y lo decimos: no es un salario. El 16-29 antiguo da
@@ -129,7 +134,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   oficial, los 93 municipios van con IDW de cinco vecinos: solo sensibilidad.»
 - **Transición:** «¿De dónde sale ese alquiler oficial?»
 
-## D4 · De dónde sale el 2024 (2:40–3:40)
+## D4 · De dónde sale el 2024 (2:30–3:30)
 
 - **Mensaje:** el ancla de 2024 es oficial y municipal, pero no cubre todo: 159 municipios
   con alquiler Eustat y 93 imputados por IDW que solo usamos para sensibilidad.
@@ -150,7 +155,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   mezclan en el indicador.»
 - **Transición:** «Con eso, el mapa.»
 
-## D5 · El mapa de 2024 (3:40–4:30)
+## D5 · El mapa de 2024 (3:30–4:20)
 
 - **Mensaje:** el esfuerzo tiene geografía: capitales y costa arriba; interior y sur, abajo.
 - **En pantalla:** coroplético municipal, 159 oficiales (color) + 93 IDW (trama) con
@@ -165,7 +170,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   30: los 40 que lo superan comparten el mismo tono, no son todos iguales.»
 - **Transición:** «¿Cuántos quedan a cada lado del umbral?»
 
-## D6 · El reparto de 2024 (4:30–5:20)
+## D6 · El reparto de 2024 (4:20–5:10)
 
 - **Mensaje:** no es un problema de cuatro municipios: 40 de 159 pasan del 30 %, y 14 se
   van por encima del 35 %.
@@ -182,7 +187,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   la lista cambia.»
 - **Transición:** «Si no es un problema de cuatro municipios, ¿quién está peor?»
 
-## D7 · El ranking de 2024 (5:20–6:15)
+## D7 · El ranking de 2024 (5:10–6:05)
 
 - **Mensaje:** el ranking no lo ordena el alquiler, sino la renta joven: Barakaldo encabeza
   con el alquiler por debajo del de Donostia.
@@ -202,39 +207,86 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 
 ---
 
+## D8 · El otro extremo del ranking (6:05–6:50)
+
+- **Mensaje:** el ranking por arriba esconde el problema de verdad: 89 de los 119 municipios
+  por debajo del 30 % no tienen un solo anuncio en 2026.
+- **En pantalla (cuatro cifras + tabla):**
+  - **119** oficiales por debajo del 30 %, alquiler mediano **563 €**
+  - **89** sin ningún anuncio en 2026 · **30** con al menos uno · **3** con cinco o más
+  - Ningún municipio oficial baja del **20 %**; **54** están por debajo del **25 %**
+  - Los cinco de menor esfuerzo con población real: Oñati **22,16 %** (572 €, 1 anuncio) ·
+    Azkoitia **23,81 %** (569 €, 0) · Mutriku **23,87 %** (507 €, 1) · Urretxu
+    **23,94 %** (552 €, 0) · Markina-Xemein **24,14 %** (543 €, 0)
+  - Los cinco tienen 1.000 o más jóvenes de 18 a 34, así que no son pueblos vacíos
+- **Gráfica:** ninguna; cifras grandes y tabla compacta.
+- **Evidencia:** `mongo_esfuerzo_por_municipio.csv` (`n_anuncios` de 2026 por municipio).
+- **Rúbrica:** C18, C19.
+- **Nota oral:** «Hasta aquí he ordenado por arriba, y esa es la mitad fácil de contar. El
+  otro extremo dice algo más incómodo: de los ciento diecinueve municipios que bajan del
+  treinta por ciento, ochenta y nueve no tienen ni un anuncio publicado en 2026. Un esfuerzo
+  bajo con el parque vacío no es una oportunidad: es un municipio donde no hay mercado que
+  medir. Los cinco con menos esfuerzo y población real suman tres anuncios entre los cinco.
+  El único con esfuerzo bajo y muestra de verdad es Getxo: veintiocho coma seis, con
+  cincuenta anuncios.»
+- **Transición:** «El mapa bueno está arriba. ¿Y de dónde sale la capa de 2026?»
+
+---
+
 # Acto 2 — 2026, la capa de oferta
 
-## D8 · De dónde sale el 2026 (6:15–6:50)
+## D9 · De dónde sale el 2026 (6:50–7:20)
 
-- **Mensaje:** la capa 2026 no es un número mágico: son 287 anuncios de tres portales.
-  Y lo que no entra no es descarte: es **otro producto**.
-- **En pantalla:**
-  - **1.828** registros crudos → **639** únicos tras dedup → **594** vigentes (45 en cuarentena fuera de Euskadi)
-    → **326** vivienda completa (**297** con precio; **29** sin precio) + **268** temporales (**264** con precio)
-    → **287** válidos
-  - Composición de los **795** productos de oferta 2026 (594 + 201): **41 %** piso larga
-    (**326**) · **34 %** piso temporal (**268**) · **25 %** habitación (**201**). Los 287
-    válidos son el **36 %** del total.
-  - **201 habitaciones** en **9 municipios**, colección aparte; no entran en el 594.
-  - 10 excluidos por el propio pipeline (900 m², 9.500 €) · 2 municipios
-    caen a 0 anuncios (Amorebieta-Etxano, Laguardia): el mapa pasa de 52 a 50
-  - Por portal (mediana): Fotocasa 152 · 1.432 € · 15,36 €/m² | Pisos 60 · 1.500 € · 16,67 |
-    RealtyAPI 75 · 1.690 € · 19,43
+- **Mensaje:** la capa 2026 no es un número mágico: son 287 anuncios de tres portales, y el
+  embudo se enseña entero.
+- **En pantalla (cuatro cifras del embudo):**
+  - **1.828** registros crudos de 3 portales
+  - **594** vigentes · **639** únicos tras dedup, **45** en cuarentena fuera de Euskadi
+  - **326** piso completo de larga estancia · **297** con precio
+  - **287** válidos: la muestra de la capa
+  - **10** excluidos por el propio pipeline (900 m², 9.500 €) · **29** largas y **4**
+    temporales sin precio declarado
+  - Amorebieta-Etxano y Laguardia caen a 0 anuncios: el mapa pasa de 52 a 50
+- **Gráfica:** ninguna; embudo en cifras.
+- **Evidencia:** `transform/_anuncios_2026.py`, `data/resultados/validacion_portales_2026.csv`.
+- **Rúbrica:** C1, C5, C15.
+- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. Mil ochocientos
+  veintiocho registros crudos; seiscientos treinta y nueve únicos después de deduplicar y
+  quinientos noventa y cuatro vigentes, con cuarenta y cinco en cuarentena fuera de Euskadi.
+  De esos, trescientos veintiséis son vivienda completa y doscientos noventa y siete traen
+  precio. Descartamos diez que el propio pipeline había marcado como imposibles —pisos de
+  novecientos metros, alquileres de nueve mil quinientos euros— y quedan doscientos ochenta
+  y siete. La cuarentena es reversible: si uno estuviera dentro, la muestra se mueve.»
+- **Transición:** «Y lo que se queda fuera de ahí no es basura.»
+
+## D10 · Qué no entra y por qué (7:20–7:40)
+
+- **Mensaje:** lo que no entra no es descarte: es otro producto, y se mide aparte.
+- **En pantalla (composición + portales):**
+  - **795** productos de oferta 2026 (594 + 201): **41 %** piso larga (**326**) · **34 %**
+    piso temporal (**268**) · **25 %** habitación (**201**)
+  - Los **287** válidos son el **36 %** del total: el resto no se pierde, es oferta de otro
+    tipo
+  - **201** habitaciones en **9** municipios, colección aparte; no entran en los 594
+  - Por portal (mediana): Fotocasa 152 · **1.432 €** · 15,36 €/m² | Pisos 60 · 1.500 € ·
+    16,67 | RealtyAPI 75 · **1.690 €** · 19,43 → **26 %** más caro por m²
+  - Sin RealtyAPI (212 anuncios): la mediana de anuncios baja a **84,4 %**; la municipal no
+    se mueve, **78,6 %**
 - **Gráfica:** ninguna; tabla de portales.
-- **Evidencia:** `data/resultados/validacion_portales_2026.csv`, `transform/_anuncios_2026.py`.
-- **Rúbrica:** C1, C5, C15.- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. De 1.828
-  registros crudos quedan 639 únicos tras dedup y 594 vigentes tras 45 en cuarentena
-  fuera de Euskadi; 326 son vivienda completa, 297 con precio y 29 sin precio. De los 297
-  descartamos 10 que el propio pipeline había marcado como imposibles —pisos de 900  metros, alquileres de 9.500 euros—. Quedan 287. Y aquí ya se ve un problema: RealtyAPI
-  es un 26 % más caro por metro cuadrado que Fotocasa. No son tres cámaras iguales, y por
-  eso lo medimos antes de mezclarlo.»
-- **Nota oral (composición):** «Y ojo con lo que no entra: de los 594 vigentes, 268 son
-  temporales, y aparte hay 201 habitaciones. No es que hayamos perdido dos tercios de los
-  anuncios: es que dos tercios de lo capturado son otro producto. Lo que no podemos es
-  usar el temporal como sustituto de la vivienda de larga estancia.»
+- **Evidencia:** `mongo_modalidades.csv`, `validacion_portales_2026.csv`.
+- **Rúbrica:** C15, C17.
+- **Nota oral:** «De los quinientos noventa y cuatro vigentes, doscientos sesenta y ocho son
+  temporales, y aparte hay doscientas una habitaciones. No hemos perdido dos tercios de los
+  anuncios: dos tercios de lo capturado son otro producto. El temporal no sirve como
+  sustituto de la vivienda de larga estancia. Y los tres portales no son la misma cámara:
+  RealtyAPI es un veintiséis por ciento más caro por metro cuadrado que Fotocasa, y por eso
+  se mide antes de mezclar. Si lo quito, la mediana de anuncios baja a ochenta y cuatro coma
+  cuatro, pero la municipal no se mueve.»
 - **Transición:** «Con esa muestra, el resultado.»
 
-## D9 · El resultado de 2026 (6:50–7:35)
+---
+
+## D11 · El resultado de 2026 (7:40–8:25)
 
 - **Mensaje:** la mediana municipal es 78,6 %, pero la mediana de los 287 anuncios es
   87,3 %; el 98,3 % de los anuncios supera el 30 % del salario joven.
@@ -260,7 +312,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   población joven, así que la cobertura es defendible aunque el mapa tenga huecos.»
 - **Transición:** «Y para quien no puede pagar esto, ¿qué ofrece la vía protegida?»
 
-## D10 · Temporal y larga estancia (7:35–8:05)
+## D12 · Temporal y larga estancia (8:25–8:55)
 
 - **Mensaje:** mismo alquiler al mes, distinto metro: el temporal no es un sustituto de la
   vivienda habitual y por eso queda fuera del indicador.
@@ -272,15 +324,14 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Gráfica:** `H8b_modalidad_mediana_eur_m2.png` (mediana €/mes y €/m² por modalidad).
 - **Evidencia:** `mongo_modalidades.csv`.
 - **Rúbrica:** C15, C17.
-- **Nota oral:** «Antes de seguir, el temporal. De los 594 anuncios de 2026, 268 son
-  temporales, casi la mitad. Al mes cuesta lo mismo: 1.500 euros de mediana en ambas. Pero
+- **Nota oral:** «De los 594 anuncios de 2026, 268 son temporales, casi la mitad. Al mes cuesta lo mismo: 1.500 euros de mediana en ambas. Pero
   se pide sobre 80 metros y no sobre 90, así que el metro cuadrado sale un 13,7 % más caro.
   Y un contrato temporal no es vivienda habitual: incluye amueblado y suministros. Mezclarlo
   habría subido el precio por metro de toda la capa sin mover la mediana mensual. Por eso
   está fuera.»
 - **Transición:** «La otra oferta es la protegida.»
 
-## D11 · La vía protegida (8:05–8:50)
+## D13 · La vía protegida (8:55–9:40)
 
 - **Mensaje:** la VPO terminada se ha dividido por cuatro y no llega; es flujo, no stock, y
   no hay dato de 2026.
@@ -293,14 +344,14 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Gráfica:** `H5_vpo_terminadas_por_mil.png` (flujo 2020-2024).
 - **Evidencia:** `mongo_vpo_terminadas_por_municipio.csv`, `mongo_vpo_por_municipio.csv`.
 - **Rúbrica:** C17.
-- **Nota oral:** «La otra oferta es la protegida, y aquí hay que ser honesto con la fecha: de
-  VPO solo hay 2020-2024, el último dato publicado. Se ha dividido por cuatro desde 2011:
+- **Nota oral:** «De VPO solo hay 2020-2024, el último dato publicado. Se ha dividido por
+  cuatro desde 2011:
   de 11,5 a 2,7 viviendas por mil habitantes y quinquenio. Y es flujo, no stock: 211 de los
   251 municipios están en cero y el registro de promociones no trae ni fechas ni número de
   viviendas, así que no se puede decir cuántas hay libres.»
 - **Transición:** «Si la vía protegida no cubre, ¿qué municipios aguantan la comparación?»
 
-## D12 · La serie de la VPO (8:50–9:20)
+## D14 · La serie de la VPO (9:40–10:00)
 
 - **Mensaje:** la caída no es de una cosecha mala: viene de 2011 y se sostiene quince años.
 - **En pantalla:**
@@ -318,7 +369,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   resto.»
 - **Transición:** «Si la vía protegida no cubre, ¿qué municipios aguantan la comparación?»
 
-## D13 · Los cuatro municipios robustos (9:20–10:10)
+## D15 · Los cuatro municipios robustos (10:00–10:50)
 
 - **Mensaje:** de los 287 anuncios válidos, 202 están en cuatro municipios con n ≥ 30; ahí
   el esfuerzo 2026 pasa del 75 % en todos y el orden 3º/4º no se puede sostener.
@@ -349,11 +400,11 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   municipio contra municipio. Bilbao y Donostia están en el 38 % con la muestra de 2024 y
   se van al 98 % y al 116 % con el anuncio de 2026. Getxo y Vitoria quedan por debajo, y
   entre ellos hay dos anuncios de diferencia: no convertimos eso en un podio. Barakaldo,
-  con dos anuncios, no se lee como ranking. Y ojo: cada barra viene de una capa distinta,
-  por eso van fechadas.»
+  con dos anuncios, no se lee como ranking. Cada barra viene de una capa distinta, por eso
+  van fechadas.»
 - **Transición:** «¿Y dentro de esa capa, todos los pisos pesan igual?»
 
-## D14 · Esfuerzo por tipología (10:10–10:30)
+## D16 · Esfuerzo por tipología (10:50–11:10)
 
 - **Mensaje:** el esfuerzo de mercado 2026 no es homogéneo: las viviendas de 4+ habitaciones
   suben a 116 %, frente a 78,6 % en las de 1-2.
@@ -374,7 +425,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   patrón, no una mediana municipal.»
 - **Transición:** «¿Y cómo se compara cada municipio con su propio punto de partida?»
 
-## D15 · Diferencia de nivel 2024 vs 2026 (10:30–11:05)
+## D17 · Diferencia de nivel 2024 vs 2026 (11:10–11:45)
 
 - **Mensaje:** la distancia entre las dos capas es de nivel, no de tiempo, y solo se mide
   donde hay muestra: siete municipios, 52,7 puntos de mediana.
@@ -387,16 +438,15 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Gráfica:** `M26_brecha_n5.png` (solo municipios con n ≥ 5; barras ordenadas, todas positivas).
 - **Evidencia:** `brecha_esfuerzo_2024_2026.csv`, `cobertura_representatividad_2026.csv`.
 - **Rúbrica:** C17, C19.
-- **Nota oral:** «Aquí está el punto delicado, y lo digo antes de que lo pregunten: esto no
-  es una serie temporal. A un lado, alquiler registrado de 2024; al otro, precio de anuncio
-  de 2026. Lo que sí puedo medir es la distancia de nivel donde hay muestra: siete
+- **Nota oral:** «Esto no es una serie temporal. A un lado, alquiler registrado de 2024; al otro, precio de
+  anuncio de 2026. Lo que sí puedo medir es la distancia de nivel donde hay muestra: siete
   municipios con cinco anuncios o más, y una diferencia mediana de 52,7 puntos. Los siete
   van en el mismo sentido, cosa que no ocurre si bajo el umbral. Y la distancia tiene dos
   partes: una es la fuente —anuncio contra contrato— y otra es el tamaño, porque el anuncio
   mediano tiene 90 metros y el registrado 80,7. No la resto como si fuera evolución.»
 - **Transición:** «Y si en vez del piso entero se comparte: ¿cuánto baja?»
 
-## D16 · Habitaciones: qué queda tras el filtro (11:05–11:35)
+## D18 · Habitaciones: qué queda tras el filtro (11:45–12:15)
 
 - **Mensaje:** la sección de compartir mezcla habitaciones con pisos enteros; tras una regla
   explícita quedan 140 anuncios, y solo Bilbao tiene muestra firme.
@@ -413,12 +463,12 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Nota oral:** «La sección de compartir no trae solo habitaciones: de 201 anuncios, 60 eran
   pisos enteros, un treinta por ciento, y los quitamos con una regla explícita —fuera el
   anuncio que cuesta más que el piso entero típico de su municipio—, no a ojo. Quedan 140,
-  con una mediana de 545 euros: el 87 % por debajo de 700. Y ojo con la muestra: solo Bilbao
-  pasa de 30; Donostia se queda en 29 y el resto es indicativo, así que no publicamos
+  con una mediana de 545 euros: el 87 % por debajo de 700. Solo Bilbao pasa de 30; Donostia
+  se queda en 29 y el resto es indicativo, así que no publicamos
   mediana municipal por debajo de diez anuncios.»
 - **Transición:** «Y con esos precios, ¿cuánto alivia compartir?»
 
-## D17 · Compartir: habitación vs piso (11:35–12:15)
+## D19 · Compartir: habitación vs piso (12:15–12:55)
 
 - **Mensaje:** compartir baja el esfuerzo a un tercio, pero no por debajo del umbral: es
   alivio, no solución.
@@ -445,7 +495,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 
 # Acto 3 — Cómo se construyó
 
-## D18 · Arquitectura: ingesta, Kafka, HDFS y medallion (12:15–13:15)
+## D20 · Arquitectura: ingesta, Kafka, HDFS y medallion (12:55–13:45)
 
 - **Mensaje:** dos ramas sobre los mismos originales: una analítica (raw → silver → Mongo →
   gold) y una de conservación (raw → Kafka → HDFS); nunca Kafka → Mongo.
@@ -474,7 +524,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   revalidado hoy. La evidencia funcional es la de v8: 352/352, lag 0.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
 
-## D19 · Mongo I: modelado documental (13:15–13:55)
+## D21 · Mongo I: modelado documental (13:45–14:25)
 
 - **Mensaje:** lo que se lee junto se embebe; lo que crece sin límite se referencia por la
   clave natural `codigo_ine`.
@@ -510,15 +560,15 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Nota oral:** «La decisión es por patrón de acceso: el municipio se lee entero y cambia
   poco, así que va embebido. Los anuncios crecen cada día y se consultan por municipio, así
   que se referencian. No embebemos anuncios dentro del municipio: duplicaría datos y
-  rompería el límite de 16 MB. Y una precisión que importa: el `_id` del municipio no es un
-  ObjectId, es el código INE de cinco dígitos; por eso `ubicacion.codigo_ine` apunta a
-  `municipios._id` y la relación es una clave natural, no un puntero opaco.»
+  rompería el límite de 16 MB. El `_id` del municipio no es un ObjectId, es el código INE de cinco dígitos; por eso
+  `ubicacion.codigo_ine` apunta a `municipios._id` y la relación es una clave natural, no
+  un puntero opaco.»
 - **Transición:** «Esas decisiones dan 17 colecciones: las pongo en pantalla con sus índices.»
 
-## D20 · Mongo II: colecciones e índices (13:55–14:35)
+## D22 · Mongo II: colecciones e índices (14:25–15:05)
 
-- **Mensaje:** 17 colecciones en tres familias y 8 índices de trabajo; lo que falta, dicho
-  por nosotros antes de que lo pregunte el tribunal.
+- **Mensaje:** 17 colecciones en tres familias, 8 índices de trabajo y la deuda declarada
+  en la misma diapositiva.
 - **En pantalla (dos columnas + pie):**
   - **Izquierda, tres familias con sus nombres y tamaños:**
     - **Núcleo municipal (5):** `municipios` 252, `indicadores` 252, `alquiler_municipal`
@@ -554,7 +604,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   los declaro deuda en vez de contarlos como hechos.»
 - **Transición:** «Con el mapa en la cabeza, tres consultas que responden al reto.»
 
-## D21 · Mongo III: consultas de negocio (14:35–15:15)
+## D23 · Mongo III: consultas de negocio (15:05–15:35)
 
 - **Mensaje:** tres consultas que responden preguntas del reto, no tres ejercicios de
   operadores; las otras 30 viven en código con su assert.
@@ -566,7 +616,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
      convenio · 1 en proyecto = 406`. `viviendas` vuelve 0: `num_viviendas` está vacío en
      las 406, y por eso la VPO se cuenta como promociones y no como stock.
   3. **`$geoNear` · ¿qué hay a 5 km del centro?** Radio de 5.000 m sobre
-     `ubicacion.coordenadas`; 594 anuncios con coordenadas y el plan resuelto por
+     `ubicacion.coordenadas`; **424 de 594** con coordenadas, porque solo Fotocasa publica lat/lon, y el plan resuelto por
      `2dsphere`, no por COLLSCAN.
 - **Pie:** las otras 30 consultas (`$all`, `$elemMatch`, `$size`, `$exists`, `$type`, regex,
   `$and/$or`, paginación determinista) están en `analysis/mongo_queries.py` con su assert.
@@ -576,13 +626,12 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   alquiler en la renta joven. Cruza municipios con anuncios y con alquiler, calcula el
   esfuerzo y se queda solo con los municipios que tienen muestra suficiente: Donostia,
   Bilbao, Vitoria y Getxo. La segunda cuenta las promociones de Etxebide por estado: 347
-  terminadas, 39 en curso, 19 en convenio y una en proyecto. Fíjense en un detalle honesto:
-  la suma de viviendas devuelve cero porque el campo viene vacío en las 406; por eso la VPO
+  terminadas, 39 en curso, 19 en convenio y una en proyecto. La suma de viviendas devuelve cero porque el campo viene vacío en las 406; por eso la VPO
   se cuenta como promociones, no como stock. La tercera usa el índice geoespacial: un radio
   de cinco kilómetros sobre las coordenadas, que es lo que justifica el `2dsphere`.»
 - **Transición:** «Y el pipeline completo, con el explain al lado.»
 
-## D22 · Mongo IV: aggregation y explain (15:15–15:55)
+## D24 · Mongo IV: aggregation y explain (15:35–16:15)
 
 - **Mensaje:** 12 pipelines, 11 en orden; uno entero, y el mismo filtro con y sin índice:
 - **Consistencia en la misma diapositiva:** idempotencia (SHA en ingesta, único
@@ -618,10 +667,10 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   documentos y ninguna clave; con el ESR examina uno y una.»
 - **Transición:** «¿Y cómo sabemos que no está roto?»
 
-## D23 · Lo que sostenemos y lo que no (15:55–17:05)
+## D25 · Lo que sostenemos y lo que no (16:15–17:25)
 
 - **Mensaje:** sabemos qué afirmamos, qué no y qué nos tumbaría.
-- **Tira de KPIs al pie:** 295 tests (293 pasan, 2 skipped) · 183/183 silver · 55/55 gold
+- **Tira de KPIs al pie:** 300 tests (298 pasan, 2 skipped) · 183/183 silver · 55/55 gold
   · **FAIL 07 en rojo**, no imputado. Es la prueba de C8 y C16 sin diapositiva propia.
 - **En pantalla (dos columnas):**
   - **Sostenemos:** 4 municipios con n≥30 y su esfuerzo; 40/159 > 30 %; Bilbao/Donostia
@@ -643,13 +692,13 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   primero sería subir la muestra de los 57 Tier C y separar temporal de larga en todo.»
 - **Transición:** «Una frase y abrimos preguntas.»
 
-## D24 · Cierre (17:05–17:20)
+## D26 · Cierre (17:25–17:40)
 
 - **Mensaje:** cerrar con la misma frase del principio, sin añadir nada nuevo.
 - **En pantalla:** «En la mayoría del territorio, justo; en las capitales, no; en el mercado
   de entrada actual, prohibitivo; y en 188 municipios no lo sabemos.» + «Gracias. Abrimos el
   código, los datos y el CSV de cada cifra.»
-- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 295 tests` | `C18 · C19`.
+- **Footer:** `Repositorio · 355 raw · 353 HDFS · 183 silver · 17 colecciones · 55 gold · 300 tests` | `C18 · C19`.
 - **Rúbrica:** C18, C19.
 - **Nota oral:** «Y hasta aquí. En la mayoría del territorio, justo; en las capitales, no;
   en el mercado de entrada actual, prohibitivo; y en 188 municipios no lo sabemos. Gracias;
@@ -662,13 +711,17 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 | # | Tema | Qué enseñar |
 |---|---|---|
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
-| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 8 índices de trabajo (25 con los `_id`) / 295 tests |
+| B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 8 índices de trabajo (25 con los `_id`) / 300 tests. **Ojo con los indicadores:** `esfuerzo_joven_pct`, `_16_29` y `esfuerzo_alquiler_pct` coinciden por construcción y el `_18_24` es 2,552× el `_18_34` (ratio CAE 0,6311); son tres indicadores distintos, no cinco |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
 | B4 | VPO, promociones | `C_vpo_por_estado.png`; 406 promociones en 77 municipios por estado de obra; 406 de 406 sin `NumViviendas`; solo las terminadas traen sorteo (2001-2014), así que no se puede contar stock disponible |
 | B5 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; unidades distintas (oficial 2024 vs anuncio 2026), no comparable: no se mezclan |
 | B6 | Dos mapas 2026 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png`; gris = sin dato |
-| B7 | Auditoría del ancla | `O_ranking_bloqueado_n30.png`; SERPAVI: ratio **0,977**, Spearman **0,988**, **159/159** dentro de ±25 %; bootstrap de los cuatro: los IC se solapan, se defiende el umbral y no un podio |
-| B8 | Tier de confianza | `H2_tier_confianza_ABCD.png`; el Tier solo mide muestra: **A ≥ 30** (4 municipios), **B 10–29** (3), **C 1–9** (57), **D** sin anuncios (188); D es sin dato, no «asequible»; el n de la barra es menor que el del Tier (Bilbao 68 frente a 204; Donostia 58 frente a 126) por el filtro de larga estancia con precio |
+| B7 | Auditoría del ancla | `O_ranking_bloqueado_n30.png`; SERPAVI: ratio **0,977**, Spearman **0,988**, **159/159** dentro de ±25 % —las tres cifras sobre los **159 con alquiler oficial**; el universo de 160 da 0,979 y 159/160, así que se cita siempre el subconjunto—; bootstrap de los cuatro: los IC se solapan, se defiende el umbral y no un podio |
+| B8 | Tier de confianza | `H2_tier_confianza_ABCD.png`; el Tier solo mide muestra: **A ≥ 30** (4 municipios), **B 10–29** (3), **C 1–9** (57), **D** sin anuncios (188); D es sin dato, no «asequible»; el n de la barra es menor que el del Tier (Bilbao 68 frente a 204; Donostia 58 frente a 126) por el filtro de larga estancia con precio. **Nivel (tipología 4/54/194) y Tier (confianza 4/3/57/188) son ejes ortogonales: un municipio puede ser Nivel 3 y Tier A, y no se intercambian** |
+| B9 | Renta joven | Rentas Eustat CAE 2024 por tramo (1.599 / 8.156 / 20.109 / 25.609; total 28.170) ponderadas por anchura 2/5/5/5 sobre 17 años y divididas por la renta total: ratio **56,9 %**. Se multiplica por la renta neta media por hogar del Atlas INE. Es renta de hogar, no individual, y el ratio es autonómico: ordena la renta municipal, no la edad |
+| B10 | Salario e IPC | OVJ 2024: **1.564 €** netos 18-34 (1.381 € el 16-29), pagas prorrateadas. IPC medio anual INE **107,2 → 117,8**, factor **1,0989**, salario **1.719 €**. La API no respondió: el CSV guarda el valor documentado con `flag = fallback` y el metadato viaja con la cifra. Constante autonómica: mueve el nivel, no el orden; sin ajuste el esfuerzo sería un **9,9 %** más alto en todos |
+| B11 | IDW de los 93 | k=5 vecinos con dato oficial, peso **1/d²** sobre haversine entre centroides, normalizado por la suma de pesos. Sensibilidad: oficial **26,61 %** y **40/159** > 30 %; con 252, **25,37 %** y **47/252**. Nunca en el titular, el ranking ni el mapa como dato observado (va rayado) |
+| B12 | Geometría | `municipios_euskadi_252.geojson` con **252** features y join por `codigo_ine`; sin geometría inventada, gris = sin dato. `ubicacion.coordenadas` como GeoJSON Point con índice `2dsphere`; **424 de 594** con punto porque solo Fotocasa publica lat/lon, y **170** quedan fuera de `$geoNear`. Coordenadas de municipio, no puerta a puerta |
 
 ---
 
@@ -676,28 +729,30 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 
 | Criterio | Diapositivas |
 |---|---|
-| C1 Extracción API + scraping | 4, 8, 18 |
-| C2 HDFS | 18, B3 |
-| C3 Kafka | 18, B3 |
-| C4 Integración | 18, 19 |
-| C5 Fuentes + campo común | 4, 8 |
-| C6 2+ colecciones + relación | 4, 19 |
-| C7 Limpieza | 7, 18, 19 |
-| C8 Automatización | 9, 15, 16, 23 |
-| C9 Modelado justificado | 19, B1 |
-| C10 CRUD | 20, B2 |
-| C11 Consultas | 20, 21, B2 |
-| C12 Aggregation | 22 |
-| C13 Índices/explain | 20, 22 |
-| C14 Consistencia | 22 |
-| C15 Heterogéneos | 4, 8, 10, 16, B5 |
-| C16 Automatización análisis | 7, 16, 23 |
-| C17 Indicadores | 2, 3, 9, 11, 12, 14, 15, B5 |
-| C18 Respuesta | 2, 5, 6, 13 |
-| C19 Visualización | 5, 6, 7, 13, 15, 16, 17, B6 |
-| T1–T7 | 19, 20, 21, 22, B1–B3 |
+| C1 Extracción API + scraping | 4, 9, 20 |
+| C2 HDFS | 20, B3 |
+| C3 Kafka | 20, B3 |
+| C4 Integración | 20, 21 |
+| C5 Fuentes + campo común | 4, 9 |
+| C6 2+ colecciones + relación | 4, 21 |
+| C7 Limpieza | 7, 20, 21 |
+| C8 Automatización | 11, 17, 18, 25 |
+| C9 Modelado justificado | 21, B1 |
+| C10 CRUD | 22, B2 |
+| C11 Consultas | 22, 23, B2 |
+| C12 Aggregation | 24 |
+| C13 Índices/explain | 22, 24, B12 |
+| C14 Consistencia | 24 |
+| C15 Heterogéneos | 4, 9, 10, 12, 18, B5 |
+| C16 Automatización análisis | 7, 18, 25 |
+| C17 Indicadores | 2, 3, 10, 11, 13, 14, 16, 17, B5, B9, B10, B11 |
+| C18 Respuesta | 2, 5, 6, 8, 15 |
+| C19 Visualización | 5, 6, 7, 8, 15, 17, 18, 19, B6, B12 |
+| T1–T7 | 21, 22, 23, 24, B1–B3 |
 
 ---
+
+
 
 # Producción
 
@@ -712,15 +767,15 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 | 05 | `mapa_coroplastico_esfuerzo_18_34.png` | 2024 | `mongo_esfuerzo_por_municipio.csv` |
 | 06 | `hist_esfuerzo_18_34_umbral30.png` | 2024 | idem |
 | 07 | `H1_ranking_esfuerzo_18_34.png` | 2024 | idem + `comparacion_esfuerzo_2024_2026.csv` |
-| 09 | `M26_hist_esfuerzo_mercado.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` · `cobertura_representatividad_2026.csv` |
-| 10 | `H8b_modalidad_mediana_eur_m2.png` | 2026 | `mongo_modalidades.csv` |
-| 11 | `H5_vpo_terminadas_por_mil.png` | flujo 2020-2024 | `mongo_vpo_terminadas_por_municipio.csv` |
-| 12 | `S_serie_vpo_2004_2024.png` | flujo 2004-2024 (ventana 5 años) | `data/raw/udalmap_vpo_terminadas.csv` |
-| 13 | `M26_ranking_esfuerzo_muestra_2026.png` | 2026 (muestra) | `esfuerzo_mercado_2026.csv` |
-| 14 | `M26_esfuerzo_por_tipo.png` | 2026 | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
-| 15 | `M26_brecha_n5.png` | 2024 → 2026 (nivel, no serie) | `brecha_esfuerzo_2024_2026.csv` |
-| 16 | `H6_habitaciones_mediana_rango.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + salario joven 2026 |
-| 17 | `H6b_esfuerzo_habitacion_vs_piso.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + `esfuerzo_mercado_2026.csv` |
+| 11 | `M26_hist_esfuerzo_mercado.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` · `cobertura_representatividad_2026.csv` |
+| 12 | `H8b_modalidad_mediana_eur_m2.png` | 2026 | `mongo_modalidades.csv` |
+| 13 | `H5_vpo_terminadas_por_mil.png` | flujo 2020-2024 | `mongo_vpo_terminadas_por_municipio.csv` |
+| 14 | `S_serie_vpo_2004_2024.png` | flujo 2004-2024 (ventana 5 años) | `data/raw/udalmap_vpo_terminadas.csv` |
+| 15 | `M26_ranking_esfuerzo_muestra_2026.png` | 2026 (muestra) | `esfuerzo_mercado_2026.csv` |
+| 16 | `M26_esfuerzo_por_tipo.png` | 2026 | `esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
+| 17 | `M26_brecha_n5.png` | 2024 → 2026 (nivel, no serie) | `brecha_esfuerzo_2024_2026.csv` |
+| 18 | `H6_habitaciones_mediana_rango.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + salario joven 2026 |
+| 19 | `H6b_esfuerzo_habitacion_vs_piso.png` | 2026 | `mongo_habitaciones_por_municipio.csv` + `esfuerzo_mercado_2026.csv` |
 | B4 | `C_vpo_por_estado.png` | registro Etxebide (sin año único) | `mongo_vpo_por_municipio.csv` |
 | B5 | `P_oficial_vs_anuncios_por_TH.png` | 2024 + 2026, no comparable | `mongo_alquiler_por_municipio.csv` |
 | B6 | `M26_mapa_coropletico_2026.png` + `M26_cobertura.png` | 2026 | `esfuerzo_mercado_2026.csv` |
@@ -746,12 +801,12 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
 
 ## Recorte a 12 minutos
 
-1. Fusionar 20 y 21 (colecciones + consultas) en una sola diapositiva técnica.
-2. 22 (pipeline) a 30 s: solo el explain.
-3. 10 (VPO) a 30 s: la cifra, el sello de fecha y seguir.
-4. 4 y 14 a 40 s cada una.
-5. 12 y 13 a 20 s cada una, o citarlas de palabra.
-6. Mantener 2, 9, 11, 15, 17, 23 y 24.
+1. Fusionar 22 y 23 (colecciones + consultas) en una sola diapositiva técnica.
+2. 24 (pipeline) a 30 s: solo el explain.
+3. 12 a 30 s: la cifra, el sello de fecha y seguir.
+4. 4 y 16 a 40 s cada una.
+5. 14 y 15 a 20 s cada una, o citarlas de palabra.
+6. Mantener 2, 8, 11, 13, 17, 19, 25 y 26.
 
 ## Comprobar que el deck no se ha desincronizado
 

@@ -922,9 +922,9 @@
       "fuente": "data/procesado/manifest_sha256.txt · líneas"
     },
     "verif.deck_checks": {
-      "valor": 115,
+      "valor": 120,
       "formato": "int",
-      "fuente": "scripts/verificar_cifras_deck.py · 2026-11-14"
+      "fuente": "scripts/verificar_cifras_deck.py · 2026-11-15"
     },
     "verif.gobernanza_cabeceras": {
       "valor": 53,
@@ -947,19 +947,19 @@
       "fuente": "scripts/verificar_gobernanza.py · 2026-11-13"
     },
     "verif.tests_collected": {
-      "valor": 295,
+      "valor": 300,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-14"
+      "fuente": "pytest -q tests · 2026-11-15"
     },
     "verif.tests_passed": {
-      "valor": 293,
+      "valor": 298,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-14"
+      "fuente": "pytest -q tests · 2026-11-15"
     },
     "verif.tests_skipped": {
       "valor": 2,
       "formato": "int",
-      "fuente": "pytest -q tests · 2026-11-14"
+      "fuente": "pytest -q tests · 2026-11-15"
     }
   }
 }
