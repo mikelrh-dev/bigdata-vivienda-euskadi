@@ -68,14 +68,14 @@ MANUAL_DEFAULT = {
     "infra.kafka_topic": ("vivienda_euskadi", "str", "KafkaAdminClient.describe_topics · 2026-11-13"),
     "infra.kafka_particiones": (1, "int", "KafkaAdminClient.describe_topics · 2026-11-13"),
     "infra.kafka_factor_replicacion": (1, "int", "KafkaAdminClient.describe_topics · 2026-11-13"),
-    "verif.tests_passed": (293, "int", "pytest -q tests · 2026-11-14"),
-    "verif.tests_skipped": (2, "int", "pytest -q tests · 2026-11-14"),
-    "verif.tests_collected": (295, "int", "pytest -q tests · 2026-11-14"),
+    "verif.tests_passed": (298, "int", "pytest -q tests · 2026-11-15"),
+    "verif.tests_skipped": (2, "int", "pytest -q tests · 2026-11-15"),
+    "verif.tests_collected": (300, "int", "pytest -q tests · 2026-11-15"),
     "verif.gobernanza_cabeceras": (53, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
     "verif.gobernanza_ids": (49, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
     "verif.gobernanza_scripts": (47, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
     "verif.gobernanza_dag": (40, "int", "scripts/verificar_gobernanza.py · 2026-11-13"),
-    "verif.deck_checks": (115, "int", "scripts/verificar_cifras_deck.py · 2026-11-14"),
+    "verif.deck_checks": (120, "int", "scripts/verificar_cifras_deck.py · 2026-11-15"),
 }
 
 GROUP_LABELS = {

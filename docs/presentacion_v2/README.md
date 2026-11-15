@@ -6,17 +6,17 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 ## Qué hay aquí
 
 - `guion.md` — guion oral slide por slide, con cifras, gráficas, backups y mapa de rúbrica.
-- `index.html` — deck completo, **24 diapositivas + 8 de backup**, en cuatro actos:
+- `index.html` — deck completo, **26 diapositivas + 12 de backup**, en cuatro actos:
   2024 oficial → 2026 de oferta → cómo se construyó → límites y cierre. Estilo
   **Swiss Modern**, una sola página, CSS/JS inline, sin red: se abre con doble clic.
 - `assets/` — PNG portables. Los del bloque 2026 salen de
   `visuals/assets_presentacion_esfuerzo_mercado_2026.py` (lee los CSV de
   `data/procesado`, no teclea cifras): top20 con IC, histograma, territorio,
   tipología, diferencia de nivel, intervalos, cobertura y los dos mapas.
-- `presentacion_v2.pdf` — exportación a 1920×1080, 32 páginas (24 + 8 backups).
+- `presentacion_v2.pdf` — exportación a 1920×1080, 38 páginas (26 + 12 backups).
 - H8b (`H8b_modalidad_mediana_eur_m2.png`) se genera en `run_analisis_mongo.py` desde
   `pipeline_modalidades`, que ahora calcula `mediana_eur_m2` y `mediana_superficie_m2`
-  por modalidad. Gold pasa a 53/53.
+  por modalidad. Gold pasa a 55/55.
 
 ## Estado de infraestructura (evidencia v11, 2026-11-12)
 
@@ -74,7 +74,7 @@ premium, la comparación con denominador común, la diferencia de nivel, cobertu
 validación SERPAVI, mapas, gráficos y assets. Al final imprime el SHA-256 de cada
 salida. No toca `data/raw` ni `extract/`, y no modifica el esfuerzo canónico 2024.
 
-Cifras que alimentan el bloque 2026 (diapositivas 8 a 13):
+Cifras que alimentan el bloque 2026 (diapositivas 9 a 14):
 
 | Dato | Valor | Fuente |
 |---|---|---|
@@ -85,7 +85,7 @@ Cifras que alimentan el bloque 2026 (diapositivas 8 a 13):
 | Cobertura población 18-34 | 71,2 % | `data/resultados/cobertura_representatividad_2026.csv` |
 | 2024 oficial → 2026 oferta (misma base) | 44,6 % → 78,6 % | `data/resultados/comparacion_esfuerzo_2024_2026_resumen.csv` |
 | 2026 con denominador canónico | 57,8 % | mismo CSV |
-| SERPAVI vs Eustat 2024 | ratio 0,976 · Spearman 0,979 | `data/resultados/validacion_alquiler_2024_serpavi.csv` |
+| SERPAVI vs Eustat 2024 | ratio 0,977 · Spearman 0,988 · 159/159 dentro de ±25 % (159 con alquiler oficial; las 160 dan 0,979 y 159/160) | `data/resultados/validacion_alquiler_2024_serpavi.csv` |
 | Esfuerzo por tipología (mediana de anuncios) | 78,6 / 82,0 / 116,4 % | `data/resultados/esfuerzo_por_tipo_nivel_anuncio_2026.csv` |
 | Sensibilidad al portal | Donostia 116,4 → 93,1 % sin realtyapi | `data/resultados/validacion_portales_2026.csv` |
 
@@ -104,7 +104,7 @@ ejecución copia H6/H8b a `assets/`, así que el deck no depende de un `cp` manu
 python scripts/verificar_cifras_deck.py
 ```
 
-Lee `index.html`, saca **hasta 63 comprobaciones** de los CSV gold y falla si alguna ya no
+Lee `index.html`, saca **159 comprobaciones** de los CSV gold y falla si alguna ya no
 coincide. Existe porque el deck se quedó una vez con el corte viejo (79,3 % / 52
 municipios) mientras los CSV ya daban 78,6 % / 50. Se ejecuta antes de exportar el PDF.
 
@@ -126,7 +126,7 @@ Invocación en el agente: skill `frontend-slides`. El flujo del skill es:
 
 **A · Swiss Modern**: papel `#F5F4F0`, tinta `#121212`, acento bermellón `#C8451B`, rejilla
 visible, titulares en Bahnschrift (fallback DIN / Helvetica), cifras tabulares y figuras
-enmarcadas con pie mono. Los backups van numerados `B1…B8` para no confundirlos con las 24.
+enmarcadas con pie mono. Los backups van numerados `B1…B12` para no confundirlos con las 26.
 
 ## Reglas para no romper lo que ya funciona
 

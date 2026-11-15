@@ -19,7 +19,7 @@
 | Dos colecciones de habitaciones con {{mongo.habitaciones}} documentos cada una | Se declara la deuda; no se borra sin confirmar | `_facts.json` | Duplicado silencioso si no se documenta |
 | {{datos.vpo_sin_dato}} de {{datos.vpo_promociones}} promociones sin `NumViviendas` | VPO como flujo, no como stock | `etxebide_promociones` | No se puede contar viviendas disponibles |
 | Dos índices 2026 definidos pero no creados | Se declaran; no se crean en una demo sin ventana | `mongo_indexes.py` | El pipeline 2026 no está optimizado |
-| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 53 a 54 | `transform/run_all.py --check` | Queda una comprobación en rojo |
+| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 55 a 56 | `transform/run_all.py --check` | Queda una comprobación en rojo |
 
 ## 7.2 Cobertura y proxy
 
