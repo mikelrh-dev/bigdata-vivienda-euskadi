@@ -8,8 +8,8 @@ artefacto. Ninguna cifra de este guion se teclea a mano: sale de `data/resultado
 de `data/procesado/esfuerzo_mercado_2026.csv` o de Mongo.
 
 > **Cifras congeladas (2026-11-13).** Si algo cambia, se regenera el CSV antes de tocar
-> la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **352 canónicos +
-> 3 legado** · **353 objetos en HDFS** (352 + 1 manifiesto) · **183 silver** · **55 gold**
+> la diapositiva. Cifras vigentes: **355 entradas de manifiesto SHA** · **351 canónicos +
+> 4 legado** · **353 objetos en HDFS** (351 + .FROZEN + .gitkeep) · **183 silver** · **55 gold**
 > (24 CSV + 31 PNG) · **17 colecciones vivas + 15 backup = 32** · **8 índices de trabajo (25 con los `_id`)** ·
 > **295 tests** (293 pasan, 2 skipped) · **287 anuncios válidos en 50 municipios** ·
 > **78,6 % municipal** · **87,3 % de anuncio** · **1.350 € mediana de medianas
@@ -135,15 +135,15 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   con alquiler Eustat y 93 imputados por IDW que solo usamos para sensibilidad.
 - **En pantalla:**
   - **159** con alquiler oficial Eustat · **93** imputados IDW (solo sensibilidad)
-  - **13** familias de fuentes · **355** entradas de manifiesto SHA (**352 canónicos + 3 legado**)
-  - **353** objetos en HDFS (**352 canónicos + 1 manifiesto**)
+  - **13** familias de fuentes · **355** entradas de manifiesto SHA (**351 canónicos + 4 legado**)
+  - **353** objetos en HDFS (**351 canónicas + .FROZEN + .gitkeep**)
   - Eustat alquiler · INE renta joven · Lanbide/Udalmap paro · Etxebide 5.040 solicitudes y 406 promociones
 - **Gráfica:** `H11_imputacion_oficial_idw_por_TH.png` (2024: oficial vs IDW por
   territorio; el IDW va separado y rayado).
 - **Evidencia:** `config/fuentes.yaml`, `docs/raw_manifest_sha256.txt`, `mongo_tier_confianza.csv`.
 - **Rúbrica:** C1, C5, C6, C15.
 - **Nota oral:** «Eustat nos da el alquiler municipal, el INE la renta joven, Lanbide y
-  Udalmap el paro, y Etxebide la demanda. En total, 355 entradas de manifiesto y 352
+  Udalmap el paro, y Etxebide la demanda. En total, 355 entradas de manifiesto y 351
   canónicos con SHA. El ancla tiene agujeros y los enseñamos: 159 municipios tienen
   alquiler oficial y 93 van imputados por IDW, que solo usamos para sensibilidad. El
   gráfico separa las dos cosas: color para el dato oficial, trama para el IDW. No se
@@ -209,7 +209,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Mensaje:** la capa 2026 no es un número mágico: son 287 anuncios de tres portales.
   Y lo que no entra no es descarte: es **otro producto**.
 - **En pantalla:**
-  - **845** crudos → **594** vigentes (dedup entre portales y 45 en cuarentena fuera de Euskadi)
+  - **1.828** registros crudos → **639** únicos tras dedup → **594** vigentes (45 en cuarentena fuera de Euskadi)
     → **326** vivienda completa (**297** con precio; **29** sin precio) + **268** temporales (**264** con precio)
     → **287** válidos
   - Composición de los **795** productos de oferta 2026 (594 + 201): **41 %** piso larga
@@ -222,8 +222,8 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
     RealtyAPI 75 · 1.690 € · 19,43
 - **Gráfica:** ninguna; tabla de portales.
 - **Evidencia:** `data/resultados/validacion_portales_2026.csv`, `transform/_anuncios_2026.py`.
-- **Rúbrica:** C1, C5, C15.- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. De 845
-  anuncios crudos quedan 594 vigentes después de quitar duplicados y 45 en cuarentena
+- **Rúbrica:** C1, C5, C15.- **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. De 1.828
+  registros crudos quedan 639 únicos tras dedup y 594 vigentes tras 45 en cuarentena
   fuera de Euskadi; 326 son vivienda completa, 297 con precio y 29 sin precio. De los 297
   descartamos 10 que el propio pipeline había marcado como imposibles —pisos de 900  metros, alquileres de 9.500 euros—. Quedan 287. Y aquí ya se ve un problema: RealtyAPI
   es un 26 % más caro por metro cuadrado que Fotocasa. No son tres cámaras iguales, y por
@@ -451,13 +451,13 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   gold) y una de conservación (raw → Kafka → HDFS); nunca Kafka → Mongo.
 - **En pantalla (cinco cajas + rama inferior):**
   - `01 Fuentes`: 13 familias (API + scraping)
-  - `02 Raw inmutable`: 355 entradas SHA + `.FROZEN` (352 canónicos + 3 legado)
+  - `02 Raw inmutable`: 355 entradas SHA + `.FROZEN` (351 canónicos + 4 legado)
   - `03 Silver`: 183 ficheros (42 CSV normalizados a `codigo_ine` de 5 dígitos)
   - `04 Mongo`: 17 colecciones vivas con PyMongo
-  - `05 Gold`: 53 artefactos (24 CSV + 29 PNG)
+  - `05 Gold`: 55 artefactos (24 CSV + 31 PNG)
   - Comando: `python scripts/run_pipeline.py --fase silver,quality,gold` · 40 nodos en el DAG
   - **Conservación:** productor lee manifiesto SHA → topic `vivienda_euskadi` → consumidor
-    `hdfs_centro` → **353 objetos** (352 canónicos + 1 manifiesto)
+    `hdfs_centro` → **353 objetos** (351 canónicas + .FROZEN + .gitkeep)
   - **Estado real (2026-11-12):** el NameNode responde y el inventario da 353 objetos;
     `OPEN` falla por DNS del datanode; Kafka acepta TCP pero no entrega metadata. La última
     evidencia funcional es v8: 352/352, lag 0. No se afirma como revalidado hoy.
@@ -469,7 +469,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
   inmutable, silver, Mongo y pipelines. El de conservación: el manifiesto con SHA viaja por
   Kafka y un consumidor sube a HDFS lo que aún no está. Kafka no escribe en Mongo: la
   integración se hace por `codigo_ine`. Y una excepción firmada: los procesados no se suben
-  a HDFS; solo los 352 originales más el manifiesto. Hoy el clúster responde al inventario,
+  a HDFS; solo los 351 originales. Hoy el clúster responde al inventario,
   pero la lectura de un fichero falla por DNS del datanode; no voy a decir que la he
   revalidado hoy. La evidencia funcional es la de v8: 352/352, lag 0.»
 - **Transición:** «¿Por qué Mongo y no un CSV?»
@@ -631,7 +631,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 - **Caja warn:** «Nos tumbaría: una fuente independiente con n≥30 que, en la misma ventana,
   mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso
   de los 45 en cuarentena que sí esté en Euskadi.»
-- **Nota:** excepción declarada: HDFS solo raw (352 canónicos + 1 manifiesto); procesados en
+- **Nota:** excepción declarada: HDFS solo raw (351 canónicas + .FROZEN + .gitkeep); procesados en
   local por requisito del alcance. Con más datos, lo primero sería subir la muestra de
   los 57 Tier C y separar temporal de larga.
 - **Footer:** `openspec/audit/v11_2026-11-12/auditoria_completa_v11.md` | `C18 · C19 · P-05`.
@@ -665,7 +665,7 @@ calidad ni síntesis, la charla termina a las 17:20 y deja 1:40 de colchón para
 | B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 8 índices de trabajo (25 con los `_id`) / 295 tests |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
 | B4 | VPO, promociones | `C_vpo_por_estado.png`; 406 promociones en 77 municipios por estado de obra; 406 de 406 sin `NumViviendas`; solo las terminadas traen sorteo (2001-2014), así que no se puede contar stock disponible |
-| B5 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; ratio 1,96 y Spearman 0,18: no comparable |
+| B5 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; unidades distintas (oficial 2024 vs anuncio 2026), no comparable: no se mezclan |
 | B6 | Dos mapas 2026 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png`; gris = sin dato |
 | B7 | Auditoría del ancla | `O_ranking_bloqueado_n30.png`; SERPAVI: ratio **0,977**, Spearman **0,988**, **159/159** dentro de ±25 %; bootstrap de los cuatro: los IC se solapan, se defiende el umbral y no un podio |
 | B8 | Tier de confianza | `H2_tier_confianza_ABCD.png`; el Tier solo mide muestra: **A ≥ 30** (4 municipios), **B 10–29** (3), **C 1–9** (57), **D** sin anuncios (188); D es sin dato, no «asequible»; el n de la barra es menor que el del Tier (Bilbao 68 frente a 204; Donostia 58 frente a 126) por el filtro de larga estancia con precio |
@@ -734,7 +734,8 @@ lleva impreso abajo a la derecha, además de en el pie de la diapositiva.
   Si es mixta, se dice «no comparable» en voz alta; nunca se presenta como serie.
 - **Nunca** decir «Docker», «759», «182 silver», «54/65/40», «62/252», «84,4 % con y sin»,
   «2,0×», «15 colecciones vivas», «24 índices», «25 índices», «11 pipelines», «63/63»,
-  «287 tests», «54/54» ni
+  «287 tests», «54/54», «845 anuncios», «352 canónicos», «1 manifiesto», «1,96»,
+  «53 artefactos» ni
   «corrida real OK».
 - Decir «no lo sabemos» siempre que aparezca gris.
 - Distinguir siempre: **78,6 % municipal** · **87,3 % anuncio** · **1.350 € mediana de
