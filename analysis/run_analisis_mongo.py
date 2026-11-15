@@ -1475,8 +1475,7 @@ def exportar_png_desde_mongo(
         ax.set_ylabel("€/mes")
         # Dos lineas: en una sola el titulo se salia del lienzo de 8" y se
         # cortaba en "Spearman".
-        ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes\n"
-                     "(no comparable; ratio 1,96; Spearman 0,18)")
+        ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes")
         ax.legend()
         _save(fig, "P_oficial_vs_anuncios_por_TH.png")
     else:

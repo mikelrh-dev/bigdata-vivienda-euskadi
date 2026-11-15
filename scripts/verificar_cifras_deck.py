@@ -331,7 +331,7 @@ def main() -> int:
     add("silver", f"{silver}/183")
     add("gold", f"{gold}/{gold}")
     add("353 HDFS", "353 objetos")
-    add("352 canonicos", "352 canónicos")
+    add("351 canonicos", "351 canónicos")
     add("tests", "295 tests")
     add("tests pasan", "293 pasan")
 
@@ -398,6 +398,11 @@ def main() -> int:
         ("B4 37,2", "37,2 %"),
         ("287 tests", "287 tests"),
         ("54/54", "54/54"),
+        ("845 anuncios", "845 anuncios"),
+        ("352 canonicos", "352 canónicos"),
+        ("1 manifiesto", "1 manifiesto"),
+        ("ratio 1,96", "1,96"),
+        ("53 artefactos", "53 artefactos"),
         ("11 pipelines", "11 pipelines"),
     ]
     for etiqueta, aguja in prohibidas:
