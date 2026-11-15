@@ -47,6 +47,8 @@ EXPECTED_COLLECTIONS = [
     "udalmap_extendido",
     "certificados_energeticos",
     "vpo_municipal",
+    "anuncios_habitaciones_unificados",
+    "anuncios_habitaciones_unificados_bigdata",
 ]
 EXPECTED_DUPLICADOS_REINTENTOS = 0
 EXPECTED_LAG = 0
@@ -136,7 +138,7 @@ def check_duplicados() -> tuple[bool, str]:
 
 
 def check_colecciones() -> tuple[bool, str]:
-    ok = len(EXPECTED_COLLECTIONS) == 15
+    ok = len(EXPECTED_COLLECTIONS) == 17
     detail = f"colecciones esperadas: {len(EXPECTED_COLLECTIONS)}"
     if ok:
         # offline: cada colección debe aparecer en el loader (solo lectura).
@@ -170,7 +172,7 @@ def run_offline(root: Path = ROOT) -> list[tuple[str, bool, str]]:
                              EXPECTED_SILVER)
     checks.append((f"silver {EXPECTED_SILVER}", ok, det))
     ok, det = check_colecciones()
-    checks.append(("15 colecciones", ok, det))
+    checks.append((f"{len(EXPECTED_COLLECTIONS)} colecciones", ok, det))
     ok, det = check_duplicados()
     checks.append(("0 duplicados en reintentos", ok, det))
     ok, det = check_lag()

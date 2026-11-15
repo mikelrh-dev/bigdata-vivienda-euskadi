@@ -14,6 +14,10 @@
 | `docs/baseline_gold_sha256.json` | nuevo: huella y SHA de los 8 CSV canónicos |
 | `tests/test_mongo_consistencia.py` | 15 → 17 colecciones; loader con `*args` |
 | `tests/test_verificar_reproducibilidad.py` | nuevo: 5 tests |
+| `scripts/gate_extremo_a_extremo.py` | `EXPECTED_COLLECTIONS` 15 → 17 y el check deja de imprimir el número fijo |
+| `tests/test_extremo_a_extremo.py` | umbral de colecciones 15 → 17 |
+| `README.md` | tests 298/300, `--fase full`, fila de `verificar_reproducibilidad.py`, gate con 17 |
+| `openspec/project.md` | 300 tests colectados (298 passed, 2 skipped) |
 
 ## Evidencia
 
@@ -30,6 +34,7 @@ scripts/verificar_reproducibilidad.py
 run_pipeline.py --fase full --dry-run   -> rc 0, lista las 4 fases y marca mongo (DESTRUCTIVA)
 run_pipeline.py --fase full             -> rc 2, exige --allow-mongo-write
 run_pipeline.py --check                 -> rc 0 (355 raw, 183 silver)
+gate_extremo_a_extremo.py --offline     -> OK (355, 183, 17 colecciones, 0 dup, lag 0)
 verificar_gobernanza.py                 -> TODO OK (53/49, 47/40, 183, 11)
 pytest tests                            -> 298 passed, 2 skipped
 git status                              -> solo los ficheros del change (sin PNG del deck tocados)
