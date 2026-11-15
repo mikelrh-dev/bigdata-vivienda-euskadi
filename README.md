@@ -1,106 +1,130 @@
 # ¿Dónde puede vivir un joven en Euskadi?
 
-**252 municipios. 159 con alquiler oficial. 93 con un hueco que se declara. 4 donde el ranking aguanta.**
+**252 municipios. 159 con alquiler oficial. 93 con un hueco declarado. 4 donde el ranking aguanta.**
 
-Eso es `bigdata-vivienda-euskadi`, el pipeline que responde esa pregunta con datos públicos y deja
-escrito dónde se rompe la respuesta. Nada está tecleado: cada cifra sale de un CSV del gold y un
-verificador falla si deja de coincidir.
+`bigdata-vivienda-euskadi` es un pipeline de datos de principio a fin: extrae 1.828 anuncios y
+series públicas, los congela con hash, los modela en MongoDB y produce las cifras de un informe,
+un deck de 26 diapositivas y este README. Ninguna cifra está escrita a mano; un verificador compara
+159 comprobaciones contra los CSV del gold y falla si algo deja de cuadrar.
 
-> Si vienes con prisa: el alquiler mediano se come **26,61 %** de la renta de un joven de 18–34
-> años en los 159 municipios con dato oficial, y **40 de 159** pasan del umbral del 30 %. Con
-> anuncios de 2026, la mediana municipal sube a **78,6 %**, que no es una subida sino otra
-> fotografía. Solo **4 municipios** tienen anuncios suficientes para ordenarlos.
+[English version](README.en.md) · Última revisión: 2026-11-15
 
-| Si eres… | Empieza por | Tiempo |
-|---|---|---|
-| Tribunal o evaluador | [La pregunta](#1-la-pregunta) → [los cuatro](#4-los-cuatro-municipios-que-aguantan) → [límites](#6-lo-que-no-podemos-decir) | 10 min |
-| Auditor técnico | [Comprobar](#8-comprobar-que-no-te-miento) → [cómo se construye](#5-cómo-se-construye) → `openspec/audit/v13_2026-11-15/` | 20 min |
-| Quien va a ejecutarlo | [Ejecutarlo](#7-ejecutarlo) → [cómo se construye](#5-cómo-se-construye) | 30 min |
+| | |
+|---|---|
+| Stack | Python 3.12, MongoDB 9.0.2, Kafka, HDFS/WebHDFS, pandas, matplotlib |
+| Escala | 355 ficheros raw (895 MB en HDFS), 183 entradas silver, 17 colecciones, 55 artefactos gold |
+| Calidad | 298 tests, 159/159 comprobaciones de cifras, 56 figuras selladas por vintage |
+| Entregables | Memoria en 4 formatos, deck de 38 páginas, auditoría contra rúbrica de 19 criterios |
 
-## 1. La pregunta
+## 1. El problema, en una cifra
 
-La pregunta parece de economía y al abrirla se vuelve de datos. Para saber si un joven puede
-emanciparse hay que dividir dos cosas que nadie publica juntas: lo que cuesta un alquiler y lo que
-ingresa alguien de 18 a 34 años. En Euskadi hay 252 municipios y la respuesta tiene cuatro formas
-distintas según lo que exista en cada uno.
+Para saber si un joven puede emanciparse hay que dividir dos cosas que nadie publica juntas: lo que
+cuesta un alquiler y lo que ingresa alguien de 18 a 34 años. En Euskadi hay 252 municipios y la
+respuesta adopta cuatro formas según lo que exista en cada uno.
 
-En **159** hay alquiler registrado por Eustat, y ahí se puede calcular. En **93** no lo hay: se
-rellenan por interpolación desde los vecinos, se pintan rayados en el mapa y se usan solo para
-decir cuánto se mueve el resultado. En **188** no hay ni un anuncio, y eso se escribe «sin dato»
-en lugar de cero. En **4** hay anuncios bastantes para ordenar municipios sin que el orden sea
-ruido.
+En **159** hay alquiler registrado por Eustat y se puede calcular. En **93** no lo hay: se rellenan
+por interpolación desde los vecinos, se pintan rayados y se usan solo como sensibilidad. En **188**
+no hay ni un anuncio, y se escribe «sin dato» en lugar de cero. En **4** hay anuncios suficientes
+para ordenar municipios sin que el orden sea ruido.
 
-El resto del documento cuenta qué sale de ahí, cómo se construyó y qué no se puede afirmar.
+![Esfuerzo joven 18-34 por municipio en 2024](docs/memoria/figuras/fig-mapa-2024.png)
 
-## 2. Lo que se firma en 2024
+*Esfuerzo 18–34 en 2024 (n=159). La escala va del 20,3 % al 30 % o más, con el color saturado a
+partir del umbral. La trama son los 93 municipios imputados por IDW.*
 
-La capa sólida es el alquiler registrado de 2024 cruzado con la renta municipal del INE, ajustada
-al reparto por edad de la CAE. El resultado es un porcentaje por municipio, y el mapa lo enseña
-entero: la escala va del 20,3 % al 30 % o más, con el color saturado a partir del umbral.
+La mediana es **26,61 %** de la renta anual. Cuarenta municipios superan el 30 % y catorce el 35 %.
+El indicador mide esfuerzo y no precio, y eso reordena el mapa: Barakaldo encabeza con 746 € de
+alquiler frente a los 995 € de Donostia, porque su renta es bastante más baja.
 
-![Esfuerzo joven 18-34 por municipio: 159 oficiales en color y 93 imputados por IDW en trama](docs/memoria/figuras/fig-mapa-2024.png)
+## 2. Quién no puede pagar
 
-*Esfuerzo 18–34 en 2024 (n=159). Los 40 municipios que pasan del 30 % comparten el rojo máximo.
-La trama son los 93 imputados por IDW, que no son dato oficial.*
+El ranking completo con umbral dibujado deja ver dos cosas que un promedio esconde: la brecha entre
+el primero y el decimocuarto es de 3 puntos, y los catorce están en Bizkaia o Gipuzkoa.
 
-La mediana es **26,61 %**. Cuarenta municipios superan el 30 % y catorce el 35 %. El máximo no está
-donde uno espera: Barakaldo encabeza el ranking con 746 € de alquiler, por encima de Donostia con
-995 €, porque su renta es bastante más baja. El indicador ordena esfuerzo, no precio, y esa
-diferencia es la primera cosa que un lector tiene que aceptar.
+![Ranking de esfuerzo 18-34 en 2024 con umbral del 30 %](docs/memoria/figuras/fig-ranking-2024.png)
 
-## 3. Lo que se pide en 2026
+*Capa oficial 2024. El valor administrativo no depende de la muestra de anuncios de 2026: por eso
+se puede defender municipio a municipio.*
 
-La segunda capa es otra cosa: precios de anuncio recogidos en 2026 en Fotocasa, Pisos y RealtyAPI,
-con el salario joven del Observatorio Vasco de la Juventud llevado de 2024 a 2026 por el IPC. Con
-esos datos, la mediana municipal es **78,6 %** en 50 municipios, y el **98,3 %** de los 287 anuncios
-válidos supera el 30 %.
+Barakaldo (38,50 %), Donostia (38,17 %) y Sestao (38,10 %) están a tres décimas. Bilbao queda
+cuarto con 37,69 %. En el otro extremo, 119 municipios no pasan del 30 %.
 
-Aquí conviene frenar antes de decir «subió». Entre las dos capas cambian dos cosas a la vez: la
-fuente (contrato firmado frente a precio pedido) y el tamaño de la vivienda (90,0 m² de anuncio
-frente a 80,7 m² registrado). No hay forma de repartir la diferencia entre «el alquiler subió» y
-«estamos midiendo otra cosa».
+## 3. Qué se pide en 2026
 
-![Cuántía oficial 2024 frente a anuncios 2026 por territorio, en euros al mes](docs/memoria/figuras/fig-oficial-vs-anuncios.png)
+La segunda capa cambia de fuente: precios de anuncio de Fotocasa, Pisos y RealtyAPI, con el salario
+joven del Observatorio Vasco de la Juventud llevado de 2024 a 2026 por el IPC. La mediana municipal
+sube a **78,6 %** en 50 municipios y el **98,3 %** de los 287 anuncios válidos supera el 30 %. Esas
+dos cifras conviven y no son la misma: el 78,6 % es la mediana de las 50 medianas municipales, con
+cada municipio pesando igual; el **87,3 %** es la mediana de los 287 anuncios, donde pesa cada
+anuncio. Cada una responde a una pregunta distinta.
 
-*La figura lleva su propio sello: `Datos: oficial 2024 + anuncios 2026 (no comparable)`. Las dos
-barras no forman una serie.*
+![Esfuerzo de mercado 2026 por municipio](docs/memoria/figuras/fig-mapa-2026.png)
 
-Lo que sí se sostiene es la diferencia de nivel en los siete municipios con al menos cinco
-anuncios: todos van en el mismo sentido, de +42,2 puntos en Vitoria-Gasteiz a +78,2 en Donostia.
+*2026 (n=287 anuncios en 50 municipios). La escala llega a 140 % del salario joven. Gris significa
+sin datos y la trama marca municipios con menos de 5 anuncios, que no son concluyentes.*
 
-![Diferencia de nivel 2026 menos 2024 en municipios con n>=5 anuncios](docs/memoria/figuras/fig-brecha-2026.png)
+Dentro de la misma capa hay decisiones que cambian el resultado y se reportan por separado. El
+mismo portal mezcla piso entero y habitación: se detectaron **201** habitaciones, quedaron **140**
+usables y el resto son **60** pisos enteros. Una habitación cuesta 545 € de mediana, el 31,7 % del
+salario joven, y en Bilbao (580 €) y Donostia (600 €) compite con el alquiler completo del municipio.
 
-*Siete municipios con n≥5. Se llama brecha de nivel, nunca evolución.*
+![Habitaciones: ranking, distribución y esfuerzo](docs/memoria/figuras/fig-habitaciones.png)
 
-Dentro de 2026 conviven dos cifras que no son la misma: **78,6 %** es la mediana de las 50 medianas
-municipales, donde cada municipio pesa igual; **87,3 %** es la mediana de los 287 anuncios, donde
-pesa cada anuncio. Y una trampa de mercado que hubo que separar: el mismo portal mezcla pisos
-enteros con habitaciones. Se detectaron **201** habitaciones, quedaron **140** usables y el resto
-de la muestra son **60** pisos enteros, con una mediana de habitación de **545 €**.
+*Habitaciones con n≥10. La mediana es 545 €, con cuartiles 469 y 650 €. El 87 % de las plausibles
+cuesta 700 € o menos.*
 
-## 4. Los cuatro municipios que aguantan
+La modalidad también importa, y no por el precio de la mediana: temporal y larga estancia cuestan
+1.500 € al mes, pero la temporal paga 18,95 €/m² frente a 16,67 €/m² de la larga. Mismo recibo, 13,7 %
+menos de vivienda.
 
-Un ranking con tres anuncios no es un ranking, es una anécdota. Con menos de 30 anuncios el
-intervalo de confianza se abre tanto que dos municipios no se pueden ordenar. Por eso el Tier mide
-solo confianza, y el mapa de confianza es casi todo naranja de «sin dato»:
+![Mediana de precio por modalidad y coste por metro cuadrado](docs/memoria/figuras/fig-modalidades.png)
 
-![Municipios por Tier de confianza A, B, C y D: 4, 3, 57 y 188](docs/memoria/figuras/fig-tier.png)
+*Temporal frente a larga estancia en 2026. El recibo es idéntico y el precio por m² no.*
 
-*Tier A: Bilbao (204), Donostia (126), Getxo (50) y Vitoria-Gasteiz (39). Tier B llega a Sopela
-(19), Zarautz (15) y Santurtzi (11).*
+## 4. La brecha que no es una serie
 
-Fuera de esos siete, 188 municipios no tienen ni un anuncio. «Sin dato» no es «asequible», y por
-eso el mapa los deja en gris en vez de pintarlos de verde. De los 50 municipios con alguna mediana
-en 2026, 43 no llegan a cinco anuncios y no se publican.
+Entre 2024 y 2026 cambian dos cosas a la vez: la fuente (contrato firmado frente a precio pedido) y
+el tamaño de la vivienda (90,0 m² de anuncio frente a 80,7 m² registrado). La diferencia no se puede
+repartir entre «subió el alquiler» y «estamos midiendo otra cosa», así que se publica como nivel.
 
-Con cuatro municipios sí se puede comparar, y aun así se dice lo justo: los intervalos al 95 % de
-Bilbao (33,75–40,95), Getxo (27,54–31,77) y Donostia (32,4–45,8) se solapan entre sí. Lo defendible
-es que los tres cruzan el 30 %, no un podio.
+![Cuántía oficial 2024 frente a anuncios 2026 por territorio](docs/memoria/figuras/fig-oficial-vs-anuncios.png)
 
-## 5. Cómo se construye
+*Las dos barras llevan sello propio: `Datos: oficial 2024 + anuncios 2026 (no comparable)`. No
+forman una serie temporal.*
 
-Todo empieza en portales y APIs públicas. Un anuncio entra, se congela con su hash, se normaliza,
-se carga en Mongo y termina en los CSV y figuras que alimentan la memoria, el deck y este README.
+![Diferencia de nivel 2026 menos 2024 en municipios con n>=5](docs/memoria/figuras/fig-brecha-2026.png)
+
+*Siete municipios con al menos 5 anuncios. Todos en el mismo sentido, de +42,2 puntos en
+Vitoria-Gasteiz a +78,2 en Donostia.*
+
+Mientras el esfuerzo subía, la vivienda protegida caía. La serie de VPO terminada por mil habitantes
+pasó de **11,5 ‰ en 2011 a 2,7 ‰ en 2024**, y Álava, que llegó a 40,1 ‰, tiene un panel propio para
+no aplastar la escala del resto.
+
+![VPO terminada por mil habitantes, 2004-2024](docs/memoria/figuras/fig-vpo-serie.png)
+
+*Cada año resume los cinco anteriores (ventana móvil de Udalmap), así que no es el flujo de un año
+suelto. Es oferta protegida, no stock.*
+
+## 5. Cuánto vale cada punto del mapa
+
+Un ranking con tres anuncios es una anécdota. Con menos de 30 el intervalo de confianza se abre
+tanto que dos municipios no se pueden ordenar, así que el Tier mide solo confianza y el mapa de
+confianza es casi todo «sin dato».
+
+![Municipios por Tier de confianza A, B, C y D](docs/memoria/figuras/fig-tier.png)
+
+*Tier A: Bilbao (204 anuncios), Donostia (126), Getxo (50) y Vitoria-Gasteiz (39). Tier B llega a
+Sopela (19), Zarautz (15) y Santurtzi (11). C y D son 245 municipios sin precio municipal.*
+
+De los 50 municipios con mediana en 2026, **43 no llegan a cinco anuncios** y no se publican. Con
+los cuatro Tier A se comparan intervalos, no un podio: Bilbao (33,75–40,95), Getxo (27,54–31,77) y
+Donostia (32,4–45,8) se solapan entre sí. Lo defendible es que los tres cruzan el 30 %.
+
+## 6. Cómo está construido
+
+Un anuncio entra por scraping o API, se congela con su SHA, se normaliza, se carga en Mongo y
+termina en los CSV y figuras que alimentan el informe y el deck. El original nunca se sobrescribe.
 
 ```mermaid
 flowchart LR
@@ -122,23 +146,21 @@ flowchart LR
     class raw,silver,mongo,gold capa
 ```
 
-El embudo real de los anuncios explica muchas decisiones posteriores: **1.828** registros crudos,
-**639** únicos tras deduplicar, **594** vigentes y **287** válidos para el cálculo. Solo **424** de
-los 594 traen coordenadas, porque únicamente Fotocasa publica latitud y longitud; los otros 170
-quedan fuera del índice geoespacial sin que nadie los invente.
+El embudo explica el resto de decisiones: **1.828** registros crudos, **639** únicos tras deduplicar,
+**594** vigentes y **287** válidos para el cálculo. Solo **424** de los 594 traen coordenadas, porque
+únicamente Fotocasa publica latitud y longitud; los otros 170 quedan fuera del índice geoespacial
+antes que inventarlos.
 
-`data/raw/` es inmutable por diseño: solo `extract/` escribe ahí, y `transform/` necesita
-`assert_raw_writable(reason)` para tocar nada, con un test que lo bloquea. La rama de archivo
-publica esos originales en HDFS con un manifiesto SHA: Kafka transporta, HDFS conserva y Mongo
-sirve las consultas. Kafka no escribe en Mongo.
+### El modelo de datos
 
-En la base hay 17 colecciones vivas más 15 de backup, **11 pipelines** en `PIPELINE_ORDER` y 10
-índices definidos de los que 8 están materializados. El índice ESR
-`{ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1}` convierte la consulta canónica de un
-`COLLSCAN` de 594 documentos en un `IXSCAN` de 1, y `explain_before_after()` lo enseña sin mutar la
-base.
+`codigo_ine` de cinco dígitos es la clave natural de `municipios` y la referencia en el resto. Lo que
+se lee junto y cambia poco vive embebido (`demografia`, `empleo`, `demanda_social`); lo que crece y
+se consulta por municipio vive referenciado (`anuncios`, `alquiler_municipal`, `etxebide_promociones`).
 
-### El modelo, en una imagen
+![Un _id y seis colecciones: municipios como clave natural](docs/memoria/figuras/fig-modelo.png)
+
+*17 colecciones vivas más 15 de backup. `municipios` tiene 252 documentos; `anuncios`, 594;
+`etxebide_promociones`, 406, todas con el número de viviendas vacío.*
 
 ```mermaid
 erDiagram
@@ -173,7 +195,6 @@ erDiagram
         float esfuerzo_joven_pct_18_34
         float renta_joven_estimada_18_34
         float tasa_paro_lanbide_pct
-        float dist_centroide_comarca_km
     }
     vpo_municipal {
         string codigo_ine FK
@@ -188,143 +209,114 @@ erDiagram
     }
 ```
 
-La unidad que une todo es `codigo_ine` de cinco dígitos, y las distancias se calculan con
-haversine entre centroides. Los nombres del diagrama son las colecciones y campos reales de
-`storage/load_mongo.py`.
+### Las piezas que sostienen la reproducibilidad
 
-## 6. Lo que no podemos decir
+`data/raw/` es inmutable por diseño. Solo `extract/` escribe ahí; `transform/` necesita
+`assert_raw_writable(reason)` y un test bloquea la excepción. El DAG de silver declara 40 nodos con
+entradas y salidas tipadas (`raw:`, `proc:`, `res:`) y calcula el orden con Kahn, con desempate
+estable por grupo; 7 scripts quedan fuera con motivo escrito.
 
-Un trabajo con datos se defiende mejor por lo que descarta que por lo que afirma. Estas son las
-grietas, con la decisión que se tomó en cada una:
+En Mongo hay 11 pipelines en `PIPELINE_ORDER` y 10 índices definidos, 8 materializados. El índice ESR
+`{ubicacion.codigo_ine: 1, modalidad: 1, precio_eur: 1}` convierte la consulta canónica de un
+`COLLSCAN` de 594 documentos en un `IXSCAN` de 1, y `explain_before_after()` lo demuestra en solo
+lectura. Las medianas de precio por m² van winsorizadas p1-99 y el precio medio descarta outliers por
+IQR, con el n de cada paso expuesto en el CSV.
 
-| Grieta | Decisión |
+La rama de archivo publica los originales en HDFS con un manifiesto `{rel, size, sha256}`: Kafka
+transporta, HDFS conserva, Mongo sirve consultas. Kafka no escribe en Mongo; la carga analítica es
+batch e idempotente por lotes con `replace_collection`.
+
+## 7. Qué demuestra este repositorio
+
+| Competencia | Dónde se ve |
 |---|---|
-| No hay renta joven por municipio | Se imputa el reparto por edad de la CAE sobre la renta municipal: 56,9 % del nivel de renta, ponderado 2/5/5/5 sobre 17 años |
-| 93 municipios sin alquiler oficial | Se rellenan por IDW con los cinco vecinos más cercanos, solo como sensibilidad: la mediana pasa de 26,61 a 25,37 % y los que superan el 30 % de 40 a 47 |
-| 188 municipios sin anuncios | No se imputan. «Sin dato» es un valor, no un cero |
-| Menos de 30 anuncios | No se rankea. De ahí 4 Tier A y 43 municipios de 2026 sin mediana publicada |
-| Pisos y habitaciones en el mismo portal | Se separan por el alquiler mediano del municipio, no por palabra clave: 201 detectadas, 140 usables, 60 pisos enteros |
-| 2024 y 2026 miden cosas distintas | Se publica diferencia de nivel con n≥5, nunca variación temporal |
+| Ingesta heterogénea | 41 extractores sobre APIs, scraping, XLSX y GeoJSON, con resolución de entidades y cuarentena |
+| Ingeniería de datos | DAG declarativo de 40 nodos con orden topológico y `--check` de staleness por SHA |
+| Modelado NoSQL | 17 colecciones, embebido frente a referenciado, índices ESR y `explain()` medido |
+| Reproducibilidad | 355 SHA de raw, 183 de silver, huella del gold idéntica en dos pasadas |
+| Calidad | 298 tests, gate extremo a extremo offline, verificación de gobernanza y de vintage |
+| Comunicación técnica | Memoria en Markdown, HTML, DOCX y PDF, deck de 26 diapositivas, auditoría contra rúbrica |
 
-Y lo que queda fuera del alcance, dicho sin adornos: la renta municipal aplicada a todos es una
-falacia ecológica; la emancipación solo existe como dato autonómico; la compraventa (ECVI) solo
-llega a nivel territorial; las distancias por carretera solo existen en Gipuzkoa; el paro usa
-Lanbide porque `tasa_paro_aprox_pct` está invalidado; y de las 406 promociones de VPO, todas
-vienen con el número de viviendas vacío, así que se mide flujo, nunca stock.
-
-Cada figura declara su año con un sello visible y con metadatos en el PNG. La autoridad única es
-`config/vintage_figuras.yaml`, y el verificador exige además que el sello no tape ningún texto del
-eje.
-
-## 7. Ejecutarlo
-
-Requisitos: Python 3.12, [uv](https://docs.astral.sh/uv/), MongoDB local en `localhost:27017` y red
-para la extracción viva y el clúster del centro. En Linux o macOS cambia `.venv/Scripts/python.exe`
-por `.venv/bin/python`.
-
-```bash
-uv venv --python 3.12 .venv
-uv pip install --python .venv/Scripts/python.exe -r requirements.txt
-cp .env.example .env          # MONGO_*, HDFS_*, KAFKA_* y GATE_LIVE
-```
-
-Descarga la cartografía municipal antes de extraer:
-
-```bash
-curl -L -o data/raw/shp_euskadi.zip \
-  "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/MUNICIPIOS_5000_ETRS89.zip"
-cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
-.venv/Scripts/python.exe extract/main_ingest.py
-.venv/Scripts/python.exe extract/main_ingest.py --mode replay-raw   # valida SHA sin red
-```
-
-Reconstruye por capas. La fase `mongo` recarga la base y exige permiso explícito; el resto no toca
-`data/raw`:
-
-```bash
-.venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality
-.venv/Scripts/python.exe scripts/run_pipeline.py --fase mongo --allow-mongo-write
-.venv/Scripts/python.exe scripts/run_pipeline.py --fase gold
-```
-
-`--fase all` equivale a `silver,quality,gold` y nunca incluye `mongo`. `--fase full` añade `mongo`
-y por eso pide `--allow-mongo-write`. `--dry-run` lista el plan y `--check` valida los hashes.
-
-Para saber si la cadena sigue siendo reproducible sin reconstruir nada:
-
-```bash
-.venv/Scripts/python.exe scripts/verificar_reproducibilidad.py
-```
-
-Si algo se rompe, esta tabla ahorra media hora:
-
-| Síntoma | Causa | Acción |
-|---|---|---|
-| `ping=False` o timeout de Mongo | MongoDB no está arrancado | Arranca `mongod`, revisa `MONGO_HOST`/`MONGO_PORT` |
-| `NameResolutionError hadoop-worker*` | DNS de los datanodes | Añade los hosts o usa la IP; el `ContentSummary` no depende del `OPEN` |
-| `NodeNotReadyError` en Kafka | Broker sin metadata | Reintenta y recrea el topic con `scripts/ensure_topic.py` |
-| `.env` no se aplica | Ejecución fuera de la raíz | Lanza los scripts desde la raíz |
-| `pytest` no imprime resumen | Doble `-q` (`pyproject` ya añade uno) | `pytest tests` sin `-q` |
-| `--fase mongo` aborta | Fase destructiva sin permiso | Añade `--allow-mongo-write` solo si quieres recargar |
-
-## 8. Comprobar que no te miento
-
-Ocho comandos, todos en verde salvo un fallo conocido que está documentado a propósito.
+## 8. Que no te lo creas
 
 ```bash
 .venv/Scripts/python.exe -m pytest tests
-.venv/Scripts/python.exe scripts/verificar_gobernanza.py
-.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline
-.venv/Scripts/python.exe scripts/run_pipeline.py --check
-.venv/Scripts/python.exe scripts/verificar_fase_datos.py
 .venv/Scripts/python.exe scripts/verificar_cifras_deck.py
 .venv/Scripts/python.exe scripts/verificar_vintage_figuras.py
+.venv/Scripts/python.exe scripts/verificar_gobernanza.py
+.venv/Scripts/python.exe scripts/gate_extremo_a_extremo.py --offline
+.venv/Scripts/python.exe scripts/verificar_reproducibilidad.py
+.venv/Scripts/python.exe scripts/run_pipeline.py --check
 .venv/Scripts/python.exe transform/run_all.py --check
 ```
 
 | Comando | Salida a 2026-11-15 |
 |---|---|
 | `pytest tests` | `298 passed, 2 skipped` |
-| `verificar_gobernanza.py` | `TODO OK`: 53 cabeceras / 49 con ID, 47 scripts, 183 silver, 0 env sin declarar, 11 pipelines |
-| `verificar_reproducibilidad.py` | `RESULTADO: OK`: 355 SHA, DAG cerrado, 17 colecciones y huella `983fa53f…` idéntica en dos pasadas |
-| `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 17 colecciones, 0 duplicados) |
-| `run_pipeline.py --check` | 355 y 183 entradas, 0 errores |
-| `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26 |
-| `verificar_cifras_deck.py` | **159/159**: lee los CSV gold, la fórmula del ratio, el GeoJSON y los conteos de Mongo. Usa `.venv/Scripts/python`, el `python` del sistema no tiene `pymongo` |
+| `verificar_cifras_deck.py` | **159/159** comprobaciones contra CSV gold, fórmula del ratio, GeoJSON y conteos de Mongo |
 | `verificar_vintage_figuras.py` | `56 figuras declaradas · gold, deck y memoria sellados y coherentes` |
-| `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`; sale con rc 1 por esa salida |
+| `verificar_gobernanza.py` | `TODO OK`: 53 cabeceras / 49 con ID, 47 scripts, 183 silver, 11 pipelines |
+| `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 17 colecciones, 0 duplicados) |
+| `verificar_reproducibilidad.py` | `RESULTADO: OK`, huella `983fa53f…` idéntica en dos pasadas |
+| `run_pipeline.py --check` | 355 y 183 entradas, 0 errores |
+| `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`, que sale con rc 1 |
+| `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26 |
 
-Los huecos están escritos, no escondidos: `auditoria_lagunas_silver.csv` no está materializada en
-este checkout; 2 de los 10 índices de `esfuerzo_mercado_2026` no se han creado; el `OPEN` de
-WebHDFS depende del DNS de los datanodes y por eso el script de recuperación coteja tamaño y SHA en
-lugar de restaurar; y el topic antiguo `anuncios_inmobiliarios` sigue en el broker con 1.420 mensajes
-de prueba que no usa la cadena vigente.
+El fallo conocido está documentado sin imputar, y los huecos también: faltan 2 de los 10 índices de
+`esfuerzo_mercado_2026`, el `OPEN` de WebHDFS depende del DNS de los datanodes (el gate coteja
+tamaño y SHA en lugar de restaurar) y el topic antiguo `anuncios_inmobiliarios` conserva 1.420
+mensajes de prueba que no usa la cadena vigente.
 
-Los tres recuentos de raw tampoco coinciden por error: el manifest tiene 355 entradas, HDFS publica
-353 objetos porque incluye `.FROZEN` y `.gitkeep`, y en disco hay 357 ficheros contando los dos
-ocultos. En silver pasa igual: 183 entradas de manifest frente a 187 ficheros, por los 65 sidecars.
-Las cifras y sus fuentes viven todas en `data/resultados/`.
+## 9. Ejecutarlo
 
-## 9. Mapa del repositorio
+Requisitos: Python 3.12, [uv](https://docs.astral.sh/uv/), MongoDB en `localhost:27017` y red para
+la extracción viva. En Linux o macOS cambia `.venv/Scripts/python.exe` por `.venv/bin/python`.
 
-| Ruta | Qué hay |
+```bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/Scripts/python.exe -r requirements.txt
+cp .env.example .env
+
+curl -L -o data/raw/shp_euskadi.zip \
+  "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/MUNICIPIOS_5000_ETRS89.zip"
+cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
+
+.venv/Scripts/python.exe extract/main_ingest.py
+.venv/Scripts/python.exe extract/main_ingest.py --mode replay-raw
+
+.venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality
+.venv/Scripts/python.exe scripts/run_pipeline.py --fase mongo --allow-mongo-write
+.venv/Scripts/python.exe scripts/run_pipeline.py --fase gold
+```
+
+`--fase all` equivale a `silver,quality,gold` y nunca incluye `mongo`, que es destructiva y exige
+`--allow-mongo-write`. `--dry-run` lista el plan sin escribir.
+
+| Síntoma | Causa | Acción |
+|---|---|---|
+| `ping=False` o timeout | Mongo apagado | Arranca `mongod`, revisa `MONGO_HOST` y `MONGO_PORT` |
+| `NameResolutionError hadoop-worker*` | DNS de datanodes | Añade los hosts; el `ContentSummary` no depende del `OPEN` |
+| `NodeNotReadyError` | Broker sin metadata | Reintenta y recrea el topic con `scripts/ensure_topic.py` |
+| `.env` no se aplica | Ejecución fuera de la raíz | Lanza todo desde la raíz del repo |
+
+## 10. Estructura
+
+| Ruta | Contenido |
 |---|---|
-| `extract/` | 41 scripts de captura y descarga; solo esta capa escribe en raw |
+| `extract/` | 41 scripts de captura; única capa que escribe en raw |
 | `transform/` | 47 scripts y el DAG silver (`run_all.py`) |
-| `storage/` | Carga en Mongo, productor Kafka y subida a HDFS |
-| `analysis/` | 11 pipelines, consultas, índices y la comparativa entre municipios |
+| `storage/` | Carga en Mongo, productor Kafka, subida a HDFS |
+| `analysis/` | 11 pipelines, consultas, índices y análisis de sensibilidad |
 | `scripts/` | Orquestador por fases y gates de verificación |
-| `docs/memoria/` | Memoria en Markdown, HTML, DOCX y PDF, con sus figuras selladas |
-| `docs/presentacion_v2/` | Deck de defensa: 26 diapositivas + 12 backups, guion oral y PDF de 38 páginas |
-| `docs/presentacion/` | Deck v1, conservado por trazabilidad |
+| `docs/memoria/` | Memoria en Markdown, HTML, DOCX y PDF con figuras selladas |
+| `docs/presentacion_v2/` | Deck de defensa: 26 diapositivas, 12 backups y guion oral |
 | `openspec/specs/` | Contrato del reto: 19 criterios y 21 requisitos |
 | `openspec/audit/v13_2026-11-15/` | Última auditoría contra la rúbrica |
 | `data/resultados/README.md` | Índice del gold y de los 8 CSV `mongo_*` |
 
-`vaultVivienda/` queda fuera del repositorio (está en `.gitignore`): es un vault local de estudio con
-las notas de defensa slide por slide y las fichas de conceptos, y no se cita como fuente.
-
-## 10. Contexto
+## 11. Contexto
 
 Proyecto académico del reto intermodal **SBD + BDA** (Euskadi, 2026). Todas las fuentes son públicas
 y están en `config/fuentes.yaml`. No hay fichero `LICENSE`; el uso previsto es académico.
+
+---
