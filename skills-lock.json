@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "SKILL.md",
       "computedHash": "1c6781287ffc504332ec81a61bc7766d2fcee8d2c99d76a463e53bba4c55b840"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "04cdabbcceaa7b5d4bd4b1ea02339013503d623b270b5b3b2e274837494d7134"
     }
   }
 }
