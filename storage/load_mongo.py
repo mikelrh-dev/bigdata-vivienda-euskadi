@@ -604,6 +604,40 @@ def load_esfuerzo_mercado_2026() -> int:
     return replace_collection("esfuerzo_mercado_2026", docs)
 
 
+def load_habitaciones(nombre: str = "anuncios_habitaciones_unificados") -> int:
+    """Carga los anuncios de habitacion desde el CSV unificado de silver.
+
+    201 anuncios en 9 municipios (200 con precio). `_bigdata` es una copia
+    historica de la misma tabla que `analysis/mongo_aggregations._hab_col()`
+    prefiere si tiene documentos; ambas se recargan identicas para que el
+    pipeline nº 11 no dependa de una coleccion hecha a mano.
+    """
+    df = _read_csv("anuncios_habitaciones_unificados.csv")
+    docs = []
+    for _, row in df.iterrows():
+        code = zfill_ine(row.get("codigo_ine"))
+        if code is None:
+            continue
+        docs.append({
+            "codigo_ine": code,
+            "municipio": to_str(row.get("municipio")),
+            "portal": to_str(row.get("portal")),
+            "precio_eur": _money(row.get("precio_eur")),
+            "superficie_m2": to_float(row.get("superficie_m2")),
+            "habitaciones": to_int(row.get("habitaciones")),
+            "url_detalle": to_str(row.get("url_detalle")),
+            "titulo": to_str(row.get("titulo")),
+            "subtitulo": to_str(row.get("subtitulo")),
+            "modalidad": "habitacion",
+            "fuente": "silver anuncios_habitaciones_unificados",
+            "anio_fuente": 2026,
+            "fecha_carga": datetime.now(timezone.utc),
+        })
+    if not docs:
+        return 0
+    return replace_collection(nombre, docs)
+
+
 def load_vpo_municipal() -> int:
     """VPO terminada en el ultimo quinquenio (Udalmap 73), flujo en por mil."""
     df = _read_csv("vpo_municipal.csv")
@@ -644,6 +678,10 @@ def load_all() -> dict[str, int]:
         "certificados_energeticos": load_certificados(),
         "esfuerzo_mercado_2026": load_esfuerzo_mercado_2026(),
         "vpo_municipal": load_vpo_municipal(),
+        "anuncios_habitaciones_unificados": load_habitaciones(),
+        "anuncios_habitaciones_unificados_bigdata": load_habitaciones(
+            "anuncios_habitaciones_unificados_bigdata"
+        ),
     }
     try:
         from analysis.mongo_indexes import ensure_indexes
