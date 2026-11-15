@@ -262,7 +262,18 @@ def exportar_habitaciones_csv(
     resultados: dict[str, list[dict[str, Any]]],
     out_dir: Path | str,
 ) -> dict[str, Path]:
-    """Escribe `mongo_habitaciones_por_municipio.csv` (9 filas, pipeline nº 11)."""
+    """Escribe `mongo_habitaciones_por_municipio.csv` (9 filas, pipeline nº 11).
+
+    Falla en vez de escribir un CSV con solo cabecera: si la coleccion de
+    habitaciones no existe, el pipeline devuelve [] y el fichero vacio pasaria
+    por bueno (a diferencia de las otras 8, que tienen guarda de vacio).
+    """
+    filas = resultados.get(EXPORT_HABITACIONES[1]) or []
+    if not filas:
+        raise ValueError(
+            f"{EXPORT_HABITACIONES[1]} vacio: falta la coleccion "
+            "anuncios_habitaciones_unificados en MongoDB"
+        )
     return exportar_csv(resultados, out_dir, (EXPORT_HABITACIONES,))
 
 
@@ -1494,6 +1505,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=str(RESULTADOS_DIR),
         help="Directorio de salida de los 8 CSV (defecto: data/resultados)",
     )
+    parser.add_argument(
+        "--sin-sync-deck",
+        action="store_true",
+        help="No copiar PNG a docs/presentacion_v2/assets (verificacion en temporal)",
+    )
     return parser.parse_args(argv)
 
 
@@ -1531,14 +1547,17 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{fichero}: {len(primera['pipeline_vpo_terminadas'])} filas -> {ruta}")
     except Exception as exc:
         print(f"vpo_terminadas: NO GENERADO ({exc!r})")
+    fallos: list[str] = []
     try:
         rutas_hab = exportar_habitaciones_csv(primera, Path(args.salida))
         for fichero, ruta in rutas_hab.items():
             print(f"{fichero}: {len(primera['pipeline_habitaciones_por_municipio'])} filas -> {ruta}")
     except Exception as exc:
         print(f"habitaciones: NO GENERADO ({exc!r})")
+        fallos.append(f"habitaciones: {exc}")
     try:
-        pngs = exportar_png_desde_mongo(primera, Path(args.salida), sync_deck=True)
+        pngs = exportar_png_desde_mongo(
+            primera, Path(args.salida), sync_deck=not args.sin_sync_deck)
         print(f"png_mongo: {len(pngs)} ficheros -> {args.salida}")
     except Exception as exc:
         print(f"png_mongo: NO GENERADOS ({exc!r})")
@@ -1551,6 +1570,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"pipelines: {list(primera)}")
     print(f"n={n1}")
     print(f"huella: {huella1}")
+    if fallos:
+        for fallo in fallos:
+            print(f"FALLO: {fallo}")
+        return 1
     print("reproducibilidad: ok (dos ejecuciones con la misma huella)")
     return 0
 

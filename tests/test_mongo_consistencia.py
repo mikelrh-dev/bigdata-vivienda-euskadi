@@ -46,6 +46,7 @@ _LOADERS = [
     "load_certificados",
     "load_esfuerzo_mercado_2026",
     "load_vpo_municipal",
+    "load_habitaciones",
 ]
 
 
@@ -132,7 +133,8 @@ def test_atomicidad_documental():
 def test_load_all_no_silencia_indices(monkeypatch, caplog):
     prod_before = get_collection("municipios").count_documents({})
     for name in _LOADERS:
-        monkeypatch.setattr(load_mongo, name, lambda: 1)
+        # *args: load_habitaciones se invoca dos veces, una con nombre de coleccion.
+        monkeypatch.setattr(load_mongo, name, lambda *a, **k: 1)
 
     def boom():
         raise DuplicateKeyError("duplicate key error collection: vivienda_euskadi.anuncios")
@@ -143,7 +145,7 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
             load_mongo.load_all()
     assert "índices" in caplog.text
 
-    # Camino feliz: sin error de índices, load_all devuelve las 15 colecciones.
+    # Camino feliz: sin error de índices, load_all devuelve las 17 colecciones.
     monkeypatch.setattr(mi, "ensure_indexes", lambda: {})
     result = load_mongo.load_all()
     assert set(result) == {
@@ -162,6 +164,8 @@ def test_load_all_no_silencia_indices(monkeypatch, caplog):
         "certificados_energeticos",
         "esfuerzo_mercado_2026",
         "vpo_municipal",
+        "anuncios_habitaciones_unificados",
+        "anuncios_habitaciones_unificados_bigdata",
     }
     assert all(v == 1 for v in result.values())
     assert get_collection("municipios").count_documents({}) == prod_before

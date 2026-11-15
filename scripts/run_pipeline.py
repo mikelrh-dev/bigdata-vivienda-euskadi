@@ -4,7 +4,7 @@ Un solo comando para volver a poblar `data/procesado` y `data/resultados` desde
 `data/raw` sin tocar raw ni encadenar pasos a mano.
 
 Fases:
-  silver   transform/run_all.py (DAG de 34 nodos)
+  silver   transform/run_all.py (DAG de 40 nodos)
   quality  normalizar_metadata + nombres_normalizados_map + ingestion_manifest
            + manifest --write
   mongo    scripts/run_mongo_pipeline.py  (DESTRUCTIVO: exige --allow-mongo-write)
@@ -12,10 +12,13 @@ Fases:
            + figuras  (el bloque Mongo exige la fase mongo ya hecha)
 
 `--fase all` = silver,quality,gold. Nunca incluye mongo.
+`--fase full` = silver,quality,mongo,gold. Reconstruccion completa desde raw;
+como incluye mongo, exige `--allow-mongo-write`.
 
 Uso:
   python scripts/run_pipeline.py --fase silver,quality
   python scripts/run_pipeline.py --fase all --dry-run
+  python scripts/run_pipeline.py --fase full --allow-mongo-write
   python scripts/run_pipeline.py --fase gold
   python scripts/run_pipeline.py --fase mongo --allow-mongo-write
   python scripts/run_pipeline.py --check
@@ -117,6 +120,9 @@ FASES: dict[str, Fase] = {
 
 # `all` deja fuera mongo a proposito: la carga borra e inserta en produccion.
 FASES_ALL = ("silver", "quality", "gold")
+# `full` es la reconstruccion completa desde raw: incluye mongo y por eso
+# exige --allow-mongo-write (la fase esta marcada como destructiva).
+FASES_FULL = ("silver", "quality", "mongo", "gold")
 
 
 def resolver_fases(nombres: list[str]) -> list[Fase]:
@@ -125,13 +131,15 @@ def resolver_fases(nombres: list[str]) -> list[Fase]:
     for nombre in nombres:
         if nombre == "all":
             elegidas.extend(FASES_ALL)
+        elif nombre == "full":
+            elegidas.extend(FASES_FULL)
         else:
             elegidas.append(nombre)
     desconocidas = [n for n in elegidas if n not in FASES]
     if desconocidas:
         raise ValueError(
             f"Fase(s) desconocida(s): {', '.join(desconocidas)}. "
-            f"Disponibles: all, {', '.join(FASES)}"
+            f"Disponibles: all, full, {', '.join(FASES)}"
         )
     vistas: list[Fase] = []
     vistas_nombres: set[str] = set()
@@ -217,8 +225,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Reconstruye data/procesado y data/resultados por fases")
     parser.add_argument("--fase", action="append", default=None,
-                        help="Fase(s) a ejecutar: silver, quality, mongo, gold, all "
-                             "(repetible o separado por comas). Por defecto: all")
+                        help="Fase(s) a ejecutar: silver, quality, mongo, gold, all, full "
+                             "(repetible o separado por comas). 'all' omite mongo; 'full' "
+                             "reconstruye todo y exige --allow-mongo-write. Por defecto: all")
     parser.add_argument("--dry-run", action="store_true",
                         help="Lista los pasos y su orden, sin ejecutar")
     parser.add_argument("--check", action="store_true",
@@ -245,7 +254,10 @@ def main(argv: list[str] | None = None) -> int:
     if rc != EXIT_OK:
         return rc
 
-    if any(f.destructiva for f in fases) and not args.allow_mongo_write:
+    # `--dry-run` solo lista el plan: no autoriza nada, pero tampoco escribe,
+    # asi que la fase destructiva se puede previsualizar sin el flag.
+    if (any(f.destructiva for f in fases) and not args.allow_mongo_write
+            and not args.dry_run):
         print("[error] La fase mongo borra e inserta en MongoDB. "
               "Repite con --allow-mongo-write si es lo que quieres.",
               file=sys.stderr)
