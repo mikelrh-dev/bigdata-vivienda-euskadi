@@ -19,16 +19,17 @@ Archivo legacy (NO cuenta como indicador): `esfuerzo_16_29` se conserva solo por
 - 11 pipelines en `analysis/mongo_aggregations.py`: indicadores, alquiler, modalidades, top esfuerzo, esfuerzo sexo, accesibilidad extendida, udalmap_osrm, vpo promociones, vpo terminadas, tier por municipio, habitaciones por municipio.
 - Imputacion explicita (Bloque 4): `pipeline_indicadores_municipio` preserva `metodo_imputacion` (`oficial` 159 / `IDW_5_vecinos` 93) y deriva `is_imputed` (False oficial, True IDW); ningun calculo rellena con medianas en silencio.
 
-## Huella vigente (2026-11-11, tras rebuild silver 182 y gold desde cero)
+## Huella vigente (2026-11-15, recalculada sobre el gold actual, silver 183)
 
 Regenerada por `analysis/run_analisis_mongo.py` desde Mongo prod. Sustituye a la huella del
-2026-11-06, que quedo obsoleta al cambiar el silver (182 ficheros) y el canonico 18-34.
+2026-11-06, que quedo obsoleta al cambiar el silver (182 ficheros) y el canonico 18-34, y a la
+del 2026-11-11, que dejo de coincidir tras regenerar el gold con el silver actual (183).
 
 | CSV canonico | Lineas | SHA-256 |
 |---|---|---|
-| `data/resultados/mongo_esfuerzo_por_municipio.csv` | 253 | `7f813fd61ee6800dacd24a230aaef43a8d97e9dbe1abd0300fa1da5b974f75a3` |
-| `data/resultados/mongo_alquiler_por_municipio.csv` | 253 | `ff39e852d27a754eabb2fe3db76c71c1ac35e8a0cdcd4e799ff9fb7c9798263e` |
-| `data/resultados/mongo_modalidades.csv` | 3 | `67e8120a311666d8cb7d3522766e8a19da468da34fb578c900d702bf2d81bcf0` |
+| `data/resultados/mongo_esfuerzo_por_municipio.csv` | 253 | `41dc4cc9e6cc34ee19fd32d5405e5205fe08f6a7aa450922f18cb72120d372eb` |
+| `data/resultados/mongo_alquiler_por_municipio.csv` | 253 | `eb53a6ec5bef5c157a8bac6029c0fa6388cf8512ae7d8ec5768e3204ebc5e4c7` |
+| `data/resultados/mongo_modalidades.csv` | 3 | `cef285ce127b1acf7004f4b899b8c8025120af6a3987e2ba6eafbc72e15a1fc2` |
 | `data/resultados/comparativa_3_municipios_mongo.csv` (4 robustos) | 5 | `08ac700aea28a7295cbf0595e2365bf199316441478ec44ad7c1dd7db4527646` |
 | `data/resultados/mongo_vpo_terminadas_por_municipio.csv` | 252 | `d9a512c82d9c493499b757fbb914b3ee331e0b3e390b59a64c1f4ab6c1f587bb` |
 

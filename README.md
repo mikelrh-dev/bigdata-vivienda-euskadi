@@ -209,7 +209,7 @@ Cada cifra tiene una única fuente; el resto del documento no las repite.
 | VPO | 406 promociones; `NumViviendas` vacío en 406/406 | Mongo `etxebide_promociones` |
 | MongoDB | 17 colecciones vivas + 15 `__backup` = 32; 8/10 índices | PyMongo `list_collection_names()`, `list_indexes()` |
 | Pipelines / export | 11 en `PIPELINE_ORDER` + 1 fuera de orden; 8 CSV `mongo_*` | `analysis/run_analisis_mongo.py` |
-| Gold | 54 artefactos (24 CSV + 30 PNG) + 8 PNG en `anexo/` | `data/resultados/` |
+| Gold | 55 artefactos (24 CSV + 31 PNG) + 8 PNG en `anexo/` | `data/resultados/` |
 | Tests | 293 passed, 2 skipped (295 collected) | `pytest tests` |
 
 > **353 vs 355 vs 357.** El manifest tiene 355 entradas (351 canónicas + 4 de
@@ -245,8 +245,8 @@ Resultados esperados a 2026-11-13:
 | `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 15 colecciones, 0 duplicados, lag 0) |
 | `run_pipeline.py --check` | 355 y 183 entradas, 0 errores |
 | `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26, documentado sin imputar |
-| `verificar_cifras_deck.py` | `63/63 comprobaciones pasan`; lánzalo con `.venv/Scripts/python`, porque el `python` del sistema no tiene `pymongo` y entonces se saltan las 3 comprobaciones de colecciones e índices (`60/60`) |
-| `verificar_vintage_figuras.py` | `OK 54 figuras declaradas · gold, deck y memoria sellados y coherentes` (incluye 0 solapes del sello en las 54) |
+| `verificar_cifras_deck.py` | `120/120 comprobaciones pasan`; lánzalo con `.venv/Scripts/python`, porque el `python` del sistema no tiene `pymongo` y entonces se saltan las 3 comprobaciones de colecciones e índices (`60/60`) |
+| `verificar_vintage_figuras.py` | `OK 56 figuras declaradas · gold, deck y memoria sellados y coherentes` (incluye 0 solapes del sello en las 56) |
 | `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`; sale con **rc 1** por esa salida (ver huecos) |
 
 **Huecos declarados, no enmascarados:**
@@ -297,7 +297,7 @@ Resultados esperados a 2026-11-13:
 | `docs/README.md` | Índice de lo que queda en `docs/` |
 | `docs/raw_manifest_sha256.txt` | SHA-256 canónico de los raw (355) |
 | `docs/presentacion/` | Deck de defensa v1 (13 diapositivas + PDF) |
-| `docs/presentacion_v2/` | Deck v2 (22 + 9 backups), guion y PDF |
+| `docs/presentacion_v2/` | Deck v2 (24 + 8 backups), guion y PDF |
 | `data/resultados/README.md` | Índice del gold y de los 8 CSV `mongo_*` |
 | `openspec/specs/contrato-reto/spec.md` | Contrato: 19 criterios C1–C19 y 21 requisitos |
 | `openspec/archive/2026-11-10-docs/` | `modelo_mongodb.md`, `arquitectura_datos.md`, `contrato_datos_raw.md`, `informe_final.md` |

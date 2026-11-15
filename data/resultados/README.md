@@ -21,7 +21,7 @@ y no debe citarse como total actual.
 ```
 
 Verificado el 2026-11-11: silver **183/183** ficheros y gold **53/53** artefactos reconstruidos desde
-cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **54/54** (24 CSV + 30 PNG).
+cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **55/55** (24 CSV + 31 PNG).
 
 ## CSV generados desde Mongo (evidencia RA4 / PREPARACION-VISUALIZACION)
 
@@ -47,7 +47,7 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **54/54** (24
 
 ## Figuras y esquema
 
-- 30 PNG en la raíz (A1, A2, B, C, D, E, F, H1-H13, H8b, J, O, P, S, g2-g5, histograma, mapa
+- 31 PNG en la raíz (A1, A2, B, C, D, E, F, H1-H13, H8b, J, O, P, S, g2-g5, histograma, mapa
   coroplético, transporte) más 8 PNG en `anexo/`.
 - `H6_habitaciones_mediana_rango.png` — ranking n≥10 con IC95, distribución de los 140 precios
   plausibles y esfuerzo individual sobre salario joven 2026; se copia al deck al ejecutar
@@ -55,7 +55,7 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **54/54** (24
 - `mapa_esquema_silver.html` — grafo de relaciones entre los 42 CSV silver (PyVis, determinista).
 - `auditoria_lagunas_silver.csv` — **pendiente de materializar** en este checkout: la genera
   `transform/auditar_lagunas_silver.py` (audita los 42 CSV silver) y `transform/run_all.py --check`
-  la reporta como salida que falta. Regenerarla sube el gold de 54 a 55 artefactos.
+  la reporta como salida que falta. Regenerarla sube el gold de 55 a 56 artefactos.
 
 ## Vintage (año) de cada figura
 

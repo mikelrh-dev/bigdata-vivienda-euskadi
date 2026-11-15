@@ -21,7 +21,7 @@ Carpeta de salida para una presentación **nueva**, independiente del deck actua
 ## Estado de infraestructura (evidencia v11, 2026-11-12)
 
 - MongoDB: **17 colecciones vivas + 15 de backup = 32**; **25 índices**.
-- HDFS: **353 objetos** (352 canónicos + 1 manifiesto), 895.597.901 B. El `OPEN` de
+- HDFS: **353 objetos** (351 canónicas + `.FROZEN` + `.gitkeep`), 895.597.901 B. El `OPEN` de
   WebHDFS falla por DNS del datanode; el script de recuperación coteja, no restaura.
 - Kafka: sin metadata en la comprobación de hoy (`NodeNotReadyError`); la última
   evidencia buena es v8 (352/352, lag 0).
