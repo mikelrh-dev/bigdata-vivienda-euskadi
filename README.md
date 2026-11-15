@@ -92,7 +92,7 @@ repartir entre «subió el alquiler» y «estamos midiendo otra cosa», así que
 *Las dos barras llevan sello propio: `Datos: oficial 2024 + anuncios 2026 (no comparable)`. No
 forman una serie temporal.*
 
-![Diferencia de nivel 2026 menos 2024 en municipios con n>=5](docs/memoria/figuras/fig-brecha-2026.png)
+![Diferencia de nivel 2026 menos 2024 en municipios con n>=5](docs/assets/readme/fig-brecha-2026-dark.png)
 
 *Siete municipios con al menos 5 anuncios. Todos en el mismo sentido, de +42,2 puntos en
 Vitoria-Gasteiz a +78,2 en Donostia.*
