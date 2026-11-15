@@ -8,7 +8,7 @@ context: |
   Proyecto: ¿Dónde pueden vivir los jóvenes en Euskadi? Sistema de recogida,
             almacenamiento y análisis de datos (todo en Python).
   Stack:    Python 3.12 (.venv), pandas, PyMongo, kafka-python-ng, requests,
-            beautifulsoup4. Infraestructura: HDFS y MongoDB en Docker (Windows);
+            beautifulsoup4. Infraestructura: HDFS centro + MongoDB local (sin Docker en el repo);
             Apache Kafka en una VM Ubuntu Server.
   Datos:    Eustat (API + ExtractorBlob), INE (API wstempus), euskadi.eus (CSV),
             b5m Gipuzkoa (API), Fotocasa (scraping). Sin registro.

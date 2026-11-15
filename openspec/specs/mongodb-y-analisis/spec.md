@@ -251,7 +251,7 @@ La pipeline `pipeline_indicadores_municipio` SHALL calcular la mediana de `preci
 
 ### Requirement: RAW-01 — Raw inmutable, HDFS solo raw, Kafka→HDFS
 
-El sistema SHALL tratar `data/raw` y HDFS raw (352 ficheros) como inmutables, SHALL NOT usar Docker, SHALL mantener Kafka → HDFS (nunca Kafka → Mongo), y SHALL re-cargar vía staging + `<name>__backup` + rename atómico con `ensure_indexes`.
+El sistema SHALL tratar `data/raw` y HDFS raw (353 objetos) como inmutables, SHALL NOT usar Docker, SHALL mantener Kafka → HDFS (nunca Kafka → Mongo), y SHALL re-cargar vía staging + `<name>__backup` + rename atómico con `ensure_indexes`.
 (Previously: sin requisito explícito RAW-01; cubierto parcial por CARGA-SEGURA-01.)
 
 #### Scenario: Re-carga reversible sin drop
@@ -521,7 +521,7 @@ El sistema SHALL publicar tres capas de precio municipal en `data/resultados/` y
 
 ### Requirement: HAB-01 — `pipeline_habitaciones_por_municipio`
 
-El sistema SHALL añadir `pipeline_habitaciones_por_municipio` en `analysis/mongo_aggregations.py`: `$group` por `codigo_ine` normalizado sobre `anuncios_habitaciones_unificados` (201 anuncios, `n`=201 / `n_precio`=200; Bilbao 96, Donostia 66, Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango `n`=2/`n_precio`=1, Eibar 1). Cada fila SHALL exponer `codigo_ine`, `municipio`, `n`, `n_precio`, `min_precio_eur`, `max_precio_eur`, `mediana_precio_eur` (mediana cruda, sin winsorizar ni imputar). `analysis/run_analisis_mongo.py` SHALL registrarlo como pipeline nº 11 y exportar `data/resultados/mongo_habitaciones_por_municipio.csv` (9 filas) sin recomputar ni teclear valores. SHALL NOT tocar `pipeline_tier_por_municipio`, Tier A/B/C/D ni precio observable 62/252 (60/252 tras filtro M1/winsorización). Guardarraíles: sin Docker; HDFS solo raw (352 ficheros); Kafka → HDFS, nunca Kafka → Mongo.
+El sistema SHALL añadir `pipeline_habitaciones_por_municipio` en `analysis/mongo_aggregations.py`: `$group` por `codigo_ine` normalizado sobre `anuncios_habitaciones_unificados` (201 anuncios, `n`=201 / `n_precio`=200; Bilbao 96, Donostia 66, Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango `n`=2/`n_precio`=1, Eibar 1). Cada fila SHALL exponer `codigo_ine`, `municipio`, `n`, `n_precio`, `min_precio_eur`, `max_precio_eur`, `mediana_precio_eur` (mediana cruda, sin winsorizar ni imputar). `analysis/run_analisis_mongo.py` SHALL registrarlo como pipeline nº 11 y exportar `data/resultados/mongo_habitaciones_por_municipio.csv` (9 filas) sin recomputar ni teclear valores. SHALL NOT tocar `pipeline_tier_por_municipio`, Tier A/B/C/D ni precio observable 60/252 (tras el filtro M1/winsorización). Guardarraíles: sin Docker; HDFS solo raw (353 objetos); Kafka → HDFS, nunca Kafka → Mongo.
 
 _Reconciliación archive (2026-11-08):_ delta decía `suma n_precio = 201` con Durango 2; real `n`=201 / `n_precio`=200 (Durango 2/1, un anuncio sin precio no imputado). `62/252` es precio observable pre-M1; tras filtro M1/winsorización `mongo_esfuerzo_por_municipio.csv` expone 60/252 (4 municipios con anuncios quedan con `n_anuncios_filtrados`=0). Tier intacto a hash/distribución — ver archive-report P1-1/P1-2._
 

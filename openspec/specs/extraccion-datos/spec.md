@@ -245,7 +245,7 @@ El sistema SHALL deduplicar en `transform/unificar_anuncios.py` por `property_fi
 
 El sistema SHALL actualizar `scripts/verificar_fase_datos.py`: el check 06 SHALL esperar `594/843` (`n_anuncios`/`n_anuncios_raw`) en `dim_municipios.csv`, no `759/843`. El check 07 SHALL listar como FAIL conocido los ceros de paro con valor no nulo —Aramaio 0.28, Gaintza 1.45, Usansolo 3.26 (`paro_registrado_cero=True` con `tasa_paro_lanbide_pct` no nulo)— y SHALL NOT enmascararlos como PASS. Cuando el resto de checks alcanza PASS, el gate SHALL emitir huella verificable (SHA-256 de los artefactos comprobados) e imprimir `RESULTADO` distinguiendo PENDIENTE de OK mientras persista el FAIL conocido.
 
-Guardarraíles: sin Docker; HDFS solo raw 352; Kafka→HDFS, nunca Kafka→Mongo; sin imputar comarcal/IDW como municipal.
+Guardarraíles: sin Docker; HDFS solo raw 353; Kafka→HDFS, nunca Kafka→Mongo; sin imputar comarcal/IDW como municipal.
 
 _Reconciliación archive (2026-11-07):_ check 17 alias verificado: `354 ingestion local; 352 raw en HDFS` — conteo local de ingestión (354) distinto del canónico HDFS raw (352). Puerta final: 06 PASS `594/843 real=594`, 07 FAIL conocido con los 3 ceros (no enmascarados, sin imputación), huella SHA-256 reproducible impresa (ver archive-report).
 
