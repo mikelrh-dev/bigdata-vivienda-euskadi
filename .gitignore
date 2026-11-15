@@ -20,6 +20,7 @@ data/resultados/*
 !data/raw/.gitkeep
 !data/procesado/.gitkeep
 !data/resultados/.gitkeep
+!data/resultados/README.md
 data_regen/
 data/procesado_pre_silver/
 scratchpad/*.py
@@ -96,6 +97,8 @@ docs/presentacion/preview_*.png
 .agents/
 .claude/
 .codegraph/
+# Copias locales de skills; .hermes/plans si se versiona
+.hermes/skills/
 
 # copias locales de data (no se versionan)
 _backups/
