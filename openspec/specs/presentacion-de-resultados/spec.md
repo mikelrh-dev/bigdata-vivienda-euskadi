@@ -327,7 +327,7 @@ El sistema SHALL generar `chart_tierB_range` en `build_presentacion.py` con 3 ba
 
 El sistema SHALL generar `chart_mapa_tier` como SVG desde `municipios_euskadi_252.geojson`, con join estricto por `codigo_ine` y 4 cromas A/B/C/D. MUST dibujar las capas oficial 159 / IDW 93 / contexto 252 con `metodo_imputacion` e `is_imputed`, y el texto literal `252 contextual sobre 159`. Si falta un `codigo_ine`, el municipio SHALL quedar nulo, sin inventar geometría ni precio.
 
-El sistema SHALL aligerar `chart_mapa_tier.svg` con utilidades de simplificación hasta <2 MB, SHALL eliminar el duplicado g1/A1 y SHALL NOT cambiar la clasificación 252/252 A/B/C/D. Guardarraíles: sin Docker; HDFS solo raw 352; Kafka→HDFS, no Mongo; sin imputar comarcal.
+El sistema SHALL aligerar `chart_mapa_tier.svg` con utilidades de simplificación hasta <2 MB, SHALL eliminar el duplicado g1/A1 y SHALL NOT cambiar la clasificación 252/252 A/B/C/D. Guardarraíles: sin Docker; HDFS solo raw 353; Kafka→HDFS, no Mongo; sin imputar comarcal.
 (Previously: SVG ~5.9 MB sin límite de peso ni dedupe.)
 
 _Reconciliación archive (2026-11-07):_ tras dedupe g1/A1 quedan 12 PNG únicos de 13 nombres emitidos (g1 byte-idéntico a A1 eliminado sin renumerar; A1 canónico). SVG final <2 MB con 252/252, Tier A4/B3/C57/D188, oficial 159 / IDW 93 / contexto 252 y `252 contextual sobre 159` — ver archive-report.
@@ -393,7 +393,7 @@ El sistema SHALL corregir 759→594 en el docstring de `decor_trama` (`docs/pres
 
 ### Requirement: chart_habitaciones_medianas — Barras residencia vs habitaciones
 
-El sistema SHALL generar `chart_habitaciones_medianas` en `docs/presentacion/build_presentacion.py` desde `mongo_habitaciones_por_municipio.csv` + `mongo_tier_confianza.csv` (valores Mongo, nunca tecleados). Por municipio dibujará tres series separadas — residencia temporal, residencia larga, habitaciones — nunca agregadas ni promediadas. Cada barra de habitaciones SHALL mostrar mediana con min-max y `n_precio` visible. Solo Bilbao (96) y Donostia (66) con `n_precio >= 30` sostienen comparación firme; el resto (`n_precio`: Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango 1, Eibar 1; Durango `n`=2) SHALL etiquetarse `indicativo`/`n_insuficiente`, sin ranking ni imputación comarcal/IDW. Sin Docker; HDFS solo raw (352); Kafka → HDFS, nunca Kafka → Mongo.
+El sistema SHALL generar `chart_habitaciones_medianas` en `docs/presentacion/build_presentacion.py` desde `mongo_habitaciones_por_municipio.csv` + `mongo_tier_confianza.csv` (valores Mongo, nunca tecleados). Por municipio dibujará tres series separadas — residencia temporal, residencia larga, habitaciones — nunca agregadas ni promediadas. Cada barra de habitaciones SHALL mostrar mediana con min-max y `n_precio` visible. Solo Bilbao (96) y Donostia (66) con `n_precio >= 30` sostienen comparación firme; el resto (`n_precio`: Vitoria 12, Barakaldo 11, Getxo 8, Irun 3, Errenteria 2, Durango 1, Eibar 1; Durango `n`=2) SHALL etiquetarse `indicativo`/`n_insuficiente`, sin ranking ni imputación comarcal/IDW. Sin Docker; HDFS solo raw (353); Kafka → HDFS, nunca Kafka → Mongo.
 
 _Reconciliación archive (2026-11-08):_ delta listaba Durango 2; en `n_precio` es 1 (`n`=2, un anuncio sin precio no imputado). Solo Bilbao/Donostia firmes verificadas en SVG (`firme solo Bilbao (96) y Donostia (66)`) — ver archive-report P1-1._
 

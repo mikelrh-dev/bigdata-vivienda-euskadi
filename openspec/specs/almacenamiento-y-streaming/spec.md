@@ -1,7 +1,7 @@
 # Almacenamiento y streaming — Especificación
 
 **Capacidad:** `almacenamiento-y-streaming`
-**Estado:** HDFS raw 352/352 con SHA igual y Kafka lag 0 verificados manualmente 2026-11-06 (`openspec/audit/informe_auditoria_2026-11-06_v2.md`). No hay script de gate único: `scripts/gate_bloque2.py` está archivado.
+**Estado:** HDFS raw 353 objetos (351 canónicas + `.FROZEN` + `.gitkeep`) con SHA igual y Kafka lag 0 verificados manualmente 2026-11-06 (`openspec/audit/informe_auditoria_2026-11-06_v2.md`). El gate único es `scripts/gate_extremo_a_extremo.py` (`--offline` y `--vivo`); `scripts/gate_bloque2.py` está archivado.
 **Criterios cubiertos:** rúbrica v2 BDA-RA1 (HDFS, Kafka, integración: flujo
 completo hasta MongoDB) con mapeo a SBD-RA1 Integración de fuentes (2 o más
 fuentes relacionadas por un campo común)

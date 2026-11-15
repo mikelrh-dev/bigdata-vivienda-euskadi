@@ -164,7 +164,7 @@ El sistema SHALL describir la arquitectura como «HDFS centro + Mongo local sin 
 
 ### Requirement: ARQUITECTURA-01 — Invariantes globales
 
-El sistema SHALL mantener: sin Docker; HDFS solo raw 352; Kafka→HDFS, nunca Kafka→Mongo; sin imputar comarcal/IDW como municipal. Nivel (tipología 4/54/194) y Tier (confianza 4/3/57/188) SHALL tratarse como ejes ortogonales en metodología y guion.
+El sistema SHALL mantener: sin Docker; HDFS solo raw 353; Kafka→HDFS, nunca Kafka→Mongo; sin imputar comarcal/IDW como municipal. Nivel (tipología 4/54/194) y Tier (confianza 4/3/57/188) SHALL tratarse como ejes ortogonales en metodología y guion.
 
 #### Scenario: Invariantes verificables
 
