@@ -72,7 +72,16 @@ Reconstruye por capas. La fase `mongo` es **destructiva** (recarga la base) y ex
 ```
 
 `--fase all` equivale a `silver,quality,gold` y **nunca** incluye `mongo`.
-`--dry-run` lista el plan y `--check` valida los hashes de raw y silver.
+`--fase full` equivale a `silver,quality,mongo,gold`: es la reconstrucción completa desde
+raw y, al incluir `mongo`, también exige `--allow-mongo-write`.
+`--dry-run` lista el plan (también el de una fase destructiva, porque no escribe) y
+`--check` valida los hashes de raw y silver.
+
+Para comprobar que la cadena sigue siendo reproducible **sin reconstruir nada**:
+
+```bash
+.venv/Scripts/python.exe scripts/verificar_reproducibilidad.py
+```
 
 ## 3. Arquitectura
 
@@ -210,7 +219,7 @@ Cada cifra tiene una única fuente; el resto del documento no las repite.
 | MongoDB | 17 colecciones vivas + 15 `__backup` = 32; 8/10 índices | PyMongo `list_collection_names()`, `list_indexes()` |
 | Pipelines / export | 11 en `PIPELINE_ORDER` + 1 fuera de orden; 8 CSV `mongo_*` | `analysis/run_analisis_mongo.py` |
 | Gold | 55 artefactos (24 CSV + 31 PNG) + 8 PNG en `anexo/` | `data/resultados/` |
-| Tests | 293 passed, 2 skipped (295 collected) | `pytest tests` |
+| Tests | 298 passed, 2 skipped (300 collected) | `pytest tests` |
 
 > **353 vs 355 vs 357.** El manifest tiene 355 entradas (351 canónicas + 4 de
 > `legacy_obsoleto_no_usar/`); el canónico publicado en HDFS es 353 porque incluye
@@ -240,9 +249,10 @@ Resultados esperados a 2026-11-13:
 
 | Comando | Salida |
 |---|---|
-| `pytest tests` | `293 passed, 2 skipped` |
+| `pytest tests` | `298 passed, 2 skipped` |
 | `verificar_gobernanza.py` | `TODO OK`: 53 cabeceras / 49 con ID, 47 scripts / 40 nodos DAG, 183 silver, 0 env sin declarar, 11 pipelines |
-| `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 15 colecciones, 0 duplicados, lag 0) |
+| `verificar_reproducibilidad.py` | `RESULTADO: OK`: 355 SHA de raw, DAG cerrado, 17 colecciones con loader y huella `983fa53f…` idéntica en dos pasadas con los 8 CSV iguales al baseline |
+| `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 17 colecciones, 0 duplicados, lag 0) |
 | `run_pipeline.py --check` | 355 y 183 entradas, 0 errores |
 | `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26, documentado sin imputar |
 | `verificar_cifras_deck.py` | `120/120 comprobaciones pasan`; lánzalo con `.venv/Scripts/python`, porque el `python` del sistema no tiene `pymongo` y entonces se saltan las 3 comprobaciones de colecciones e índices (`60/60`) |
