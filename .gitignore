@@ -102,3 +102,6 @@ docs/presentacion/preview_*.png
 
 # copias locales de data (no se versionan)
 _backups/
+
+# Archivo local de descarte (no versionado; se borra antes de la entrega)
+archivar/
