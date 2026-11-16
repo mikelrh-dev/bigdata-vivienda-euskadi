@@ -32,6 +32,7 @@ CONFIG = ROOT / "config" / "vintage_figuras.yaml"
 RES = ROOT / "data" / "resultados"
 ASSETS = ROOT / "docs" / "presentacion_v2" / "assets"
 MEM_FIG = ROOT / "docs" / "memoria" / "figuras"
+README_ASSETS = ROOT / "docs" / "assets" / "readme"
 
 # Color redundante al texto: se elige con contraste >= 4,5:1 sobre blanco
 # (WCAG 2.2, texto normal). El texto es la señal principal; el color, refuerzo.
@@ -256,8 +257,35 @@ def copias_deck() -> frozenset[str]:
     return frozenset(str(n) for n in (cfg.get("deck") or []))
 
 
+# Fondo del README: la copia va opaca para que el sello y el texto no dependan
+# del tema que el lector tenga elegido en GitHub.
+FONDO_README = (255, 255, 255)
+
+
+def aplanar_readme(origen: Path, destino: Path, nombre: str) -> None:
+    """Escribe un PNG transparente sobre fondo opaco, conservando el sello.
+
+    El README no puede colgar de la transparencia: en el tema oscuro de GitHub
+    el texto de la figura desaparece. Se aplana sobre blanco y se conserva el
+    sello de vintage como metadato PNG, igual que lleva el original sellado.
+    """
+    from PIL import Image  # noqa: WPS433 (dependencia opcional)
+    from PIL.PngImagePlugin import PngInfo
+
+    con_alpha = Image.open(origen).convert("RGBA")
+    lienzo = Image.new("RGBA", con_alpha.size, FONDO_README + (255,))
+    plano = Image.alpha_composite(lienzo, con_alpha).convert("RGB")
+    info = PngInfo()
+    for clave, valor in metadatos(nombre).items():
+        info.add_text(clave, str(valor))
+    plano.save(destino, pnginfo=info)
+
+
 def sincronizar(verbose: bool = True) -> list[Path]:
     """Copia gold -> deck y gold/assets -> memoria segun el YAML.
+
+    Ademas regenera las copias opacas del README (`sincronizacion.readme`),
+    que no son copias byte a byte: se aplanan sobre fondo claro.
 
     Idempotente. Se ejecuta al final de la cadena gold, cuando ya existen
     todas las figuras (incluidas las que regenera `generar_figuras_N`).
@@ -288,6 +316,17 @@ def sincronizar(verbose: bool = True) -> list[Path]:
         shutil.copyfile(origen, destino)
         escritas.append(destino)
 
+    for destino_nombre, origen_rel in (cfg.get("readme") or {}).items():
+        origen = ROOT / str(origen_rel)
+        if not origen.exists():
+            if verbose:
+                print(f"AVISO sincronizacion: falta {origen.relative_to(ROOT)}")
+            continue
+        README_ASSETS.mkdir(parents=True, exist_ok=True)
+        destino = README_ASSETS / str(destino_nombre)
+        aplanar_readme(origen, destino, str(destino_nombre))
+        escritas.append(destino)
+
     if verbose and escritas:
-        print(f"figuras sincronizadas: {len(escritas)} -> assets/ y figuras/")
+        print(f"figuras sincronizadas: {len(escritas)} -> assets/, figuras/ y assets/readme/")
     return escritas

@@ -105,11 +105,12 @@ split between "rent went up" and "we are measuring something else", so it is pub
 *Each bar carries its own seal: `Datos: oficial 2024 + anuncios 2026 (no comparable)`. They do not
 form a time series.*
 
-![Level difference 2026 minus 2024 in municipalities with n>=5 listings](docs/assets/readme/fig-brecha-2026-dark.png)
+![Level difference 2026 minus 2024 in municipalities with n>=5 listings](docs/assets/readme/fig-brecha-2026-opaca.png)
 
 *Seven municipalities with at least 5 listings. All in the same direction, from +42.2 points in
-Vitoria-Gasteiz to +78.2 in Donostia. Data: 2024→2026 (level difference); flattened copy on a dark
-background of the sealed figure `docs/memoria/figuras/fig-brecha-2026.png`.*
+Vitoria-Gasteiz to +78.2 in Donostia. Data: 2024→2026 (level difference); flattened copy on a white
+background of the sealed figure `docs/memoria/figuras/fig-brecha-2026.png`, a transparent PNG
+meant for the deck.*
 
 While the effort ratio rose, subsidised housing fell. Social housing completed per thousand
 inhabitants went from **11.5 ‰ in 2011 to 2.7 ‰ in 2024**, and Álava, which reached 40.1 ‰, gets its

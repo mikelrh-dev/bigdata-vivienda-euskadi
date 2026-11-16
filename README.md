@@ -105,11 +105,12 @@ repartir entre «subió el alquiler» y «estamos midiendo otra cosa», así que
 *Las dos barras llevan sello propio: `Datos: oficial 2024 + anuncios 2026 (no comparable)`. No
 forman una serie temporal.*
 
-![Diferencia de nivel 2026 menos 2024 en municipios con n>=5](docs/assets/readme/fig-brecha-2026-dark.png)
+![Diferencia de nivel 2026 menos 2024 en municipios con n>=5](docs/assets/readme/fig-brecha-2026-opaca.png)
 
 *Siete municipios con al menos 5 anuncios. Todos en el mismo sentido, de +42,2 puntos en
 Vitoria-Gasteiz a +78,2 en Donostia. Datos: 2024→2026 (diferencia de nivel); copia aplanada sobre
-fondo oscuro de la figura sellada `docs/memoria/figuras/fig-brecha-2026.png`.*
+fondo blanco de la figura sellada `docs/memoria/figuras/fig-brecha-2026.png`, que es un PNG
+transparente pensado para el deck.*
 
 Mientras el esfuerzo subía, la vivienda protegida caía. La tasa de VPO terminada por 1.000 habitantes
 y quinquenio pasó de **11,5 ‰ en 2007-2011** (1,15 % de la población en cinco años) a **2,7 ‰ en
