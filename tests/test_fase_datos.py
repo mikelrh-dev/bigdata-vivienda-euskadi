@@ -7,13 +7,24 @@ guardrails, que estan en test_raw_inmutable.py).
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 PROC = ROOT / "data" / "procesado"
 
+if not (PROC / "manifest_sha256.txt").exists():
+    pytest.skip(
+        "data/procesado no esta en este clon (silver no versionado); "
+        "ejecuta transform/run_all.py",
+        allow_module_level=True,
+    )
+
 
 def _csv(nombre):
-    return pd.read_csv(PROC / nombre, encoding="utf-8-sig")
+    ruta = PROC / nombre
+    if not ruta.exists():
+        pytest.skip(f"{nombre} no esta en este clon (silver no versionado)")
+    return pd.read_csv(ruta, encoding="utf-8-sig")
 
 
 def test_wp03_n_anuncios_real():

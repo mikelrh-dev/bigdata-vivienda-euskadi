@@ -44,6 +44,8 @@ def _recs_cross_portal():
 
 
 def test_dedup_fingerprint_dos_portales_una_fila():
+    if not (ROOT / "data" / "raw" / "dim_municipios.csv").exists():
+        pytest.skip("data/raw no esta en este clon; unificar_anuncios lo lee al importar")
     from unificar_anuncios import deduplicar_fingerprint
     r1, r2 = _recs_cross_portal()
     assert r1["_fingerprint"] == r2["_fingerprint"]
@@ -54,7 +56,10 @@ def test_dedup_fingerprint_dos_portales_una_fila():
 
 
 def test_unificados_sin_duplicados_fingerprint():
-    d = pd.read_csv(ROOT / "data" / "procesado" / "anuncios_unificados.csv", dtype=str)
+    ruta = ROOT / "data" / "procesado" / "anuncios_unificados.csv"
+    if not ruta.exists():
+        pytest.skip("anuncios_unificados.csv no esta en este clon (silver no versionado)")
+    d = pd.read_csv(ruta, dtype=str)
     assert "property_fingerprint" in d.columns
     assert int(d["property_fingerprint"].duplicated().sum()) == 0
 

@@ -183,6 +183,8 @@ def test_geo_temp_not_tmp_root():
 
 def test_muni_resolve_accented_slash():
     """resolver_codigo resuelve variantes con acentos/barras sin fallback difuso."""
+    if not (RAW_DIR / "dim_municipios.csv").exists():
+        pytest.skip("data/raw/dim_municipios.csv no esta en este clon (raw no versionado)")
     if str(EXTRACT_DIR) not in sys.path:
         sys.path.insert(0, str(EXTRACT_DIR))
     if str(TRANSFORM_DIR) not in sys.path:
@@ -209,6 +211,8 @@ def test_muni_resolve_accented_slash():
 def test_unificados_columns_superset():
     """Los CSV derivados del canonico conservan las columnas base (A1: 17 con precio_m2_calc + es_outlier_iqr + origen/geo pisos)."""
     canonical_path = PROC_DIR / "anuncios_unificados.csv"
+    if not canonical_path.exists():
+        pytest.skip("anuncios_unificados.csv no esta en este clon (silver no versionado)")
     assert canonical_path.exists(), "canonico ausente"
     base = list(__import__("pandas").read_csv(canonical_path, nrows=0).columns)
     # PISOS-2026-11-07: 15 + origen_resolucion/geo_invalida = 17;

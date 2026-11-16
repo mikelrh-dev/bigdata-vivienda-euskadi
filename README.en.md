@@ -9,6 +9,8 @@ checks against the gold CSVs and fails when anything stops matching.
 
 [Versión en español](README.md) · Last review: 2026-11-16
 
+[![CI](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml)
+
 | | |
 |---|---|
 | Stack | Python 3.12, MongoDB 9.0.2, Kafka, HDFS/WebHDFS, pandas, matplotlib |

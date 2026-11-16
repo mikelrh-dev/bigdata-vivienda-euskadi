@@ -9,6 +9,8 @@ un deck de 26 diapositivas y este README. Ninguna cifra está escrita a mano; un
 
 [English version](README.en.md) · Última revisión: 2026-11-16
 
+[![CI](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml)
+
 | | |
 |---|---|
 | Stack | Python 3.12, MongoDB 9.0.2, Kafka, HDFS/WebHDFS, pandas, matplotlib |

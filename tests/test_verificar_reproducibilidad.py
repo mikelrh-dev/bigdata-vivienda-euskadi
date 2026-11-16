@@ -20,13 +20,19 @@ from scripts import verificar_reproducibilidad as vr  # noqa: E402
 
 
 def test_raw_manifest_cuadra():
+    if not (vr.RAW_DIR / ".FROZEN").exists():
+        pytest.skip("data/raw no esta en este clon (raw no versionado)")
     estado, detalle = vr.check_raw()
+    if estado == vr.NO_VERIFICABLE:
+        pytest.skip(detalle)
     assert estado == vr.OK, detalle
     assert "355" in detalle
 
 
 def test_dag_cerrado_sin_huerfanos():
     estado, detalle = vr.check_dag()
+    if estado == vr.NO_VERIFICABLE:
+        pytest.skip(detalle)
     assert estado == vr.OK, detalle
     assert "sin" not in detalle.lower() or "productor" not in detalle.lower()
 
