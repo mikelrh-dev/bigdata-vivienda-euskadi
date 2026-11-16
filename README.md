@@ -88,7 +88,7 @@ menos de vivienda.
 
 *Temporal frente a larga estancia en 2026. El recibo es idéntico y el precio por m² no.*
 
-![Esfuerzo 2026 y su muestra](docs/memoria/figuras/fig-ranking-2026.png)
+![Esfuerzo 2026 y su muestra](docs/assets/readme/fig-ranking-2026-opaca.png)
 
 *Esfuerzo 2026 con la muestra que lo sostiene, solo Tier A. Cada barra usa solo los anuncios de larga
 estancia con precio válido: el `n` es menor que el del Tier (Bilbao, 68 frente a 204; Donostia, 58
@@ -139,7 +139,7 @@ De los 50 municipios con mediana en 2026, **43 no llegan a cinco anuncios** y no
 los cuatro Tier A se comparan intervalos, no un podio: Bilbao (33,75–40,95), Getxo (27,54–31,77) y
 Donostia (32,4–45,8) se solapan entre sí. Lo defendible es que los tres cruzan el 30 %.
 
-![Cobertura de la capa 2026](docs/memoria/figuras/fig-cobertura-2026.png)
+![Cobertura de la capa 2026](docs/assets/readme/fig-cobertura-2026-opaca.png)
 
 *Cobertura de la capa 2026 por población de 18 a 34 años, no por municipios: los 50 municipios con
 dato cubren el **71,2 %** de los jóvenes (334.753 de 470.083).*

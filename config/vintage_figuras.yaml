@@ -38,6 +38,8 @@ etiquetas:
   M26_brecha_2024_2026.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
   M26_brecha_n5.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
   fig-brecha-2026-opaca.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
+  fig-ranking-2026-opaca.png: "Datos: anuncios 2026 + salario 2026 (Tier 2026)"
+  fig-cobertura-2026-opaca.png: "Datos: 2026"
   M26_ranking_esfuerzo_muestra_2026.png: "Datos: anuncios 2026 + salario 2026 (Tier 2026)"
   G_gaps_limitaciones.png: "Datos: conteos del pipeline (sin año)"
   H5_vpo_terminadas_por_mil.png: "Datos: tasa VPO 2020-2024, por 1.000 hab."
@@ -87,9 +89,11 @@ figuras:
   M26_esfuerzo_por_tipo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
   M26_ic_esfuerzo.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
   M26_cobertura.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
+  fig-cobertura-2026-opaca.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
   M26_mapa_coropletico_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
   M26_mapa_cobertura.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
   M26_ranking_esfuerzo_muestra_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
+  fig-ranking-2026-opaca.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
   mapa_coropletico_2026.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
   mapa_cobertura_2026.png: {vintage: 2026, fuentes: [anuncios, poblacion]}
   barras_esfuerzo_top20.png: {vintage: 2026, fuentes: [anuncios, salario_2026]}
@@ -162,3 +166,5 @@ sincronizacion:
   # Copias opacas del README: no son byte a byte, se aplanan sobre blanco.
   readme:
     fig-brecha-2026-opaca.png: docs/presentacion_v2/assets/M26_brecha_n5.png
+    fig-ranking-2026-opaca.png: docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png
+    fig-cobertura-2026-opaca.png: docs/presentacion_v2/assets/M26_cobertura.png

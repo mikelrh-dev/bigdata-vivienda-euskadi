@@ -88,7 +88,7 @@ Rental type matters too, and not through the median price: temporary and long-te
 
 *Temporary versus long-term in 2026. The bill is identical and the price per m² is not.*
 
-![2026 effort and its sample](docs/memoria/figuras/fig-ranking-2026.png)
+![2026 effort and its sample](docs/assets/readme/fig-ranking-2026-opaca.png)
 
 *2026 effort with the sample behind it, Tier A only. Each bar uses long-stay listings with a valid
 price, so `n` is smaller than the Tier count (Bilbao, 68 against 204; Donostia, 58 against 126). No
@@ -137,7 +137,7 @@ published. With the four Tier A municipalities the comparison is between interva
 Bilbao (33.75–40.95), Getxo (27.54–31.77) and Donostia (32.4–45.8) overlap. The defensible claim is
 that all three cross 30 %.
 
-![Coverage of the 2026 layer](docs/memoria/figuras/fig-cobertura-2026.png)
+![Coverage of the 2026 layer](docs/assets/readme/fig-cobertura-2026-opaca.png)
 
 *Coverage of the 2026 layer by population aged 18-34, not by municipality: the 50 municipalities with
 data cover **71.2 %** of young people (334,753 of 470,083).*
