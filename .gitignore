@@ -99,6 +99,9 @@ docs/presentacion/preview_*.png
 .codegraph/
 # Copias locales de skills; .hermes/plans si se versiona
 .hermes/skills/
+# Lock de skills instaladas y lock de uv: tooling local, no del proyecto
+/skills-lock.json
+/uv.lock
 
 # copias locales de data (no se versionan)
 _backups/
