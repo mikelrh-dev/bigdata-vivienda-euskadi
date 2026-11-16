@@ -10,7 +10,11 @@ import pytest
 RAW = Path(__file__).resolve().parent.parent / "data" / "raw"
 
 def _leer(n):
-    return pd.read_csv(RAW/n, dtype=str, encoding="utf-8-sig", low_memory=False)
+    """Lee un crudo; si no esta en el clon, skip (los crudos no se versionan)."""
+    p = RAW / n
+    if not p.exists():
+        pytest.skip(f"data/raw/{n} no esta en este clon: crudos no versionados")
+    return pd.read_csv(p, dtype=str, encoding="utf-8-sig", low_memory=False)
 
 def test_codigo_ine_5_digitos():
     for f in ["dim_municipios.csv","alquiler_municipal.csv","anuncios_fotocasa.csv",

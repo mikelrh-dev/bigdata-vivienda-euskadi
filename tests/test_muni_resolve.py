@@ -18,6 +18,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "transform"))
 
+DIM_RAW = ROOT / "data" / "raw" / "dim_municipios.csv"
+if not DIM_RAW.exists():
+    pytest.skip(
+        "data/raw/dim_municipios.csv no esta en este clon; "
+        "muni_resolve lo lee al importar",
+        allow_module_level=True,
+    )
+
 import muni_resolve as mr  # noqa: E402
 
 

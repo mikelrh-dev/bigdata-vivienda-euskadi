@@ -156,8 +156,8 @@ def test_p07_sin_credenciales_en_el_repositorio():
 
 def test_p08_contrato_cubre_los_criterios():
     """P-08: cada criterio de la rúbrica tiene un requisito asignado."""
-    if not SPECS.exists():
-        pytest.skip("openspec/ no existe")
+    if not (SPECS / "contrato-reto" / "spec.md").exists():
+        pytest.skip("openspec/specs/contrato-reto/spec.md no esta en este clon")
     contrato = (SPECS / "contrato-reto" / "spec.md").read_text(encoding="utf-8")
     for criterio in (
         "Extracción de datos mediante Python",

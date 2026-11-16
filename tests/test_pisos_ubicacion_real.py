@@ -24,6 +24,14 @@ for p in (str(ROOT), str(TRANSFORM)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
+DIM_RAW = ROOT / "data" / "raw" / "dim_municipios.csv"
+if not DIM_RAW.exists():
+    pytest.skip(
+        "data/raw/dim_municipios.csv no esta en este clon; "
+        "muni_resolve lo lee al importar",
+        allow_module_level=True,
+    )
+
 from muni_resolve import resolver_codigo, resolver_pisos_por_texto  # noqa: E402
 
 
