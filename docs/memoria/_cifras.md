@@ -1,6 +1,6 @@
 # Cifras vigentes
 
-Generado: `2026-11-14T21:09:08+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
+Generado: `2026-11-16T12:48:48+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json` + `data/resultados/`.
 
 > No editar a mano: se regenera con `python docs/memoria/build.py --refresh`.
 
@@ -175,7 +175,22 @@ Generado: `2026-11-14T21:09:08+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 | `datos.tier_b` | 3 | mongo_tier_confianza.csv · tier B |
 | `datos.tier_c` | 57 | mongo_tier_confianza.csv · tier C |
 | `datos.tier_d` | 188 | mongo_tier_confianza.csv · tier D |
+| `datos.vpo_araba_2024_pct` | 0,38 | tasa ‰ / 10 |
+| `datos.vpo_araba_2024_por_mil` | 3,80 | udalmap_vpo_terminadas.csv · Araba/Álava 2024 |
+| `datos.vpo_araba_anual_pct` | 0,076 | tasa 2024 / 10 / 5 años |
+| `datos.vpo_araba_anual_por_mil` | 0,76 | tasa 2024 / 5 años |
+| `datos.vpo_araba_factor_caida` | 10,5 | pico Araba/Álava / 2024 |
+| `datos.vpo_araba_pico_pct` | 4,01 | tasa ‰ / 10 |
+| `datos.vpo_araba_pico_por_mil` | 40,08 | udalmap_vpo_terminadas.csv · Araba/Álava 2011 (pico 2007-2011) |
+| `datos.vpo_cae_2024_pct` | 0,27 | tasa ‰ / 10 |
+| `datos.vpo_cae_2024_por_mil` | 2,70 | udalmap_vpo_terminadas.csv · CAE 2024 |
+| `datos.vpo_cae_anual_pct` | 0,054 | tasa 2024 / 10 / 5 años |
+| `datos.vpo_cae_anual_por_mil` | 0,54 | tasa 2024 / 5 años |
+| `datos.vpo_cae_factor_caida` | 4,3 | pico CAE / 2024 |
+| `datos.vpo_cae_pico_pct` | 1,15 | tasa ‰ / 10 |
+| `datos.vpo_cae_pico_por_mil` | 11,48 | udalmap_vpo_terminadas.csv · CAE 2011 (pico 2007-2011) |
 | `datos.vpo_promociones` | 406 | _facts.json · etxebide_promociones.docs |
+| `datos.vpo_ratio_araba_cae_pico` | 3,5 | pico Araba/Álava / pico CAE |
 | `datos.vpo_sin_dato` | 406 | etxebide_promociones · NumViviendas ausente o nulo |
 
 ## Gold
@@ -216,11 +231,11 @@ Generado: `2026-11-14T21:09:08+00:00` · Fuente: `vaultVivienda/notebooklm/NB04-
 
 | Clave | Valor | Fuente |
 |---|---:|---|
-| `verif.deck_checks` | 41 | scripts/verificar_cifras_deck.py · 2026-11-13 |
+| `verif.deck_checks` | 120 | scripts/verificar_cifras_deck.py · 2026-11-15 |
 | `verif.gobernanza_cabeceras` | 53 | scripts/verificar_gobernanza.py · 2026-11-13 |
 | `verif.gobernanza_dag` | 40 | scripts/verificar_gobernanza.py · 2026-11-13 |
 | `verif.gobernanza_ids` | 49 | scripts/verificar_gobernanza.py · 2026-11-13 |
 | `verif.gobernanza_scripts` | 47 | scripts/verificar_gobernanza.py · 2026-11-13 |
-| `verif.tests_collected` | 295 | pytest -q tests · 2026-11-14 |
-| `verif.tests_passed` | 293 | pytest -q tests · 2026-11-14 |
-| `verif.tests_skipped` | 2 | pytest -q tests · 2026-11-14 |
+| `verif.tests_collected` | 300 | pytest -q tests · 2026-11-15 |
+| `verif.tests_passed` | 298 | pytest -q tests · 2026-11-15 |
+| `verif.tests_skipped` | 2 | pytest -q tests · 2026-11-15 |

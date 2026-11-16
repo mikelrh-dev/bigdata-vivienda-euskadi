@@ -118,20 +118,26 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
   - mediana, no media (los alquileres tienen outliers)
   - umbral 30 % (literatura de emancipación; 35-40 % es exclusión efectiva)
   - **18-34 es el canónico**; 16-29 queda **legacy** (42,9 % de mediana, no comparable)
-  - **franja de los tres proxys:** renta del hogar × 56,9 % en los 252 municipios ·
-    salario OVJ 2024 con IPC = 1.719 € · IDW con cinco vecinos y 1/d², solo sensibilidad
+  - **tres proxys del indicador, en una tabla de tres columnas:** renta (nivel de hogar ×
+    56,9 %, ratio de edad; no es renta por persona ni salario), salario (1.719 € OVJ × IPC;
+    constante autonómica, no municipal), alquiler de los 93 (IDW de 5 vecinos, 1/d²; no es
+    precio observado, solo sensibilidad).
+  - **proxy** = estimación declarada cuando el dato exacto no está publicado. Accesibilidad
+    (OSRM) y geometría (centroides) son contexto, no entran en el esfuerzo.
 - **Gráfica:** ninguna.
 - **Evidencia:** `analysis/mongo_aggregations.py` → `pipeline_indicadores_municipio`.
 - **Rúbrica:** C17, JOVEN-18-34.
 - **Si preguntan por los proxys:** B9 la renta joven, B10 el salario con IPC, B11 el IDW
-  y B12 la geometría. Cada una lleva la fórmula y la fuente.
+  y B12 la geometría (contexto). Cada una lleva la fórmula y la fuente.
 - **Nota oral:** «La renta joven no existe publicada por municipio y edad. La estimamos con
   las bandas de Eustat 18-19, 20-24, 25-29 y 30-34, ponderando por anchura, y la aplicamos
-  a la renta municipal. Es un proxy, y lo decimos: no es un salario. El 16-29 antiguo da
-  42,9 % de mediana y no es comparable; está en la base como legacy y no sostiene ninguna
-  conclusión. El salario de 2026 tampoco es municipal: es el del OVJ para toda la comunidad,
-  actualizado con el IPC, y por eso el orden lo mueve la renta. Y donde no hay alquiler
-  oficial, los 93 municipios van con IDW de cinco vecinos: solo sensibilidad.»
+  a la renta de hogar del municipio. Es un proxy, y lo decimos: no es un salario ni una
+  renta por persona. El 56,9 % es el perfil de edad de la CAE, no la parte del hogar que
+  aporta la persona joven. El 16-29 antiguo da 42,9 % de mediana y no es comparable; está
+  en la base como legacy y no sostiene ninguna conclusión. El salario de 2026 tampoco es
+  municipal: es el del OVJ para toda la comunidad, actualizado con el IPC, y por eso el
+  orden lo mueve la renta. Y donde no hay alquiler oficial, los 93 municipios van con IDW
+  de cinco vecinos: solo sensibilidad.»
 - **Transición:** «¿De dónde sale ese alquiler oficial?»
 
 ## D4 · De dónde sale el 2024 (2:30–3:30)
@@ -139,10 +145,10 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **Mensaje:** el ancla de 2024 es oficial y municipal, pero no cubre todo: 159 municipios
   con alquiler Eustat y 93 imputados por IDW que solo usamos para sensibilidad.
 - **En pantalla:**
-  - **159** con alquiler oficial Eustat · **93** imputados IDW (solo sensibilidad)
+  - **159** con alquiler oficial Eustat · **93** imputados con IDW de vecinos (solo sensibilidad)
   - **13** familias de fuentes · **355** entradas de manifiesto SHA (**351 canónicos + 4 legado**)
   - **353** objetos en HDFS (**351 canónicas + .FROZEN + .gitkeep**)
-  - Eustat alquiler · INE renta joven · Lanbide/Udalmap paro · Etxebide 5.040 solicitudes y 406 promociones
+  - Eustat alquiler · INE renta joven · Lanbide/Udalmap paro · Etxebide 5.040 registros municipio-año y 406 promociones
 - **Gráfica:** `H11_imputacion_oficial_idw_por_TH.png` (2024: oficial vs IDW por
   territorio; el IDW va separado y rayado).
 - **Evidencia:** `config/fuentes.yaml`, `docs/raw_manifest_sha256.txt`, `mongo_tier_confianza.csv`.
@@ -164,10 +170,11 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **Evidencia:** figura generada desde `mongo_esfuerzo_por_municipio.csv`.
 - **Rúbrica:** C19, C18.
 - **Nota oral:** «Cada municipio con alquiler oficial, coloreado por esfuerzo; la trama es
-  el IDW comarcal, que no es dato y por eso va rayado y aparte en la leyenda. No hace falta
-  leer nombres: Bilbao, Donostia y el corredor del Nervión están en la banda alta; el
-  interior de Álava y amplias zonas rurales, por debajo del 30 %. Y el rojo se corta a los
-  30: los 40 que lo superan comparten el mismo tono, no son todos iguales.»
+  el IDW de los cinco municipios oficiales más cercanos, que no es dato y por eso va rayado
+  y aparte en la leyenda. El PNG la llama "comarcal" por herencia; no es una media comarcal.
+  No hace falta leer nombres: Bilbao, Donostia y el corredor del Nervión están en la banda
+  alta; el interior de Álava y amplias zonas rurales, por debajo del 30 %. Y el rojo se
+  corta a los 30: los 40 que lo superan comparten el mismo tono, no son todos iguales.»
 - **Transición:** «¿Cuántos quedan a cada lado del umbral?»
 
 ## D6 · El reparto de 2024 (4:20–5:10)
@@ -177,14 +184,15 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **En pantalla (cifras grandes):**
   - **119** por debajo del 30 % · **26** entre 30 % y 35 % · **14** por encima del 35 %
   - **40/159** por encima del 30 % (25,2 %)
-  - Con IDW: mediana 25,37 % y **47/252** por encima del 30 %
+  - Con IDW: mediana 25,37 % y **47/252** por encima del 30 % (**18,7 %**)
 - **Gráfica:** `hist_esfuerzo_18_34_umbral30.png` (esfuerzo 2024).
 - **Evidencia:** `mongo_esfuerzo_por_municipio.csv`, `sensibilidad_idw.csv`.
 - **Rúbrica:** C16, C19.
 - **Nota oral:** «Tres cuartas partes del territorio con dato están por debajo del 30 %,
   pero una de cada cuatro lo supera, y hay 14 municipios por encima del 35 %. Con el IDW
-  la mediana baja a 25,37 % y los que superan el 30 % son 47 de 252: el titular aguanta,
-  la lista cambia.»
+  la mediana baja a 25,37 % y los que superan el 30 % son 47 de 252: el 18,7 %, no el 25,2 %.
+  La imputación diluye la proporción, no la refuerza; los siete que cruzan son rurales
+  pequeños. Por eso el IDW no es titular; la lista de municipios, sí cambia.»
 - **Transición:** «Si no es un problema de cuatro municipios, ¿quién está peor?»
 
 ## D7 · El ranking de 2024 (5:10–6:05)
@@ -241,7 +249,7 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
   embudo se enseña entero.
 - **En pantalla (cuatro cifras del embudo):**
   - **1.828** registros crudos de 3 portales
-  - **594** vigentes · **639** únicos tras dedup, **45** en cuarentena fuera de Euskadi
+  - **594** vigentes · **639** únicos tras dedup, **45** en cuarentena por geolocalización dudosa
   - **326** piso completo de larga estancia · **297** con precio
   - **287** válidos: la muestra de la capa
   - **10** excluidos por el propio pipeline (900 m², 9.500 €) · **29** largas y **4**
@@ -252,9 +260,11 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **Rúbrica:** C1, C5, C15.
 - **Nota oral:** «El 2026 sale de tres portales: Fotocasa, Pisos y RealtyAPI. Mil ochocientos
   veintiocho registros crudos; seiscientos treinta y nueve únicos después de deduplicar y
-  quinientos noventa y cuatro vigentes, con cuarenta y cinco en cuarentena fuera de Euskadi.
-  De esos, trescientos veintiséis son vivienda completa y doscientos noventa y siete traen
-  precio. Descartamos diez que el propio pipeline había marcado como imposibles —pisos de
+  quinientos noventa y cuatro vigentes, con cuarenta y cinco en cuarentena por geolocalización
+  dudosa: el resolvedor no pudo situarlos con certeza en Euskadi. El motivo actual es fuera de
+  Euskadi, pero la regla también cubre ambiguos y sin subtítulo. De esos, trescientos veintiséis
+  son vivienda completa y doscientos noventa y siete traen precio. Descartamos diez que el
+  propio pipeline había marcado como imposibles —pisos de
   novecientos metros, alquileres de nueve mil quinientos euros— y quedan doscientos ochenta
   y siete. La cuarentena es reversible: si uno estuviera dentro, la muestra se mueve.»
 - **Transición:** «Y lo que se queda fuera de ahí no es basura.»
@@ -333,40 +343,46 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 
 ## D13 · La vía protegida (8:55–9:40)
 
-- **Mensaje:** la VPO terminada se ha dividido por cuatro y no llega; es flujo, no stock, y
-  no hay dato de 2026.
+- **Mensaje:** la tasa de VPO terminada se ha dividido por más de cuatro y no llega; es
+  flujo, no stock, y no hay dato de 2026.
 - **En pantalla:**
-  - **2,7 ‰** VPO terminada por mil habitantes en Euskadi (2024) frente a **11,5 ‰** en 2011
+  - **2,7 ‰ = 0,27 %** de VPO terminada por mil habitantes en Euskadi en el **quinquenio
+    2020-2024**, frente a **11,5 ‰ = 1,15 %** en **2007-2011**. El dato es acumulado de cinco
+    años: ≈0,54 ‰/año (0,054 %/año) si se anualiza.
   - **211 de 251** municipios con dato están en cero
   - **406** promociones en **77** municipios, y **406 de 406** sin número de viviendas
   - Aviso en caja: dato **2020-2024**, el último publicado. No existe VPO de 2026: va como
     contexto de la oferta, no como su evolución ni como su solución.
-- **Gráfica:** `H5_vpo_terminadas_por_mil.png` (flujo 2020-2024).
+- **Gráfica:** `H5_vpo_terminadas_por_mil.png` (tasa 2020-2024; no es número de viviendas).
 - **Evidencia:** `mongo_vpo_terminadas_por_municipio.csv`, `mongo_vpo_por_municipio.csv`.
 - **Rúbrica:** C17.
 - **Nota oral:** «De VPO solo hay 2020-2024, el último dato publicado. Se ha dividido por
-  cuatro desde 2011:
-  de 11,5 a 2,7 viviendas por mil habitantes y quinquenio. Y es flujo, no stock: 211 de los
-  251 municipios están en cero y el registro de promociones no trae ni fechas ni número de
-  viviendas, así que no se puede decir cuántas hay libres.»
+  más de cuatro entre quinquenios: de once coma cinco por mil en 2007-2011 a dos coma siete
+  por mil en 2020-2024. Ojo con la unidad: dos coma siete por mil es cero coma veintisiete
+  por ciento en cinco años, no un dos coma siete por ciento anual. Y es flujo, no stock: 211
+  de los 251 municipios están en cero y el registro de promociones no trae ni fechas ni
+  número de viviendas, así que no se puede decir cuántas hay libres.»
 - **Transición:** «Si la vía protegida no cubre, ¿qué municipios aguantan la comparación?»
 
 ## D14 · La serie de la VPO (9:40–10:00)
 
 - **Mensaje:** la caída no es de una cosecha mala: viene de 2011 y se sostiene quince años.
 - **En pantalla:**
-  - Euskadi **11,5 ‰** (2011) → **2,7 ‰** (2024), con ventana móvil de 5 años por edición
-  - Bizkaia y Gipuzkoa caen por debajo de **3 ‰**; Araba/Álava en panel propio:
-    **40,1 ‰** (2011) → **3,8 ‰** (2024)
-  - Lectura: cada punto resume los cinco años anteriores → no es el flujo de un año suelto
-- **Gráfica:** `S_serie_vpo_2004_2024.png` (flujo 2004-2024, ventana 5 años).
+  - Euskadi **11,5 ‰ (1,15 %)** (2007-2011) → **2,7 ‰ (0,27 %)** (2020-2024), con ventana
+    móvil de 5 años por edición
+  - Bizkaia y Gipuzkoa caen por debajo de **3 ‰**; Araba/Álava, en la escala común:
+    **40,1 ‰ = 4,01 %** (2007-2011) → **3,8 ‰ = 0,38 %** (2020-2024). El panel derecho es un
+    zoom 0-14 ‰ de CAE, Bizkaia y Gipuzkoa, no una escala propia de Araba
+  - Lectura: cada punto **acumula** los cinco años anteriores → no es el flujo de un año suelto
+- **Gráfica:** `S_serie_vpo_2004_2024.png` (tasa 2004-2024, ventana de 5 años).
 - **Evidencia:** `data/raw/udalmap_vpo_terminadas.csv` (indicador 73).
 - **Rúbrica:** C17, C19.
-- **Nota oral:** «Y esto no es un año malo. La serie viene de 2011: once viviendas protegidas
-  por mil habitantes y quinquenio en el pico, y dos coma siete en el último dato. La caída
-  es estructural, no coyuntural, y se ve igual en los tres territorios. Álava va en su
-  propio panel porque su tasa llegó a cuarenta por mil y en la escala común aplastaría al
-  resto.»
+- **Nota oral:** «Y esto no es un año malo. La serie viene de 2011: once coma cinco viviendas
+  protegidas por mil habitantes y quinquenio en el pico de 2007-2011, y dos coma siete en la
+  ventana 2020-2024. La caída es estructural, no coyuntural, y se ve igual en los tres
+  territorios. Álava llegó a cuarenta coma uno por mil, que es un cuatro por ciento acumulado
+  en cinco años, no un cuarenta por ciento. No la escondo en un panel aparte: la dibujo en la
+  escala común y el panel derecho amplía el detalle de CAE, Bizkaia y Gipuzkoa.»
 - **Transición:** «Si la vía protegida no cubre, ¿qué municipios aguantan la comparación?»
 
 ## D15 · Los cuatro municipios robustos (10:00–10:50)
@@ -527,12 +543,16 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 ## D21 · Mongo I: modelado documental (13:45–14:25)
 
 - **Mensaje:** lo que se lee junto se embebe; lo que crece sin límite se referencia por la
-  clave natural `codigo_ine`.
+  clave natural `codigo_ine`. La regla no es el tamaño: es el patrón de acceso.
 - **En pantalla (dos columnas):**
   - **Embedding en `municipios` (252):** `demografia{}`, `empleo{}`, `demanda_social{}`,
     `vivienda_contexto{}`, `transporte{}`. Se leen juntos, cambian poco.
   - **Referencing en `anuncios` (594):** colección propia, `ubicacion.codigo_ine` →
-    `municipios._id`. Arrays acotados: `equipamiento[]` e `historico_precios[]`.
+    `municipios._id`. `equipamiento[]` es acotado; `historico_precios[]` es un array de
+    observaciones dentro del anuncio, hoy vacío en la carga.
+  - **Criterios:** se lee junto · 1:pocos acotado · no se consulta solo → embeber. Se consulta
+    por separado · 1:muchos sin techo · lo comparten muchos padres → referenciar. Coste:
+    embeber duplica si el hijo cambia; referenciar exige `$lookup`.
   - **Clave natural:** el `_id` de `municipios` **es** el código de 5 dígitos (`"48020"`),
     no un ObjectId. No hay un campo `codigo_ine` duplicado en `municipios`: el `_id` ya lo
     es. Así la relación se ve y no se duplica.
@@ -559,10 +579,11 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **Rúbrica:** C9, C6, T1.
 - **Nota oral:** «La decisión es por patrón de acceso: el municipio se lee entero y cambia
   poco, así que va embebido. Los anuncios crecen cada día y se consultan por municipio, así
-  que se referencian. No embebemos anuncios dentro del municipio: duplicaría datos y
-  rompería el límite de 16 MB. El `_id` del municipio no es un ObjectId, es el código INE de cinco dígitos; por eso
-  `ubicacion.codigo_ine` apunta a `municipios._id` y la relación es una clave natural, no
-  un puntero opaco.»
+  que se referencian. No embebemos anuncios dentro del municipio porque se consultan y
+  actualizan por separado y crecen con cada captura; el límite de 16 MB es el techo duro, no
+  la razón con 594 anuncios. Con 594 no estamos cerca. El `_id` del municipio no es un
+  ObjectId, es el código INE de cinco dígitos; por eso `ubicacion.codigo_ine` apunta a
+  `municipios._id` y la relación es una clave natural, no un puntero opaco.»
 - **Transición:** «Esas decisiones dan 17 colecciones: las pongo en pantalla con sus índices.»
 
 ## D22 · Mongo II: colecciones e índices (14:25–15:05)
@@ -595,7 +616,7 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 - **Rúbrica:** C10, C11, C13, T2.
 - **Nota oral:** «Diecisiete colecciones, y no todas pesan lo mismo: cinco son el núcleo
   municipal con un documento por municipio; seis son oferta y demanda, donde están los 594
-  anuncios y las 5.040 solicitudes de Etxebide; seis son contexto. Ocho índices, cada uno
+  anuncios y los 5.040 registros municipio-año de Etxebide; seis son contexto. Ocho índices, cada uno
   con la consulta que lo justifica: el ESR de anuncios, el `2dsphere` de coordenadas, el
   único de portal e id que nos da la idempotencia, el multikey de equipamiento y cuatro más
   en municipios, alquiler, promociones y certificados. Si cuentan los `_id`, son 25; los
@@ -614,7 +635,8 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
      `n≥30`. Resultado: **Donostia 38,17 · Bilbao 37,69 · Vitoria 33,37 · Getxo 28,60**.
   2. **`$group` · ¿en qué estado está la VPO?** `347 terminadas · 39 en curso · 19 en
      convenio · 1 en proyecto = 406`. `viviendas` vuelve 0: `num_viviendas` está vacío en
-     las 406, y por eso la VPO se cuenta como promociones y no como stock.
+     las 406, y por eso la VPO se describe con promociones y el flujo se mide con Udalmap,
+     no con este registro.
   3. **`$geoNear` · ¿qué hay a 5 km del centro?** Radio de 5.000 m sobre
      `ubicacion.coordenadas`; **424 de 594** con coordenadas, porque solo Fotocasa publica lat/lon, y el plan resuelto por
      `2dsphere`, no por COLLSCAN.
@@ -627,7 +649,7 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
   esfuerzo y se queda solo con los municipios que tienen muestra suficiente: Donostia,
   Bilbao, Vitoria y Getxo. La segunda cuenta las promociones de Etxebide por estado: 347
   terminadas, 39 en curso, 19 en convenio y una en proyecto. La suma de viviendas devuelve cero porque el campo viene vacío en las 406; por eso la VPO
-  se cuenta como promociones, no como stock. La tercera usa el índice geoespacial: un radio
+  se describe con promociones y el flujo se mide con Udalmap, no con este registro. La tercera usa el índice geoespacial: un radio
   de cinco kilómetros sobre las coordenadas, que es lo que justifica el `2dsphere`.»
 - **Transición:** «Y el pipeline completo, con el explain al lado.»
 
@@ -713,14 +735,14 @@ calidad ni síntesis, la charla termina a las 17:40 y deja 1:20 de colchón para
 | B1 | Modelado Tema 8 | Las 7 preguntas con respuesta y la decisión embedding/referencing |
 | B2 | Conteos auditados | 355 manifiesto / 353 HDFS / 183 silver / 55 gold / 17+15 colecciones / 8 índices de trabajo (25 con los `_id`) / 300 tests. **Ojo con los indicadores:** `esfuerzo_joven_pct`, `_16_29` y `esfuerzo_alquiler_pct` coinciden por construcción y el `_18_24` es 2,552× el `_18_34` (ratio CAE 0,6311); son tres indicadores distintos, no cinco |
 | B3 | HDFS y Kafka | Inventario 353 y estado real de hoy; evidencia v8; recuperación pendiente de DNS y `--out` |
-| B4 | VPO, promociones | `C_vpo_por_estado.png`; 406 promociones en 77 municipios por estado de obra; 406 de 406 sin `NumViviendas`; solo las terminadas traen sorteo (2001-2014), así que no se puede contar stock disponible |
+| B4 | VPO, promociones | `C_vpo_por_estado.png`; 406 promociones en 77 municipios por estado de obra; 406 de 406 sin `NumViviendas`; solo las terminadas traen sorteo (2001-2014), así que no se puede contar stock disponible. **2,7 ‰ = 0,27 % en 2020-2024; 11,5 ‰ = 1,15 % en 2007-2011**; 11,5 no es una necesidad calculada |
 | B5 | Oficial vs anuncios | `P_oficial_vs_anuncios_por_TH.png`; unidades distintas (oficial 2024 vs anuncio 2026), no comparable: no se mezclan |
 | B6 | Dos mapas 2026 | `M26_mapa_coropletico_2026.png` + `M26_mapa_cobertura.png`; gris = sin dato |
 | B7 | Auditoría del ancla | `O_ranking_bloqueado_n30.png`; SERPAVI: ratio **0,977**, Spearman **0,988**, **159/159** dentro de ±25 % —las tres cifras sobre los **159 con alquiler oficial**; el universo de 160 da 0,979 y 159/160, así que se cita siempre el subconjunto—; bootstrap de los cuatro: los IC se solapan, se defiende el umbral y no un podio |
 | B8 | Tier de confianza | `H2_tier_confianza_ABCD.png`; el Tier solo mide muestra: **A ≥ 30** (4 municipios), **B 10–29** (3), **C 1–9** (57), **D** sin anuncios (188); D es sin dato, no «asequible»; el n de la barra es menor que el del Tier (Bilbao 68 frente a 204; Donostia 58 frente a 126) por el filtro de larga estancia con precio. **Nivel (tipología 4/54/194) y Tier (confianza 4/3/57/188) son ejes ortogonales: un municipio puede ser Nivel 3 y Tier A, y no se intercambian** |
-| B9 | Renta joven | Rentas Eustat CAE 2024 por tramo (1.599 / 8.156 / 20.109 / 25.609; total 28.170) ponderadas por anchura 2/5/5/5 sobre 17 años y divididas por la renta total: ratio **56,9 %**. Se multiplica por la renta neta media por hogar del Atlas INE. Es renta de hogar, no individual, y el ratio es autonómico: ordena la renta municipal, no la edad |
+| B9 | Renta joven | Renta personal media Eustat CAE 2024 por tramo (1.599 / 8.156 / 20.109 / 25.609; total 28.170), ponderada por anchura 2/5/5/5 sobre 17 años y dividida por la renta personal total: ratio **56,9 %**. Se multiplica por la renta neta media por hogar del Atlas INE. Es renta de hogar, no individual ni per cápita; el 56,9 % es un perfil de edad, no la parte del hogar. El nivel es neto (Atlas INE) y el perfil se calcula con renta personal total (bruta); con `Renta disponible` el ratio sería 57,4 % y el esfuerzo bajaría ~0,8 %. El ratio es autonómico: ordena la renta municipal, no la edad |
 | B10 | Salario e IPC | OVJ 2024: **1.564 €** netos 18-34 (1.381 € el 16-29), pagas prorrateadas. IPC medio anual INE **107,2 → 117,8**, factor **1,0989**, salario **1.719 €**. La API no respondió: el CSV guarda el valor documentado con `flag = fallback` y el metadato viaja con la cifra. Constante autonómica: mueve el nivel, no el orden; sin ajuste el esfuerzo sería un **9,9 %** más alto en todos |
-| B11 | IDW de los 93 | k=5 vecinos con dato oficial, peso **1/d²** sobre haversine entre centroides, normalizado por la suma de pesos. Sensibilidad: oficial **26,61 %** y **40/159** > 30 %; con 252, **25,37 %** y **47/252**. Nunca en el titular, el ranking ni el mapa como dato observado (va rayado) |
+| B11 | IDW de vecinos de los 93 | k=5 vecinos con dato oficial, peso **1/d²** sobre haversine entre centroides, normalizado por la suma de pesos. Sensibilidad: oficial **26,61 %** y **40/159** (25,2 %) > 30 %; con 252, **25,37 %** y **47/252** (18,7 %). No es una media comarcal: `nivel_geografico='comarcal'` es un nombre heredado. Nunca en el titular, el ranking ni el mapa como dato observado (va rayado) |
 | B12 | Geometría | `municipios_euskadi_252.geojson` con **252** features y join por `codigo_ine`; sin geometría inventada, gris = sin dato. `ubicacion.coordenadas` como GeoJSON Point con índice `2dsphere`; **424 de 594** con punto porque solo Fotocasa publica lat/lon, y **170** quedan fuera de `$geoNear`. Coordenadas de municipio, no puerta a puerta |
 
 ---

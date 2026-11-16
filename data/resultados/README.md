@@ -32,7 +32,7 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **55/55** (24
 | `mongo_modalidades.csv` | Precio medio, mediana €/m² y mediana de superficie por modalidad (temporal vs larga estancia) |
 | `mongo_accesibilidad_extendida.csv` | Tiempo a capital, servicios y VPO por municipio |
 | `mongo_vpo_por_municipio.csv` | VPO por estado y tipo (promociones) |
-| `mongo_vpo_terminadas_por_municipio.csv` | Flujo de VPO terminadas por mil habitantes (251/252) |
+| `mongo_vpo_terminadas_por_municipio.csv` | Tasa de VPO terminada por mil habitantes en 2020-2024 (251/252) |
 | `mongo_tier_confianza.csv` | Tier A/B/C/D (4/3/57/188) con rangos de precio |
 | `mongo_habitaciones_por_municipio.csv` | 201 anuncios de habitación en 9 municipios; `n_precio` cuenta los 140 utilizables tras descartar los 60 cuyo precio alcanza el alquiler mediano de vivienda del municipio (`tope_alquiler_eur_mes`, `n_descartados_precio`) |
 

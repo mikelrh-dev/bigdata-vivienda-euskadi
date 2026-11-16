@@ -111,14 +111,17 @@ forman una serie temporal.*
 Vitoria-Gasteiz a +78,2 en Donostia. Datos: 2024→2026 (diferencia de nivel); copia aplanada sobre
 fondo oscuro de la figura sellada `docs/memoria/figuras/fig-brecha-2026.png`.*
 
-Mientras el esfuerzo subía, la vivienda protegida caía. La serie de VPO terminada por mil habitantes
-pasó de **11,5 ‰ en 2011 a 2,7 ‰ en 2024**, y Álava, que llegó a 40,1 ‰, tiene un panel propio para
-no aplastar la escala del resto.
+Mientras el esfuerzo subía, la vivienda protegida caía. La tasa de VPO terminada por 1.000 habitantes
+y quinquenio pasó de **11,5 ‰ en 2007-2011** (1,15 % de la población en cinco años) a **2,7 ‰ en
+2020-2024** (0,27 %). Álava llegó a **40,1 ‰** en 2007-2011, un **4,01 %** acumulado, no un 40 %; la
+figura usa una escala común y un zoom para que su magnitud no aplaste al resto.
 
 ![VPO terminada por mil habitantes, 2004-2024](docs/memoria/figuras/fig-vpo-serie.png)
 
 *Cada año resume los cinco anteriores (ventana móvil de Udalmap), así que no es el flujo de un año
-suelto. Es oferta protegida, no stock.*
+suelto. Es oferta protegida terminada (VPO + VVSS), no stock. ‰ = por mil; 1 ‰ = 0,1 %: 11,5 ‰ = 1,15 %,
+2,7 ‰ = 0,27 %, 40,1 ‰ = 4,01 %. El panel izquierdo comparte escala 0-44 ‰; el derecho amplía 0-14 ‰
+para CAE, Bizkaia y Gipuzkoa. Figura regenerable con `transform/generar_figuras_N.py`.*
 
 ## 5. Cuánto vale cada punto del mapa
 
@@ -153,7 +156,7 @@ El indicador mide esfuerzo, no calidad de vida. Estos límites condicionan la le
 | El área funcional se asigna por centroide | Un municipio que cruce dos áreas se queda con la del centro. |
 | Los anuncios no son el parque | Miden oferta publicada en tres portales, no el parque completo ni el alquiler regulado. |
 | 2024 y 2026 no forman serie | Cambian la fuente y el tamaño de la vivienda; se publican como nivel, no como evolución. |
-| La VPO es flujo, no stock | Cuenta promociones terminadas, no viviendas disponibles. |
+| La VPO es flujo, no stock | Cuenta viviendas protegidas terminadas en cinco años (VPO + VVSS), no viviendas disponibles. |
 
 Las figuras muestran asociaciones territoriales, no causalidad: un esfuerzo alto depende a la vez de precios, rentas, empleo y oferta. El tier ordena la evidencia disponible; no clasifica municipios por calidad de vida.
 
@@ -396,7 +399,7 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 | `COLLSCAN` / `IXSCAN` | Resultados de `explain()`: recorrer toda la colección o entrar por el índice. |
 | Proxy | Variable que se usa porque la deseada no existe. Aquí la renta joven y el salario 2026 actualizado por IPC. |
 | Vintage | Corte de datos que sostiene una cifra. Las figuras selladas llevan el suyo en los metadatos PNG. |
-| VPO | Vivienda de protección oficial. En este proyecto cuenta promociones terminadas (flujo), no stock disponible. |
+| VPO | Vivienda protegida (oficial y social). El indicador 73 cuenta viviendas terminadas en cinco años por 1.000 habitantes; es flujo, no stock. 1 ‰ = 0,1 %. |
 
 ## 14. Contexto y cita
 

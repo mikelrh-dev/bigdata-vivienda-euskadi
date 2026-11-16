@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generado_utc": "2026-11-14T21:09:08+00:00",
+    "generado_utc": "2026-11-16T12:48:48+00:00",
     "fuente_mongo": "vaultVivienda/notebooklm/NB04-BDA-Mongo/_facts.json",
     "fuente_datos": "data/resultados/*.csv",
     "nota": "Las claves infra.* y verif.* son manuales y se conservan entre refrescos; el resto se recalcula. No editar las claves automáticas."
@@ -741,10 +741,85 @@
       "formato": "int",
       "fuente": "mongo_tier_confianza.csv · tier D"
     },
+    "datos.vpo_araba_2024_pct": {
+      "valor": 0.38,
+      "formato": "2d",
+      "fuente": "tasa ‰ / 10"
+    },
+    "datos.vpo_araba_2024_por_mil": {
+      "valor": 3.8,
+      "formato": "2d",
+      "fuente": "udalmap_vpo_terminadas.csv · Araba/Álava 2024"
+    },
+    "datos.vpo_araba_anual_pct": {
+      "valor": 0.076,
+      "formato": "3d",
+      "fuente": "tasa 2024 / 10 / 5 años"
+    },
+    "datos.vpo_araba_anual_por_mil": {
+      "valor": 0.76,
+      "formato": "2d",
+      "fuente": "tasa 2024 / 5 años"
+    },
+    "datos.vpo_araba_factor_caida": {
+      "valor": 10.547368421052632,
+      "formato": "1d",
+      "fuente": "pico Araba/Álava / 2024"
+    },
+    "datos.vpo_araba_pico_pct": {
+      "valor": 4.008,
+      "formato": "2d",
+      "fuente": "tasa ‰ / 10"
+    },
+    "datos.vpo_araba_pico_por_mil": {
+      "valor": 40.08,
+      "formato": "2d",
+      "fuente": "udalmap_vpo_terminadas.csv · Araba/Álava 2011 (pico 2007-2011)"
+    },
+    "datos.vpo_cae_2024_pct": {
+      "valor": 0.27,
+      "formato": "2d",
+      "fuente": "tasa ‰ / 10"
+    },
+    "datos.vpo_cae_2024_por_mil": {
+      "valor": 2.7,
+      "formato": "2d",
+      "fuente": "udalmap_vpo_terminadas.csv · CAE 2024"
+    },
+    "datos.vpo_cae_anual_pct": {
+      "valor": 0.054000000000000006,
+      "formato": "3d",
+      "fuente": "tasa 2024 / 10 / 5 años"
+    },
+    "datos.vpo_cae_anual_por_mil": {
+      "valor": 0.54,
+      "formato": "2d",
+      "fuente": "tasa 2024 / 5 años"
+    },
+    "datos.vpo_cae_factor_caida": {
+      "valor": 4.2518518518518515,
+      "formato": "1d",
+      "fuente": "pico CAE / 2024"
+    },
+    "datos.vpo_cae_pico_pct": {
+      "valor": 1.1480000000000001,
+      "formato": "2d",
+      "fuente": "tasa ‰ / 10"
+    },
+    "datos.vpo_cae_pico_por_mil": {
+      "valor": 11.48,
+      "formato": "2d",
+      "fuente": "udalmap_vpo_terminadas.csv · CAE 2011 (pico 2007-2011)"
+    },
     "datos.vpo_promociones": {
       "valor": 406,
       "formato": "int",
       "fuente": "_facts.json · etxebide_promociones.docs"
+    },
+    "datos.vpo_ratio_araba_cae_pico": {
+      "valor": 3.4912891986062715,
+      "formato": "1d",
+      "fuente": "pico Araba/Álava / pico CAE"
     },
     "datos.vpo_sin_dato": {
       "valor": 406,

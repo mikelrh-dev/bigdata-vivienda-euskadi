@@ -663,9 +663,9 @@ def pipeline_vpo_por_municipio(limit: int | None = None) -> list[dict[str, Any]]
 
 
 def pipeline_vpo_terminadas(limit: int | None = None) -> list[dict[str, Any]]:
-    """VPO terminada en el ultimo quinquenio (Udalmap 73), flujo por mil.
+    """VPO terminada en el ultimo quinquenio (Udalmap 73), tasa por mil.
 
-    No es stock: es el flujo 2020-2024 por mil habitantes. `$match` descarta
+    No es stock: es la tasa acumulada 2020-2024 por mil habitantes. `$match` descarta
     el unico municipio sin dato (Usansolo, 48916) y `$lookup` aporta nombre y
     territorio desde `municipios`. Devuelve 251 filas.
     """

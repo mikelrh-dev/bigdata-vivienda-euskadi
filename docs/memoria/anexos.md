@@ -10,11 +10,14 @@
 | Silver | CSV normalizado y cruzado por `codigo_ine` |
 | Gold | CSV y PNG listos para el informe |
 | Tier | Nivel de confianza A/B/C/D según cobertura y muestra |
-| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d² |
+| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d². No es una media comarcal; `nivel_geografico='comarcal'` es un nombre heredado |
 | Proxy | Estimación construida desde un dato disponible cuando el exacto no está publicado |
-| Ratio 18-34 | Proporción entre la renta media de 18 a 34 años y la renta media total de la CAE, ponderada por la anchura de cada tramo |
+| Ratio 18-34 | Proporción entre la renta personal media de 18 a 34 años y la renta personal media total de la CAE, ponderada por la anchura de cada tramo. Se aplica al nivel de renta de hogar; no es la parte del hogar |
 | Haversine | Distancia en línea recta entre dos puntos de la esfera a partir de sus coordenadas |
+| Cuarentena | Anuncio apartado por geolocalización dudosa; reversible, no borrado |
 | Esfuerzo | Porcentaje de la renta que consume el alquiler |
+| ‰ | Tanto por mil: 1 ‰ = 0,1 %. En la serie de VPO, cada punto acumula cinco años; no es una tasa anual |
+| VPO | Vivienda protegida (oficial y social). El indicador 73 cuenta viviendas terminadas en cinco años por 1.000 habitantes; es flujo, no stock |
 
 ## B. Fragmentos de código
 

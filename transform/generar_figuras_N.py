@@ -490,10 +490,10 @@ def regenerar_serie_vpo() -> Path:
     responde a "y antes de 2024?". Ventana movil: no se lee ano a ano como
     si fuera el flujo de ese ano.
 
-    Dos paneles: Euskadi y los dos territorios grandes comparten escala;
-    Araba/Alava va aparte porque con un denominador mucho menor su tasa llega
-    a 40,1 por mil y en una escala comun aplastaria a las demas. No se
-    esconde: se dibuja, en su propia escala y con su aviso.
+    La escala es comun para los cuatro territorios: Araba/Alava se ve a su
+    altura real (40,1 por mil) y no en un panel que la haga parecer comparable
+    a CAE (11,5). El panel derecho es un zoom declarado 0-14 de CAE, Bizkaia y
+    Gipuzkoa, no una segunda escala silenciosa.
     """
     anios, serie = _leer_serie_vpo()
     orden = sorted(range(len(anios)), key=lambda i: anios[i])
@@ -502,97 +502,114 @@ def regenerar_serie_vpo() -> Path:
     def _ys(entidad: str) -> list[float | None]:
         return [serie[entidad][i] for i in orden]
 
-    fig, (ax, ax_l) = plt.subplots(
-        1, 2, figsize=(12.2, 4.9), gridspec_kw={"width_ratios": [1.9, 1.1]}
+    def _pct(valor: float) -> str:
+        return f"{valor / 10:.2f}".replace(".", ",") + " %"
+
+    def _etiqueta(
+        ax, x: float, y: float, texto: str, color: str,
+        xytext: tuple[float, float] = (0, 8), ha: str = "center",
+    ) -> None:
+        ax.annotate(
+            texto, xy=(x, y), xytext=xytext, textcoords="offset points",
+            ha=ha, fontsize=7.6, fontweight="bold", color=color,
+            bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.5),
+        )
+
+    fig, (ax, ax_z) = plt.subplots(
+        1, 2, figsize=(12.6, 5.0), gridspec_kw={"width_ratios": [1.15, 1]}
     )
 
-    # --- panel izquierdo: Euskadi + territorios grandes -----------------
     colores = {
         "CAE": ("#111111", 2.6, "Euskadi (CAE)"),
-        "Bizkaia": ("#0072B2", 1.6, "Bizkaia"),
-        "Gipuzkoa": ("#009E73", 1.6, "Gipuzkoa"),
+        "Bizkaia": ("#0072B2", 1.7, "Bizkaia"),
+        "Gipuzkoa": ("#009E73", 1.7, "Gipuzkoa"),
+        "Araba/Álava": ("#D55E00", 2.0, "Araba/Álava"),
     }
+
+    # --- panel izquierdo: los cuatro territorios, escala comun ----------
     for entidad, (color, grosor, etiqueta) in colores.items():
         if entidad not in serie:
             continue
         ax.plot(
-            xs, _ys(entidad), marker="o", ms=3.0, lw=grosor, color=color,
+            xs, _ys(entidad), marker="o", ms=2.8, lw=grosor, color=color,
             label=etiqueta, zorder=5 if entidad == "CAE" else 3,
         )
+
     ys_cae = _ys("CAE")
     i_max = max(range(len(xs)), key=lambda j: ys_cae[j])
-    ax.annotate(
-        f"{ys_cae[i_max]:.1f}".replace(".", ",") + " ‰",
-        xy=(xs[i_max], ys_cae[i_max]), xytext=(0, 8), textcoords="offset points",
-        ha="center", fontsize=8, fontweight="bold", color="#111111",
+    _etiqueta(
+        ax, xs[i_max], ys_cae[i_max],
+        f"{ys_cae[i_max]:.1f}".replace(".", ",") + " ‰ = " + _pct(ys_cae[i_max]),
+        "#111111", xytext=(4, 9), ha="left",
     )
-    ax.annotate(
-        f"{ys_cae[-1]:.1f}".replace(".", ",") + " ‰",
-        xy=(xs[-1], ys_cae[-1]), xytext=(-4, 11), textcoords="offset points",
-        ha="right", fontsize=8, fontweight="bold", color="#111111",
-        bbox=dict(fc="white", ec="none", alpha=0.8, pad=0.6),
-    )
-    ax.set_title("Euskadi, Bizkaia y Gipuzkoa (misma escala)", fontsize=10)
-    ax.set_xlabel("Año (edición de Udalmap)")
-    ax.set_ylabel("VPO terminada por mil habitantes")
-    ax.set_xticks(xs[::2])
-    ax.grid(alpha=0.3)
-    ax.legend(ncol=3, fontsize=8, loc="upper right", frameon=False)
-    ax.set_ylim(0, max(v for v in ys_cae if v is not None) * 1.38)
 
-    # --- panel derecho: Araba/Alava, escala propia ----------------------
     ys_al = _ys("Araba/Álava") if "Araba/Álava" in serie else []
     if ys_al:
-        ax_l.plot(
-            xs, ys_al, marker="o", ms=3.0, lw=1.8, color="#D55E00",
-            label="Araba/Álava",
+        validos_al = [(x, y) for x, y in zip(xs, ys_al) if y is not None]
+        x_p, y_p = max(validos_al, key=lambda par: par[1])
+        _etiqueta(
+            ax, x_p, y_p,
+            f"{y_p:.1f}".replace(".", ",") + " ‰ = " + _pct(y_p),
+            "#D55E00", xytext=(0, 10),
         )
-        validos = [(x, y) for x, y in zip(xs, ys_al) if y is not None]
-        x_p, y_p = max(validos, key=lambda par: par[1])
-        ax_l.annotate(
-            f"{y_p:.1f}".replace(".", ",") + " ‰",
-            xy=(x_p, y_p), xytext=(0, 8), textcoords="offset points",
-            ha="center", fontsize=8, fontweight="bold", color="#D55E00",
+        _etiqueta(
+            ax, validos_al[-1][0], validos_al[-1][1],
+            f"{validos_al[-1][1]:.1f}".replace(".", ",") + " ‰",
+            "#D55E00", xytext=(-6, 12), ha="right",
         )
-        ax_l.annotate(
-            f"{validos[-1][1]:.1f}".replace(".", ",") + " ‰",
-            xy=validos[-1], xytext=(-4, 10), textcoords="offset points",
-            ha="right", fontsize=8, fontweight="bold", color="#D55E00",
-            bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.6),
+
+    ax.set_title("Escala común: los cuatro territorios (0-44 ‰)", fontsize=10)
+    ax.set_xlabel("Año (edición de Udalmap)")
+    ax.set_ylabel("VPO terminada por 1.000 habitantes (5 años)")
+    ax.set_xticks(xs[::2])
+    ax.set_yticks([0, 10, 20, 30, 40])
+    ax.set_ylim(0, 44)
+    ax.grid(alpha=0.3)
+    ax.legend(ncol=2, fontsize=8, loc="upper right", frameon=False)
+
+    # --- panel derecho: zoom 0-14 de CAE, Bizkaia y Gipuzkoa -------------
+    for entidad in ("CAE", "Bizkaia", "Gipuzkoa"):
+        if entidad not in serie:
+            continue
+        color, grosor, etiqueta = colores[entidad]
+        ax_z.plot(
+            xs, _ys(entidad), marker="o", ms=2.8, lw=grosor, color=color,
+            label=etiqueta,
         )
-        ax_l.set_ylim(0, max(y for _, y in validos) * 1.22)
-    ax_l.set_title("Araba/Álava (escala propia)", fontsize=10)
-    ax_l.set_xlabel("Año (edición de Udalmap)")
-    # Panel estrecho: una etiqueta cada cuatro años, si no se pisan.
-    ax_l.set_xticks(xs[::4])
-    ax_l.grid(alpha=0.3)
-    ax_l.text(
-        0.04, 0.05,
-        "Denominador mucho menor:\nla tasa es más volátil",
-        transform=ax_l.transAxes, ha="left", va="bottom", fontsize=7,
-        color="#4D4D4D",
-        bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3", alpha=0.9),
+
+    _etiqueta(
+        ax_z, xs[i_max], ys_cae[i_max],
+        f"{ys_cae[i_max]:.1f}".replace(".", ",") + " ‰ = " + _pct(ys_cae[i_max]),
+        "#111111", xytext=(4, 9), ha="left",
     )
+    if ys_cae[-1] is not None:
+        _etiqueta(
+            ax_z, xs[-1], ys_cae[-1],
+            f"{ys_cae[-1]:.1f}".replace(".", ",") + " ‰ = " + _pct(ys_cae[-1]),
+            "#111111", xytext=(-6, 12), ha="right",
+        )
+
+    ax_z.set_title("Zoom 0-14 ‰: Euskadi, Bizkaia y Gipuzkoa", fontsize=10)
+    ax_z.set_xlabel("Año (edición de Udalmap)")
+    ax_z.set_ylabel("VPO por 1.000 habitantes (5 años)")
+    ax_z.set_xticks(xs[::2])
+    ax_z.set_yticks([0, 2, 4, 6, 8, 10, 12, 14])
+    ax_z.set_ylim(0, 14)
+    ax_z.grid(alpha=0.3)
+    ax_z.legend(ncol=3, fontsize=8, loc="upper right", frameon=False)
 
     fig.suptitle(
-        "VPO terminada, 2004-2024: tasa por mil habitantes "
-        "(cada año resume los cinco anteriores)",
+        "VPO terminada, 2004-2024: tasa acumulada de 5 años por 1.000 habitantes",
         fontsize=11,
     )
-    pico_alava = max((v for v in ys_al if v is not None), default=None)
     nota = (
-        "Fuente: Udalmap, indicador 73 (edición 2024). Ventana móvil de 5 años: "
-        "no es el flujo de un año suelto."
+        "Fuente: Udalmap, indicador 73 (edición 2024). Cada punto acumula los cinco años anteriores.\n"
+        "Denominador: población media del quinquenio; incluye VPO + VVSS. ‰ = por mil; 1 ‰ = 0,1 %.\n"
+        "Izquierda: escala común 0-44 ‰. Derecha: zoom 0-14 ‰ de CAE, Bizkaia y Gipuzkoa."
     )
-    if pico_alava is not None:
-        nota += (
-            f"\nAraba/Álava va en un panel propio porque su tasa llega a "
-            f"{pico_alava:.1f}".replace(".", ",")
-            + " por mil y en la escala común aplastaría a las demás series."
-        )
-    fig.text(0.01, 0.012, nota, ha="left", va="bottom", fontsize=7.5,
-             color="#4D4D4D")
-    fig.tight_layout(rect=[0, 0.075, 1, 0.94])
+    fig.text(0.01, 0.022, nota, ha="left", va="bottom", fontsize=7.0,
+             color="#4D4D4D", linespacing=1.3)
+    fig.tight_layout(rect=[0, 0.15, 1, 0.93])
     out = _guardar(fig, "S_serie_vpo_2004_2024.png")
     print(f"OK serie VPO: {out} ({out.stat().st_size} bytes, {len(xs)} años)")
     return out

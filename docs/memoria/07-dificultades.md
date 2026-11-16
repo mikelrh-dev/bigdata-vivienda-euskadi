@@ -9,7 +9,9 @@
 |---|---|---|---|
 | Solo {{datos.anuncios_municipios}} de {{datos.municipios}} municipios tienen anuncio y {{datos.precio_observable}} tienen precio | Ranking principal con alquiler oficial; anuncios como capa aparte | `mongo_esfuerzo_por_municipio.csv` | No se rankean 252 municipios |
 | {{datos.precio_observable}} municipios con precio, pero solo {{datos.n_precio_positivo}} con `n_precio > 0` | Gating Tier A/B; en C/D el precio queda a nulo por diseño | `pipeline_tier_por_municipio` | {{datos.precio_sin_muestra}} municipios con precio no publican estadística |
-| No hay salario juvenil municipal | Renta media como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
+| No hay salario juvenil municipal | Renta joven estimada (hogar × ratio) como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
+| Renta de hogar, no per cápita | Renta neta media por hogar × ratio de edad | `analisis_variables_base.csv` | No es renta individual ni salario; no ajusta por tamaño del hogar |
+| 45 anuncios en cuarentena por geolocalización dudosa | Se apartan, no se borran; cuarentena reversible | `cuarentena_pisos.csv` | No entran en la muestra; si uno estuviera dentro, mueve el conteo |
 | Anuncios 2026 y renta/alquiler 2024 | Dos capas separadas, sin resta | `M26_*` y `mongo_*` | No hay serie temporal |
 | {{raw.disco}} ficheros en disco, {{raw.manifest}} en manifiesto y {{infra.hdfs_objetos}} en HDFS | Tres inventarios con propósito distinto | manifiestos y `GETCONTENTSUMMARY` | Hay que explicar la diferencia |
 | HDFS solo conserva raw | Requisito del alcance del reto | brief del reto | Silver y gold no están en HDFS |
@@ -23,7 +25,7 @@
 
 ## 7.2 Cobertura y proxy
 
-La cobertura es la dificultad principal. Un municipio sin anuncio no es un municipio barato: es un municipio sin evidencia. La renta media tampoco es el salario de una persona joven; se usa porque es el dato municipal disponible y se declara como proxy.
+La cobertura es la dificultad principal. Un municipio sin anuncio no es un municipio barato: es un municipio sin evidencia. La renta media es de hogar, no per cápita ni salario de una persona joven; se usa porque es el dato municipal disponible y se declara como proxy. El 56,9 % es un perfil de edad de la CAE, no la parte del hogar que aporta la persona joven; el nivel es neto y el perfil se calcula con renta personal total (bruta).
 
 El precio medio se calcula para {{datos.precio_observable}} municipios, pero solo {{datos.n_precio_positivo}} lo publican con muestra. Los {{datos.precio_sin_muestra}} restantes son Tier C/D: el pipeline les pone `n_precio = 0` y deja mínimo, máximo y mediana a nulo. La regla evita presentar una mediana de dos anuncios como precio municipal.
 

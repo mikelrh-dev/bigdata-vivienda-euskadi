@@ -399,7 +399,7 @@ requires `--allow-mongo-write`. `--dry-run` prints the plan without writing.
 | `COLLSCAN` / `IXSCAN` | `explain()` outcomes: scan the whole collection or enter through the index. |
 | Proxy | Variable used because the desired one does not exist. Here youth income and the CPI-updated 2026 salary. |
 | Vintage | Data cut behind a figure. Sealed figures carry theirs in the PNG metadata. |
-| VPO | Officially protected housing. In this project it counts completed promotions (flow), not available stock. |
+| VPO | Protected housing (official and social). Indicator 73 counts homes completed over five years per 1,000 inhabitants; it is a flow, not stock. 1 ‰ = 0.1%. |
 
 ## 14. Context and citation
 
