@@ -1,8 +1,0 @@
-MODO OFFLINE (sin red): umbrales locales read-only
-OK    manifiesto raw 354 SHA: raw_manifest_sha256.txt: 354 entradas SHA OK
-OK    silver 188: manifest_sha256.txt: 188 entradas SHA OK
-OK    14 colecciones: colecciones esperadas: 14; todas en storage/load_mongo.py
-OK    0 duplicados en reintentos: duplicados en reintentos (fake): 0 (esperado 0)
-OK    lag 0: lag consumidores (offline): 0
-PENDA-01: HDFS/Kafka centro (10.22.87.215) solo en vivo mañana; pendiente hoy.
-RESULTADO gate: OK

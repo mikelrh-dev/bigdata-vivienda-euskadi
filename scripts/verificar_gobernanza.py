@@ -43,11 +43,16 @@ def requisitos() -> tuple[list[str], int]:
 
 
 def main() -> int:
-    ids, cabeceras = requisitos()
-    # La invariante util es que no haya IDs repetidos ni cabeceras sin ID; el
-    # total cambia cada vez que crece un spec y no debe ser una foto fija.
-    check("requisitos", len(ids) == len(set(ids)) and len(ids) >= cabeceras - 4,
-          f"{cabeceras} cabeceras, {len(ids)} con ID canónico, {len(set(ids))} únicos")
+    # openspec no se versiona: en un checkout sin el, no se puede verificar el
+    # contrato. Se declara el hueco en vez de aprobar con 0 cabeceras.
+    if (ROOT / "openspec" / "specs").is_dir():
+        ids, cabeceras = requisitos()
+        # La invariante util es que no haya IDs repetidos ni cabeceras sin ID; el
+        # total cambia cada vez que crece un spec y no debe ser una foto fija.
+        check("requisitos", len(ids) == len(set(ids)) and len(ids) >= cabeceras - 4,
+              f"{cabeceras} cabeceras, {len(ids)} con ID canónico, {len(set(ids))} únicos")
+    else:
+        print("[AVISO] openspec/specs no esta en el checkout: requisitos no verificados")
 
     transform = sorted((ROOT / "transform").glob("*.py"))
     tree = ast.parse((ROOT / "transform" / "run_all.py").read_text(encoding="utf-8-sig"))

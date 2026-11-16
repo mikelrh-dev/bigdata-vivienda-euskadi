@@ -1,4 +1,0 @@
-{
-  "ok": false,
-  "error": "KafkaConfigurationError('Request timeout (10000) must be larger than session timeout (10000)')"
-}
