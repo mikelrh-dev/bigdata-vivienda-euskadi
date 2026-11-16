@@ -379,6 +379,10 @@ requires `--allow-mongo-write`. `--dry-run` prints the plan without writing.
 |---|---|
 | [Technical report (PDF)](docs/memoria/memoria.pdf) | Chapters 1-8 and annexes |
 | [Defence deck (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 slides plus 12 backups |
+| [Raw manifest](docs/raw_manifest_sha256.txt) | SHA-256 of the 355 source files |
+| [Gold baseline](docs/baseline_gold_sha256.json) | Fingerprint used to check reproducibility |
+| [Comparability matrix](docs/matriz-comparabilidad.md) | Which metric is comparable with which, and why |
+| [Docs index](docs/README.md) | What remains versioned under `docs/` |
 | [Gold index](data/resultados/README.md) | CSVs and figures that make up the gold layer |
 | [AGENT.md](AGENT.md) | Pointers for agents |
 

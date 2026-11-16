@@ -379,6 +379,10 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 |---|---|
 | [Memoria técnica (PDF)](docs/memoria/memoria.pdf) | Capítulos 1-8 y anexos |
 | [Deck de defensa (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 diapositivas más 12 backups |
+| [Manifiesto de raw](docs/raw_manifest_sha256.txt) | SHA-256 de los 355 ficheros de origen |
+| [Baseline del gold](docs/baseline_gold_sha256.json) | Huella con la que se comprueba la reproducibilidad |
+| [Matriz de comparabilidad](docs/matriz-comparabilidad.md) | Qué métrica es comparable con qué y por qué |
+| [Índice de docs](docs/README.md) | Qué queda versionado en `docs/` |
 | [Índice del gold](data/resultados/README.md) | CSV y figuras que componen el gold |
 | [AGENT.md](AGENT.md) | Punteros para agentes |
 
