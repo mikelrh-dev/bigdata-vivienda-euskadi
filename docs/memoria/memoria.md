@@ -159,6 +159,8 @@ Queda una laguna: `transform/run_all.py --check` señala que falta `auditoria_la
 
 `municipios` se lee entero para pintar una ficha y cambia poco: demografía, empleo, demanda social, vivienda y transporte van embebidos. `anuncios` crece cada día y se consulta por municipio, modalidad y precio: se referencia con `ubicacion.codigo_ine`. La decisión evita duplicar en cada anuncio un bloque de contexto que no cambia.
 
+La regla tiene tres criterios: se lee junto, cardinalidad 1:pocos acotada y no se consulta solo → embeber; se consulta por separado, 1:muchos sin techo y lo comparten muchos padres → referenciar. El coste también es explícito: embeber duplica si el hijo cambia; referenciar exige `$lookup`. No es una regla de tamaño: con 594 anuncios no estamos cerca de los 16 MB; el límite es el techo duro, no la razón.
+
 | Colección | Documentos | Decisión |
 |---|---:|---|
 | `municipios` | 252 | Contexto embebido; `_id` = código INE |
@@ -216,16 +218,20 @@ El indicador necesita dos números que no están publicados: lo que gana una per
 
 | Proxy | Cómo se construye | Fuente | Qué se pierde |
 |---|---|---|---|
-| Renta joven 18-34 | renta neta media por hogar × 56,9 %, el ratio 18-34 de la CAE ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para cada uno de los tres siguientes) | INE Atlas de la Renta 2024 y Eustat renta por edad | es renta de hogar, no salario individual; el ratio es autonómico |
+| Renta joven 18-34 | renta neta media por hogar × 56,9 %, el ratio 18-34 de la CAE ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para cada uno de los tres siguientes) | INE Atlas de la Renta 2024 y Eustat renta por edad | no es renta por persona ni salario; el nivel es de hogar y el perfil de edad es autonómico; no ajusta por tamaño del hogar |
 | Salario de 2026 | salario neto joven de 2024 que publica el OVJ, actualizado con el IPC medio del INE (107,2 en 2024 y 117,8 en 2026), que deja 1.719 € al mes | OVJ (Irekia) e INE | constante autonómica: no permite ordenar municipios por salario |
-| Alquiler de los 93 | IDW con los 5 municipios oficiales más cercanos y peso 1/d², con d haversine entre centroides | Eustat alquiler y centroides municipales | no es precio observado: nunca entra en la conclusión |
-| Accesibilidad | minutos de conducción reales a la capital, municipio a municipio | OSRM sobre OpenStreetMap | no mide transporte público ni el viaje real de cada persona |
+| Alquiler de los 93 | IDW de vecinos con los 5 municipios oficiales más cercanos y peso 1/d², con d haversine entre centroides | Eustat alquiler y centroides municipales | no es precio observado ni media comarcal (`nivel_geografico='comarcal'` es un nombre heredado); nunca entra en la conclusión |
+| Accesibilidad | minutos de conducción reales a la capital, municipio a municipio | OSRM sobre OpenStreetMap | contexto, no proxy del esfuerzo; no mide transporte público ni el viaje real de cada persona |
+
+Los tres proxys del indicador son renta, salario y alquiler IDW. Accesibilidad y geometría son contexto: no entran en el numerador ni en el denominador del esfuerzo.
+
+El proxy de renta mezcla dos niveles: el **nivel** es renta neta media por hogar del INE Atlas; el **perfil de edad** es renta personal media de Eustat. El 56,9 % no es la parte del hogar que aporta la persona joven: es el cociente entre la renta personal de 18-34 y la de todas las edades. No es renta por persona ni salario, y no se ajusta por tamaño del hogar. El perfil se calcula con `Renta total` (bruta); con `Renta disponible` (neta) el ratio sería 57,4 % y el esfuerzo bajaría ~0,8 %.
 
 La renta municipal está completa en los 252 municipios, con renta de hogar del Atlas del INE y renta personal de Eustat en la misma fila. El denominador del esfuerzo es siempre renta de hogar por ratio, nunca renta personal: las dos familias que calcula el pipeline —la fiscal, sobre renta personal, y la salarial— quedan en el CSV como columnas de contraste y no alimentan el indicador canónico.
 
 El salario, en cambio, es una sola cifra para toda la comunidad. Por eso el orden municipal lo mueve la renta y no el salario, y por eso el escalón entre los municipios industriales de la ría y los de renta alta se lee con la renta: el salario es el mismo en Sestao y en Getxo.
 
-El alquiler imputado existe para medir cuánto depende el resultado de él, no para publicarlo: con los 252 municipios la mediana del esfuerzo es 25,37 % y con los 159 oficiales, 26,61 %. La cifra que se defiende es siempre la segunda.
+El alquiler imputado existe para medir cuánto depende el resultado de él, no para publicarlo: con los 252 municipios la mediana del esfuerzo es 25,37 % y con los 159 oficiales, 26,61 %. La cifra que se defiende es siempre la segunda. La imputación también baja la proporción por encima del 30 %: de 25,2 % (40/159) a 18,7 % (47/252). Diluye la tensión, no la refuerza.
 
 Los minutos a la capital no se interpolan: se piden a OSRM para cada municipio y se guardan con el resto de la capa. La distancia en línea recta solo se usa en el IDW, donde lo que importa es la proximidad y no el viaje.
 
@@ -306,19 +312,28 @@ El contraste está en el otro extremo. Getxo, con la renta joven más alta de lo
 
 Las 406 promociones de Etxebide son flujo de promoción, y el reparto por estado lo confirma: 347 terminadas, 39 en curso, 19 en convenio y 1 en proyecto. Es un registro de promociones cerradas, no un flujo vivo. El campo `NumViviendas` está vacío en 406 de 406, así que no permiten contar viviendas disponibles; y la fecha de sorteo solo existe en parte del registro, entre 2001 y 2014. Por eso este registro sirve para describir el estado de la promoción, no para datar cuánta vivienda protegida se ha terminado.
 
-El dato datado de vivienda protegida es otro: las viviendas protegidas terminadas en el último quinquenio por mil habitantes (Udalmap, indicador 73, edición 2024), cargado para 252 municipios, con Usansolo sin dato. Es un flujo acumulado de cinco años, no un stock, y su reparto es muy desigual: la mayoría de los municipios están en cero y el flujo se concentra en unos pocos. El stock de vivienda protegida no es público, así que no se estima.
+El dato datado de vivienda protegida es otro: las viviendas protegidas terminadas en el último quinquenio por mil habitantes (Udalmap, indicador 73, edición 2024), cargado para 252 municipios (251 con dato; Usansolo sin dato). Es una **tasa** acumulada de cinco años, no un stock ni un porcentaje anual: `(VPO + VVSS terminadas en el quinquenio / población media del quinquenio) × 1.000`. Se lee en ‰, y 1 ‰ = 0,1 %: 2,70 ‰ equivale a 0,27 % de la población en cinco años, no a un 2,7 % anual. Su reparto es muy desigual: la mayoría de los municipios están en cero y el flujo se concentra en unos pocos. El stock de vivienda protegida no es público, así que no se estima. El proyecto no calcula la VPO necesaria: 11,48 ‰ (1,15 %) es el pico histórico, no una meta.
 
 ![VPO terminadas por mil habitantes](figuras/fig-vpo-flujo.png){width=12cm}\
-*Figura 6.3. Viviendas protegidas terminadas en el último quinquenio por mil habitantes: flujo 2020-2024 (Udalmap, indicador 73, edición 2024), 251 de 252 municipios con dato y 211 en cero. Fuente: `data/resultados/H5_vpo_terminadas_por_mil.png`.*
+*Figura 6.3. Tasa de viviendas protegidas terminadas en el último quinquenio por 1.000 habitantes: acumulado 2020-2024 (Udalmap, indicador 73, edición 2024), 251 de 252 municipios con dato y 211 en cero. Es una tasa, no un número de viviendas. Fuente: `data/resultados/H5_vpo_terminadas_por_mil.png`.*
 
 ![Serie de VPO terminada 2004-2024](figuras/fig-vpo-serie.png){width=15cm}\
-*Figura 6.4. VPO terminada por mil habitantes en Euskadi y por territorio histórico, 2004-2024 (Udalmap, indicador 73, edición 2024). Cada punto resume los cinco años anteriores, así que no es el flujo de un año suelto. Euskadi, Bizkaia y Gipuzkoa comparten escala; Araba/Álava va en un panel propio, con su escala, porque su tasa llega a 40,1 ‰ en 2011 y en una escala común aplastaría a las demás series. Fuente: `data/resultados/S_serie_vpo_2004_2024.png`.*
+*Figura 6.4. Tasa de VPO terminada por 1.000 habitantes en Euskadi y por territorio histórico, 2004-2024 (Udalmap, indicador 73, edición 2024). Cada punto acumula los cinco años anteriores; ‰ = por mil, 1 ‰ = 0,1 %, así que 11,48 ‰ = 1,15 % y 40,08 ‰ = 4,01 %. El panel izquierdo usa una escala común 0-44 ‰ para los cuatro territorios; el derecho amplía 0-14 ‰ para CAE, Bizkaia y Gipuzkoa. No son dos escalas silenciosas: el zoom está declarado y Araba/Álava se ve a su altura real, no en un panel que la haga parecer comparable. Fuente: `data/resultados/S_serie_vpo_2004_2024.png`.*
 
-La serie sitúa el dato de 2024: la tasa de Euskadi pasó de un máximo de 11,5 ‰ en 2011 a 2,7 ‰ en 2024. La caída no es un año malo, es una tendencia de más de una década, y se mantiene en los tres territorios históricos. Araba/Álava, con un denominador mucho menor, se comporta igual pero con un perfil mucho más agudo: 40,1 ‰ en 2011 y 3,8 ‰ en 2024, casi sin término medio entre ambos extremos. Esa volatilidad no es un error del dato, es lo que hace una tasa sobre una población pequeña.
+La serie sitúa el dato: la tasa de Euskadi pasó de un máximo de 11,48 ‰ (1,15 %) en la ventana 2007-2011 a 2,70 ‰ (0,27 %) en la ventana 2020-2024, un factor de 4,3. Cada punto acumula los cinco años anteriores; no es el flujo de un año suelto. La caída no es un año malo, es una tendencia de más de una década, y se mantiene en los tres territorios históricos. Araba/Álava, con un denominador mucho menor, se comporta igual pero con un perfil mucho más agudo: 40,08 ‰ (4,01 %) en 2007-2011 y 3,80 ‰ (0,38 %) en 2020-2024, casi sin término medio entre ambos extremos. Ese 40,08 ‰ no es un 40 %: es un 4,01 % acumulado en cinco años. En el pico, Araba/Álava era 3,5 veces la tasa de la CAE. La volatilidad no es un error del dato, es lo que hace una tasa sobre una población pequeña. Si se anualiza linealmente, 2,70/5 ≈ 0,54 ‰/año (0,054 %/año); en Araba/Álava, 3,80/5 ≈ 0,76 ‰/año (0,076 %/año). No es un dato de la fuente, es una regla de tres.
+
+| Territorio | Pico 2007-2011 | 2020-2024 | Factor de caída |
+|---|---:|---:|---:|
+| Euskadi (CAE) | 11,48 ‰ = 1,15 % | 2,70 ‰ = 0,27 % | 4,3 |
+| Araba/Álava | 40,08 ‰ = 4,01 % | 3,80 ‰ = 0,38 % | 10,5 |
+
+*Tabla 6.1. Lectura de la tasa de VPO en ‰ y en % acumulado de cinco años. El factor es pico / 2020-2024; no es una tasa anual.*
 
 ## 6.4 O3. La capa 2026: qué hay
 
 La capa 2026 es una fotografía de la oferta publicada, no una segunda medición del alquiler registrado. Se construye porque el dato oficial es de 2024, tarda en publicarse y no cubre a todos los municipios; la oferta dice qué se pide hoy, con la limitación de que un anuncio no es un contrato.
+
+El embudo de la capa es 1.828 registros crudos de tres portales, 639 únicos tras deduplicar y 594 vigentes. Los 45 que faltan hasta 639 están en cuarentena por geolocalización dudosa: el resolvedor no pudo situarlos con certeza en Euskadi (el motivo actual es `fuera_de_euskadi`; también cubre ambiguos y sin subtítulo). No se borran: quedan en `cuarentena_pisos.csv` y son reversibles. La cuarentena no descarta el anuncio por precio; descarta la ubicación.
 
 De los 594 anuncios extraídos en 2026, 326 son de larga estancia (53 municipios) y 268 temporales (38). El temporal se descarta porque no es comparable con un contrato de vivienda habitual. Al filtro de validez —precio y superficie utilizables— le quedan los 287 anuncios que sostienen todas las cifras de esta capa, en 50 municipios. Otros 188 municipios no tienen ningún anuncio.
 
@@ -387,7 +402,7 @@ Por tipo, la mediana es 78,55 % para 1–2 habitaciones (123 anuncios), 81,95 % 
 ![Diferencia de nivel 2024 a 2026](figuras/fig-brecha-2026.png){width=15cm}\
 *Figura 6.14. Diferencia de nivel entre el esfuerzo registrado de 2024 y el de oferta de 2026, en puntos porcentuales, solo en los municipios con al menos 5 anuncios. No es una variación temporal: cambia la fuente del numerador. Fuente: `docs/presentacion_v2/assets/M26_brecha_n5.png`.*
 
-La distancia entre las dos capas se puede medir sin restarlas como serie: en los 7 municipios con al menos 5 anuncios, la diferencia de nivel mediana es de 52,7 puntos porcentuales. Parte de esa distancia es el cambio de fuente y parte es el tipo de vivienda: la superficie mediana del anuncio es de 90,0 m² y la del alquiler registrado, de 80,7 m². Un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando.
+La distancia entre las dos capas se puede medir sin restarlas como serie: en los 7 municipios con al menos 5 anuncios, la diferencia de nivel mediana es de 52,7 puntos porcentuales. No es una variación temporal: cambia la fuente del numerador y también el tipo de vivienda. La superficie mediana del anuncio es de 90,0 m² y la del alquiler registrado, de 80,7 m²; un anuncio es una vivienda más grande y más cara que el contrato medio de 2024, y esa diferencia no se corrige restando. Hay una tercera parte que sí se puede aislar: 2024 usa renta de hogar por ratio de edad y 2026, salario individual; por eso la cifra con renta de 2024 como denominador común es más baja que la de salario.
 
 ## 6.6 La respuesta y sus límites
 
@@ -414,7 +429,9 @@ Lo que no se puede afirmar: un municipio sin dato no es asequible, un esfuerzo a
 |---|---|---|---|
 | Solo 64 de 252 municipios tienen anuncio y 60 tienen precio | Ranking principal con alquiler oficial; anuncios como capa aparte | `mongo_esfuerzo_por_municipio.csv` | No se rankean 252 municipios |
 | 60 municipios con precio, pero solo 7 con `n_precio > 0` | Gating Tier A/B; en C/D el precio queda a nulo por diseño | `pipeline_tier_por_municipio` | 53 municipios con precio no publican estadística |
-| No hay salario juvenil municipal | Renta media como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
+| No hay salario juvenil municipal | Renta joven estimada (hogar × ratio) como proxy, declarada | `renta_joven_18_34` | Falacia ecológica posible |
+| Renta de hogar, no per cápita | Renta neta media por hogar × ratio de edad | `analisis_variables_base.csv` | No es renta individual ni salario; no ajusta por tamaño del hogar |
+| 45 anuncios en cuarentena por geolocalización dudosa | Se apartan, no se borran; cuarentena reversible | `cuarentena_pisos.csv` | No entran en la muestra; si uno estuviera dentro, mueve el conteo |
 | Anuncios 2026 y renta/alquiler 2024 | Dos capas separadas, sin resta | `M26_*` y `mongo_*` | No hay serie temporal |
 | 357 ficheros en disco, 355 en manifiesto y 353 en HDFS | Tres inventarios con propósito distinto | manifiestos y `GETCONTENTSUMMARY` | Hay que explicar la diferencia |
 | HDFS solo conserva raw | Requisito del alcance del reto | brief del reto | Silver y gold no están en HDFS |
@@ -428,7 +445,7 @@ Lo que no se puede afirmar: un municipio sin dato no es asequible, un esfuerzo a
 
 ## 7.2 Cobertura y proxy
 
-La cobertura es la dificultad principal. Un municipio sin anuncio no es un municipio barato: es un municipio sin evidencia. La renta media tampoco es el salario de una persona joven; se usa porque es el dato municipal disponible y se declara como proxy.
+La cobertura es la dificultad principal. Un municipio sin anuncio no es un municipio barato: es un municipio sin evidencia. La renta media es de hogar, no per cápita ni salario de una persona joven; se usa porque es el dato municipal disponible y se declara como proxy. El 56,9 % es un perfil de edad de la CAE, no la parte del hogar que aporta la persona joven; el nivel es neto y el perfil se calcula con renta personal total (bruta).
 
 El precio medio se calcula para 60 municipios, pero solo 7 lo publican con muestra. Los 53 restantes son Tier C/D: el pipeline les pone `n_precio = 0` y deja mínimo, máximo y mediana a nulo. La regla evita presentar una mediana de dos anuncios como precio municipal.
 
@@ -451,15 +468,17 @@ Quedan cinco deudas: dos índices 2026 sin crear, dos colecciones de habitacione
 
 ## 8.1 Límites de los datos
 
-- La renta es media, no salario juvenil municipal.
+- La renta es media y de hogar, no per cápita ni salario juvenil municipal; no se ajusta por tamaño del hogar.
 - El alquiler oficial no cubre todos los municipios; la interpolación no crea evidencia.
 - El ratio de edad es autonómico: la renta joven de un municipio se mueve con su renta, no con su estructura de edad.
+- El nivel de renta es neto (INE Atlas); el perfil de edad se calcula con renta personal total (bruta) de Eustat. Con `Renta disponible` (neta) el ratio sería 57,4 % y el esfuerzo bajaría ~0,8 %.
 - El campo `nivel_geografico` de las filas imputadas dice `comarcal` por herencia del nombre; el método es distancia entre centroides, no una media de comarca.
 - El IPC de 2026 es la media anual disponible en el corte, no el cierre del año.
 - El área funcional se asigna por el centroide del municipio: uno que cruce dos áreas se queda con la del centro.
 - Los anuncios no representan el parque completo ni el alquiler regulado.
 - La capa 2026 y la 2024 no son comparables como serie temporal.
-- La VPO es flujo de promoción, no stock disponible.
+- La VPO es flujo de promoción, no stock disponible; el indicador es un acumulado de cinco años (2020-2024), no el flujo de 2024.
+- La cuarentena de 2026 es geolocalización dudosa, no una certeza de que los 45 estén fuera de Euskadi.
 
 ## 8.2 Límites del método
 
@@ -482,7 +501,7 @@ El proyecto describe asociaciones territoriales, no relaciones causales. Un esfu
 
 ## 8.4 Trabajo futuro
 
-Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta media por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión.
+Tres mejoras pendientes: completar los dos índices 2026, unificar las colecciones de habitaciones y sustituir la renta de hogar por una renta juvenil municipal cuando exista. Ninguna cambia la conclusión.
 
 
 ```{=openxml}
@@ -500,11 +519,14 @@ Tres mejoras pendientes: completar los dos índices 2026, unificar las coleccion
 | Silver | CSV normalizado y cruzado por `codigo_ine` |
 | Gold | CSV y PNG listos para el informe |
 | Tier | Nivel de confianza A/B/C/D según cobertura y muestra |
-| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d² |
+| IDW | Interpolación por distancia inversa: media de los cinco municipios oficiales más cercanos, con peso 1/d². No es una media comarcal; `nivel_geografico='comarcal'` es un nombre heredado |
 | Proxy | Estimación construida desde un dato disponible cuando el exacto no está publicado |
-| Ratio 18-34 | Proporción entre la renta media de 18 a 34 años y la renta media total de la CAE, ponderada por la anchura de cada tramo |
+| Ratio 18-34 | Proporción entre la renta personal media de 18 a 34 años y la renta personal media total de la CAE, ponderada por la anchura de cada tramo. Se aplica al nivel de renta de hogar; no es la parte del hogar |
 | Haversine | Distancia en línea recta entre dos puntos de la esfera a partir de sus coordenadas |
+| Cuarentena | Anuncio apartado por geolocalización dudosa; reversible, no borrado |
 | Esfuerzo | Porcentaje de la renta que consume el alquiler |
+| ‰ | Tanto por mil: 1 ‰ = 0,1 %. En la serie de VPO, cada punto acumula cinco años; no es una tasa anual |
+| VPO | Vivienda protegida (oficial y social). El indicador 73 cuenta viviendas terminadas en cinco años por 1.000 habitantes; es flujo, no stock |
 
 ## B. Fragmentos de código
 

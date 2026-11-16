@@ -39,7 +39,8 @@ etiquetas:
   M26_brecha_n5.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
   M26_ranking_esfuerzo_muestra_2026.png: "Datos: anuncios 2026 + salario 2026 (Tier 2026)"
   G_gaps_limitaciones.png: "Datos: conteos del pipeline (sin año)"
-  S_serie_vpo_2004_2024.png: "Datos: flujo 2004-2024, ventana de 5 años"
+  H5_vpo_terminadas_por_mil.png: "Datos: tasa VPO 2020-2024, por 1.000 hab."
+  S_serie_vpo_2004_2024.png: "Datos: tasa VPO 2004-2024, ventana de 5 años"
   # {rango} lo resuelve analysis/vintage_figuras.py desde `Sorteo` en Mongo:
   # el registro no tiene un año único, pero sí un rango de fechas real.
   C_vpo_por_estado.png: "Datos: registro Etxebide (sorteo {rango})"

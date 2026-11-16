@@ -21,16 +21,20 @@ El indicador necesita dos números que no están publicados: lo que gana una per
 
 | Proxy | Cómo se construye | Fuente | Qué se pierde |
 |---|---|---|---|
-| Renta joven 18-34 | renta neta media por hogar × {{metodo.ratio_18_34_pct}} %, el ratio 18-34 de la CAE ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para cada uno de los tres siguientes) | INE Atlas de la Renta 2024 y Eustat renta por edad | es renta de hogar, no salario individual; el ratio es autonómico |
+| Renta joven 18-34 | renta neta media por hogar × {{metodo.ratio_18_34_pct}} %, el ratio 18-34 de la CAE ponderado por la anchura de cada tramo (dos años para 18-19 y cinco para cada uno de los tres siguientes) | INE Atlas de la Renta 2024 y Eustat renta por edad | no es renta por persona ni salario; el nivel es de hogar y el perfil de edad es autonómico; no ajusta por tamaño del hogar |
 | Salario de 2026 | salario neto joven de 2024 que publica el OVJ, actualizado con el IPC medio del INE ({{metodo.ipc_2024}} en 2024 y {{metodo.ipc_2026}} en 2026), que deja {{metodo.salario_2026}} € al mes | OVJ (Irekia) e INE | constante autonómica: no permite ordenar municipios por salario |
-| Alquiler de los 93 | IDW con los {{metodo.idw_vecinos}} municipios oficiales más cercanos y peso 1/d², con d haversine entre centroides | Eustat alquiler y centroides municipales | no es precio observado: nunca entra en la conclusión |
-| Accesibilidad | minutos de conducción reales a la capital, municipio a municipio | OSRM sobre OpenStreetMap | no mide transporte público ni el viaje real de cada persona |
+| Alquiler de los 93 | IDW de vecinos con los {{metodo.idw_vecinos}} municipios oficiales más cercanos y peso 1/d², con d haversine entre centroides | Eustat alquiler y centroides municipales | no es precio observado ni media comarcal (`nivel_geografico='comarcal'` es un nombre heredado); nunca entra en la conclusión |
+| Accesibilidad | minutos de conducción reales a la capital, municipio a municipio | OSRM sobre OpenStreetMap | contexto, no proxy del esfuerzo; no mide transporte público ni el viaje real de cada persona |
+
+Los tres proxys del indicador son renta, salario y alquiler IDW. Accesibilidad y geometría son contexto: no entran en el numerador ni en el denominador del esfuerzo.
+
+El proxy de renta mezcla dos niveles: el **nivel** es renta neta media por hogar del INE Atlas; el **perfil de edad** es renta personal media de Eustat. El {{metodo.ratio_18_34_pct}} % no es la parte del hogar que aporta la persona joven: es el cociente entre la renta personal de 18-34 y la de todas las edades. No es renta por persona ni salario, y no se ajusta por tamaño del hogar. El perfil se calcula con `Renta total` (bruta); con `Renta disponible` (neta) el ratio sería 57,4 % y el esfuerzo bajaría ~0,8 %.
 
 La renta municipal está completa en los {{datos.municipios}} municipios, con renta de hogar del Atlas del INE y renta personal de Eustat en la misma fila. El denominador del esfuerzo es siempre renta de hogar por ratio, nunca renta personal: las dos familias que calcula el pipeline —la fiscal, sobre renta personal, y la salarial— quedan en el CSV como columnas de contraste y no alimentan el indicador canónico.
 
 El salario, en cambio, es una sola cifra para toda la comunidad. Por eso el orden municipal lo mueve la renta y no el salario, y por eso el escalón entre los municipios industriales de la ría y los de renta alta se lee con la renta: el salario es el mismo en Sestao y en Getxo.
 
-El alquiler imputado existe para medir cuánto depende el resultado de él, no para publicarlo: con los 252 municipios la mediana del esfuerzo es {{datos.esfuerzo_mediana_idw}} % y con los {{datos.alquiler_oficial}} oficiales, {{datos.esfuerzo_mediana_oficial}} %. La cifra que se defiende es siempre la segunda.
+El alquiler imputado existe para medir cuánto depende el resultado de él, no para publicarlo: con los 252 municipios la mediana del esfuerzo es {{datos.esfuerzo_mediana_idw}} % y con los {{datos.alquiler_oficial}} oficiales, {{datos.esfuerzo_mediana_oficial}} %. La cifra que se defiende es siempre la segunda. La imputación también baja la proporción por encima del 30 %: de 25,2 % (40/159) a 18,7 % (47/252). Diluye la tensión, no la refuerza.
 
 Los minutos a la capital no se interpolan: se piden a OSRM para cada municipio y se guardan con el resto de la capa. La distancia en línea recta solo se usa en el IDW, donde lo que importa es la proximidad y no el viaje.
 

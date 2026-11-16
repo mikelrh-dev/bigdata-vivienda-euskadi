@@ -7,6 +7,8 @@
 
 `municipios` se lee entero para pintar una ficha y cambia poco: demografía, empleo, demanda social, vivienda y transporte van embebidos. `anuncios` crece cada día y se consulta por municipio, modalidad y precio: se referencia con `ubicacion.codigo_ine`. La decisión evita duplicar en cada anuncio un bloque de contexto que no cambia.
 
+La regla tiene tres criterios: se lee junto, cardinalidad 1:pocos acotada y no se consulta solo → embeber; se consulta por separado, 1:muchos sin techo y lo comparten muchos padres → referenciar. El coste también es explícito: embeber duplica si el hijo cambia; referenciar exige `$lookup`. No es una regla de tamaño: con 594 anuncios no estamos cerca de los 16 MB; el límite es el techo duro, no la razón.
+
 | Colección | Documentos | Decisión |
 |---|---:|---|
 | `municipios` | {{mongo.municipios_docs}} | Contexto embebido; `_id` = código INE |

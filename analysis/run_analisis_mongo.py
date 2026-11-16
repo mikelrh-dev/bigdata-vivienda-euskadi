@@ -850,8 +850,8 @@ def exportar_png_desde_mongo(
         noms = [str(d.get("municipio") or d.get("codigo_ine")) for d in reversed(top5)]
         vls = [(_fnum(d.get("vpo_terminadas_por_mil")) or 0.0) for d in reversed(top5)]
         barras = ax1.barh(noms, vls, color="#0072B2")
-        ax1.set_xlabel("VPO terminada por mil habitantes (2020-2024)")
-        ax1.set_title("Los 15 municipios con más VPO terminada")
+        ax1.set_xlabel("Tasa de VPO terminada por 1.000 habitantes (2020-2024)")
+        ax1.set_title("Los 15 municipios con mayor tasa de VPO terminada (‰)")
         ax1.set_xlim(0, max(vls) * 1.20)
         # Valor escrito sobre cada barra: sin esto hay que adivinar la cifra.
         for barra, v in zip(barras, vls):
@@ -861,6 +861,13 @@ def exportar_png_desde_mongo(
                 f"{v:.1f}".replace(".", ","),
                 va="center", ha="left", fontsize=8,
             )
+        ax1.text(
+            0.98, 0.04,
+            "Tasa por 1.000 habitantes;\nno es número de viviendas",
+            transform=ax1.transAxes, ha="right", va="bottom", fontsize=7.5,
+            color="#4D4D4D",
+            bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3"),
+        )
 
         # Reparto por tramos: dice lo mismo que el histograma, pero se lee.
         tramos = [
@@ -891,20 +898,20 @@ def exportar_png_desde_mongo(
                 f"{n}", ha="center", va="bottom", fontsize=8,
             )
         ax2.text(
-            0.02, 0.97,
+            0.98, 0.97,
             f"{n_ceros5} de {len(vals5)} municipios sin VPO terminada\n"
             f"({n_ceros5 / total5 * 100:.0f} % del total con dato)",
-            transform=ax2.transAxes, ha="left", va="top", fontsize=8,
+            transform=ax2.transAxes, ha="right", va="top", fontsize=8,
             color="#4D4D4D",
             bbox=dict(fc="white", ec="#CCCCCC", boxstyle="round,pad=0.3"),
         )
         fig.suptitle(
-            "H5 Vivienda protegida terminada en el último quinquenio (2020-2024)",
+            "H5 Tasa de vivienda protegida terminada en el último quinquenio (2020-2024)",
             fontsize=11,
         )
         _save(fig, "H5_vpo_terminadas_por_mil.png")
     else:
-        _honest("H5_vpo_terminadas_por_mil.png", "H5 VPO terminadas (sin datos)",
+        _honest("H5_vpo_terminadas_por_mil.png", "H5 Tasa de VPO terminadas (sin datos)",
                 "pipeline_vpo_terminadas vacio")
 
     # H6: ranking n>=10 + distribucion global de precios de habitacion.

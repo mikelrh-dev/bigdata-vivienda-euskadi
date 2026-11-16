@@ -102,7 +102,7 @@ def fmt(valor, formato: str = "str") -> str:
     """Formato español: miles con punto y decimales con coma."""
     if formato == "int":
         return f"{int(valor):,}".replace(",", ".")
-    if formato in ("1d", "2d"):
+    if formato in ("1d", "2d", "3d"):
         decimales = int(formato[0])
         return f"{float(valor):,.{decimales}f}".replace(",", "X").replace(".", ",").replace("X", ".")
     return str(valor)
@@ -122,6 +122,39 @@ def _docs(facts: dict, name: str) -> int | None:
         if col.get("name") == name:
             return int(col.get("docs", 0))
     return None
+
+
+def _serie_vpo_raw() -> dict[str, dict[int, float]]:
+    """Serie de VPO del raw de Udalmap, indexada por entidad y año.
+
+    El CSV trae una cabecera de título y una fila de encabezados en la línea 4;
+    los años van en columnas y los valores usan coma decimal. Se lee aquí, no
+    se teclean en los capítulos, para que la memoria sea regenerable.
+    """
+    import pandas as pd
+
+    path = ROOT / "data" / "raw" / "udalmap_vpo_terminadas.csv"
+    if not path.exists():
+        return {}
+    df = pd.read_csv(path, sep=";", encoding="latin-1", skiprows=3, dtype=str)
+    df = df.rename(columns={df.columns[0]: "entidad"})
+    serie: dict[str, dict[int, float]] = {}
+    for _, fila in df.iterrows():
+        entidad = str(fila.get("entidad") or "").strip()
+        if not entidad:
+            continue
+        valores: dict[int, float] = {}
+        for col in df.columns[2:]:
+            try:
+                anio = int(str(col).strip())
+            except ValueError:
+                continue
+            try:
+                valores[anio] = float(str(fila[col]).replace(",", "."))
+            except (TypeError, ValueError):
+                continue
+        serie[entidad] = valores
+    return serie
 
 
 def _vpo_sin_dato(default: int = 406) -> int:
@@ -488,6 +521,31 @@ def refresh() -> None:
         "int",
         "etxebide_promociones · NumViviendas ausente o nulo",
     )
+
+    # --- VPO: tasa por mil y su conversión a % ---------------------------
+    # La fuente es el raw de Udalmap (indicador 73). El capítulo no teclea
+    # 2,7 ni 40,1: los tokens se derivan del CSV y la conversión es /10.
+    vpo = _serie_vpo_raw()
+    cae24 = vpo.get("CAE", {}).get(2024)
+    cae11 = vpo.get("CAE", {}).get(2011)
+    ara24 = vpo.get("Araba/Álava", {}).get(2024)
+    ara11 = vpo.get("Araba/Álava", {}).get(2011)
+    if None not in (cae24, cae11, ara24, ara11):
+        add("datos.vpo_cae_2024_por_mil", cae24, "2d", "udalmap_vpo_terminadas.csv · CAE 2024")
+        add("datos.vpo_cae_2024_pct", cae24 / 10, "2d", "tasa ‰ / 10")
+        add("datos.vpo_cae_pico_por_mil", cae11, "2d", "udalmap_vpo_terminadas.csv · CAE 2011 (pico 2007-2011)")
+        add("datos.vpo_cae_pico_pct", cae11 / 10, "2d", "tasa ‰ / 10")
+        add("datos.vpo_araba_2024_por_mil", ara24, "2d", "udalmap_vpo_terminadas.csv · Araba/Álava 2024")
+        add("datos.vpo_araba_2024_pct", ara24 / 10, "2d", "tasa ‰ / 10")
+        add("datos.vpo_araba_pico_por_mil", ara11, "2d", "udalmap_vpo_terminadas.csv · Araba/Álava 2011 (pico 2007-2011)")
+        add("datos.vpo_araba_pico_pct", ara11 / 10, "2d", "tasa ‰ / 10")
+        add("datos.vpo_cae_factor_caida", cae11 / cae24, "1d", "pico CAE / 2024")
+        add("datos.vpo_araba_factor_caida", ara11 / ara24, "1d", "pico Araba/Álava / 2024")
+        add("datos.vpo_ratio_araba_cae_pico", ara11 / cae11, "1d", "pico Araba/Álava / pico CAE")
+        add("datos.vpo_cae_anual_pct", cae24 / 10 / 5, "3d", "tasa 2024 / 10 / 5 años")
+        add("datos.vpo_araba_anual_pct", ara24 / 10 / 5, "3d", "tasa 2024 / 10 / 5 años")
+        add("datos.vpo_cae_anual_por_mil", cae24 / 5, "2d", "tasa 2024 / 5 años")
+        add("datos.vpo_araba_anual_por_mil", ara24 / 5, "2d", "tasa 2024 / 5 años")
 
     # --- Municipios clave (Tier A/B de 2026 y corte >=35 % de 2024) --------
     e5 = e.copy()

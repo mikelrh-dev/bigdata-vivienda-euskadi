@@ -49,6 +49,20 @@ El mismo comando del gold (`run_pipeline.py --fase gold`) copia los 12 PNG
 compartidos a `assets/` y los 8 de la memoria a `docs/memoria/figuras`; antes se
 copiaban a mano y H2, H8 y P se quedaron atrás.
 
+### VPO: escala común y unidad
+
+La serie `S_serie_vpo_2004_2024.png` ya no tiene un panel propio para
+Araba/Álava. El panel izquierdo comparte escala 0-44 ‰ para los cuatro
+territorios y el derecho es un zoom declarado 0-14 ‰ para CAE, Bizkaia y
+Gipuzkoa. El H5 titula «tasa», no «número de viviendas». No se editan los PNG a
+mano: se regeneran desde los scripts y se sincronizan con el deck y la memoria.
+
+```bash
+.venv/Scripts/python.exe transform/generar_figuras_N.py
+.venv/Scripts/python.exe analysis/run_analisis_mongo.py
+.venv/Scripts/python.exe scripts/sincronizar_figuras.py
+```
+
 ## Cómo se usa
 
 Abrir `index.html` en Chrome. `←` / `→` o clic para navegar; `Ctrl+P` → «Guardar como PDF».

@@ -180,8 +180,16 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div><h3>Umbral crítico del 30 %</h3><p class="small">Estándar europeo de sobrecarga financiera; por encima del 35-40 % hay exclusión efectiva.</p></div>
         <div><h3>Cohorte 18-34 canónica</h3><p class="small">El tramo 16-29 queda como legacy (42,9 % de mediana, no comparable por baja actividad).</p></div>
       </div>
-      <p class="lead" style="margin-top:34px;max-width:54ch">El indicador no es nuestro. Lo que aportamos es calcularlo municipal y decir dónde <b>no</b> se puede calcular.</p>
-      <p class="small" style="margin-top:16px;font-size:19px">Renta joven = renta del hogar × <b>56,9 %</b> · salario 2026 = <b>1.564 €</b> × IPC <b>1,0989</b> = <b>1.719 €</b> · los <b>93</b> sin alquiler oficial, IDW de <b>5</b> vecinos (1/d²), solo sensibilidad. Construcción paso a paso en <b>B9–B12</b>.</p>
+      <p class="lead" style="margin-top:26px;max-width:54ch">El indicador no es nuestro. Lo que aportamos es calcularlo municipal y decir dónde <b>no</b> se puede calcular.</p>
+      <table class="s compact" style="margin-top:14px;font-size:16.5px">
+        <thead><tr><th>Proxy</th><th>Qué usamos</th><th>Qué no es</th></tr></thead>
+        <tbody>
+          <tr><td><b>Renta joven</b></td><td>renta neta media por hogar (INE Atlas) × <b>56,9 %</b> (ratio de edad, Eustat)</td><td>no es renta por persona ni salario; el 56,9 % no es la parte del hogar</td></tr>
+          <tr><td><b>Salario 2026</b></td><td><b>1.564 €</b> OVJ 2024 × IPC <b>1,0989</b> = <b>1.719 €</b></td><td>constante de la CAE, no municipal</td></tr>
+          <tr><td><b>Alquiler de los 93</b></td><td>IDW de los <b>5</b> municipios oficiales más cercanos, 1/d²</td><td>no es precio observado; solo sensibilidad</td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:12px;font-size:17px"><b>Proxy</b> = estimación declarada cuando el dato exacto no está publicado. Accesibilidad y geometría son contexto, no entran en el esfuerzo. Detalle en <b>B9–B12</b>.</p>
 
       <footer class="ft"><span class="proof">analysis/mongo_aggregations.py · pipeline_indicadores_municipio</span><span class="proof">C17 · JOVEN-18-34</span></footer>
     </div>
@@ -196,13 +204,13 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
         <div>
           <div class="grid2" style="gap:28px 34px">
             <div><div class="big sm">159</div><div class="cap">con alquiler oficial publicado (Eustat EMAL / SERPAVI)</div></div>
-            <div><div class="big sm">93</div><div class="cap">sin publicación oficial: IDW comarcal, solo sensibilidad</div></div>
+            <div><div class="big sm">93</div><div class="cap">sin publicación oficial: IDW de vecinos, solo sensibilidad</div></div>
             <div><div class="big sm">13</div><div class="cap">familias de fuentes · <b>41</b> scripts en <span class="mono">extract/</span></div></div>
             <div><div class="big sm">355</div><div class="cap">entradas de manifiesto SHA: 351 canónicos + 4 legado</div></div>
           </div>
           <ul class="clean" style="margin-top:26px;font-size:20px">
             <li>Eustat: alquiler municipal · INE Atlas: renta joven 18-34 · Lanbide/Udalmap: paro</li>
-            <li>Etxebide: 5.040 solicitudes y 406 promociones VPO</li>
+            <li>Etxebide: 5.040 registros municipio-año y 406 promociones VPO</li>
             <li>353 objetos en HDFS: 351 canónicas + .FROZEN + .gitkeep</li>
           </ul>
         </div>
@@ -223,7 +231,7 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
           <ul class="clean">
             <li><b>Capitales y eje metropolitano:</b> Bilbao 37,69 %, Donostia 38,17 % y Vitoria-Gasteiz 33,37 % superan el límite saludable</li>
             <li><b>Interior de Álava y rural:</b> por debajo del 30 %, pero con parque de alquiler muy reducido</li>
-            <li><b>La trama es IDW comarcal:</b> no se mezcla con el dato oficial observado</li>
+            <li><b>La trama es IDW de vecinos:</b> el PNG conserva la etiqueta antigua «comarcal»; no se mezcla con el dato oficial observado</li>
           </ul>
         </div>
       </div>
@@ -310,14 +318,14 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <h2>De 1.828 registros crudos a 287 válidos.</h2>
       <div class="grid4" style="margin-top:40px">
         <div><div class="big sm">1.828</div><div class="cap">registros crudos de 3 portales</div></div>
-        <div><div class="big sm">594</div><div class="cap">vigentes · 639 únicos tras dedup, 45 en cuarentena</div></div>
+        <div><div class="big sm">594</div><div class="cap">vigentes · 639 únicos tras dedup, 45 en cuarentena por geolocalización dudosa</div></div>
         <div><div class="big sm">326</div><div class="cap">piso completo de larga estancia · 297 con precio</div></div>
         <div><div class="big sm accent">287</div><div class="cap">válidos: la muestra de la capa</div></div>
       </div>
       <ul class="clean" style="margin-top:54px;font-size:23px">
         <li><b>10</b> excluidos por el propio pipeline: pisos de 900 m² y alquileres de 9.500 €</li>
         <li><b>29</b> largas y <b>4</b> temporales sin precio declarado</li>
-        <li><b>45</b> en cuarentena fuera de Euskadi, reversibles: si uno estuviera dentro, mueve la muestra</li>
+        <li><b>45</b> en cuarentena por geolocalización dudosa (motivo actual: fuera de Euskadi), reversibles: si uno estuviera dentro, mueve la muestra</li>
       </ul>
       <div class="warn" style="margin-top:30px;font-size:20px">Amorebieta-Etxano y Laguardia caen a 0 anuncios: el mapa pasa de 52 a 50 municipios.</div>
       <footer class="ft"><span class="proof">transform/_anuncios_2026.py · data/resultados/validacion_portales_2026.csv</span><span class="proof">C1 · C5 · C15</span></footer>
@@ -403,13 +411,13 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
   <section class="slide">
     <div class="pad">
       <header class="hd"><span class="kicker">C · 2026, la capa de oferta</span><span class="pg">13 / 26</span></header>
-      <h2>La vía protegida se ha dividido por cuatro.</h2>
+      <h2>La vía protegida se ha dividido por más de cuatro.</h2>
       <div class="grid2" style="grid-template-columns:1.35fr .65fr;gap:40px;align-items:center">
-        <div class="fig"><img src="assets/H5_vpo_terminadas_por_mil.png" alt="VPO terminada 2020-2024 por mil habitantes"><div class="cap">H5 · VPO terminada 2020-2024 por mil habitantes (Udalmap 73, edición 2024) · 211 de 251 municipios en cero</div></div>
+        <div class="fig"><img src="assets/H5_vpo_terminadas_por_mil.png" alt="Tasa de VPO terminada 2020-2024 por 1.000 habitantes"><div class="cap">H5 · Tasa de VPO terminada 2020-2024 por 1.000 habitantes (Udalmap 73, edición 2024) · tasa, no número de viviendas · 211 de 251 municipios en cero</div></div>
         <div>
           <div class="big sm">2,7<span class="unit">‰</span></div>
-          <div class="cap">VPO terminada por mil habitantes · Euskadi 2024 · eran 11,5 ‰ en 2011</div>
-          <p class="small" style="margin-top:18px">Es <b>flujo</b>, no stock: 251 municipios con dato y <b>211 en cero</b>. El stock disponible no es público y no se inventa.</p>
+          <div class="cap">Tasa de VPO terminada por 1.000 habitantes y quinquenio · Euskadi 2020-2024 · <b>2,7 ‰ = 0,27 % en 5 años</b> · eran 11,5 ‰ (1,15 %) en 2007-2011</div>
+          <p class="small" style="margin-top:18px">Es <b>tasa acumulada</b>, no stock ni porcentaje anual: 2,7 ‰ = 0,27 % de la población en cinco años (≈0,54 ‰/año; 0,054 %/año). 251 municipios con dato y <b>211 en cero</b>; el stock disponible no es público y no se inventa.</p>
           <p class="small" style="margin-top:12px">El registro de promociones (<b>406</b>, en 77 municipios) da estado, no fechas ni viviendas: <b>406 de 406</b> sin número de viviendas.</p>
           <div class="warn" style="margin-top:14px;font-size:19px">Dato <b>2020-2024</b>, el último publicado: no existe VPO de 2026. Va aquí como contexto de la oferta, no como su evolución ni como su solución.</div>
         </div>
@@ -423,8 +431,8 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
     <div class="pad">
       <header class="hd"><span class="kicker">C · 2026, la capa de oferta</span><span class="pg">14 / 26</span></header>
       <h2>La caída de la VPO no es de un año: viene de 2011.</h2>
-      <div class="fig"><img src="assets/S_serie_vpo_2004_2024.png" alt="VPO terminada por mil habitantes, 2004-2024, Euskadi y los tres territorios históricos" style="max-height:590px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">S · VPO terminada por mil habitantes, 2004-2024 (Udalmap 73, edición 2024) · ventana móvil de 5 años · Araba/Álava en panel propio por su escala</div></div>
-      <p class="small" style="margin-top:10px">Euskadi: <b>11,5 ‰</b> en 2011 → <b>2,7 ‰</b> en 2024. Cada punto resume los cinco años anteriores: no es el flujo de un año suelto, y por eso la caída no se explica por una mala cosecha puntual. Araba/Álava llega a <b>40,1 ‰</b> en 2011 y cae a <b>3,8 ‰</b>: va en panel propio porque en la escala común aplastaría a las demás series.</p>
+      <div class="fig"><img src="assets/S_serie_vpo_2004_2024.png" alt="Tasa de VPO terminada por 1.000 habitantes, 2004-2024, Euskadi y los tres territorios históricos" style="max-height:590px;width:auto;max-width:100%;display:block;margin:0 auto"><div class="cap">S · Tasa de VPO terminada por 1.000 habitantes, 2004-2024 (Udalmap 73, edición 2024) · ventana móvil de 5 años · escala común 0-44 ‰ + zoom 0-14 ‰ · 40,1 ‰ = 4,01 %, no 40 %</div></div>
+      <p class="small" style="margin-top:10px">Euskadi: <b>11,5 ‰</b> (1,15 %) en 2007-2011 → <b>2,7 ‰</b> (0,27 %) en 2020-2024. Cada punto <b>acumula</b> los cinco años: no es el flujo de un año suelto, y por eso la caída no se explica por una mala cosecha puntual. Araba/Álava llega a <b>40,1 ‰</b> (4,01 %, no 40 %) en 2007-2011 y cae a <b>3,8 ‰</b> (0,38 %) en 2020-2024. El panel izquierdo comparte escala para los cuatro territorios; el derecho amplía 0-14 ‰ para CAE, Bizkaia y Gipuzkoa.</p>
       <footer class="ft"><span class="proof">data/raw/udalmap_vpo_terminadas.csv · indicador 73</span><span class="proof">C17 · C19</span></footer>
     </div>
   </section>
@@ -583,15 +591,15 @@ pre.doc{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;line-heigh
       <div class="grid2" style="grid-template-columns:1fr 1.05fr;gap:46px;margin-top:2px;align-items:start">
         <div>
           <div class="box" style="padding:18px 20px">
-            <span class="n">EMBEDDING · municipios (252)</span><b style="font-size:24px">Se lee entero y cambia poco</b>
+            <span class="n">EMBEDDING · municipios (252)</span><b style="font-size:22px">Se lee junto · 1:pocos · no se consulta solo</b>
             <p class="small" style="margin:8px 0 0;font-size:18px"><span class="mono">demografia{}</span>, <span class="mono">empleo{}</span>, <span class="mono">demanda_social{}</span>, <span class="mono">vivienda_contexto{}</span>, <span class="mono">transporte{}</span>.</p>
           </div>
           <div class="box" style="padding:18px 20px;margin-top:16px">
-            <span class="n">REFERENCING · anuncios (594)</span><b style="font-size:24px">Crece cada día</b>
-            <p class="small" style="margin:8px 0 0;font-size:18px"><span class="mono">ubicacion.codigo_ine → municipios._id</span>, con <span class="mono">equipamiento[]</span> e <span class="mono">historico_precios[]</span>.</p>
+            <span class="n">REFERENCING · anuncios (594)</span><b style="font-size:22px">Se consulta aparte · 1:muchos · muchos padres</b>
+            <p class="small" style="margin:8px 0 0;font-size:18px"><span class="mono">ubicacion.codigo_ine → municipios._id</span>; <span class="mono">equipamiento[]</span> acotado.</p>
           </div>
           <p class="small" style="margin-top:18px;font-size:18px"><b>Clave natural:</b> el <span class="mono">_id</span> de <span class="mono">municipios</span> <b>es</b> el código de 5 dígitos (<span class="mono">"48020"</span>), no un ObjectId. No hay un <span class="mono">codigo_ine</span> duplicado: el <span class="mono">_id</span> ya lo es.</p>
-          <p class="small" style="margin-top:12px;font-size:18px"><b>Arrays acotados:</b> <span class="mono">equipamiento[]</span> (≤ 12 valores) y <span class="mono">historico_precios[]</span> (una entrada por scraping, nunca crece sin techo dentro del municipio).</p>
+          <p class="small" style="margin-top:12px;font-size:18px"><span class="mono">equipamiento[]</span> es acotado; <span class="mono">historico_precios[]</span> es un array de observaciones dentro del anuncio, hoy vacío en la carga. <b>Coste:</b> embeber duplica si el hijo cambia; referenciar exige <span class="mono">$lookup</span>. El límite de 16 MB es el techo duro, no la razón con 594 anuncios.</p>
         </div>
         <div>
           <div class="box" style="padding:18px 20px">
@@ -777,7 +785,7 @@ db.municipios.aggregate([
         </div>
       </div>
       <div class="warn" style="margin-top:28px;max-width:100ch">
-        <b>Nos tumbaría:</b> una fuente independiente con n≥30 que, en la misma ventana, mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso de los 45 en cuarentena que sí esté en Euskadi.
+        <b>Nos tumbaría:</b> una fuente independiente con n≥30 que, en la misma ventana, mueva más de un 10 % el precio de Bilbao, Donostia, Getxo o Vitoria; o encontrar un piso de los 45 en cuarentena por geolocalización dudosa que sí esté en Euskadi.
       </div>
       <div class="grid4" style="margin-top:26px;align-items:baseline">
         <div><span style="font-size:32px;font-weight:700">300</span><br><span class="cap">tests · 298 pasan · 2 skipped</span></div>
@@ -830,7 +838,7 @@ db.municipios.aggregate([
       <header class="hd"><span class="kicker">Backup · B2 Conteos auditados</span><span class="pg">B2 / 12</span></header>
       <h2>Los números, en crudo.</h2>
       <div class="grid3" style="font-size:22px;line-height:1.65">
-        <div><b>Datos</b><br>355 SHA · 357 ficheros en disco<br>351 canónicos + 4 legado<br>353 objetos en HDFS (351 + .FROZEN + .gitkeep) · solo raw<br>183 silver · 42 CSV<br>594 anuncios (326 larga + 268 temporal)<br>64 municipios con anuncio<br>287 válidos en 50 municipios<br>201 habitaciones / 9 municipios<br>5.040 solicitudes · 406 promociones</div>
+        <div><b>Datos</b><br>355 SHA · 357 ficheros en disco<br>351 canónicos + 4 legado<br>353 objetos en HDFS (351 + .FROZEN + .gitkeep) · solo raw<br>183 silver · 42 CSV<br>594 anuncios (326 larga + 268 temporal)<br>64 municipios con anuncio<br>287 válidos en 50 municipios<br>201 habitaciones / 9 municipios<br>5.040 registros municipio-año · 406 promociones</div>
         <div><b>Indicador</b><br>159 oficiales + 93 IDW<br>mediana 26,61 % (159)<br>40/159 &gt; 30 % · 119/26/14<br>25,37 % global · 47/252 &gt; 30 %<br>78,6 % municipal (50)<br>87,3 % anuncio (287)<br>1.350 € mediana de medianas<br>1.500 € mediana de anuncios<br>Tier A4 B3 C57 D188<br>Nivel 4/54/194: ejes ortogonales, no intercambiables</div>
         <div><b>Sistema</b><br>17 vivas + 15 backup = 32<br>12 pipelines (11 en orden) · 8 etapas · 30 consultas<br>8 índices de trabajo · 25 con los _id<br>300 tests (298 pasan, 2 skip)<br>183/183 · 55/55<br>COLLSCAN 594 → IXSCAN 1<br>40 nodos en el DAG</div>
       </div>
@@ -958,7 +966,7 @@ db.municipios.aggregate([
       <div class="grid2" style="grid-template-columns:1.2fr .8fr;gap:46px;align-items:start;margin-top:10px">
         <div>
           <table class="s">
-            <thead><tr><th>Tramo · Eustat CAE 2024</th><th>Renta media</th><th>Años</th></tr></thead>
+            <thead><tr><th>Tramo · Eustat CAE 2024</th><th>Renta personal media</th><th>Años</th></tr></thead>
             <tbody>
               <tr><td>18-19</td><td>1.599 €</td><td>2</td></tr>
               <tr><td>20-24</td><td>8.156 €</td><td>5</td></tr>
@@ -967,14 +975,14 @@ db.municipios.aggregate([
               <tr class="hi"><td>Total de edades</td><td>28.170 €</td><td>todas</td></tr>
             </tbody>
           </table>
-          <p class="small" style="margin-top:18px">Cada tramo pesa lo que dura: 2 años el primero y 5 cada uno de los otros tres, 17 en total. La media ponderada se divide por la renta media de todas las edades y sale el ratio 18-34 de la CAE.</p>
+          <p class="small" style="margin-top:18px">Cada tramo pesa lo que dura: 2 años el primero y 5 cada uno de los otros tres, 17 en total. La media ponderada se divide por la renta personal media de todas las edades y sale el ratio 18-34 de la CAE.</p>
           <p class="small" style="margin-top:12px">Ese ratio se multiplica por la renta neta media por hogar de cada municipio (Atlas INE 2024) y da la renta joven estimada que hace de denominador en la capa oficial.</p>
         </div>
         <div class="box" style="padding:22px 24px">
           <span class="n">EL RATIO</span>
           <div class="big sm" style="margin-top:10px">56,9<span class="unit">%</span></div>
           <p class="mono" style="margin-top:14px;font-size:15px;line-height:1.45">(2×1.599 + 5×8.156<br>+ 5×20.109 + 5×25.609)<br>/ 17 / 28.170</p>
-          <p class="small" style="margin-top:16px">Es renta de hogar, no renta individual. Y el ratio es autonómico, así que quien ordena los municipios es su renta media, no su estructura de edad.</p>
+          <p class="small" style="margin-top:16px">El nivel es renta de hogar, no individual ni per cápita; el 56,9 % es un perfil de edad, no la parte del hogar. Con <span class="mono">Renta disponible</span> sería 57,4 %. El ratio es autonómico: ordena la renta municipal, no la edad.</p>
           <div class="warn" style="margin-top:16px;font-size:18px">No hay renta por edad y municipio publicada. Se imputa el reparto por edad, no el nivel de renta.</div>
         </div>
       </div>
@@ -1020,18 +1028,19 @@ db.municipios.aggregate([
             <li>Peso <b>1/d²</b> sobre la distancia en kilómetros entre centroides (haversine), normalizado por la suma de pesos</li>
             <li>Se imputa columna a columna; si un vecino no trae el campo, no entra en esa media</li>
             <li>Los <b>252</b> municipios quedan completos y cada fila dice cómo se rellenó: <span class="mono">oficial</span> o <span class="mono">idw</span></li>
+            <li><b>No es comarcal:</b> <span class="mono">nivel_geografico='comarcal'</span> es un nombre heredado; el método usa vecinos, no comarcas</li>
           </ul>
           <p class="small" style="margin-top:22px">El IDW responde a una pregunta concreta: cuánto se mueve el resultado si el hueco se rellena. No entra en el titular, ni en el ranking, ni en el mapa como si fuera dato observado: en el mapa va rayado.</p>
         </div>
         <div>
           <table class="s">
-            <thead><tr><th>Escenario</th><th>n</th><th>Mediana</th><th>&gt; 30 %</th></tr></thead>
+            <thead><tr><th>Escenario</th><th>n</th><th>Mediana</th><th>&gt; 30 %</th><th>% &gt; 30</th></tr></thead>
             <tbody>
-              <tr class="hi"><td>Solo oficial</td><td>159</td><td>26,61 %</td><td>40</td></tr>
-              <tr><td>Con IDW</td><td>252</td><td>25,37 %</td><td>47</td></tr>
+              <tr class="hi"><td>Solo oficial</td><td>159</td><td>26,61 %</td><td>40</td><td>25,2 %</td></tr>
+              <tr><td>Con IDW</td><td>252</td><td>25,37 %</td><td>47</td><td>18,7 %</td></tr>
             </tbody>
           </table>
-          <p class="small" style="margin-top:18px">El titular aguanta la imputación: la mediana baja 1,2 puntos y la lista de municipios por encima del umbral cambia. Por eso se publican las dos cifras y se dice cuál es cuál.</p>
+          <p class="small" style="margin-top:18px">La mediana baja 1,2 puntos, pero la proporción &gt;30 % baja del 25,2 % al 18,7 %: la imputación diluye la tensión, no la refuerza. Los siete que cruzan son rurales pequeños. Por eso el IDW no es titular; la lista de municipios, sí cambia.</p>
         </div>
       </div>
       <footer class="ft"><span class="proof">transform/completar_alquiler_comarca.py · analysis/sensibilidad.py · sensibilidad_idw.csv</span><span class="proof">C17 · C16</span></footer>
