@@ -162,3 +162,19 @@ def test_check_solo_hace_preflight(monkeypatch, sin_subprocess):
                         lambda verificar_hash: llamadas.append(verificar_hash) or 0)
     assert rp.main(["--check"]) == rp.EXIT_OK
     assert llamadas == [True]
+
+
+def test_aviso_sin_fase_recuerda_que_all_omite_mongo(monkeypatch, capsys, sin_subprocess):
+    """El default es `all` (no destructivo): el aviso evita leerlo como `full`."""
+    monkeypatch.setattr(rp, "preflight", lambda verificar_hash: rp.EXIT_OK)
+    assert rp.main(["--dry-run"]) == rp.EXIT_OK
+    capturado = capsys.readouterr()
+    assert "PLAN" in capturado.out
+    assert "--fase full --allow-mongo-write" in capturado.err
+
+
+def test_check_no_imprime_el_aviso(monkeypatch, capsys, sin_subprocess):
+    """`--check` sale tras el preflight: no necesita el recordatorio de fases."""
+    monkeypatch.setattr(rp, "preflight", lambda verificar_hash: rp.EXIT_OK)
+    assert rp.main(["--check"]) == rp.EXIT_OK
+    assert "aviso" not in capsys.readouterr().err

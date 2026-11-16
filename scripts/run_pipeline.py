@@ -238,6 +238,16 @@ def main(argv: list[str] | None = None) -> int:
                         help="Autoriza la fase mongo (borra e inserta en Mongo)")
     args = parser.parse_args(argv)
 
+    # Sin --fase el plan es `all`, que omite mongo a proposito. Se avisa para
+    # que el comando por defecto no se confunda con la reconstruccion completa.
+    if args.fase is None and not args.check:
+        print(
+            "[aviso] sin --fase se ejecuta 'all' (silver, quality, gold): la carga "
+            "y la limpieza de Mongo quedan fuera. Para carga + limpieza + "
+            "transformacion: --fase full --allow-mongo-write",
+            file=sys.stderr,
+        )
+
     nombres: list[str] = []
     for valor in (args.fase or ["all"]):
         nombres.extend(p.strip() for p in valor.split(",") if p.strip())
