@@ -320,6 +320,9 @@ batch e idempotente por lotes con `replace_collection`.
 | `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`, que sale con rc 1 |
 | `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26 |
 
+Las fuentes de `docs/` y `openspec/` no se versionan: viven en el checkout local, que es el que
+requieren estos verificadores.
+
 El fallo conocido está documentado sin imputar, y los huecos también: faltan 2 de los 10 índices de
 `esfuerzo_mercado_2026`, el `OPEN` de WebHDFS depende del DNS de los datanodes (el gate coteja
 tamaño y SHA en lugar de restaurar) y el topic antiguo `anuncios_inmobiliarios` conserva 1.420
@@ -366,26 +369,18 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 | `storage/` | Carga en Mongo, productor Kafka, subida a HDFS |
 | `analysis/` | 11 pipelines, consultas, índices y análisis de sensibilidad |
 | `scripts/` | Orquestador por fases y gates de verificación |
-| `docs/memoria/` | Memoria en Markdown, HTML, DOCX y PDF con figuras selladas |
-| `docs/presentacion_v2/` | Deck de defensa: 26 diapositivas, 12 backups y guion oral |
-| `openspec/specs/` | Contrato del reto: 19 criterios y 21 requisitos |
-| `openspec/audit/v13_2026-11-15/` | Última auditoría contra la rúbrica |
+| `docs/memoria/` | Memoria técnica en PDF con figuras selladas |
+| `docs/presentacion_v2/` | Deck de defensa en PDF: 26 diapositivas y 12 backups |
 | `data/resultados/README.md` | Índice del gold y de los 8 CSV `mongo_*` |
 
 ### Documentación viva
 
 | Documento | Qué contiene |
 |---|---|
-| [Memoria técnica](docs/memoria/memoria.md) | Capítulos 1-8 y anexos. También en [HTML](docs/memoria/memoria.html), [DOCX](docs/memoria/memoria.docx) y [PDF](docs/memoria/memoria.pdf) |
-| [Deck de defensa](docs/presentacion_v2/index.html) | 26 diapositivas más 12 backups, con [guion oral](docs/presentacion_v2/guion.md) y [PDF](docs/presentacion_v2/presentacion_v2.pdf) |
-| [Auditoría v13](openspec/audit/v13_2026-11-15/informe.md) | Evaluación contra la rúbrica del reto, criterio a criterio |
-| [Contrato del reto](openspec/specs/contrato-reto/spec.md) | 19 criterios y 21 requisitos; manda sobre el código |
-| [Matriz de comparabilidad](docs/matriz-comparabilidad.md) | Qué fuentes y años se pueden comparar y cuáles no |
-| [Diccionario de columnas](openspec/archive/2026-11-10-docs/diccionario_columnas.md) | Significado de los campos de los CSV gold |
-| [Conclusiones por municipio](openspec/archive/2026-11-10-docs/conclusiones_municipios.md) | Lectura municipio a municipio |
-| [Índice de documentación](docs/README.md) | Mapa de la documentación del repo |
+| [Memoria técnica (PDF)](docs/memoria/memoria.pdf) | Capítulos 1-8 y anexos |
+| [Deck de defensa (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 diapositivas más 12 backups |
 | [Índice del gold](data/resultados/README.md) | CSV y figuras que componen el gold |
-| [AGENT.md](AGENT.md) y [project.md](openspec/project.md) | Punteros para agentes y estado del proyecto |
+| [AGENT.md](AGENT.md) | Punteros para agentes |
 
 ## 13. Glosario
 

@@ -105,3 +105,17 @@ _backups/
 
 # Archivo local de descarte (no versionado; se borra antes de la entrega)
 archivar/
+
+# --- Entrega en git: docs solo PDFs + imagenes; el resto se queda en local ---
+/docs/memoria/*
+!/docs/memoria/memoria.pdf
+!/docs/memoria/figuras/
+/docs/presentacion_v2/*
+!/docs/presentacion_v2/presentacion_v2.pdf
+/docs/README.md
+/docs/matriz-comparabilidad.md
+/docs/raw_manifest_sha256.txt
+/docs/baseline_gold_sha256.json
+
+# --- openspec fuera de git (se conserva en local) ---
+/openspec/

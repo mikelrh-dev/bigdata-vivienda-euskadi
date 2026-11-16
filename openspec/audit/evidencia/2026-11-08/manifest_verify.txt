@@ -1,2 +1,0 @@
-OK: C:\Users\mikel\Documents\bigdata-vivienda-euskadi\docs\raw_manifest_sha256.txt (354 entradas, 0 errores)
-OK: C:\Users\mikel\Documents\bigdata-vivienda-euskadi\data\procesado\manifest_sha256.txt (188 entradas, 0 errores)

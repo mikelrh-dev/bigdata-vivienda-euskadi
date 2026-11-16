@@ -319,6 +319,9 @@ batch and idempotent per batch through `replace_collection`.
 | `transform/run_all.py --check` | All `[OK]` except `auditoria_lagunas_silver.csv`, which exits with rc 1 |
 | `verificar_fase_datos.py` | 21 PASS and **1 known FAIL 07**: zero-unemployment in Aramaio 0.28 / Gaintza 1.45 / Usansolo 3.26 |
 
+The sources under `docs/` and `openspec/` are not versioned: they live in the local checkout, which is
+what these verifiers require.
+
 The known failure is documented without imputation, and so are the gaps: 2 of the 10
 `esfuerzo_mercado_2026` indexes are missing, WebHDFS `OPEN` depends on datanode DNS (the gate compares
 size and SHA instead of restoring) and the old `anuncios_inmobiliarios` topic still holds 1,420 test
@@ -366,26 +369,18 @@ requires `--allow-mongo-write`. `--dry-run` prints the plan without writing.
 | `storage/` | Mongo loading, Kafka producer, HDFS upload |
 | `analysis/` | 11 pipelines, queries, indexes and sensitivity analysis |
 | `scripts/` | Phase orchestrator and verification gates |
-| `docs/memoria/` | Report in Markdown, HTML, DOCX and PDF with sealed figures |
-| `docs/presentacion_v2/` | Defence deck: 26 slides, 12 backups and a spoken script |
-| `openspec/specs/` | Challenge contract: 19 criteria and 21 requirements |
-| `openspec/audit/v13_2026-11-15/` | Latest audit against the rubric |
+| `docs/memoria/` | Technical report as PDF with sealed figures |
+| `docs/presentacion_v2/` | Defence deck as PDF: 26 slides and 12 backups |
 | `data/resultados/README.md` | Gold index and the 8 `mongo_*` CSVs |
 
 ### Live documentation
 
 | Document | Contents |
 |---|---|
-| [Technical report](docs/memoria/memoria.md) | Chapters 1-8 and annexes. Also in [HTML](docs/memoria/memoria.html), [DOCX](docs/memoria/memoria.docx) and [PDF](docs/memoria/memoria.pdf) |
-| [Defence deck](docs/presentacion_v2/index.html) | 26 slides plus 12 backups, with the [spoken script](docs/presentacion_v2/guion.md) and [PDF](docs/presentacion_v2/presentacion_v2.pdf) |
-| [v13 audit](openspec/audit/v13_2026-11-15/informe.md) | Assessment against the challenge rubric, criterion by criterion |
-| [Challenge contract](openspec/specs/contrato-reto/spec.md) | 19 criteria and 21 requirements; it overrides the code |
-| [Comparability matrix](docs/matriz-comparabilidad.md) | Which sources and years can be compared and which cannot |
-| [Column dictionary](openspec/archive/2026-11-10-docs/diccionario_columnas.md) | Meaning of the gold CSV fields |
-| [Conclusions by municipality](openspec/archive/2026-11-10-docs/conclusiones_municipios.md) | Municipality-by-municipality reading |
-| [Documentation index](docs/README.md) | Map of the repository documentation |
+| [Technical report (PDF)](docs/memoria/memoria.pdf) | Chapters 1-8 and annexes |
+| [Defence deck (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 slides plus 12 backups |
 | [Gold index](data/resultados/README.md) | CSVs and figures that make up the gold layer |
-| [AGENT.md](AGENT.md) and [project.md](openspec/project.md) | Pointers for agents and project status |
+| [AGENT.md](AGENT.md) | Pointers for agents |
 
 ## 13. Glossary
 
