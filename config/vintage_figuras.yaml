@@ -37,6 +37,7 @@ etiquetas:
   transporte_oferta_vs_esfuerzo.png: "Datos: esfuerzo 2024 + GTFS 2026"
   M26_brecha_2024_2026.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
   M26_brecha_n5.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
+  fig-brecha-2026-opaca.png: "Datos: 2024 -> 2026 (diferencia de nivel)"
   M26_ranking_esfuerzo_muestra_2026.png: "Datos: anuncios 2026 + salario 2026 (Tier 2026)"
   G_gaps_limitaciones.png: "Datos: conteos del pipeline (sin año)"
   H5_vpo_terminadas_por_mil.png: "Datos: tasa VPO 2020-2024, por 1.000 hab."
@@ -108,6 +109,9 @@ figuras:
   # Variante para la memoria: solo municipios con n>=5, que es la mediana que
   # cita el texto (la del deck incluye los extremos de n=1 a proposito).
   M26_brecha_n5.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
+  # Copia opaca para el README: mismo grafico, mismo vintage. La original es
+  # transparente y en el tema oscuro de GitHub se perderia el texto oscuro.
+  fig-brecha-2026-opaca.png: {vintage: mixto, fuentes: [alquiler_oficial, anuncios]}
 
   # ---------------------------------------------------------------- flujo
   H5_vpo_terminadas_por_mil.png: {vintage: flujo, fuentes: [vpo_terminadas]}
@@ -155,3 +159,6 @@ sincronizacion:
     fig-ranking-2026.png: docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png
     fig-cobertura-2026.png: docs/presentacion_v2/assets/M26_cobertura.png
     fig-brecha-2026.png: docs/presentacion_v2/assets/M26_brecha_n5.png
+  # Copias opacas del README: no son byte a byte, se aplanan sobre blanco.
+  readme:
+    fig-brecha-2026-opaca.png: docs/presentacion_v2/assets/M26_brecha_n5.png

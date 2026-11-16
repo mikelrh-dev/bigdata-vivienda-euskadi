@@ -3,7 +3,7 @@
 Tres comprobaciones sobre artefactos reales, no sobre el codigo fuente:
 
   1. Cobertura: todo PNG de gold (`data/resultados` + `anexo/`), todo asset del
-     deck y toda figura de la memoria tiene entrada en
+     deck, toda copia del README y toda figura de la memoria tiene entrada en
      `config/vintage_figuras.yaml`.
   2. Sello: el PNG lleva los chunks de texto `Figura`, `Vintage` y
      `Description` con el valor declarado. Sin OCR: se leen con Pillow.
@@ -41,6 +41,7 @@ RES = BASE / "data" / "resultados"
 ANEXO = RES / "anexo"
 ASSETS = BASE / "docs" / "presentacion_v2" / "assets"
 MEM_FIG = BASE / "docs" / "memoria" / "figuras"
+README_ASSETS = BASE / "docs" / "assets" / "readme"
 # Salida intermedia de la capa 2026 (antes de copiarse a assets/).
 VIS_2026 = BASE / "visuals" / "esfuerzo_mercado_2026"
 
@@ -102,6 +103,10 @@ def main() -> int:
         if png.name not in declaradas:
             errores.append(f"asset del deck sin vintage declarado: {png.name}")
 
+    for png in _pngs(README_ASSETS):
+        if png.name not in declaradas:
+            errores.append(f"asset del README sin vintage declarado: {png.name}")
+
     memoria_cfg = (_config().get("sincronizacion") or {}).get("memoria") or {}
     for png in _pngs(MEM_FIG):
         if not png.name.startswith("fig-") or png.name in MEM_SIN_DATOS:
@@ -115,6 +120,7 @@ def main() -> int:
         rutas = [
             p for p in (
                 RES / nombre, ANEXO / nombre, ASSETS / nombre, VIS_2026 / nombre,
+                README_ASSETS / nombre,
             ) if p.exists()
         ]
         if not rutas:
