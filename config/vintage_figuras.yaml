@@ -148,6 +148,17 @@ sincronizacion:
     - g4_distribucion_anuncios.png
     - hist_esfuerzo_18_34_umbral30.png
     - mapa_coroplastico_esfuerzo_18_34.png
+    - M26_top20_esfuerzo_mercado.png
+    - M26_hist_esfuerzo_mercado.png
+    - M26_esfuerzo_por_territorio.png
+    - M26_esfuerzo_por_tipo.png
+    - M26_brecha_2024_2026.png
+    - M26_brecha_n5.png
+    - M26_ic_esfuerzo.png
+    - M26_cobertura.png
+    - M26_ranking_esfuerzo_muestra_2026.png
+    - M26_mapa_coropletico_2026.png
+    - M26_mapa_cobertura.png
   memoria:
     fig-habitaciones.png: data/resultados/H6_habitaciones_mediana_rango.png
     fig-habitaciones-esfuerzo.png: data/resultados/H6b_esfuerzo_habitacion_vs_piso.png
@@ -158,13 +169,13 @@ sincronizacion:
     fig-modalidades.png: data/resultados/H8b_modalidad_mediana_eur_m2.png
     fig-vpo-flujo.png: data/resultados/H5_vpo_terminadas_por_mil.png
     fig-vpo-serie.png: data/resultados/S_serie_vpo_2004_2024.png
-    fig-mapa-2026.png: docs/presentacion_v2/assets/M26_mapa_coropletico_2026.png
-    fig-hist-2026.png: docs/presentacion_v2/assets/M26_hist_esfuerzo_mercado.png
-    fig-ranking-2026.png: docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png
-    fig-cobertura-2026.png: docs/presentacion_v2/assets/M26_cobertura.png
-    fig-brecha-2026.png: docs/presentacion_v2/assets/M26_brecha_n5.png
+    fig-mapa-2026.png: data/resultados/M26_mapa_coropletico_2026.png
+    fig-hist-2026.png: data/resultados/M26_hist_esfuerzo_mercado.png
+    fig-ranking-2026.png: data/resultados/M26_ranking_esfuerzo_muestra_2026.png
+    fig-cobertura-2026.png: data/resultados/M26_cobertura.png
+    fig-brecha-2026.png: data/resultados/M26_brecha_n5.png
   # Copias opacas del README: no son byte a byte, se aplanan sobre blanco.
   readme:
-    fig-brecha-2026-opaca.png: docs/presentacion_v2/assets/M26_brecha_n5.png
-    fig-ranking-2026-opaca.png: docs/presentacion_v2/assets/M26_ranking_esfuerzo_muestra_2026.png
-    fig-cobertura-2026-opaca.png: docs/presentacion_v2/assets/M26_cobertura.png
+    fig-brecha-2026-opaca.png: data/resultados/M26_brecha_n5.png
+    fig-ranking-2026-opaca.png: data/resultados/M26_ranking_esfuerzo_muestra_2026.png
+    fig-cobertura-2026-opaca.png: data/resultados/M26_cobertura.png

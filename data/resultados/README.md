@@ -21,7 +21,8 @@ y no debe citarse como total actual.
 ```
 
 Verificado el 2026-11-11: silver **183/183** ficheros y gold **53/53** artefactos reconstruidos desde
-cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **55/55** (24 CSV + 31 PNG).
+cero con SHA-256 idéntico. Tras añadir la serie de VPO y las figuras 2026, gold publica
+**72/72** artefactos en la raíz (24 CSV + 48 PNG); los 8 PNG de `anexo/` son adicionales.
 
 ## CSV generados desde Mongo (evidencia RA4 / PREPARACION-VISUALIZACION)
 
@@ -47,15 +48,14 @@ cero con SHA-256 idéntico. Tras añadir la serie de VPO, gold son **55/55** (24
 
 ## Figuras y esquema
 
-- 31 PNG en la raíz (A1, A2, B, C, D, E, F, H1-H13, H8b, J, O, P, S, g2-g5, histograma, mapa
-  coroplético, transporte) más 8 PNG en `anexo/`.
+- 48 PNG en la raíz (las 31 anteriores + 11 `M26_*` + 6 de `visuals/`) más 8 PNG en `anexo/`.
 - `H6_habitaciones_mediana_rango.png` — ranking n≥10 con IC95, distribución de los 140 precios
   plausibles y esfuerzo individual sobre salario joven 2026; se copia al deck al ejecutar
   `run_analisis_mongo.py` (`sync_deck=True`).
 - `mapa_esquema_silver.html` — grafo de relaciones entre los 42 CSV silver (PyVis, determinista).
 - `auditoria_lagunas_silver.csv` — **pendiente de materializar** en este checkout: la genera
   `transform/auditar_lagunas_silver.py` (audita los 42 CSV silver) y `transform/run_all.py --check`
-  la reporta como salida que falta. Regenerarla sube el gold de 55 a 56 artefactos.
+  la reporta como salida que falta. Regenerarla sube el gold de 72 a 73 artefactos en la raíz.
 
 ## Vintage (año) de cada figura
 
@@ -66,7 +66,7 @@ sobre el fichero, no sobre el código.
 
 ```bash
 .venv/Scripts/python.exe scripts/verificar_vintage_figuras.py
-# OK  52 figuras declaradas · gold, deck y memoria sellados y coherentes
+# OK  59 figuras declaradas · gold, deck, memoria y README sellados y coherentes
 ```
 
 | Código | Qué significa | Figuras |

@@ -174,7 +174,7 @@ Cada dificultad conocida tiene una decisión tomada y un coste declarado.
 | Tres inventarios: disco, manifiesto y HDFS | Se conservan con propósitos distintos | Hay que explicar la diferencia |
 | HDFS solo guarda raw | Requisito del alcance del reto | Silver y gold no están en HDFS |
 | Dos índices 2026 definidos y no materializados | Se declaran y se dejan sin crear hasta tener ventana | El pipeline 2026 no está optimizado |
-| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 55 a 56 artefactos | Una comprobación queda en rojo |
+| Falta `auditoria_lagunas_silver.csv` | No se regenera para no mover el gold de 72 a 73 artefactos | Una comprobación queda en rojo |
 | Topic legacy `anuncios_inmobiliarios` | No se borra: el clúster es compartido | 1.420 mensajes de prueba conviven con el topic vigente |
 
 La infraestructura también lleva fecha. El 12-11 el `OPEN` de WebHDFS fallaba por DNS del datanode y Kafka no entregaba metadata; el 13-11 la recuperación por SHA devuelve `HDFS_REC OK SHA_TAMANO_IGUALES` y el topic responde con una partición y factor de replicación 1. Una avería de red no se convierte en una afirmación sobre el código.
@@ -361,8 +361,10 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 
 `gold` ejecuta en este orden: `capa_2026` (solo silver), `run_analisis_mongo`,
 `comparativa_mongo`, `assets_presentacion`, `sensibilidad`, `generar_figuras_N` y
-`sincronizar_figuras`. Los assets `M26_*` del deck van en `assets_presentacion` porque leen
-`data/resultados/mongo_tier_confianza.csv`; por eso `regenerar_capa_2026.py` ya no los genera.
+`sincronizar_figuras`. Las figuras `M26_*` se generan en `data/resultados` dentro de
+`assets_presentacion` porque leen `data/resultados/mongo_tier_confianza.csv`; despues
+`sincronizar_figuras` las copia al deck, la memoria y el README. `regenerar_capa_2026.py`
+genera las figuras de `visuals/` directamente en `data/resultados`.
 
 `--fase all` equivale a `silver,quality,gold` y nunca incluye `mongo`, que es destructiva y exige
 `--allow-mongo-write`. `--dry-run` lista el plan sin escribir.

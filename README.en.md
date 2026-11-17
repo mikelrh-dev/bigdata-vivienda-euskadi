@@ -172,7 +172,7 @@ Every known difficulty has a decision taken and a declared cost.
 | Three inventories: disk, manifest and HDFS | Kept for different purposes | The difference must be explained |
 | HDFS keeps raw only | Challenge scope requirement | Silver and gold are not in HDFS |
 | Two 2026 indexes defined but not built | Declared; left unbuilt until there is a maintenance window | The 2026 pipeline is not optimised |
-| Missing `auditoria_lagunas_silver.csv` | Not regenerated so gold stays at 55 artefacts rather than 56 | One check stays red |
+| Missing `auditoria_lagunas_silver.csv` | Not regenerated so gold stays at 72 artefacts rather than 73 | One check stays red |
 | Legacy topic `anuncios_inmobiliarios` | Not deleted: the cluster is shared | 1,420 test messages coexist with the live topic |
 
 Infrastructure also carries dates. On 12 November the WebHDFS `OPEN` failed due to datanode DNS and Kafka returned no metadata; on 13 November recovery by SHA returns `HDFS_REC OK SHA_TAMANO_IGUALES` and the topic answers with one partition and replication factor 1. A network outage does not become a claim about the code.
@@ -360,10 +360,11 @@ cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 ```
 
 `gold` runs, in order: `capa_2026` (silver only), `run_analisis_mongo`, `comparativa_mongo`,
-`assets_presentacion`, `sensibilidad`, `generar_figuras_N` and `sincronizar_figuras`. The deck's
-`M26_*` assets belong to `assets_presentacion` because they read
-`data/resultados/mongo_tier_confianza.csv`; that is why `regenerar_capa_2026.py` no longer generates
-them.
+`assets_presentacion`, `sensibilidad`, `generar_figuras_N` and `sincronizar_figuras`. The
+`M26_*` figures are generated in `data/resultados` inside `assets_presentacion` because they read
+`data/resultados/mongo_tier_confianza.csv`; then `sincronizar_figuras` copies them to the deck,
+the report and the README. `regenerar_capa_2026.py` writes the `visuals/` figures directly to
+`data/resultados`.
 
 `--fase all` equals `silver,quality,gold` and never includes `mongo`, which is destructive and
 requires `--allow-mongo-write`. `--dry-run` prints the plan without writing.

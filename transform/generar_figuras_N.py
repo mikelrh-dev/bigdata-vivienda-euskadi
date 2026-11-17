@@ -628,7 +628,11 @@ def main() -> int:
     regenerar_serie_vpo()
     # Este es el ultimo paso que escribe figuras en gold, asi que deja aqui
     # las copias del deck y de la memoria al dia (config/vintage_figuras.yaml).
-    sincronizar()
+    try:
+        sincronizar()
+    except RuntimeError as exc:
+        print(f"FALLO: {exc}")
+        return 1
     print("Hecho.")
     return 0
 

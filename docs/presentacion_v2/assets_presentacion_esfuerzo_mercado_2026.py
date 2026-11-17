@@ -4,7 +4,7 @@ Estilo Swiss Modern (misma paleta que docs/presentacion_v2/index.html):
   papel #F5F4F0, tinta #121212, muted #6E6B66, acento #C8451B.
 
 Lee los CSV de `data/procesado` (no teclea cifras) y escribe PNG transparente en
-docs/presentacion_v2/assets/ para que compaginen con las diapositivas.
+data/resultados/ para que `sincronizar()` los reparta al deck, la memoria y el README.
 
 Assets:
   - M26_top20_esfuerzo_mercado.png   top con n>=5 y IC95 %
@@ -12,10 +12,12 @@ Assets:
   - M26_esfuerzo_por_territorio.png  mediana por territorio
   - M26_esfuerzo_por_tipo.png        ponderado por anuncios, por tipologia
   - M26_brecha_2024_2026.png         diferencia de nivel por municipio
+  - M26_brecha_n5.png                variante n>=5 para memoria/README
   - M26_ic_esfuerzo.png              intervalos de confianza (n>=5)
   - M26_cobertura.png                cobertura por poblacion 18-34 y territorio
   - M26_mapa_coropletico_2026.png    copia del mapa de esfuerzo
   - M26_mapa_cobertura.png           copia del mapa de n
+  - M26_ranking_esfuerzo_muestra_2026.png  ranking Tier A para memoria/README
 
 No toca raw ni esfuerzo canonico 2024. Capa paralela.
 
@@ -25,7 +27,6 @@ Uso:
 
 from __future__ import annotations
 
-import shutil
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
@@ -38,13 +39,17 @@ import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parents[2]
 PROC = ROOT / "data" / "procesado"
-ASSETS = ROOT / "docs" / "presentacion_v2" / "assets"
-FIGURAS = ROOT / "visuals" / "esfuerzo_mercado_2026"
+RES = ROOT / "data" / "resultados"
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from analysis.vintage_figuras import anotar, metadatos, sincronizar  # noqa: E402
+from analysis.vintage_figuras import (  # noqa: E402
+    anotar,
+    copiar_atomico,
+    metadatos,
+    sincronizar,
+)
 
 PAPER = "#F5F4F0"
 INK = "#121212"
@@ -86,8 +91,8 @@ def _estilo_ax(ax) -> None:
 
 
 def _guardar(fig, nombre: str) -> None:
-    ASSETS.mkdir(parents=True, exist_ok=True)
-    ruta = ASSETS / nombre
+    RES.mkdir(parents=True, exist_ok=True)
+    ruta = RES / nombre
     # PNG transparente: el sello usa el papel del deck para no dejar un hueco.
     anotar(fig, nombre, fondo=PAPER)
     fig.savefig(
@@ -429,16 +434,16 @@ def grafico_ranking_muestra() -> None:
 
 def copiar_mapas() -> None:
     pares = {
-        FIGURAS / "mapa_coropletico_2026.png": "M26_mapa_coropletico_2026.png",
-        FIGURAS / "mapa_cobertura_2026.png": "M26_mapa_cobertura.png",
+        RES / "mapa_coropletico_2026.png": "M26_mapa_coropletico_2026.png",
+        RES / "mapa_cobertura_2026.png": "M26_mapa_cobertura.png",
     }
     for origen, destino in pares.items():
         if not origen.exists():
             print(f"AVISO: falta {origen.name}; ejecuta visuals/mapa_esfuerzo_mercado_2026.py")
             continue
-        ASSETS.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(origen, ASSETS / destino)
-        print(f"OK: {ASSETS / destino}")
+        RES.mkdir(parents=True, exist_ok=True)
+        copiar_atomico(origen, RES / destino)
+        print(f"OK: {RES / destino}")
 
 
 def main() -> int:
@@ -460,8 +465,12 @@ def main() -> int:
     copiar_mapas()
     # Mantiene al dia las copias declaradas en config/vintage_figuras.yaml
     # (memoria incluye los dos mapas 2026). Idempotente.
-    sincronizar()
-    print(f"Assets escritos en {ASSETS}")
+    try:
+        sincronizar()
+    except RuntimeError as exc:
+        print(f"FALLO: {exc}")
+        return 1
+    print(f"Figuras gold escritas en {RES}")
     return 0
 
 

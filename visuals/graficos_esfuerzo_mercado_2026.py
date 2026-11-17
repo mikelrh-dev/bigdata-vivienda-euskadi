@@ -1,7 +1,7 @@
 """Genera visualizaciones del esfuerzo de mercado 2026.
 
 Lee data/procesado/esfuerzo_mercado_2026.csv y escribe PNG en
-visuals/esfuerzo_mercado_2026/:
+data/resultados/:
 
   1. barras_esfuerzo_top20.png   — top 20 municipios por esfuerzo (pct 18-34)
   2. hist_esfuerzo.png           — histograma del esfuerzo (pct 18-34)
@@ -28,7 +28,7 @@ except ImportError as exc:  # pragma: no cover
 
 ROOT = Path(__file__).resolve().parents[1]
 PROC = ROOT / "data" / "procesado"
-OUT = ROOT / "visuals" / "esfuerzo_mercado_2026"
+OUT = ROOT / "data" / "resultados"
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))

@@ -22,7 +22,7 @@ cifra sin declarar su vintage.
 
 from __future__ import annotations
 
-import shutil
+import os
 from pathlib import Path
 from typing import Any
 
@@ -278,17 +278,35 @@ def aplanar_readme(origen: Path, destino: Path, nombre: str) -> None:
     info = PngInfo()
     for clave, valor in metadatos(nombre).items():
         info.add_text(clave, str(valor))
-    plano.save(destino, pnginfo=info)
+    temporal = destino.with_name(f".{destino.name}.tmp")
+    try:
+        plano.save(temporal, format="PNG", pnginfo=info)
+        os.replace(temporal, destino)
+    finally:
+        if temporal.exists():
+            temporal.unlink()
+
+
+def copiar_atomico(origen: Path, destino: Path) -> None:
+    """Copia sin abrir el destino final: evita el EINVAL intermitente de Windows."""
+    temporal = destino.with_name(f".{destino.name}.tmp")
+    try:
+        temporal.write_bytes(origen.read_bytes())
+        os.replace(temporal, destino)
+    finally:
+        if temporal.exists():
+            temporal.unlink()
 
 
 def sincronizar(verbose: bool = True) -> list[Path]:
-    """Copia gold -> deck y gold/assets -> memoria segun el YAML.
+    """Copia gold -> deck, memoria y README segun el YAML.
 
     Ademas regenera las copias opacas del README (`sincronizacion.readme`),
     que no son copias byte a byte: se aplanan sobre fondo claro.
 
     Idempotente. Se ejecuta al final de la cadena gold, cuando ya existen
     todas las figuras (incluidas las que regenera `generar_figuras_N`).
+    Si falta cualquier origen declarado, falla para no dejar copias a medias.
     Devuelve las rutas escritas.
     """
     cfg = _config().get("sincronizacion") or {}
@@ -297,31 +315,31 @@ def sincronizar(verbose: bool = True) -> list[Path]:
     for nombre in cfg.get("deck") or []:
         origen = RES / str(nombre)
         if not origen.exists():
-            if verbose:
-                print(f"AVISO sincronizacion: falta {origen.relative_to(ROOT)}")
-            continue
+            raise RuntimeError(
+                f"sincronizacion incompleta: falta {origen.relative_to(ROOT)}"
+            )
         ASSETS.mkdir(parents=True, exist_ok=True)
         destino = ASSETS / origen.name
-        shutil.copyfile(origen, destino)
+        copiar_atomico(origen, destino)
         escritas.append(destino)
 
     for destino_nombre, origen_rel in (cfg.get("memoria") or {}).items():
         origen = ROOT / str(origen_rel)
         if not origen.exists():
-            if verbose:
-                print(f"AVISO sincronizacion: falta {origen.relative_to(ROOT)}")
-            continue
+            raise RuntimeError(
+                f"sincronizacion incompleta: falta {origen.relative_to(ROOT)}"
+            )
         MEM_FIG.mkdir(parents=True, exist_ok=True)
         destino = MEM_FIG / str(destino_nombre)
-        shutil.copyfile(origen, destino)
+        copiar_atomico(origen, destino)
         escritas.append(destino)
 
     for destino_nombre, origen_rel in (cfg.get("readme") or {}).items():
         origen = ROOT / str(origen_rel)
         if not origen.exists():
-            if verbose:
-                print(f"AVISO sincronizacion: falta {origen.relative_to(ROOT)}")
-            continue
+            raise RuntimeError(
+                f"sincronizacion incompleta: falta {origen.relative_to(ROOT)}"
+            )
         README_ASSETS.mkdir(parents=True, exist_ok=True)
         destino = README_ASSETS / str(destino_nombre)
         aplanar_readme(origen, destino, str(destino_nombre))

@@ -63,6 +63,22 @@ def _pngs(carpeta: Path) -> list[Path]:
     return sorted(p for p in carpeta.glob("*.png"))
 
 
+def _readme_aplanado_igual(origen: Path, copia: Path) -> bool:
+    """Comprueba que el PNG opaco es el aplanado exacto de la fuente RGBA."""
+    try:
+        from PIL import Image, ImageChops
+
+        with Image.open(origen) as src, Image.open(copia) as dst:
+            src_rgba = src.convert("RGBA")
+            fondo = Image.new("RGBA", src_rgba.size, (255, 255, 255, 255))
+            plano = Image.alpha_composite(fondo, src_rgba).convert("RGB")
+            if dst.size != plano.size:
+                return False
+            return ImageChops.difference(plano, dst.convert("RGB")).getbbox() is None
+    except Exception:  # noqa: BLE001 - un PNG ilegible es un fallo de la copia
+        return False
+
+
 def _leer_metadatos(ruta: Path) -> dict[str, str]:
     try:
         from PIL import Image
@@ -115,6 +131,15 @@ def main() -> int:
             continue
         avisos.append(f"figura de memoria no sincronizada desde gold: {png.name}")
 
+    # 1b. Las figuras de datos deben estar en gold; las opacas del README son derivadas.
+    sync_cfg = (_config().get("sincronizacion") or {})
+    readme_dest = set((sync_cfg.get("readme") or {}).keys())
+    for nombre in sorted(declaradas):
+        if nombre in readme_dest:
+            continue
+        if not (RES / nombre).exists() and not (ANEXO / nombre).exists():
+            errores.append(f"figura declarada fuera de gold: {nombre}")
+
     # --------------------------------------------------------- 2. sello PNG
     for nombre in sorted(declaradas):
         rutas = [
@@ -124,7 +149,7 @@ def main() -> int:
             ) if p.exists()
         ]
         if not rutas:
-            avisos.append(f"declarada pero no generada en este checkout: {nombre}")
+            errores.append(f"declarada pero no generada en este checkout: {nombre}")
             continue
         esperado = codigo(nombre)
         # {rango} se resuelve contra Mongo; sin conexion no se puede comparar.
@@ -165,6 +190,31 @@ def main() -> int:
                     "texto(s); ajustar el generador"
                 )
 
+    # 2b. Las copias declaradas tienen que ser exactas, no solo existir.
+    for nombre in sync_cfg.get("deck") or []:
+        origen = RES / str(nombre)
+        copia = ASSETS / str(nombre)
+        if not origen.exists() or not copia.exists():
+            errores.append(f"copia de deck incompleta: {nombre}")
+        elif origen.read_bytes() != copia.read_bytes():
+            errores.append(f"copia de deck distinta de gold: {nombre}")
+
+    for destino, origen_rel in (sync_cfg.get("memoria") or {}).items():
+        origen = BASE / str(origen_rel)
+        copia = MEM_FIG / str(destino)
+        if not origen.exists() or not copia.exists():
+            errores.append(f"copia de memoria incompleta: {destino}")
+        elif origen.read_bytes() != copia.read_bytes():
+            errores.append(f"copia de memoria distinta de gold: {destino}")
+
+    for destino, origen_rel in (sync_cfg.get("readme") or {}).items():
+        origen = BASE / str(origen_rel)
+        copia = README_ASSETS / str(destino)
+        if not origen.exists() or not copia.exists():
+            errores.append(f"copia de README incompleta: {destino}")
+        elif not _readme_aplanado_igual(origen, copia):
+            errores.append(f"copia de README no es el aplanado de gold: {destino}")
+
     # ------------------------------------------------- 3. coherencia contrato
     for nombre, entrada in declaradas.items():
         cod = str(entrada.get("vintage"))
@@ -201,7 +251,7 @@ def main() -> int:
     if errores:
         print(f"\n{len(errores)} fallo(s) sobre {total} figuras declaradas")
         return 1
-    print(f"OK  {total} figuras declaradas · gold, deck y memoria sellados y coherentes")
+    print(f"OK  {total} figuras declaradas · gold, deck, memoria y README sellados y coherentes")
     return 0
 
 

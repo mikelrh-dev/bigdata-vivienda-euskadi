@@ -11,7 +11,7 @@ por municipio, coloreados por esfuerzo. Municipios sin datos en gris claro.
 NO toca raw ni esfuerzo canonico 2024.
 
 Guarda:
-    visuals/esfuerzo_mercado_2026/mapa_coropletico_2026.png
+    data/resultados/mapa_coropletico_2026.png
 
 Uso:
     python visuals/mapa_esfuerzo_mercado_2026.py
@@ -36,7 +36,7 @@ except ImportError as exc:  # pragma: no cover
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROC = PROJECT_ROOT / "data" / "procesado"
-OUT_DIR = PROJECT_ROOT / "visuals" / "esfuerzo_mercado_2026"
+OUT_DIR = PROJECT_ROOT / "data" / "resultados"
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))

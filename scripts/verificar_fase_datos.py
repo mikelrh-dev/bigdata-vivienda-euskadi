@@ -186,7 +186,7 @@ def main() -> int:
           and {"codigo_ine", "esfuerzo_2024_pct_18_34", "esfuerzo_2026_pct_18_34", "brecha_pp_18_34"} <= set(df_brecha.columns),
           f"{len(df_brecha)} filas")
 
-    mapa = ROOT / "visuals" / "esfuerzo_mercado_2026" / "mapa_coropletico_2026.png"
+    mapa = RES / "mapa_coropletico_2026.png"
     check("22 mapa coroplético 2026 PNG", mapa.exists() and mapa.stat().st_size > 0,
           f"{mapa.stat().st_size} bytes")
 

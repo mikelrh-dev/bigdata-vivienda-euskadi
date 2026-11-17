@@ -64,6 +64,12 @@ SALIDAS = [
     RES / "cobertura_representatividad_2026.csv",
     RES / "validacion_alquiler_2024_serpavi.csv",
     RES / "validacion_portales_2026.csv",
+    RES / "mapa_coropletico_2026.png",
+    RES / "mapa_cobertura_2026.png",
+    RES / "barras_esfuerzo_top20.png",
+    RES / "hist_esfuerzo.png",
+    RES / "barras_territorio.png",
+    RES / "scatter_precio_vs_esfuerzo.png",
 ]
 
 

@@ -24,7 +24,11 @@ from analysis.vintage_figuras import sincronizar  # noqa: E402
 
 
 def main() -> int:
-    escritas = sincronizar()
+    try:
+        escritas = sincronizar()
+    except RuntimeError as exc:
+        print(f"FALLO: {exc}")
+        return 1
     for ruta in escritas:
         print(f"OK  {ruta.relative_to(ROOT)}")
     if not escritas:
