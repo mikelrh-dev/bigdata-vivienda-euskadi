@@ -395,7 +395,7 @@ def main() -> int:
     add("raw manifest", f"{raw} SHA")
     add("silver", f"{silver}/183")
     add("gold", f"{gold}/{gold}")
-    add("353 HDFS", "353 objetos")
+    add("355 HDFS", "355 objetos")
     add("351 canonicos", "351 canónicos")
     mongo = _mongo_counts()
     if mongo is None:
