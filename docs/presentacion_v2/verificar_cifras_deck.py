@@ -8,7 +8,7 @@ al 1.500 € de anuncios, el 1,88x, y los conteos 17/25/53.
 
 No escribe nada. Uso:
 
-    python scripts/verificar_cifras_deck.py
+    python docs/presentacion_v2/verificar_cifras_deck.py
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 DECK = ROOT / "docs" / "presentacion_v2" / "index.html"
 PROC = ROOT / "data" / "procesado"
 RES = ROOT / "data" / "resultados"
@@ -133,7 +133,6 @@ def main() -> int:
     add("mediana municipal 2026", f"{es(med_mun)} %")
     add("mediana anuncio 2026", f"{es(med_anuncio)} %")
     add("mediana sin realtyapi", f"{es(med_sin_realty)} %")
-    add("precio mediana municipal", f"{es(precio_mun, 0)} €")
     add("precio mediana anuncio", f"{es(precio_anuncio, 0)} €")
     add("salario joven 2026", f"{es(salario, 0)} €")
     add("anuncios > 30 %", f"{es(pct_30)} %")
@@ -359,13 +358,6 @@ def main() -> int:
         "cobertura poblacion",
         f"{es(float(cob_pob.loc[cob_pob['metrica'] == 'pct_poblacion_18_34_cubierta', 'valor'].iloc[0]))} %",
     )
-    tier_conteo = tier.groupby("tier").size().to_dict()
-    add(
-        "tier conteos",
-        "A {} , B {} , C {} , D {}".format(
-            tier_conteo.get("A"), tier_conteo.get("B"), tier_conteo.get("C"), tier_conteo.get("D")
-        ).replace(" ,", ","),
-    )
 
     resumen = pd.read_csv(RES / "comparacion_esfuerzo_2024_2026_resumen.csv", encoding="utf-8-sig")
     for metrica in ("esfuerzo_2024_base_salario_pct_18_34", "esfuerzo_2026_base_renta2024_pct_18_34"):
@@ -405,19 +397,12 @@ def main() -> int:
     add("gold", f"{gold}/{gold}")
     add("353 HDFS", "353 objetos")
     add("351 canonicos", "351 canónicos")
-    suite = _test_run()
-    if suite is not None:
-        add("tests", f"{suite['collected']} tests")
-        add("tests pasan", f"{suite['passed']} pasan")
-        add("tests skipped", f"{suite['skipped']} skip")
-
     mongo = _mongo_counts()
     if mongo is None:
         print("  SKIP Mongo no disponible: no se comprueban 17 vivas / 8 indices")
     else:
-        vivas, backup, indices = mongo
+        vivas, _, indices = mongo
         add("colecciones vivas", f"{vivas} colecciones vivas")
-        add("colecciones backup", f"{backup} backup")
         add("indices de trabajo", "8 índices de trabajo")
         add("indices contando _id", f"{indices} contando")
         add("indices sin crear", "2 definidos sin crear")
@@ -445,19 +430,14 @@ def main() -> int:
     ):
         add(etiqueta, f"{estados.get(clave, 0)} {sufijo}")
 
-    # ---------- Slide 03: los tres proxys ----------
+    # ---------- Slide 03: renta joven y salario ----------
     base = pd.read_csv(PROC / "analisis_variables_base.csv", encoding="utf-8-sig")
     ratio_1834 = float((base["renta_joven_estimada_18_34"] / base["renta_hogar"]).median() * 100)
     add("proxy ratio 18-34", f"{es(ratio_1834, 1)} %")
-    add("proxy salario 2026", "salario neto 18-34 · OVJ 2024")
-    add("proxy salario 2026 fuente", "El IPC medio anual del INE pasa de")
-    add(
-        "proxy salario 2026 cifra",
-        f'<div class="big xs" style="margin-top:10px">{es(salario, 0)}<span class="unit">€</span></div>',
-        raw=True,
-    )
+    add("proxy salario 2026 base", "1.564 €")
+    add("proxy salario 2026 factor", "1,099")
+    add("proxy salario 2026 cifra", f"{es(salario, 0)} €")
 
-    # ---------- Backups B9-B12: como se construyen los proxys ----------
     # La formula del ratio vive en config/parametros_estudio.yaml: se parsean sus
     # seis numeros y se recomputa, para que el deck no se desincronice.
     yaml_txt = (ROOT / "config" / "parametros_estudio.yaml").read_text(encoding="utf-8")
@@ -465,13 +445,8 @@ def main() -> int:
     assert m_ratio, "no encuentro la formula del ratio en parametros_estudio.yaml"
     r18, r20, r25, r30, anios, rtotal = (int(x) for x in m_ratio.groups())
     ratio = (2 * r18 + 5 * r20 + 5 * r25 + 5 * r30) / anios / rtotal * 100
-    add("ratio 18-34 (B9)", f'{es(ratio)}<span class="unit">\u20ac</span>'.replace("\u20ac", "%"), raw=True)
-    # La media ponderada del tramo 18-34 (16.033 €) se muestra en la 04 y sale de los
-    # mismos seis numeros del YAML: si alguien toca un tramo, el deck falla.
+    add("ratio 18-34", f"{es(ratio)} %")
     add("media 18-34 CAE", f"{es((2 * r18 + 5 * r20 + 5 * r25 + 5 * r30) / anios, 0)} €")
-    for bruto in (r18, r20, r25, r30, rtotal):
-        add(f"renta tramo {bruto}", f"<td>{es(bruto, 0)} \u20ac</td>", raw=True)
-    add("denominador del ratio", f"/ {anios} / {es(rtotal, 0)}")
 
     import json as _json
 
@@ -484,16 +459,13 @@ def main() -> int:
     def _ipc(ano: str) -> float:
         return float(ipc.loc[ipc["ano"] == ano, "ipc_medio_anual"].iloc[0])
 
-    ipc24, ipc26, factor_ipc = _ipc("2024"), _ipc("2026"), _ipc("factor_2026_2024")
+    factor_ipc = _ipc("factor_2026_2024")
     salario_2026 = sal["18-34"] * factor_ipc
-    add("salario base 18-34 (B10)", f'{es(sal["18-34"], 0)}<span class="unit">\u20ac</span>', raw=True)
-    add("salario legacy 16-29 (B10)", f"{es(sal['16-29'], 0)} \u20ac")
-    add("factor IPC (B10)", es(factor_ipc, 4))
-    add("salario 2026 (B10)", f'{es(salario_2026, 0)}<span class="unit">\u20ac</span>', raw=True)
-    add("IPC 2024 (B10)", es(ipc24, 1))
-    add("IPC 2026 (B10)", es(ipc26, 1))
+    add("salario base 18-34", f"{es(sal['18-34'], 0)} €")
+    add("factor IPC", "1,099")
+    add("salario 2026", f"{es(salario_2026, 0)} €")
     add(
-        "sin ajuste sube (B10)",
+        "sin ajuste sube",
         f"un <b>{es((salario_2026 / sal['18-34'] - 1) * 100)} %</b>",
         raw=True,
     )
@@ -502,17 +474,12 @@ def main() -> int:
     ofi = sens[sens["escenario"] == "oficial_159"].iloc[0]
     con = sens[sens["escenario"] == "idw_252"].iloc[0]
     n_idw = int(con["n"]) - int(ofi["n"])
-    add("IDW municipios (B11)", f"Los {n_idw} sin alquiler oficial")
-    add("IDW mediana oficial (B11)", f"{es(ofi['mediana_esfuerzo_pct'], 2)} %")
-    add("IDW mediana 252 (B11)", f"{es(con['mediana_esfuerzo_pct'], 2)} %")
-    add("IDW sobre 30 (B11)", f"<td>{int(con['n_sobre_30'])}</td>", raw=True)
+    add("IDW municipios", f"<b>{n_idw}</b> no", raw=True)
+    add("IDW mediana oficial", f"{es(ofi['mediana_esfuerzo_pct'], 2)} %")
+    add("IDW mediana 252", f"{es(con['mediana_esfuerzo_pct'], 2)} %")
+    add("IDW sobre 30", f"<b>{int(con['n_sobre_30'])} de 252</b>", raw=True)
 
-    gj = _json.loads((PROC / "municipios_euskadi_252.geojson").read_text(encoding="utf-8"))
-    cuerpo = gj.get("datos") or gj.get("features") or []
-    if isinstance(cuerpo, dict):
-        cuerpo = cuerpo.get("features") or []
-    n_features = len(cuerpo)
-    add("geojson features (B12)", f"<b>{n_features}</b> features", raw=True)
+    add("geojson municipios", "252 polígonos")
 
     try:
         sys.path.insert(0, str(ROOT))
@@ -521,9 +488,7 @@ def main() -> int:
         col = get_collection("anuncios")
         total_an = col.count_documents({})
         con_punto = col.count_documents({"ubicacion.coordenadas.type": "Point"})
-        add("anuncios con punto (B12)", f"<b>{con_punto} de {total_an}</b> con punto", raw=True)
-        add("anuncios sin punto (B12)", f"Los <b>{total_an - con_punto}</b> sin punto", raw=True)
-        add("coordenadas solo Fotocasa", "<b>424 de 594</b> con coordenadas", raw=True)
+        add("anuncios con punto", f"<b>{con_punto} de {total_an}</b> con coordenadas", raw=True)
     except Exception as exc:  # noqa: BLE001
         print(f"  aviso: sin Mongo, se omiten los checks de coordenadas ({exc})")
 

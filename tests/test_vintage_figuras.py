@@ -24,7 +24,7 @@ GENERADORES = (
     ROOT / "transform" / "generar_figuras_N.py",
     ROOT / "visuals" / "mapa_esfuerzo_mercado_2026.py",
     ROOT / "visuals" / "graficos_esfuerzo_mercado_2026.py",
-    ROOT / "visuals" / "assets_presentacion_esfuerzo_mercado_2026.py",
+    ROOT / "docs" / "presentacion_v2" / "assets_presentacion_esfuerzo_mercado_2026.py",
 )
 
 PNG_RE = re.compile(r'"([A-Za-z0-9_]+\.png)"')

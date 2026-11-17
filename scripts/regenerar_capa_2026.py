@@ -15,7 +15,7 @@ Pasos, en orden estricto (fail-fast: el primero que falla detiene la cadena):
   7. analysis/validar_alquiler_serpavi.py
   8. visuals/mapa_esfuerzo_mercado_2026.py
   9. visuals/graficos_esfuerzo_mercado_2026.py
- 10. visuals/assets_presentacion_esfuerzo_mercado_2026.py
+ 10. docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py
 
 Al final imprime el SHA-256 de cada salida para poder comparar ejecuciones.
 
@@ -49,7 +49,7 @@ PASOS: list[tuple[str, bool]] = [
     ("analysis/validar_portales_2026.py", False),
     ("visuals/mapa_esfuerzo_mercado_2026.py", False),
     ("visuals/graficos_esfuerzo_mercado_2026.py", False),
-    ("visuals/assets_presentacion_esfuerzo_mercado_2026.py", True),  # presentacion
+    ("docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py", True),  # presentacion
 ]
 
 SALIDAS = [
