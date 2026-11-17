@@ -4,19 +4,19 @@
 
 `bigdata-vivienda-euskadi` es un pipeline de datos de principio a fin: extrae 1.828 anuncios y
 series públicas, los congela con hash, los modela en MongoDB y produce las cifras de un informe,
-un deck de 26 diapositivas y este README. Ninguna cifra está escrita a mano; un verificador compara
-159 comprobaciones contra los CSV del gold y falla si algo deja de cuadrar.
+un deck de 30 diapositivas y este README. Ninguna cifra está escrita a mano; un verificador compara
+147 comprobaciones contra los CSV del gold y falla si algo deja de cuadrar.
 
-[English version](README.en.md) · Última revisión: 2026-11-16
+[English version](README.en.md) · Última revisión: 2026-11-17
 
 [![CI](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml)
 
 | | |
 |---|---|
 | Stack | Python 3.12, MongoDB 9.0.2, Kafka, HDFS/WebHDFS, pandas, matplotlib |
-| Escala | 355 ficheros raw (895 MB en HDFS), 183 entradas silver, 17 colecciones, 55 artefactos gold |
-| Calidad | 298 tests, 159/159 comprobaciones de cifras, 56 figuras selladas por vintage |
-| Entregables | Memoria en 4 formatos, deck de 26 diapositivas + 12 backups, auditoría v13 (2026-11-15): 184/190 (96,8 %), SBD 100 %, Tema 8 9,40/10 |
+| Escala | 355 ficheros raw (895 MB en HDFS), 183 entradas silver, 17 colecciones, 80 artefactos gold (72 raíz + 8 anexo) |
+| Calidad | 311 tests, 146/147 comprobaciones de cifras, 56 figuras selladas por vintage |
+| Entregables | Memoria en 4 formatos, deck de 30 diapositivas, auditoría v13 (2026-11-15): 184/190 (96,8 %), SBD 100 %, Tema 8 9,40/10 |
 
 ## 1. El problema, en una cifra
 
@@ -195,7 +195,7 @@ flowchart LR
     raw["raw inmutable<br/>355 ficheros con SHA"]
     silver["silver<br/>183 entradas"]
     mongo["MongoDB<br/>17 colecciones"]
-    gold["gold<br/>55 artefactos"]
+    gold["gold<br/>80 artefactos"]
     deck["Memoria, deck y README"]
     hdfs["HDFS<br/>353 objetos"]
 
@@ -294,8 +294,8 @@ batch e idempotente por lotes con `replace_collection`.
 | Ingeniería de datos | DAG declarativo de 40 nodos con orden topológico y `--check` de staleness por SHA |
 | Modelado NoSQL | 17 colecciones, embebido frente a referenciado, índices ESR y `explain()` medido |
 | Reproducibilidad | 355 SHA de raw, 183 de silver, huella del gold idéntica en dos pasadas |
-| Calidad | 298 tests, gate extremo a extremo offline, verificación de gobernanza y de vintage |
-| Comunicación técnica | Memoria en Markdown, HTML, DOCX y PDF, deck de 26 diapositivas, auditoría contra criterios |
+| Calidad | 311 tests, gate extremo a extremo offline, verificación de gobernanza y de vintage |
+| Comunicación técnica | Memoria en Markdown, HTML, DOCX y PDF, deck de 30 diapositivas, auditoría contra criterios |
 
 ## 10. Que no te lo creas
 
@@ -311,10 +311,10 @@ batch e idempotente por lotes con `replace_collection`.
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py
 ```
 
-| Comando | Salida a 2026-11-15 |
+| Comando | Salida a 2026-11-17 |
 |---|---|
-| `pytest tests` | `298 passed, 2 skipped` |
-| `verificar_cifras_deck.py` | **159/159** comprobaciones contra CSV gold, fórmula del ratio, GeoJSON y conteos de Mongo |
+| `pytest tests` | `309 passed, 2 skipped` |
+| `verificar_cifras_deck.py` | **146/147** comprobaciones contra CSV gold, fórmula del ratio, GeoJSON y conteos de Mongo |
 | `verificar_vintage_figuras.py` | `56 figuras declaradas · gold, deck y memoria sellados y coherentes` |
 | `verificar_gobernanza.py` | `TODO OK`: 53 cabeceras / 49 con ID, 47 scripts, 183 silver, 11 pipelines |
 | `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHA, 183 silver, 17 colecciones, 0 duplicados) |
@@ -391,7 +391,7 @@ assets del deck. Este ultimo necesita que antes se haya ejecutado `analysis/run_
 | `analysis/` | 11 pipelines, consultas, índices y análisis de sensibilidad |
 | `scripts/` | Orquestador por fases y gates de verificación |
 | `docs/memoria/` | Memoria técnica en PDF con figuras selladas |
-| `docs/presentacion_v2/` | Deck de defensa en PDF: 26 diapositivas y 12 backups |
+| `docs/presentacion_v2/` | Deck de defensa en PDF: 30 diapositivas |
 | `data/resultados/README.md` | Índice del gold y de los 8 CSV `mongo_*` |
 
 ### Documentación viva
@@ -399,7 +399,7 @@ assets del deck. Este ultimo necesita que antes se haya ejecutado `analysis/run_
 | Documento | Qué contiene |
 |---|---|
 | [Memoria técnica (PDF)](docs/memoria/memoria.pdf) | Capítulos 1-8 y anexos |
-| [Deck de defensa (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 diapositivas más 12 backups |
+| [Deck de defensa (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 30 diapositivas |
 | [Manifiesto de raw](docs/raw_manifest_sha256.txt) | SHA-256 de los 355 ficheros de origen |
 | [Baseline del gold](docs/baseline_gold_sha256.json) | Huella con la que se comprueba la reproducibilidad |
 | [Matriz de comparabilidad](docs/matriz-comparabilidad.md) | Qué métrica es comparable con qué y por qué |

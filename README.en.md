@@ -4,19 +4,19 @@
 
 `bigdata-vivienda-euskadi` is an end-to-end data pipeline: it extracts 1,828 rental listings and
 public series, freezes them with a hash, models them in MongoDB and produces the figures behind a
-report, a 26-slide defence deck and this README. No figure is typed by hand; a verifier compares 159
+report, a 30-slide defence deck and this README. No figure is typed by hand; a verifier compares 147
 checks against the gold CSVs and fails when anything stops matching.
 
-[Versión en español](README.md) · Last review: 2026-11-16
+[Versión en español](README.md) · Last review: 2026-11-17
 
 [![CI](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/mikelrh-dev/bigdata-vivienda-euskadi/actions/workflows/quality-gate.yml)
 
 | | |
 |---|---|
 | Stack | Python 3.12, MongoDB 9.0.2, Kafka, HDFS/WebHDFS, pandas, matplotlib |
-| Scale | 355 raw files (895 MB in HDFS), 183 silver entries, 17 collections, 55 gold artefacts |
-| Quality | 298 tests, 159/159 figure checks, 56 figures sealed by vintage |
-| Deliverables | Report in 4 formats, 26-slide deck plus 12 backups, v13 audit (2026-11-15): 184/190 (96.8 %), SBD 100 %, Tema 8 9.40/10 |
+| Scale | 355 raw files (895 MB in HDFS), 183 silver entries, 17 collections, 80 gold artefacts (72 root + 8 annex) |
+| Quality | 311 tests, 146/147 figure checks, 56 figures sealed by vintage |
+| Deliverables | Report in 4 formats, 30-slide deck, v13 audit (2026-11-15): 184/190 (96.8 %), SBD 100 %, Tema 8 9.40/10 |
 
 ## 1. The problem in one number
 
@@ -193,7 +193,7 @@ flowchart LR
     raw["raw, immutable<br/>355 files with SHA"]
     silver["silver<br/>183 entries"]
     mongo["MongoDB<br/>17 collections"]
-    gold["gold<br/>55 artefacts"]
+    gold["gold<br/>80 artefacts"]
     deck["Report, deck and README"]
     hdfs["HDFS<br/>353 objects"]
 
@@ -293,8 +293,8 @@ batch and idempotent per batch through `replace_collection`.
 | Data engineering | Declarative 40-node DAG with topological ordering and SHA-based staleness checks |
 | NoSQL modelling | 17 collections, embedded versus referenced, ESR indexes and measured `explain()` |
 | Reproducibility | 355 raw SHAs, 183 silver hashes, gold fingerprint identical across two runs |
-| Quality | 298 tests, offline end-to-end gate, governance and vintage verification |
-| Technical communication | Report in Markdown, HTML, DOCX and PDF, 26-slide deck, audit against the rubric |
+| Quality | 311 tests, offline end-to-end gate, governance and vintage verification |
+| Technical communication | Report in Markdown, HTML, DOCX and PDF, 30-slide deck, audit against the rubric |
 
 ## 10. Do not take my word for it
 
@@ -310,10 +310,10 @@ batch and idempotent per batch through `replace_collection`.
 .venv/Scripts/python.exe scripts/verificar_fase_datos.py
 ```
 
-| Command | Output as of 2026-11-15 |
+| Command | Output as of 2026-11-17 |
 |---|---|
-| `pytest tests` | `298 passed, 2 skipped` |
-| `verificar_cifras_deck.py` | **159/159** checks against gold CSVs, the ratio formula, GeoJSON and Mongo counts |
+| `pytest tests` | `309 passed, 2 skipped` |
+| `verificar_cifras_deck.py` | **146/147** checks against gold CSVs, the ratio formula, GeoJSON and Mongo counts |
 | `verificar_vintage_figuras.py` | `56 figures declared · gold, deck and report sealed and consistent` |
 | `verificar_gobernanza.py` | `TODO OK`: 53 headers / 49 with ID, 47 scripts, 183 silver, 11 pipelines |
 | `gate_extremo_a_extremo.py --offline` | `RESULTADO gate: OK` (355 SHAs, 183 silver, 17 collections, 0 duplicates) |
@@ -391,7 +391,7 @@ assets. The latter requires `analysis/run_analisis_mongo.py` to have run first.
 | `analysis/` | 11 pipelines, queries, indexes and sensitivity analysis |
 | `scripts/` | Phase orchestrator and verification gates |
 | `docs/memoria/` | Technical report as PDF with sealed figures |
-| `docs/presentacion_v2/` | Defence deck as PDF: 26 slides and 12 backups |
+| `docs/presentacion_v2/` | Defence deck as PDF: 30 slides |
 | `data/resultados/README.md` | Gold index and the 8 `mongo_*` CSVs |
 
 ### Live documentation
@@ -399,7 +399,7 @@ assets. The latter requires `analysis/run_analisis_mongo.py` to have run first.
 | Document | Contents |
 |---|---|
 | [Technical report (PDF)](docs/memoria/memoria.pdf) | Chapters 1-8 and annexes |
-| [Defence deck (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 26 slides plus 12 backups |
+| [Defence deck (PDF)](docs/presentacion_v2/presentacion_v2.pdf) | 30 slides |
 | [Raw manifest](docs/raw_manifest_sha256.txt) | SHA-256 of the 355 source files |
 | [Gold baseline](docs/baseline_gold_sha256.json) | Fingerprint used to check reproducibility |
 | [Comparability matrix](docs/matriz-comparabilidad.md) | Which metric is comparable with which, and why |
