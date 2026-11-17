@@ -322,7 +322,7 @@ batch and idempotent per batch through `replace_collection`.
 | `transform/run_all.py --check` | All `[OK]` except `auditoria_lagunas_silver.csv`, which exits with rc 1 |
 | `verificar_fase_datos.py` | 21 PASS and **1 known FAIL 07**: zero-unemployment in Aramaio 0.28 / Gaintza 1.45 / Usansolo 3.26 |
 
-The sources under `docs/` and `openspec/` are not versioned: they live in the local checkout, which is
+The sources under `docs/` are not versioned: they live in the local checkout, which is
 what these verifiers require.
 
 The known failure is documented without imputation, and so are the gaps: 2 of the 10
@@ -405,7 +405,6 @@ assets. The latter requires `analysis/run_analisis_mongo.py` to have run first.
 | [Comparability matrix](docs/matriz-comparabilidad.md) | Which metric is comparable with which, and why |
 | [Docs index](docs/README.md) | What remains versioned under `docs/` |
 | [Gold index](data/resultados/README.md) | CSVs and figures that make up the gold layer |
-| [AGENT.md](AGENT.md) | Pointers for agents |
 
 ## 13. Glossary
 

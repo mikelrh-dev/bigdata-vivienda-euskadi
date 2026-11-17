@@ -323,7 +323,7 @@ batch e idempotente por lotes con `replace_collection`.
 | `transform/run_all.py --check` | Todo `[OK]` salvo `auditoria_lagunas_silver.csv`, que sale con rc 1 |
 | `verificar_fase_datos.py` | 21 PASS y **1 FAIL 07 conocido**: paro-cero en Aramaio 0,28 / Gaintza 1,45 / Usansolo 3,26 |
 
-Las fuentes de `docs/` y `openspec/` no se versionan: viven en el checkout local, que es el que
+Las fuentes de `docs/` no se versionan: viven en el checkout local, que es el que
 requieren estos verificadores.
 
 El fallo conocido está documentado sin imputar, y los huecos también: faltan 2 de los 10 índices de
@@ -405,7 +405,6 @@ assets del deck. Este ultimo necesita que antes se haya ejecutado `analysis/run_
 | [Matriz de comparabilidad](docs/matriz-comparabilidad.md) | Qué métrica es comparable con qué y por qué |
 | [Índice de docs](docs/README.md) | Qué queda versionado en `docs/` |
 | [Índice del gold](data/resultados/README.md) | CSV y figuras que componen el gold |
-| [AGENT.md](AGENT.md) | Punteros para agentes |
 
 ## 13. Glosario
 
