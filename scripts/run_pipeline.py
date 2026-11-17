@@ -113,7 +113,7 @@ FASES: dict[str, Fase] = {
         # Assets del deck: leen la capa 2026 y mongo_tier_confianza.csv.
         Paso(
             "assets_presentacion",
-            _py("docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py"),
+            _py("scripts/assets_presentacion_esfuerzo_mercado_2026.py"),
         ),
         Paso("sensibilidad", _py("analysis/sensibilidad.py")),
         Paso("generar_figuras_N", _py("transform/generar_figuras_N.py")),

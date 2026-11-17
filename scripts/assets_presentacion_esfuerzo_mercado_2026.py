@@ -22,7 +22,7 @@ Assets:
 No toca raw ni esfuerzo canonico 2024. Capa paralela.
 
 Uso:
-    python docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py
+    python scripts/assets_presentacion_esfuerzo_mercado_2026.py
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PROC = ROOT / "data" / "procesado"
 RES = ROOT / "data" / "resultados"
 

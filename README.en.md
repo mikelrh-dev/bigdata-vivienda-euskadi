@@ -371,7 +371,7 @@ requires `--allow-mongo-write`. `--dry-run` prints the plan without writing.
 
 If you only need to rebuild the 2026 layer, use `--fase gold` (recommended: it also runs analysis
 and assets) or, separately, `python scripts/regenerar_capa_2026.py` for the CSVs and base figures
-and then `python docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py` for the deck
+and then `python scripts/assets_presentacion_esfuerzo_mercado_2026.py` for the deck
 assets. The latter requires `analysis/run_analisis_mongo.py` to have run first.
 
 | Symptom | Cause | Action |

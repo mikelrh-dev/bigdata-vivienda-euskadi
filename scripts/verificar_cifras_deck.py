@@ -8,7 +8,7 @@ al 1.500 € de anuncios, el 1,88x, y los conteos 17/25/53.
 
 No escribe nada. Uso:
 
-    python docs/presentacion_v2/verificar_cifras_deck.py
+    python scripts/verificar_cifras_deck.py
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 DECK = ROOT / "docs" / "presentacion_v2" / "index.html"
 PROC = ROOT / "data" / "procesado"
 RES = ROOT / "data" / "resultados"

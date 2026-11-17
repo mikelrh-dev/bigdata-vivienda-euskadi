@@ -371,7 +371,7 @@ genera las figuras de `visuals/` directamente en `data/resultados`.
 
 Si solo quieres rehacer la capa 2026, usa `--fase gold` (recomendado: deja tambien analisis y
 assets) o, por separado, `python scripts/regenerar_capa_2026.py` para CSV y figuras base y
-despues `python docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py` para los
+despues `python scripts/assets_presentacion_esfuerzo_mercado_2026.py` para los
 assets del deck. Este ultimo necesita que antes se haya ejecutado `analysis/run_analisis_mongo.py`.
 
 | Síntoma | Causa | Acción |
