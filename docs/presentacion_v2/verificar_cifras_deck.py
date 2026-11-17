@@ -407,6 +407,18 @@ def main() -> int:
         add("indices contando _id", f"{indices} contando")
         add("indices sin crear", "2 definidos sin crear")
 
+    # ---------- D26: limpieza y transformación ----------
+    uni = pd.read_csv(PROC / "anuncios_unificados.csv", encoding="utf-8-sig", dtype=str)
+    faltan = uni[["precio_eur", "superficie_m2", "habitaciones"]].isna()
+    n_precio = int(faltan["precio_eur"].sum())
+    n_sup = int(faltan["superficie_m2"].sum())
+    n_hab = int(faltan["habitaciones"].sum())
+    n_huecos = int(faltan.any(axis=1).sum())
+    add("D26 sin precio", f"calidad_precio</span> ({n_precio} anuncios)", raw=True)
+    add("D26 sin superficie", f"calidad_superficie</span> ({n_sup})", raw=True)
+    add("D26 sin habitaciones", f"tiene_habitaciones</span> ({n_hab})", raw=True)
+    add("D26 huecos", f"{n_huecos} de los {len(uni)}")
+
     # ---------- Slide 21: las tres consultas de negocio ----------
     esf = pd.read_csv(RES / "mongo_esfuerzo_por_municipio.csv", encoding="utf-8-sig")
     tier_a = esf[
