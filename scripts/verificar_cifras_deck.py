@@ -380,15 +380,15 @@ def main() -> int:
     med_b5 = es(float(b5["brecha_pp_18_34"].median()))
     add("brecha mediana n5", f"{med_b5} puntos")
     add("brecha mediana n5 (cifra)", f'>{med_b5}<span class="unit">pp</span>', raw=True)
-    add("brecha minimo", f"{es(float(b5['brecha_pp_18_34'].min()))} pp")
-    add("brecha maximo", f"{es(float(b5['brecha_pp_18_34'].max()))} pp")
+    add("brecha minimo", f"{es(float(b5['brecha_pp_18_34'].min()))} puntos")
+    add("brecha maximo", f"{es(float(b5['brecha_pp_18_34'].max()))} puntos")
     add(
         "brecha superficie anuncio",
-        f"{es(float(_fila(cob_brecha, 'superficie_mediana_anuncios')))} m² de anuncio",
+        f"{es(float(_fila(cob_brecha, 'superficie_mediana_anuncios')))} m² anunciados",
     )
     add(
         "brecha superficie oficial",
-        f"{es(float(_fila(cob_brecha, 'superficie_mediana_oficial_2024')))} m² del registrado",
+        f"{es(float(_fila(cob_brecha, 'superficie_mediana_oficial_2024')))} m² registrados",
     )
 
     # ---------- Cobertura ----------
@@ -466,6 +466,9 @@ def main() -> int:
     r18, r20, r25, r30, anios, rtotal = (int(x) for x in m_ratio.groups())
     ratio = (2 * r18 + 5 * r20 + 5 * r25 + 5 * r30) / anios / rtotal * 100
     add("ratio 18-34 (B9)", f'{es(ratio)}<span class="unit">\u20ac</span>'.replace("\u20ac", "%"), raw=True)
+    # La media ponderada del tramo 18-34 (16.033 €) se muestra en la 04 y sale de los
+    # mismos seis numeros del YAML: si alguien toca un tramo, el deck falla.
+    add("media 18-34 CAE", f"{es((2 * r18 + 5 * r20 + 5 * r25 + 5 * r30) / anios, 0)} €")
     for bruto in (r18, r20, r25, r30, rtotal):
         add(f"renta tramo {bruto}", f"<td>{es(bruto, 0)} \u20ac</td>", raw=True)
     add("denominador del ratio", f"/ {anios} / {es(rtotal, 0)}")

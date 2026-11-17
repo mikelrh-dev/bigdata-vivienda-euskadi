@@ -295,7 +295,7 @@ batch e idempotente por lotes con `replace_collection`.
 | Modelado NoSQL | 17 colecciones, embebido frente a referenciado, índices ESR y `explain()` medido |
 | Reproducibilidad | 355 SHA de raw, 183 de silver, huella del gold idéntica en dos pasadas |
 | Calidad | 298 tests, gate extremo a extremo offline, verificación de gobernanza y de vintage |
-| Comunicación técnica | Memoria en Markdown, HTML, DOCX y PDF, deck de 26 diapositivas, auditoría contra rúbrica |
+| Comunicación técnica | Memoria en Markdown, HTML, DOCX y PDF, deck de 26 diapositivas, auditoría contra criterios |
 
 ## 10. Que no te lo creas
 
