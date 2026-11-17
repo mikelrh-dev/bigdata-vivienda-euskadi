@@ -1,4 +1,4 @@
-"""Regenera la capa 2026 completa en orden, desde silver, con un solo comando.
+"""Regenera la capa 2026 de datos en orden, desde silver, con un solo comando.
 
 No toca `data/raw` ni `extract/`. Asume que el silver ya existe (si no,
 `python transform/run_all.py` lo reconstruye desde raw; desde esta version los
@@ -8,25 +8,28 @@ Pasos, en orden estricto (fail-fast: el primero que falla detiene la cadena):
 
   1. transform/calcular_esfuerzo_mercado_2026.py
   2. transform/calcular_esfuerzo_mercado_2026_por_tipo.py
-  3. analysis/calibrar_premium_oferta.py
-  4. analysis/comparar_esfuerzo_2024_2026_misma_base.py
-  5. analysis/calcular_brecha_esfuerzo_2024_2026.py
-  6. analysis/cobertura_representatividad_2026.py
-  7. analysis/validar_alquiler_serpavi.py
-  8. visuals/mapa_esfuerzo_mercado_2026.py
-  9. visuals/graficos_esfuerzo_mercado_2026.py
- 10. docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py
+  3. analysis/esfuerzo_por_tipo_nivel_anuncio.py
+  4. analysis/calibrar_premium_oferta.py
+  5. analysis/comparar_esfuerzo_2024_2026_misma_base.py
+  6. analysis/calcular_brecha_esfuerzo_2024_2026.py
+  7. analysis/cobertura_representatividad_2026.py
+  8. analysis/validar_alquiler_serpavi.py
+  9. analysis/validar_portales_2026.py
+ 10. visuals/mapa_esfuerzo_mercado_2026.py
+ 11. visuals/graficos_esfuerzo_mercado_2026.py
+
+Los assets del deck NO se generan aquí: dependen de `mongo_tier_confianza.csv`
+(gold de Mongo) y se generan en el paso `assets_presentacion` de
+`scripts/run_pipeline.py --fase gold`, después de `run_analisis_mongo`.
 
 Al final imprime el SHA-256 de cada salida para poder comparar ejecuciones.
 
 Uso:
     python scripts/regenerar_capa_2026.py
-    python scripts/regenerar_capa_2026.py --sin-presentacion   # omite el paso 10
 """
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import subprocess
 import sys
@@ -35,21 +38,19 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PROC = PROJECT_ROOT / "data" / "procesado"
 RES = PROJECT_ROOT / "data" / "resultados"
-ASSETS = PROJECT_ROOT / "docs" / "presentacion_v2" / "assets"
 
-PASOS: list[tuple[str, bool]] = [
-    ("transform/calcular_esfuerzo_mercado_2026.py", False),
-    ("transform/calcular_esfuerzo_mercado_2026_por_tipo.py", False),
-    ("analysis/esfuerzo_por_tipo_nivel_anuncio.py", False),
-    ("analysis/calibrar_premium_oferta.py", False),
-    ("analysis/comparar_esfuerzo_2024_2026_misma_base.py", False),
-    ("analysis/calcular_brecha_esfuerzo_2024_2026.py", False),
-    ("analysis/cobertura_representatividad_2026.py", False),
-    ("analysis/validar_alquiler_serpavi.py", False),
-    ("analysis/validar_portales_2026.py", False),
-    ("visuals/mapa_esfuerzo_mercado_2026.py", False),
-    ("visuals/graficos_esfuerzo_mercado_2026.py", False),
-    ("docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py", True),  # presentacion
+PASOS: list[str] = [
+    "transform/calcular_esfuerzo_mercado_2026.py",
+    "transform/calcular_esfuerzo_mercado_2026_por_tipo.py",
+    "analysis/esfuerzo_por_tipo_nivel_anuncio.py",
+    "analysis/calibrar_premium_oferta.py",
+    "analysis/comparar_esfuerzo_2024_2026_misma_base.py",
+    "analysis/calcular_brecha_esfuerzo_2024_2026.py",
+    "analysis/cobertura_representatividad_2026.py",
+    "analysis/validar_alquiler_serpavi.py",
+    "analysis/validar_portales_2026.py",
+    "visuals/mapa_esfuerzo_mercado_2026.py",
+    "visuals/graficos_esfuerzo_mercado_2026.py",
 ]
 
 SALIDAS = [
@@ -63,7 +64,6 @@ SALIDAS = [
     RES / "cobertura_representatividad_2026.csv",
     RES / "validacion_alquiler_2024_serpavi.csv",
     RES / "validacion_portales_2026.csv",
-    ASSETS / "M26_mapa_cobertura.png",
 ]
 
 
@@ -76,15 +76,7 @@ def _sha256(path: Path) -> str:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Regenera la capa 2026 completa.")
-    ap.add_argument("--sin-presentacion", action="store_true",
-                    help="Omite la generacion de assets de la presentacion.")
-    args = ap.parse_args()
-
-    for i, (script, es_presentacion) in enumerate(PASOS, start=1):
-        if es_presentacion and args.sin_presentacion:
-            print(f"[{i}/{len(PASOS)}] OMITIDO por --sin-presentacion: {script}")
-            continue
+    for i, script in enumerate(PASOS, start=1):
         ruta = PROJECT_ROOT / script
         if not ruta.exists():
             print(f"FALLO: no existe {script}")

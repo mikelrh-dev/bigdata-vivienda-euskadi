@@ -25,6 +25,13 @@ rp = importlib.util.module_from_spec(_spec)
 sys.modules[_spec.name] = rp
 _spec.loader.exec_module(rp)
 
+_spec_capa = importlib.util.spec_from_file_location(
+    "scripts_regenerar_capa_2026", ROOT / "scripts" / "regenerar_capa_2026.py")
+assert _spec_capa is not None and _spec_capa.loader is not None
+capa = importlib.util.module_from_spec(_spec_capa)
+sys.modules[_spec_capa.name] = capa
+_spec_capa.loader.exec_module(capa)
+
 
 @pytest.fixture()
 def sin_subprocess(monkeypatch):
@@ -66,12 +73,22 @@ def test_plan_gold_respeta_dependencias():
     """Analisis antes de figuras: las figuras leen los CSV generados."""
     pasos = [p.nombre for p in rp.FASES["gold"].pasos]
     assert pasos == ["capa_2026", "run_analisis_mongo", "comparativa_mongo",
-                     "sensibilidad", "generar_figuras_N", "sincronizar_figuras"]
+                     "assets_presentacion", "sensibilidad",
+                     "generar_figuras_N", "sincronizar_figuras"]
     # la capa 2026 se calcula antes de que las figuras la lean
     assert pasos.index("capa_2026") < pasos.index("generar_figuras_N")
     assert pasos.index("run_analisis_mongo") < pasos.index("sensibilidad")
+    # los assets del deck leen el tier de Mongo: nunca antes del analisis
+    assert pasos.index("capa_2026") < pasos.index("assets_presentacion")
+    assert pasos.index("run_analisis_mongo") < pasos.index("assets_presentacion")
     # las copias al deck y a la memoria van al final: ya existen todas las figuras
     assert pasos[-1] == "sincronizar_figuras"
+
+
+def test_capa_2026_no_genera_assets_de_presentacion():
+    """Los assets del deck necesitan Mongo; capa_2026 debe quedar en silver."""
+    assert capa.PASOS[-1] == "visuals/graficos_esfuerzo_mercado_2026.py"
+    assert all("assets_presentacion" not in paso for paso in capa.PASOS)
 
 
 def test_dry_run_no_ejecuta(monkeypatch, capsys, sin_subprocess):

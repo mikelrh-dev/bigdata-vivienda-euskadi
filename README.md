@@ -345,16 +345,32 @@ curl -L -o data/raw/shp_euskadi.zip \
   "https://www.geo.euskadi.eus/cartografia/DatosDescarga/Limites/MUNICIPIOS_5000_ETRS89.zip"
 cd data/raw && unzip -o shp_euskadi.zip -d shp_euskadi && cd ../..
 
+# 1. Extraer y congelar raw (o replay si ya existe)
 .venv/Scripts/python.exe extract/main_ingest.py
 .venv/Scripts/python.exe extract/main_ingest.py --mode replay-raw
 
+# 2. Silver + quality
 .venv/Scripts/python.exe scripts/run_pipeline.py --fase silver,quality
+
+# 3. Mongo (destructiva: exige el flag)
 .venv/Scripts/python.exe scripts/run_pipeline.py --fase mongo --allow-mongo-write
+
+# 4. Gold: capa 2026, analisis Mongo, assets del deck y figuras
 .venv/Scripts/python.exe scripts/run_pipeline.py --fase gold
 ```
 
+`gold` ejecuta en este orden: `capa_2026` (solo silver), `run_analisis_mongo`,
+`comparativa_mongo`, `assets_presentacion`, `sensibilidad`, `generar_figuras_N` y
+`sincronizar_figuras`. Los assets `M26_*` del deck van en `assets_presentacion` porque leen
+`data/resultados/mongo_tier_confianza.csv`; por eso `regenerar_capa_2026.py` ya no los genera.
+
 `--fase all` equivale a `silver,quality,gold` y nunca incluye `mongo`, que es destructiva y exige
 `--allow-mongo-write`. `--dry-run` lista el plan sin escribir.
+
+Si solo quieres rehacer la capa 2026, usa `--fase gold` (recomendado: deja tambien analisis y
+assets) o, por separado, `python scripts/regenerar_capa_2026.py` para CSV y figuras base y
+despues `python docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py` para los
+assets del deck. Este ultimo necesita que antes se haya ejecutado `analysis/run_analisis_mongo.py`.
 
 | Síntoma | Causa | Acción |
 |---|---|---|

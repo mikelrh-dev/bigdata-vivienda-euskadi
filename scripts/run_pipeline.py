@@ -8,8 +8,9 @@ Fases:
   quality  normalizar_metadata + nombres_normalizados_map + ingestion_manifest
            + manifest --write
   mongo    scripts/run_mongo_pipeline.py  (DESTRUCTIVO: exige --allow-mongo-write)
-  gold     capa_2026 + run_analisis_mongo + comparativa_mongo + sensibilidad
-           + figuras  (el bloque Mongo exige la fase mongo ya hecha)
+  gold     capa_2026 + run_analisis_mongo + comparativa_mongo
+           + assets_presentacion + sensibilidad + figuras
+           (el bloque Mongo exige la fase mongo ya hecha)
 
 `--fase all` = silver,quality,gold. Nunca incluye mongo.
 `--fase full` = silver,quality,mongo,gold. Reconstruccion completa desde raw;
@@ -104,12 +105,16 @@ FASES: dict[str, Fase] = {
         destructiva=True,
     ),
     "gold": Fase("gold", (
-        # Bloque 2026 (lo que antes habia que lanzar a mano): solo necesita
-        # silver, asi que va primero y falla rapido si falta un insumo.
+        # Capa 2026: solo silver. No lee Mongo ni genera assets del deck.
         Paso("capa_2026", _py("scripts/regenerar_capa_2026.py")),
         # A partir de aqui hace falta Mongo poblado (fase mongo).
         Paso("run_analisis_mongo", _py("analysis/run_analisis_mongo.py")),
         Paso("comparativa_mongo", _py("analysis/comparativa_mongo.py")),
+        # Assets del deck: leen la capa 2026 y mongo_tier_confianza.csv.
+        Paso(
+            "assets_presentacion",
+            _py("docs/presentacion_v2/assets_presentacion_esfuerzo_mercado_2026.py"),
+        ),
         Paso("sensibilidad", _py("analysis/sensibilidad.py")),
         Paso("generar_figuras_N", _py("transform/generar_figuras_N.py")),
         # Ultimo: copia gold -> deck y gold -> memoria. Los nombres los declara
