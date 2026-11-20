@@ -28,5 +28,4 @@ python scripts/inventario_codigo.py
 ## Dónde está el resto
 
 - **Fuentes de la memoria y del deck** (Markdown, `build.py`, `_cifras.*`, `index.html`, `guion.md`, `assets/`): presentes en el checkout local y excluidas de git por `.gitignore`. Los PDF se regeneran desde ahí con `docs/memoria/build.py`.
-- **`openspec/`** (specs, cambios y auditorías): presente en el checkout local, fuera de git. `scripts/verificar_gobernanza.py` avisa y omite la verificación de requisitos cuando no lo encuentra.
 - El histórico antiguo (planes, auditorías y versiones anteriores) queda en el archivo local externo, no versionado.

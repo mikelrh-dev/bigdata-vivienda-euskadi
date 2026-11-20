@@ -294,7 +294,7 @@ batch and idempotent per batch through `replace_collection`.
 | NoSQL modelling | 17 collections, embedded versus referenced, ESR indexes and measured `explain()` |
 | Reproducibility | 355 raw SHAs, 183 silver hashes, gold fingerprint identical across two runs |
 | Quality | 311 tests, offline end-to-end gate, governance and vintage verification |
-| Technical communication | Report in Markdown, HTML, DOCX and PDF, 30-slide deck, audit against the rubric |
+| Technical communication | Report in Markdown, HTML, DOCX and PDF, 30-slide deck, v13 audit (2026-11-15) |
 
 ## 10. Do not take my word for it
 
