@@ -430,13 +430,14 @@ def regenerar_P() -> Path:
         med_an.append(float(an.median()) if len(an) else 0.0)
         n_of.append(len(of))
         n_an.append(len(an))
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(8, 4.4))
     x = np.arange(len(ths))
     w = 0.35
     ax.bar(x - w / 2, med_of, w, label="Cuantía oficial 2024 €/mes (mediana)")
     ax.bar(x + w / 2, med_an, w, label="Anuncios 2026 precio medio €/mes (mediana)")
+    ax.set_ylim(0, max(max(med_of), max(med_an)) * 1.14)
     for i in range(len(ths)):
-        ax.text(i, max(med_of[i], med_an[i]) * 1.02, f"n_of={n_of[i]} n_an={n_an[i]}", ha="center", fontsize=7)
+        ax.text(i, max(med_of[i], med_an[i]) * 1.03, f"n_of={n_of[i]} n_an={n_an[i]}", ha="center", fontsize=7)
     ax.set_xticks(x)
     ax.set_xticklabels(ths)
     ax.set_ylabel("€/mes")
@@ -444,7 +445,7 @@ def regenerar_P() -> Path:
     ax.set_title("P Cuantía oficial 2024 vs anuncios 2026 por TH — €/mes")
     ax.legend()
     fig.tight_layout()
-    out = _guardar(fig, "P_oficial_vs_anuncios_por_TH.png")
+    out = _guardar(fig, "P_oficial_vs_anuncios_por_TH.png", bbox_inches="tight", pad_inches=0.08)
     print(f"OK P: {out} ({out.stat().st_size} bytes)")
     return out
 

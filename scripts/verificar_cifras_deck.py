@@ -135,7 +135,8 @@ def main() -> int:
     add("mediana sin realtyapi", f"{es(med_sin_realty)} %")
     add("precio mediana anuncio", f"{es(precio_anuncio, 0)} €")
     add("salario joven 2026", f"{es(salario, 0)} €")
-    add("anuncios > 30 %", f"{es(pct_30)} %")
+    # En la 15 el 98,3 % es un KPI: `98,3<span class="unit">%</span>` -> «98,3%».
+    add("anuncios > 30 %", f"{es(pct_30)}%")
     add("municipios con anuncio", f"{len(serie)}/252")
     add("anuncios validos", f"{int(mercado['n_anuncios_2026'].sum())} anuncios")
 
