@@ -32,7 +32,7 @@ MAX_PAG = 3
 
 def _nombre_lote(raw_dir) -> Path:
     raw_dir = Path(raw_dir)
-    # WP-09: nombre estable (un lote vigente). La trazabilidad de lotes va en
+    # Nombre estable para un unico lote vigente. La trazabilidad va en
     # metadata (run_id + contadores), no en el nombre. Los lotes historicos
     # con timestamp que ya existen en raw se conservan congelados.
     return Path(raw_dir) / "anuncios_pisos_dirigido_lote.json"
@@ -55,7 +55,7 @@ def main() -> int:
             estado = f"FALLO: {type(exc).__name__}: {exc}"
         log.info("%s [%s]: %s", nombre, cod, estado)
         informe.append({"codigo_ine": cod, "municipio": nombre, "estado": estado})
-    # Guardar lote nuevo en raw (append-only, no sobrescribir existentes)
+    # Guarda el lote nuevo en raw sin sobrescribir los existentes.
     assert_raw_writable("f4 directed scrape lot")
     raw_path = _nombre_lote(RAW_DIR)
     from datetime import datetime, timezone  # noqa: E402

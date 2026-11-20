@@ -165,7 +165,7 @@ def leer_csv_seguro(path, **kwargs):
 
 
 # ─── Guardado de JSON ─────────────────────────────────────────
-# WP-07: esquema unico de metadata. Campos obligatorios en RAW (FORMATO-01):
+# Esquema unico de metadata. Campos obligatorios en RAW:
 # fuente, url, fecha_extraccion, n_registros, hash_sha256, version_parser.
 # En raw la validacion es estricta (falla en vez de escribir incompleto);
 # en procesado/scratchpad se rellenan defectos y se avisa por log.

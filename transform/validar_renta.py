@@ -19,7 +19,7 @@ PROC_DIR.mkdir(parents=True, exist_ok=True)
 def main() -> int:
     import pandas as pd
     rc = pd.read_csv(RAW_DIR / "renta_municipal_completa.csv", dtype=str, encoding="utf-8-sig")
-    # WP-16: dim canonica en procesado; raw solo fallback historico.
+    # La dimension canonica esta en procesado; raw solo como respaldo.
     _dim_src = PROC_DIR / "dim_municipios.csv"
     if not _dim_src.exists():
         _dim_src = RAW_DIR / "dim_municipios.csv"

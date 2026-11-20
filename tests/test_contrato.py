@@ -1,8 +1,8 @@
-"""Verificación del contrato OpenSpec con datos reales.
+"""Comprueba el contrato del proyecto con datos reales.
 
-Cada test corresponde a un requisito o prohibición del contrato en
-`openspec/specs/contrato-reto/spec.md`. Un test en rojo significa que el
-proyecto se ha desviado del contrato.
+Cada test cubre un requisito o una prohibicion del contrato.
+Un test en rojo significa que el proyecto se ha desviado
+del contrato.
 
 Uso:
     .venv/Scripts/python.exe -m pytest tests -q
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 SPECS = ROOT / "openspec" / "specs"
 
-# Umbrales observados el 2026-10-23. Si la extracción mejora, se suben.
+# Umbrales observados el 2026-10-23. Se revisan si mejora la extraccion.
 MIN_ANUNCIOS = 400
 MIN_MUNICIPIOS = 150
 MIN_POBLACION = 80000      # eustat_poblacion_edad: 89.424
@@ -35,10 +35,10 @@ def _cargar_json(nombre: str):
     return json.loads(ruta.read_text(encoding="utf-8"))
 
 
-# ─── EXTRACCION-01: API y scraping, datos completos ────────────────
+# ─── Extraccion: API y scraping, datos completos ────────────────
 
 def test_extraccion_anuncios_reales():
-    """EXTRACCION-01 / Escenario: el scraping produce anuncios reales."""
+    """El scraping produce anuncios reales."""
     datos = _cargar_json("anuncios_fotocasa.json")["datos"]
     assert len(datos) >= MIN_ANUNCIOS, f"solo {len(datos)} anuncios"
     assert datos[0]["precio_eur"] is not None
@@ -54,7 +54,7 @@ def test_extraccion_anuncios_sin_duplicar():
 
 
 def test_extraccion_tres_fuentes_independientes():
-    """EXTRACCION-02 / Escenario: las fuentes son independientes."""
+    """Las fuentes de datos son independientes."""
     esperadas = [
         "eustat_poblacion_edad.json",
         "eustat_renta_municipal.json",
@@ -68,17 +68,17 @@ def test_extraccion_tres_fuentes_independientes():
     assert len(existentes) >= 3, f"solo {len(existentes)} fuentes: {existentes}"
 
 
-# ─── COMPLEMENTARIOS-01: salarios y población ────────────────────
+# ─── Datos complementarios: salarios y poblacion ─────────────────
 
 def test_complementarios_poblacion():
-    """COMPLEMENTARIOS-01 / Escenario: población por municipio."""
+    """La poblacion esta disponible por municipio."""
     datos = _cargar_json("eustat_poblacion_edad.json")
     filas = datos["datos"]["filas"]
     assert len(filas) >= MIN_POBLACION, f"solo {len(filas)} filas"
 
 
 def test_complementarios_renta_municipal():
-    """COMPLEMENTARIOS-01: la renta por municipio alimenta el indicador."""
+    """La renta por municipio alimenta el indicador."""
     datos = _cargar_json("eustat_renta_municipal.json")
     filas = datos["datos"]["filas"]
     assert len(filas) >= MIN_RENTA_MUNICIPAL
@@ -86,7 +86,7 @@ def test_complementarios_renta_municipal():
 
 
 def test_complementarios_salarios_no_simulados():
-    """COMPLEMENTARIOS-01 / P-02: el salario proviene de una fuente real."""
+    """El salario proviene de una fuente real."""
     ruta = RAW / "ine_salarios_edad.json"
     if not ruta.exists():
         pytest.skip("ine_salarios_edad.json no esta en este clon (ejecuta la extraccion)")
@@ -95,10 +95,10 @@ def test_complementarios_salarios_no_simulados():
     assert len(datos["datos"]["registros"]) > 0, "sin registros de salarios"
 
 
-# ─── FORMATO-01: JSON o CSV ───────────────────────────────────────
+# ─── Formato de salida: JSON o CSV ────────────────────────────────
 
 def test_formato_csv_alquiler_y_municipios():
-    """FORMATO-01 + EXTRACCION-01: el alquiler es CSV y cubre 3 territorios."""
+    """El alquiler se guarda en CSV y cubre los tres territorios."""
     import csv
 
     ruta = RAW / "alquiler_municipal.csv"
@@ -113,7 +113,7 @@ def test_formato_csv_alquiler_y_municipios():
 
 
 def test_formato_metadatos_en_json():
-    """FORMATO-01: el JSON lleva fuente, fecha y recuento."""
+    """El JSON incluye fuente, fecha y recuento."""
     datos = _cargar_json("anuncios_fotocasa.json")
     meta = datos["metadata"]
     assert meta["fuente"]
@@ -136,7 +136,7 @@ def test_limpieza_nulos_explicitos():
 # ─── Prohibiciones ───────────────────────────────────────────────
 
 def test_p06_todo_en_python():
-    """P-06: todos los programas del reto están en Python."""
+    """Todos los programas estan escritos en Python."""
     scripts = sorted((ROOT / "extract").glob("*.py"))
     assert len(scripts) >= 6, f"solo {len(scripts)} scripts"
     for script in scripts:
@@ -144,7 +144,7 @@ def test_p06_todo_en_python():
 
 
 def test_p07_sin_credenciales_en_el_repositorio():
-    """P-07: no hay credenciales rastreadas por git."""
+    """No hay credenciales rastreadas por git."""
     rastreados: list = []
     try:
         rastreados = subprocess.run(
@@ -158,7 +158,7 @@ def test_p07_sin_credenciales_en_el_repositorio():
 
 
 def test_p08_contrato_cubre_los_criterios():
-    """P-08: cada criterio de la rúbrica tiene un requisito asignado."""
+    """Cada criterio del contrato tiene un requisito asignado."""
     if not (SPECS / "contrato-reto" / "spec.md").exists():
         pytest.skip("openspec/specs/contrato-reto/spec.md no esta en este clon")
     contrato = (SPECS / "contrato-reto" / "spec.md").read_text(encoding="utf-8")
@@ -234,17 +234,17 @@ def test_entity_resolution_tres_capitales():
     # Eustat renta contiene las 3 capitales (por ambito etiqueta)
 
 
-# ─── P0: INE Atlas Renta ────────────────────────────────────────────
+# ─── Renta del INE Atlas ────────────────────────────────────────────
 
 def test_ine_atlas_renta_existe():
-    """P0: el fichero de renta del INE Atlas existe."""
+    """El fichero de renta del INE Atlas existe."""
     ruta = RAW / "ine_atlas_renta.json"
     if not ruta.exists():
         pytest.skip("ine_atlas_renta.json no esta en este clon (ejecuta extract/ine_atlas_renta.py)")
 
 
 def test_ine_atlas_renta_campos():
-    """P0: cada registro tiene renta_atlas, anio_renta, renta_origen."""
+    """Cada registro incluye renta_atlas, anio_renta y renta_origen."""
     ruta = RAW / "ine_atlas_renta.json"
     if not ruta.exists():
         pytest.skip("ine_atlas_renta.json no existe")
@@ -259,7 +259,7 @@ def test_ine_atlas_renta_campos():
 
 
 def test_renta_municipal_completa_cobertura():
-    """P0: renta_municipal_completa cubre 252 municipios."""
+    """La renta municipal completa cubre 252 municipios."""
     ruta = RAW / "renta_municipal_completa.json"
     if not ruta.exists():
         pytest.skip("renta_municipal_completa.json no existe")
@@ -271,10 +271,10 @@ def test_renta_municipal_completa_cobertura():
     assert len(sin_origen) == 0, f"{len(sin_origen)} municipios sin renta_origen"
 
 
-# ─── P1a: Filtrado de outliers ──────────────────────────────────────
+# ─── Filtrado de valores atipicos ──────────────────────────────────
 
 def test_filtrar_outliers_marca_extremos():
-    """P1a: los outliers extremos se marcan como outlier=True."""
+    """Los valores extremos se marcan con outlier=True."""
     ruta = RAW.parent / "procesado" / "anuncios_fotocasa_filtrado.json"
     if not ruta.exists():
         pytest.skip("anuncios_fotocasa_filtrado.json no existe (ejecuta transform/filtrar_outliers.py)")
@@ -287,7 +287,7 @@ def test_filtrar_outliers_marca_extremos():
 
 
 def test_filtrar_outliers_validos():
-    """P1a: los anuncios validos no se marcan como outlier."""
+    """Los anuncios validos no se marcan como outlier."""
     ruta = RAW.parent / "procesado" / "anuncios_pisos_filtrado.json"
     if not ruta.exists():
         pytest.skip("anuncios_pisos_filtrado.json no existe")

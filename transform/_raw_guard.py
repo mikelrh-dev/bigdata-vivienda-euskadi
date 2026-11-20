@@ -1,8 +1,8 @@
-"""Shared guard for raw writes from transforms.
+"""Guarda compartida para las escrituras en raw desde transform.
 
-Raw data under ``data/raw/`` is immutable by default. A transform that needs
-to write there must call :func:`assert_raw_writable` with a non-empty reason
-documenting the intent before performing the write.
+Los datos de ``data/raw/`` son inmutables por defecto. Un transform que
+necesite escribir debe llamar a :func:`assert_raw_writable` con un motivo
+no vacio que documente la intencion.
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ class RawFrozenMissing(ValueError, FileNotFoundError, AssertionError):
 
 
 def _audit_message(reason: str) -> str:
-    """Build an auditable message for a raw-write intent."""
+    """Construye un mensaje auditable para una escritura en raw."""
     ts = datetime.datetime.now().isoformat(timespec="seconds")
     return f"raw_guard[{ts}]: {reason.strip()}"
 
@@ -74,7 +74,7 @@ def _candidate_audit_logs(audit_log: Optional[object] = None) -> list[Path]:
 
 
 def assert_raw_writable(reason: Optional[str], audit_log: Optional[object] = None) -> None:
-    """Raise ``ValueError`` unless ``reason`` is a non-empty string.
+    """Lanza ``ValueError`` si ``reason`` no es una cadena no vacia.
 
     Además verifica que exista el marcador ``.FROZEN`` en ``data/raw/`` y
     añade la intención a un log de auditoría persistente.

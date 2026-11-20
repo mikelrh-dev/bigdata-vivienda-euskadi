@@ -40,7 +40,7 @@ RAW_DIR = ROOT / "data" / "raw"
 PROC_DIR = ROOT / "data" / "procesado"
 RES_DIR = ROOT / "data" / "resultados"
 
-# Codigos de salida del orquestador (ver openspec/.../spec.md).
+# Codigos de salida del orquestador.
 EXIT_OK = 0
 EXIT_FALLO = 1
 EXIT_PREFLIGHT = 2

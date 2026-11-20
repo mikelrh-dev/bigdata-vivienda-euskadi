@@ -42,22 +42,22 @@ def main() -> int:
             num = pd.to_numeric(df[c], errors="coerce")
             bad = df[~df[c].isna() & ~(num >= 0)]
             assert len(bad) == 0, f"{c} negativo: {bad[['codigo_ine', c]].head()}"
-    # Drop in memory before writing processed outputs (raw untouched).
+    # Se elimina en memoria antes de escribir; raw no se modifica.
     if "tasa_paro_aprox_pct" in df.columns:
         df = df.drop(columns=["tasa_paro_aprox_pct"])
-    # NOTA WP-05: no se calcula brecha_ocupacion_actividad_pct. Las tasas de
+    # No se calcula brecha_ocupacion_actividad_pct. Las tasas de
     # ocupacion y actividad de Udalmap no comparten base (248/252 dan
     # ocupacion > actividad, imposible por definicion), asi que la resta no
-    # mide ninguna brecha. Ver openspec/archive/2026-11-10-docs/reglas_limpieza.md.
-    # WP-04: un 0,00 exacto con muy pocos activos es artefacto, no medicion.
+    # mide ninguna brecha.
+    # Un 0,00 exacto con muy pocos activos es un artefacto, no una medicion.
     # Se conserva el valor publicado y la tasa de trabajo queda en NaN.
     p = pd.to_numeric(df["tasa_paro_lanbide_pct"], errors="coerce")
     df["tasa_paro_lanbide_bruto"] = p
     df["paro_registrado_cero"] = p.eq(0)
     df["tasa_paro_valida"] = p.notna() & p.gt(0)
     df["tasa_paro_lanbide_pct"] = p.mask(p.le(0))
-    # M5 COMPLEMENTARIOS-01: 249 -> 252 con extractores 18/21 (Lanbide
-    # directo, fuente OFICIAL, sin imputacion comarcal/IDW). Para los
+    # Se pasa de 249 a 252 municipios con los extractores 18 y 21 (Lanbide
+    # directo, fuente oficial, sin imputacion comarcal ni IDW). Para los
     # municipios sin tasa Udalmap (01003/20037/48916) se calcula
     # paro_total/poblacion_activa*100 desde `lanbide_paro_juvenil.csv`
     # (extract 18). El bruto Udalmap se conserva para trazabilidad.
@@ -80,9 +80,9 @@ def main() -> int:
     df.loc[faltan, "tasa_paro_fuente"] = "lanbide_directo"
     df.loc[faltan, "tasa_paro_valida"] = True
     df = df.drop(columns=["tasa_lanbide_directa"])
-    # M5 COMPLEMENTARIOS-01: paro oficial en el 100% (sin imputacion).
-    # Fila sin fuente oficial -> metodo 'ninguno' + is_imputed=false (nunca
-    # comarcal/IDW). Tras 18/21 + este merge debe ser 0 filas.
+    # Paro oficial en el 100% de los municipios, sin imputacion.
+    # Una fila sin fuente oficial usa el metodo 'ninguno' e is_imputed=false
+    # (nunca comarcal ni IDW). Tras 18/21 y este merge deben quedar 0 filas.
     df["metodo_imputacion"] = "oficial"
     df.loc[df["tasa_paro_lanbide_pct"].isna(), "metodo_imputacion"] = "ninguno"
     df["is_imputed"] = False

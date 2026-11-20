@@ -32,7 +32,7 @@ def main() -> int:
     muni_af = pd.read_csv(PROC / "municipio_area_funcional_ecvi.csv", dtype=str, encoding="utf-8-sig")
     alq = pd.read_csv(PROC / "alquiler_municipal_completo.csv", dtype=str, encoding="utf-8-sig")
     ecvi = pd.read_csv(PROC / "ecvi_compraventa_limpio.csv", dtype=str, encoding="utf-8-sig")
-    # WP-10: lectura tipada como str; medidas a numerico explicito.
+    # Lectura tipada como texto; medidas a numerico explicito.
     for _c in ["renta_media_eur_m2_media", "cuantia_media_eur_mes_media"]:
         if _c in alq.columns:
             alq[_c] = pd.to_numeric(alq[_c], errors="coerce")

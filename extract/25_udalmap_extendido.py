@@ -44,7 +44,7 @@ def _ultimo_valor(years):
     if not years:
         return None
     # years is list of dict {year: value}
-    # take last year with non-null
+    # Toma el ultimo anio con dato no nulo.
     for y in reversed(years):
         for k, v in y.items():
             if v is not None:

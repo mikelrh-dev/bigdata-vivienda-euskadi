@@ -1,11 +1,11 @@
 """Comparativa Tier A desde MongoDB (solo n>=30).
 
-CONCLUSION-01 (nivel 10 de Respuesta): comparar municipios Tier A
-(n>=30) con conclusion vinculada a indicadores calculados en Mongo:
-Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39. Tier B/C/D
-(n<30) quedan fuera del ranking. Anade `delta_n_anuncios` (diferencia
-con el siguiente Tier A; Getxo 50 vs Vitoria 39 = 11) y la
-`advertencia` ("solo Tier A sustenta ranking; B/C/D no ranking").
+La comparativa se limita a municipios Tier A (n>=30) y relaciona cada
+resultado con indicadores calculados en Mongo:
+Bilbao 204, Donostia 126, Getxo 50, Vitoria-Gasteiz 39. Los municipios
+Tier B/C/D (n<30) quedan fuera del ranking. Incluye `delta_n_anuncios`
+(diferencia con el siguiente Tier A; Getxo 50 frente a Vitoria 39 = 11)
+y una `advertencia` que indica que solo Tier A sostiene el ranking.
 Ningun valor se inventa: si falta, queda None.
 """
 

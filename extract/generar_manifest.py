@@ -1,4 +1,4 @@
-"""Genera y verifica manifests SHA-256 de integridad (WP-08).
+"""Genera y verifica manifiestos SHA-256 de integridad.
 
 - Manifest canonico de raw: docs/raw_manifest_sha256.txt (unica fuente).
 - Manifest de silver: data/procesado/manifest_sha256.txt (versionado, datos no).

@@ -12,7 +12,7 @@ Lee:
 
 Escribe:
 - data/procesado/dim_municipios.csv (misma tabla + n_anuncios_raw).
-- data/procesado/cobertura_anuncios.csv (WP-12: codigo_ine, n_crudo,
+- data/procesado/cobertura_anuncios.csv (codigo_ine, n_crudo,
   n_unico, fuente_mix, nivel_fiabilidad; 252 filas, una por municipio).
 No toca raw.
 """
@@ -86,7 +86,7 @@ def main() -> int:
     dim["tier"] = [t for t, _ in _tiers]
     dim["tier_etiqueta"] = [te for _, te in _tiers]
 
-    # WP-12: artefacto auditable de cobertura por municipio.
+    # Artefacto auditable de cobertura por municipio.
     uni["portal"] = uni["portal"].fillna("desconocido")
     mix = uni.groupby("codigo_ine")["portal"].agg(
         lambda s: "|".join(sorted(set(s.astype(str))))).rename("fuente_mix")

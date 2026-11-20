@@ -1,4 +1,4 @@
-"""Gate de aceptacion de la fase extraccion+transformacion (WP-14).
+"""Comprueba la fase de extraccion y transformacion.
 
 15 checks. Exit 0 si todo PASS, 1 si algun FAIL. No escribe en data/raw.
 Uso: python verificar_fase_datos.py
@@ -43,7 +43,7 @@ def main() -> int:
             malas.append(rel)
     check("01 manifest integro", not malas, f"{n} ficheros" + (f" malas={malas[:3]}" if malas else ""))
 
-    # 2. Sin gemelos derivados en raw (WP-08)
+    # 2. Sin copias derivadas en raw.
     gemelos = [p.name for p in RAW.rglob("*") if "corregido" in p.name]
     check("02 raw sin derivados legacy", not gemelos, f"{gemelos}" if gemelos else "limpio")
 
@@ -78,7 +78,7 @@ def main() -> int:
         check("07 ceros a nulo con flag", "paro_registrado_cero" in emp.columns and _cero["tasa_paro_lanbide_pct"].isna().all(),
               "sin ceros con valor no nulo")
     elif not _desconocidos and _visto == _CONOCIDOS:
-        # Casos documentados v5: jamás PASS, jamás imputación comarcal.
+        # Casos documentados: se marcan como fallo, sin imputacion comarcal.
         check(f"07 FAIL conocido paro-cero ({_nombres_conocidos})", False,
               f"{len(_con_valor)} ceros documentados con tasa no nula (no enmascarados, sin imputación)")
     else:
@@ -144,7 +144,7 @@ def main() -> int:
             escritores.append(py.name + ":to_csvRAW")
     check("15 transform no escribe raw", not escritores, f"{escritores}" if escritores else "solo lectura")
 
-    # 16-18. Artefactos de trazabilidad WP-12/17/09 (lo que verifica demo = tests)
+    # 16-18. Artefactos de trazabilidad (los mismos que verifican los tests).
     cob = pd.read_csv(PROC / "cobertura_anuncios.csv", encoding="utf-8-sig", dtype=str)
     check("16 cobertura auditable", len(cob) == 252
           and set(cob["nivel_fiabilidad"].unique()) <= {"alta", "media", "baja", "sin_mercado"},
@@ -192,7 +192,7 @@ def main() -> int:
 
     print("RESULTADO:", "OK 22/22" if ok else "PENDIENTE (ver FAIL)")
     # Huella SHA-256 reproducible de los artefactos comprobados (mismo
-    # criterio que check 01 con docs/raw_manifest_sha256.txt). Se emite
+    # criterio que la comprobacion 01 con docs/raw_manifest_sha256.txt). Se emite
     # siempre: con 07 FAIL conocido el resultado sigue siendo PENDIENTE.
     _artefactos = [
         ROOT / "docs" / "raw_manifest_sha256.txt",

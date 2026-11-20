@@ -1,4 +1,4 @@
-"""MongoDB helpers for the vivienda-euskadi project."""
+"""Utilidades de MongoDB para el proyecto vivienda-euskadi."""
 
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ MONGO_TEST_DB = os.getenv("MONGO_TEST_DB", "vivienda_euskadi_test")
 
 
 def get_mongo_uri() -> str | None:
-    """Return MONGO_URI from env, or None if unset/blank (Tema 8 §12).
+    """Devuelve MONGO_URI del entorno, o None si no existe o esta vacio.
 
-    Read at call time so monkeypatch of MONGO_URI is visible to
-    get_client(); do not cache at import.
+    Se lee en cada llamada para que monkeypatch de MONGO_URI sea visible
+    para get_client(); no se cachea al importar.
     """
     uri = os.getenv("MONGO_URI")
     if uri and uri.strip():
@@ -42,7 +42,7 @@ def is_objectid(value: Any) -> bool:
 
 
 def to_objectid(value: Any) -> ObjectId | None:
-    """Convert value to ObjectId when possible, else None."""
+    """Convierte el valor a ObjectId cuando es posible; si no, devuelve None."""
     if isinstance(value, ObjectId):
         return value
     if isinstance(value, str) and ObjectId.is_valid(value.strip()):
@@ -178,9 +178,8 @@ def marcar_calidad_municipio(
     Usa find_one_and_update con ReturnDocument.AFTER sobre un único
     documento de municipios: la lectura-modificación-escritura ocurre en
     una sola operación atómica a nivel de documento, sin necesidad de
-    transacción multidocumento ni de replica set (Tema 8 §11,
-    TRANSACCIONES-01). Devuelve el documento ya actualizado, o None si
-    el municipio no existe.
+    transaccion multidocumento ni de replica set.
+    Devuelve el documento ya actualizado, o None si el municipio no existe.
 
     collection permite inyectar otra colección (p. ej. la base de test
     vivienda_euskadi_test); por defecto usa la base productiva.

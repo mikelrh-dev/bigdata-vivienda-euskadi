@@ -67,7 +67,7 @@ dim = loadcsv(PROC / "dim_municipios.csv")
 rc = loadcsv(RAW / "renta_municipal_completa.csv")
 alq = loadcsv(PROC / "alquiler_municipal_completo.csv")
 dc = loadcsv(RAW / "distancias_capitales_252.csv")
-# WP-04/C-03: se lee la copia de PROCESADO, no el duplicado congelado de raw.
+# Se lee la copia de PROCESADO, no el duplicado congelado de raw.
 ud = loadcsv(PROC / "udalmap_empleo_corregido.csv")
 
 # normalize codes
@@ -138,7 +138,7 @@ for c in num_cols:
     if c in base.columns:
         base[c] = pd.to_numeric(base[c], errors="coerce")
 
-# alquiler anual y esfuerzo (WP-06: todo en % de la renta anual; el canonico
+# alquiler anual y esfuerzo (todo en % de la renta anual; el canonico
 # 18-34 es esfuerzo_joven_pct_18_34, de base municipal. El legacy 16-29
 # esfuerzo_joven_pct se conserva. El salario OVJ es referencia, no ranking.)
 # D2 (2026-11-05): el numerador canonico es la cuantia MEDIANA, la misma que
@@ -174,7 +174,7 @@ base.loc[mask, "tasa_desempleo_juvenil_real_pct"] = (
     base.loc[mask, "paro_joven_menores_25"] / base.loc[mask, "activos_16_24"] * 100.0
 )
 base["tasa_desempleo_juvenil_real_pct"] = base["tasa_desempleo_juvenil_real_pct"].clip(0, 100)
-# sanity: no mayor que 4x paro lanbide. WP-04: nunca recortar contra un cap
+# Comprobacion: no supera 4 veces el paro de Lanbide. No se recorta contra un limite
 # nulo o cero (un techo de 0 anularia un valor calculado correctamente).
 if "tasa_paro_lanbide_pct" in base.columns:
     cap = base["tasa_paro_lanbide_pct"] * 4

@@ -22,31 +22,31 @@ def main():
 
     # Ensure codigo_ine is string 5 digits
     df["codigo_ine"] = df["codigo_ine"].astype(str).str.strip().str.zfill(5)
-    # WP-10: lectura tipada como str; medidas a numerico explicito.
+    # Lectura tipada como texto; medidas a numerico explicito.
     for _c in [target, "renta_m2_p25", "renta_m2_p75", "anio_renta", "n_declaraciones"]:
         if _c in df.columns:
             df[_c] = pd.to_numeric(df[_c], errors="coerce")
 
-    # Track original nulls
+    # Registra los nulos originales.
     null_mask = df[target].isna()
     df["serpavi_imputado"] = null_mask
     df["metodo_imputacion_serpavi"] = "original"
 
-    # Impute by provincia_codigo median
+    # Imputa con la mediana de provincia_codigo.
     provincia_medians = df.groupby("provincia_codigo")[target].transform("median")
     regional_median = df[target].median()
 
-    # Fill nulls with provincia median where available
+    # Rellena los nulos con la mediana provincial cuando existe.
     mask_prov = null_mask & provincia_medians.notna()
     df.loc[mask_prov, target] = provincia_medians[mask_prov]
     df.loc[mask_prov, "metodo_imputacion_serpavi"] = "provincia_mediana"
 
-    # Remaining nulls -> regional median
+    # Los nulos restantes usan la mediana regional.
     still_null = df[target].isna()
     df.loc[still_null, target] = regional_median
     df.loc[still_null, "metodo_imputacion_serpavi"] = "regional_mediana"
 
-    # Also impute derived columns (p25, p75, anio, n_declaraciones) with same method flag
+    # Imputa tambien las columnas derivadas con el mismo criterio.
     for col in ["renta_m2_p25", "renta_m2_p75", "anio_renta", "n_declaraciones"]:
         if col in df.columns:
             col_null = df[col].isna()

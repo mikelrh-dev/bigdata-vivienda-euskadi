@@ -1,6 +1,6 @@
 """Consultas del reto: cada una debe devolver filas reales.
 
-Cubre RA3 «Consultas» (≥5 útiles, una con campos anidados o arrays y otra
+Cubre al menos cinco consultas utiles: una con campos anidados o arrays y otra
 combinando 2+ condiciones) y cierra la regresión detectada en la auditoría
 del 2026-11-06: `anuncios_con_equipamiento("ascensor")` devolvía 0 filas
 porque el vocabulario real de `equipamiento` es

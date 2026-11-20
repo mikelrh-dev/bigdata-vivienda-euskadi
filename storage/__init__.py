@@ -1,3 +1,3 @@
-"""Storage helpers for the vivienda-euskadi project."""
+"""Utilidades de almacenamiento para el proyecto vivienda-euskadi."""
 
 __all__ = ["mongo"]

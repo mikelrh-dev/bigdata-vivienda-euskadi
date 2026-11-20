@@ -69,7 +69,7 @@ def _dim_codes():
 
 
 def test_subtitulo_real_santutxu_bilbao():
-    # EXTRACCION-01: subtitulo con barrio+ciudad -> gazetteer/subtitulo, Bilbao.
+    # El subtitulo con barrio y ciudad se resuelve por el gazetteer.
     ci, canon, origen, _ = resolver_pisos_por_texto(
         "Santutxu (Bilbao)", "Piso en Santutxu", None)
     assert canon == "Bilbao"
@@ -94,7 +94,7 @@ def test_subtitulo_indautxu_mantiene_bilbao():
 
 
 def test_codigo_sin_texto_no_se_propaga():
-    # EXTRACCION-01: codigo sin coincidencia textual -> ninguno.
+    # Un codigo sin coincidencia textual no se asigna.
     assert resolver_codigo(None, "48020") == (None, None)
     assert resolver_codigo("", "48020") == (None, None)
     # El texto manda aunque el codigo difiera.

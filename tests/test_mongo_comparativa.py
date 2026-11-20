@@ -1,6 +1,6 @@
 """Tests de la comparativa de 3 municipios robustos desde MongoDB.
 
-CONCLUSION-01 (nivel 10 de Respuesta): la comparativa generada por
+La comparativa generada por
 `analysis.comparativa_mongo.comparativa_tres_robustos` debe devolver 3
 filas con n>=30 y paro Lanbide no nulo, con valores reales de Mongo.
 """

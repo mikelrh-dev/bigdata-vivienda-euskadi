@@ -233,7 +233,7 @@ def load_municipios() -> int:
 
 def load_anuncios() -> int:
     # CARGA-SEGURA-01: staging + <name>__backup + rename atomico via
-    # replace_collection (rename con dropTarget=True); nunca drop directo
+    # replace_collection usa rename con dropTarget=True; nunca se elimina directo.
     # sobre la coleccion original; docs vacios abortan sin tocar origen.
     df = _read_csv("anuncios_unificados.csv")
     geo_by_id = _lookup_fotocasa_geo()
@@ -349,7 +349,7 @@ def load_indicadores() -> int:
             else:
                 f = to_float(val)
                 if f is not None and float(f).is_integer() and col not in {"renta_eustat"}:
-                    # keep counts as int when clearly integer-valued
+                    # Mantiene los recuentos como int cuando el valor es entero.
                     pass
                 doc[col] = f
         # JOVEN-18-34: alias legacy preservados sin romper (esfuerzo_joven_pct

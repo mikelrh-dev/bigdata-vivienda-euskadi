@@ -21,7 +21,7 @@ RAW = os.path.join("data", "raw")
 
 
 def _load_dim():
-    # WP-16: dim canonica en procesado; raw solo fallback historico.
+    # La dimension canonica esta en procesado; raw solo como respaldo.
     _src = os.path.join("data", "procesado", "dim_municipios.csv")
     if not os.path.exists(_src):
         _src = os.path.join(RAW, "dim_municipios.csv")
@@ -279,7 +279,7 @@ def resolver_pisos_por_texto(subtitulo, titulo, codigo_ine=None):
 def resolver_codigo(municipio, codigo_ine):
     """Resuelve (codigo_ine, canonico) SOLO por coincidencia textual.
 
-    EXTRACCION-01: codigo_ine sin texto no vale -> (None, None).
+    Sin coincidencia textual, codigo_ine no se propaga: (None, None).
     Si el texto resuelve, manda el texto (aunque el codigo difiera).
     `codigo_ine` solo corrobora cuando es igual al textual.
     """

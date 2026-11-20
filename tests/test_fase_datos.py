@@ -28,7 +28,7 @@ def _csv(nombre):
 
 
 def test_wp03_n_anuncios_real():
-    """WP-03: n_anuncios sale de los JSON de anuncios, no del 252 fijo."""
+    """n_anuncios sale de los JSON de anuncios, no del valor fijo 252."""
     dim = _csv("dim_municipios.csv")
     assert "n_anuncios" in dim.columns
     assert dim["n_anuncios"].sum() > 0, "n_anuncios todo ceros: el conteo no corre"
@@ -36,7 +36,7 @@ def test_wp03_n_anuncios_real():
 
 
 def test_wp04_ceros_a_nulo_con_flag():
-    """WP-04 + M5 (COMPLEMENTARIOS-01): ceros imposibles de paro -> NaN + flag,
+    """Los ceros imposibles de paro se convierten en NaN con un flag,
     bruto conservado; si Lanbide directo (extract 18, fuente oficial) aporta
     tasa breve, se rellena con ella y se marca `tasa_paro_fuente`.
     """
@@ -59,7 +59,7 @@ def test_wp04_ceros_a_nulo_con_flag():
 
 
 def test_wp04_sin_clip_contra_cero():
-    """WP-04: ningun clip usa un techo nulo o cero."""
+    """Ningun recorte usa un techo nulo o cero."""
     df = _csv("analisis_variables_base.csv")
     if "tasa_desempleo_juvenil_real_pct" in df.columns:
         s = df["tasa_desempleo_juvenil_real_pct"].dropna()
@@ -67,13 +67,13 @@ def test_wp04_sin_clip_contra_cero():
 
 
 def test_wp05_sin_brecha_ocupacion_actividad():
-    """WP-05: la brecha invalida ocupacion-actividad no existe en gold."""
+    """La brecha invalida ocupacion-actividad no existe en gold."""
     df = _csv("dim_municipios_enriquecido.csv")
     assert "brecha_ocupacion_actividad_pct" not in df.columns
 
 
 def test_wp06_esfuerzo_canonico_unico():
-    """WP-06: esfuerzo_joven_pct (municipal fiscal) existe y se preserva."""
+    """esfuerzo_joven_pct, de origen fiscal municipal, existe y se preserva."""
     base = _csv("analisis_variables_base.csv")
     renta = _csv("dim_municipios_renta.csv")
     assert "esfuerzo_joven_pct" in base.columns
@@ -88,14 +88,14 @@ def test_wp06_esfuerzo_canonico_unico():
 
 
 def test_wp06_tension_usa_canonico():
-    """WP-06: tension sin NaN con el esfuerzo canonico como insumo."""
+    """La tension no tiene NaN y usa el esfuerzo canonico como insumo."""
     t = _csv("dim_municipios_tension.csv")
     assert int(t.isna().sum().sum()) == 0
     assert set(t["tension_categoria"].unique()) <= {"baja", "media", "alta"}
 
 
 def test_wp09_nombres_canonicos():
-    """WP-09: codigo_ine 5 digitos + nombre_canonico coherente entre tablas."""
+    """codigo_ine de 5 digitos y nombre_canonico coherente entre tablas."""
     # Convencion del repo (plan crudos): los CSV se leen con dtype=str para
     # no perder el cero inicial de Alava (01xxx). El writer no puede
     # imponerlo en CSV sin esquema; el contrato esta en el lector.
@@ -117,7 +117,7 @@ def test_wp09_nombres_canonicos():
 
 
 def test_wp01_todo_script_declarado():
-    """WP-01: todo transform/*.py esta en SCRIPTS o EXCLUIDOS de run_all."""
+    """Todo transform/*.py esta en SCRIPTS o en EXCLUIDOS de run_all."""
     import sys
     sys.path.insert(0, str(ROOT))
     import transform.run_all as orch
@@ -128,7 +128,7 @@ def test_wp01_todo_script_declarado():
 
 
 def test_wp09_mapa_nombres_estables():
-    """WP-09: todo *_normalizado.json con timestamp esta en el mapa o es canonico."""
+    """Todo *_normalizado.json con timestamp esta en el mapa o es canonico."""
     import json
     import re
     mapa = json.loads((PROC / "_meta" / "nombres_normalizados_map.json").
@@ -166,7 +166,7 @@ def _llamadas_sin(texto, marcador, clave):
 
 
 def test_wp10_lectura_tipografica():
-    """WP-10: todo pd.read_csv de transform usa dtype=str (cero de Alava)."""
+    """Todo pd.read_csv de transform usa dtype=str para conservar el cero de Alava."""
     mal = []
     for py in sorted((ROOT / "transform").glob("*.py")):
         texto = py.read_text(encoding="utf-8")
@@ -176,7 +176,7 @@ def test_wp10_lectura_tipografica():
 
 
 def test_wp11_fallback_poblacion_joven():
-    """WP-11: estimacion 15-29 con periodo y metodo declarados por fila."""
+    """La estimacion 15-29 declara periodo y metodo en cada fila."""
     pj = pd.read_csv(PROC / "poblacion_joven_municipal.csv",
                      encoding="utf-8-sig", dtype=str)
     assert len(pj) == 252, f"esperados 252, hay {len(pj)}"
@@ -185,7 +185,7 @@ def test_wp11_fallback_poblacion_joven():
 
 
 def test_wp11_flag_fiscal():
-    """WP-11: ratio fiscal con flag calculado|fallback, sin nulos silenciosos."""
+    """El ratio fiscal usa flag calculado|fallback y no deja nulos silenciosos."""
     df = pd.read_csv(PROC / "dim_municipios_renta.csv", encoding="utf-8-sig",
                       dtype=str)
     assert "flag_ratio_fiscal" in df.columns
@@ -194,7 +194,7 @@ def test_wp11_flag_fiscal():
 
 
 def test_wp18_metadata_salario():
-    """WP-18: sidecars canonicos completos para salario y emancipacion."""
+    """Los sidecars de salario y emancipacion estan completos."""
     import json
     for nombre in ("ovj_salario_joven_2024.json",
                    "emancipacion_juventud_resumen.json"):
@@ -207,7 +207,7 @@ def test_wp18_metadata_salario():
 
 
 def test_wp12_cobertura_mercado():
-    """WP-12: n_anuncios real post-dedup, crudo conservado, tipologia cerrada."""
+    """n_anuncios real tras el dedup, crudo conservado y tipologia cerrada."""
     dim = pd.read_csv(PROC / "dim_municipios.csv", encoding="utf-8-sig",
                       dtype=str)
     assert "n_anuncios_raw" in dim.columns
@@ -231,7 +231,7 @@ def test_wp12_cobertura_mercado():
 
 
 def test_wp15_renta_origen_fila():
-    """WP-15: renta_joven_origen derivada de nulidad real, valores cerrados."""
+    """renta_joven_origen se deriva de la nulidad real y usa valores cerrados."""
     df = pd.read_csv(PROC / "dim_municipios_renta.csv", encoding="utf-8-sig",
                       dtype=str)
     assert "renta_joven_origen" in df.columns
@@ -244,7 +244,7 @@ def test_wp15_renta_origen_fila():
 
 
 def test_wp17_ingestion_manifest():
-    """WP-17: acta maquina-leible con una entrada por fichero raw."""
+    """El acta de ingesta incluye una entrada por fichero raw."""
     import json
     man = json.loads((PROC / "_meta" / "ingestion_manifest.json").read_text(
         encoding="utf-8"))
@@ -255,7 +255,7 @@ def test_wp17_ingestion_manifest():
 
 
 def test_wp19_precio_nulo_con_motivo():
-    """WP-19 (A1+A3): precio_m2_calc + IQR calculados, nulos con motivo."""
+    """precio_m2_calc e IQR calculados; los nulos incluyen motivo."""
     import json
     recs = json.loads((PROC / "anuncios_unificados.json").read_text(
         encoding="utf-8"))
@@ -276,7 +276,7 @@ def test_wp19_precio_nulo_con_motivo():
 
 
 def test_wp13_higiene_escritura():
-    """WP-13: todo to_csv de transform escribe con encoding utf-8-sig."""
+    """Todo to_csv de transform escribe con encoding utf-8-sig."""
     mal = []
     for py in sorted((ROOT / "transform").glob("*.py")):
         texto = py.read_text(encoding="utf-8")

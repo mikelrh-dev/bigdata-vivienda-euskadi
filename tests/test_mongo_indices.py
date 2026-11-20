@@ -1,10 +1,10 @@
-"""Tests for INDICES-01 con explain read-only (sin mutar prod).
+"""Comprueba los indices con explain en modo de solo lectura.
 
-Triada RA3 nivel 10: explain antes y despues con hint $natural,
-comparando COLLSCAN e IXSCAN con nReturned, totalDocsExamined
-y totalKeysExamined segun Tema 8 seccion 9. AISLAMIENTO-02: el
-explain NO dropea ni crea índices; el "antes" fuerza COLLSCAN con
-hint $natural y el "después" usa el índice ESR presente.
+Se ejecuta explain antes y despues con hint $natural para comparar
+COLLSCAN e IXSCAN con nReturned, totalDocsExamined
+y totalKeysExamined. El
+explain no elimina ni crea indices; el escenario "antes" fuerza
+COLLSCAN con hint $natural y el "despues" usa el indice ESR.
 """
 
 from __future__ import annotations

@@ -1,9 +1,9 @@
 """Tests de consistencia MongoDB: atomicidad documental y errores de índices.
 
-TRANSACCIONES-01 (RA3 Consistencia, nivel 10): el modelo no necesita
+El modelo no necesita
 transacción multidocumento; se demuestra con código una operación
 atómica de un único documento (storage/mongo.py:marcar_calidad_municipio)
-y se justifica en openspec/archive/2026-11-10-docs/modelo_mongodb.md. PYMONGO-PRO-01 (Tema 8 §12):
+y se justifica en la documentacion del modelo. Ademas,
 load_all ya no silencia errores de ensure_indexes.
 
 Todo el trabajo de escritura ocurre en la base de test
@@ -100,7 +100,7 @@ def test_atomicidad_documental():
         coll.drop()
     assert get_collection("municipios").count_documents({}) == prod_before
 
-    # Sonda commit/abort solo en vivienda_euskadi_test (TRANSACCIONES-01, docx §11 READ):
+    # Sonda commit/abort solo en vivienda_euskadi_test (lectura):
     # standalone sin replica set rechaza la transacción multidocumento; la sonda
     # no debe tocar prod por defecto (MONGO_ALLOW_DESTRUCTIVE sin definir).
     import os as _os

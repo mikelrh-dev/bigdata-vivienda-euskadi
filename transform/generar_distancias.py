@@ -23,7 +23,7 @@ def _hav(lat1, lon1, lat2, lon2):
 
 def main() -> int:
     import pandas as pd
-    # WP-16: dim canonica vive en procesado; raw solo como fallback historico.
+    # La dimension canonica vive en procesado; raw solo como respaldo historico.
     _dim_src = PROC_DIR / "dim_municipios.csv"
     if not _dim_src.exists():
         log.warning("dim en procesado no existe, fallback a raw")

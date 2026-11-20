@@ -1,4 +1,4 @@
-"""Genera el acta maquina-leible de ingesta (WP-17).
+"""Genera el acta de ingesta legible por maquina.
 
 NO toca data/raw (congelado). Lee el inventario de raw + los sidecars
 de data/procesado/_meta/ y escribe

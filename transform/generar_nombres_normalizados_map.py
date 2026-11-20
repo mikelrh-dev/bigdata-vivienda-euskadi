@@ -1,4 +1,4 @@
-"""Genera ``data/procesado/_meta/nombres_normalizados_map.json`` (WP-09).
+"""Genera ``data/procesado/_meta/nombres_normalizados_map.json``.
 
 El mapa registra los lotes raw que conservan timestamp en silver. Antes era un
 JSON escrito a mano dentro de ``data/procesado`` (gitignorado): se perdia en

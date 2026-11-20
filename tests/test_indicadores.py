@@ -1,4 +1,4 @@
-"""INDICADORES-01: 5 indicadores distintos non-legacy de 2+ fuentes.
+"""Cinco indicadores distintos, no heredados, de dos o mas fuentes.
 
 Verifica la matriz 2026-11-06: esfuerzo 18-34, tensión social, paro
 Lanbide, precio m2 oficial y VPO terminadas ‰. `esfuerzo_16_29` es

@@ -43,8 +43,8 @@ def requisitos() -> tuple[list[str], int]:
 
 
 def main() -> int:
-    # openspec no se versiona: en un checkout sin el, no se puede verificar el
-    # contrato. Se declara el hueco en vez de aprobar con 0 cabeceras.
+    # La especificacion no se versiona: sin ella no se puede verificar el
+    # contrato. Se declara la ausencia en vez de aprobar con 0 cabeceras.
     if (ROOT / "openspec" / "specs").is_dir():
         ids, cabeceras = requisitos()
         # La invariante util es que no haya IDs repetidos ni cabeceras sin ID; el

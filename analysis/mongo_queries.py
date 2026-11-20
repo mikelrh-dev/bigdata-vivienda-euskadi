@@ -1,4 +1,4 @@
-"""Advanced MongoDB queries for vivienda_euskadi."""
+"""Consultas avanzadas de MongoDB para vivienda_euskadi."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def anuncios_por_municipio(
     sort_field: str = "precio_eur",
     descending: bool = False,
 ) -> list[dict[str, Any]]:
-    """Filter anuncios by nested ubicacion.codigo_ine plus optional conditions."""
+    """Filtra anuncios por ubicacion.codigo_ine y condiciones opcionales."""
     code = zfill_ine(codigo_ine)
     filtro: dict[str, Any] = {"ubicacion.codigo_ine": code}
     if modalidad is not None:
@@ -79,7 +79,7 @@ def query_anuncios_por_municipio(*a, **k):
 
 
 def dot_notation_municipio(codigo_ine: str, limit: int = 50) -> list[dict[str, Any]]:
-    """Dot notation over embedded document."""
+    """Accede con notacion de punto a un documento embebido."""
     code = zfill_ine(codigo_ine)
     return _cursor_to_list(
         get_collection("anuncios")
@@ -91,7 +91,7 @@ def dot_notation_municipio(codigo_ine: str, limit: int = 50) -> list[dict[str, A
 
 
 def anuncios_con_equipamiento(item: str, limit: int = 100) -> list[dict[str, Any]]:
-    """Array contains element."""
+    """Comprueba si el array contiene un elemento."""
     return _cursor_to_list(
         get_collection("anuncios").find({"equipamiento": item}).limit(limit)
     )

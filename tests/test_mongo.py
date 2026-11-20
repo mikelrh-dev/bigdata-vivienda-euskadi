@@ -25,7 +25,7 @@ def _mongo_ok() -> bool:
         return False
 
 
-# AISLAMIENTO-01: sin Mongo local la suite se salta (nunca escribe en prod).
+# Sin Mongo local la suite se omite; nunca escribe en produccion.
 pytestmark = pytest.mark.skipif(not _mongo_ok(), reason="sin Mongo local: skip separado")
 
 
@@ -114,7 +114,7 @@ def test_query_exists_type():
     r = mq.resumen_exists_type()
     assert r["total_anuncios"] >= 500
     assert r["precio_null"] >= 0
-    # $type decimal count should match non-null prices
+    # El recuento de tipo decimal debe coincidir con los precios no nulos.
     non_null = get_collection("anuncios").count_documents({"precio_eur": {"$ne": None}})
     assert r["precio_decimal"] == non_null
 
@@ -239,7 +239,7 @@ def test_aggregation_pipeline():
     assert isinstance(docs, list)
     assert len(docs) == 252
     assert all("n_anuncios" in d for d in docs)
-    # at least one with anuncios
+    # Al menos uno con anuncios.
     assert any((d.get("n_anuncios") or 0) > 0 for d in docs)
     # esfuerzo canonico esfuerzo_joven_pct + alias esfuerzo_alquiler_pct
     for d in docs:
@@ -291,7 +291,7 @@ def test_indicador_por_municipio():
 
 
 def test_indexes_explain():
-    # AISLAMIENTO-02: explain read-only con hint $natural; no dropea ni crea índices.
+    # explain de solo lectura con hint $natural; no elimina ni crea indices.
     res = mi.explain_before_after("20069", "larga_estancia", 1000)
     before = res["before"]["stage"]
     after = res["after"]["stage"]
@@ -343,7 +343,7 @@ def test_modalidades_pipeline():
     res = ma.pipeline_modalidades()
     assert isinstance(res, list)
     assert len(res) >= 1
-    # H8b: la mediana EUR/m2 se calcula en el pipeline, sin teclear (P-05).
+    # La mediana EUR/m2 se calcula en el pipeline, sin introducirla a mano.
     for fila in res:
         assert {
             "mediana_precio_eur", "mediana_eur_m2", "n_eur_m2",

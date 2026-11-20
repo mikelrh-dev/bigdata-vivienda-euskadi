@@ -1,8 +1,8 @@
-"""PyMongo cleaning/transformations for the vivienda_euskadi database.
+"""Limpieza y transformaciones con PyMongo para la base vivienda_euskadi.
 
-All operations run against MongoDB (localhost:27017 / vivienda_euskadi).  Raw and
-silver files under data/ are never touched: every change is applied with
-update_many / delete_many / bulk_write and persisted in the database.
+Todas las operaciones se ejecutan sobre MongoDB (localhost:27017 / vivienda_euskadi).
+Los ficheros raw y silver de data/ no se modifican: cada cambio se aplica con
+update_many, delete_many o bulk_write y queda guardado en la base.
 """
 
 from __future__ import annotations
@@ -30,12 +30,12 @@ def _counter(result) -> dict[str, int]:
 
 
 def canonicalize_codigo_ine() -> dict[str, Any]:
-    """Ensure codigo_ine/_id are 5-digit strings in every collection."""
+    """Asegura que codigo_ine y _id sean cadenas de 5 digitos en cada coleccion."""
     out: dict[str, Any] = {}
-    # municipios: _id is immutable; verify/update derived fields only.
+    # municipios: _id es inmutable; solo se verifican los campos derivados.
     mun = get_collection("municipios")
-    # _id is immutable; canonicalisation is guaranteed by the loader (zfill_ine).
-    # We only verify that every _id is a 5-digit string here.
+    # _id es inmutable; el loader ya aplica zfill_ine.
+    # Aqui solo se comprueba que cada _id sea una cadena de 5 digitos.
     bad = [d["_id"] for d in mun.find({"_id": {"$not": {"$type": "string"}}})]
     out["municipios_checked"] = mun.count_documents({})
     out["municipios_bad_ids"] = len(bad)
@@ -181,7 +181,7 @@ def resolve_duplicates() -> dict[str, Any]:
         r = an.delete_many({"_id": {"$in": to_delete}})
         out["deleted"] += r.deleted_count
 
-    # Duplicates by property_fingerprint (when present)
+    # Duplicados por property_fingerprint, cuando existe.
     pipeline = [
         {"$match": {"property_fingerprint": {"$ne": None}}},
         {"$group": {"_id": "$property_fingerprint", "ids": {"$push": "$_id"}, "n": {"$sum": 1}}},
@@ -232,7 +232,7 @@ def convert_types() -> dict[str, Any]:
     )
     out["precios_string_convertidos"] = _counter(r)
 
-    # Convert habitaciones double with integer value to int.
+    # Convierte habitaciones de double a int cuando el valor es entero.
     r = an.update_many(
         {"habitaciones": {"$ne": None}},
         [{"$set": {"habitaciones": {
@@ -241,7 +241,7 @@ def convert_types() -> dict[str, Any]:
     )
     out["habitaciones_convertidas"] = _counter(r)
 
-    # Municipios: asegurar booleanos reales (not strings) with $convert to bool.
+    # Municipios: convierte a booleano real los valores que no lo son.
     mun = get_collection("municipios")
     for field in ("tiene_alquiler_oficial", "tiene_fianzas_emal"):
         r = mun.update_many(
@@ -305,7 +305,7 @@ def clean_all() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# PyMongo professional demo: CRUD with counters on a throwaway collection.
+# Demostracion de CRUD con contadores en una coleccion temporal.
 # ---------------------------------------------------------------------------
 
 def demo_crud_operations() -> dict[str, Any]:
@@ -321,7 +321,7 @@ def demo_crud_operations() -> dict[str, Any]:
     # find_one / find
     out["find_one"] = coll.find_one({"nombre": "demo"}, {"_id": 0})
     out["count_find"] = coll.count_documents({})
-    # update_one with $set/$inc/$push/$addToSet
+    # update_one con $set, $inc, $push y $addToSet.
     r = coll.update_one({"nombre": "demo"}, {"$set": {"precio": 120}, "$inc": {"visitas": 1},
                                             "$push": {"historico": 100}, "$addToSet": {"tags": "b"}})
     out["update_one"] = _counter(r)

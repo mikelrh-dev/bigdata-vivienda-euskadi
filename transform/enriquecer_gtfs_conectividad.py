@@ -57,16 +57,16 @@ def parse_date(s):
     return datetime.date(int(s[:4]), int(s[4:6]), int(s[6:]))
 
 def service_active_on(trip_id, calendar, calendar_dates, target_date):
-    # calendar: dict trip_id -> list of (start, end, days bitmask)
-    # calendar_dates: dict trip_id -> set of dates with exception_type
-    # returns True if service runs on target_date
-    # We'll precompute active service_ids for target_date
+    # calendar: diccionario trip_id -> lista de (inicio, fin, mascara de dias)
+    # calendar_dates: diccionario trip_id -> fechas con exception_type
+    # Devuelve True si el servicio opera en target_date.
+    # Los service_ids activos se precalculan para target_date.
     pass
 
 def main():
     os.makedirs(OUT, exist_ok=True)
     munis = load_geojson_municipios()
-    # population from udalmap indicadores adicionales (poblacion_total)
+    # Poblacion desde los indicadores adicionales de udalmap.
     pop_map = {}
     try:
         import pandas as pd
@@ -74,7 +74,7 @@ def main():
         for _, row in ud.iterrows():
             ci = str(row["codigo_ine"]).strip().zfill(5) if pd.notna(row["codigo_ine"]) else None
             if ci:
-                # WP-10: lectura str; poblacion a numerico explicito.
+                # Lectura como texto; poblacion a numerico explicito.
                 pop_map[ci] = pd.to_numeric(row.get("poblacion_total", None), errors="coerce")
     except Exception:
         pass

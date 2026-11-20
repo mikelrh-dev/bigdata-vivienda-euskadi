@@ -24,7 +24,7 @@ RAW = BASE / "data" / "raw"
 PROC = BASE / "data" / "procesado"
 
 pob = pd.read_csv(RAW / "eustat_poblacion_edad.csv", dtype=str, encoding="utf-8-sig")
-# WP-11: fallback explicito de periodo (2025/01/01 -> max disponible).
+# Respaldo explicito de periodo (2025/01/01 -> maximo disponible).
 periodos = sorted(pob["periodo__etiqueta"].dropna().unique())
 periodo = "2025/01/01" if "2025/01/01" in periodos else periodos[-1]
 print(f"periodo poblacion: {periodo} (disponibles: {periodos[0]}..{periodos[-1]})")

@@ -1,4 +1,4 @@
-"""M6 DEDUP-01: dedup dura por `property_fingerprint` (cross-portal).
+"""Deduplicacion por `property_fingerprint` entre portales.
 
 - Dos anuncios de portales distintos con identico fingerprint -> 1 fila.
 - La salida unificada real no contiene duplicados (0).

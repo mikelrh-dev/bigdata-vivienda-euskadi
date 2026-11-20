@@ -24,7 +24,7 @@ def main():
     renta["codigo_ine"] = renta["key"].map(name2code)
     renta = renta[renta["codigo_ine"].notna()].copy()
     renta["municipio"] = renta["ámbitos territoriales__etiqueta"].astype(str).str.strip()
-    # WP-10: valores euros a numerico (lectura str para preservar claves).
+    # Valores en euros a numerico (lectura como texto para conservar claves).
     renta["Renta personal media de la C.A. de Euskadi (euros)"] = pd.to_numeric(
         renta["Renta personal media de la C.A. de Euskadi (euros)"], errors="coerce")
     last_year = int(pd.to_numeric(renta["periodo"], errors="coerce").max())
@@ -57,7 +57,7 @@ def main():
     pob["codigo_ine"] = pob["key"].map(name2code)
     pob = pob[pob["codigo_ine"].notna()].copy()
     pob["anio"] = pob["periodo"].astype(str).str[:4].astype(int)
-    # WP-10: poblacion a numerico antes de agregar (str sumaria textos).
+    # Poblacion a numerico antes de agregar (como texto se sumarian etiquetas).
     pob["Población de la C.A. de Euskadi"] = pd.to_numeric(
         pob["Población de la C.A. de Euskadi"], errors="coerce")
     last_pob_year = int(pob["anio"].max())

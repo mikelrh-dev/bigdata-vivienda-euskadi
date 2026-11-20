@@ -58,7 +58,7 @@ if os.path.exists(csv_path):
     except Exception:
         prev = None
 if prev is not None:
-    # update equipamiento column from JSON
+    # Actualiza la columna de equipamiento desde el JSON.
     eq_map = {}
     for r in data:
         eq_map[(str(r.get("portal")), str(r.get("id_anuncio")))] = ",".join(r.get("equipamiento") or [])
@@ -67,7 +67,7 @@ if prev is not None:
             key = (str(row.get("portal")), str(row.get("id_anuncio")))
             return eq_map.get(key, row.get("equipamiento"))
         prev["equipamiento"] = prev.apply(_upd, axis=1)
-    # ensure superset: add any missing base columns empty
+    # Asegura el superconjunto: anade vacias las columnas base que falten.
     base_cols = ["id_anuncio", "portal", "modalidad", "precio_eur", "superficie_m2", "habitaciones",
                  "es_outlier_superficie", "codigo_ine", "municipio", "titulo", "subtitulo", "equipamiento"]
     for col in base_cols:

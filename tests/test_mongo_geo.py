@@ -1,6 +1,6 @@
 """Tests for real GeoJSON Point in anuncios (aislado de prod).
 
-AISLAMIENTO-01: la carga de anuncios se hace contra ``vivienda_euskadi_test``
+La carga de anuncios se hace contra ``vivienda_euskadi_test``
 (vía ``get_test_db``), nunca contra la base productiva. El test de geo real
 sigue leyendo los 594 documentos del silver, pero en la base de test.
 """

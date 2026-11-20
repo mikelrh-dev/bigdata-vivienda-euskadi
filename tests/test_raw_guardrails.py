@@ -21,7 +21,7 @@ PROC_DIR = ROOT / "data" / "procesado"
 
 RAW_WRITE_ALLOWLIST = {
     "enriquecer_codigo_ine.py",  # solo con --write-raw --reason
-    "f4_pisos_dirigido.py",      # lot dirigido append-only
+    "f4_pisos_dirigido.py",      # lote dirigido de solo anexado
 }
 
 WRITE_METHODS = {"to_csv", "to_json", "write_text", "write_bytes"}
@@ -144,7 +144,7 @@ def test_no_transform_writes_raw():
 
 
 def test_f4_filename_stable():
-    """WP-09: _nombre_lote devuelve un nombre estable (sin timestamp); la
+    """_nombre_lote devuelve un nombre estable, sin timestamp; la
     trazabilidad de lotes vive en metadata.run_id, no en el nombre."""
     if str(TRANSFORM_DIR) not in sys.path:
         sys.path.insert(0, str(TRANSFORM_DIR))

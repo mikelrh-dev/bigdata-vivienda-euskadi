@@ -1,11 +1,9 @@
 """Orquestador de analisis MongoDB: ejecuta los 11 pipelines y exporta 8 CSV.
 
-Nivel 10 de Automatizacion del analisis (RETO 1Evaluacion SBD-BDAv2):
-un script ejecuta todos los analisis principales y devuelve resultados
-preparados para representacion, generados desde PyMongo sin valores
-tecleados. Reutiliza los 11 pipelines de `mongo_aggregations` (con
-`$group`/`$lookup`/`$unwind` donde los datos lo permiten) y demuestra
-con `explain()` la transicion COLLSCAN -> IXSCAN.
+Ejecuta los analisis principales y devuelve resultados preparados para
+representacion, generados desde PyMongo sin valores introducidos a mano.
+Reutiliza los 11 pipelines de `mongo_aggregations` y compara COLLSCAN
+e IXSCAN con `explain()`. Los CSV se escriben en data/resultados.
 
 Uso:
   python analysis/run_analisis_mongo.py [--salida data/resultados]
@@ -83,7 +81,7 @@ EXPORTS_5: tuple[tuple[str, str], ...] = (
     ("mongo_vpo_por_municipio.csv", "pipeline_vpo_por_municipio"),
 )
 
-# 6º CSV: VPO terminadas ‰ (indicador 5 non-legacy, INDICADORES-01).
+# Sexto CSV: VPO terminadas por mil habitantes.
 # Euskadi Open Data 73 + población dim_municipios, campo común codigo_ine.
 EXPORT_VPO_TERMINADAS: tuple[str, str] = (
     "mongo_vpo_terminadas_por_municipio.csv",
@@ -453,7 +451,7 @@ def exportar_png_desde_mongo(
 
     # Figuras relegadas a anexo (no evidencia principal): se siguen
     # generando para trazabilidad pero se escriben en data/resultados/anexo/.
-    # No borrar: mover sin pérdida.
+    # No se elimina: se mueve sin perder datos.
     ANEXO_PNG = frozenset({
         "g1_esfuerzo_por_territorio.png",  # duplica A1 byte-idéntica
         "H4_esfuerzo_18_34_vs_16_29.png",  # auditoría canónico vs legacy
@@ -1144,7 +1142,7 @@ def exportar_png_desde_mongo(
 
     # H8b: misma mediana mensual, distinto coste por m2. La mediana de EUR/m2
     # es la magnitud comparable entre modalidades (el piso temporal es mas
-    # pequeno); se calcula en pipeline_modalidades, no se teclea (P-05).
+    # pequeno); se calcula en pipeline_modalidades, no se introduce a mano.
     _por_mod = {str(d.get("modalidad")): d for d in mod}
     _mes_t = _fnum(_por_mod.get("temporal", {}).get("mediana_precio_eur"))
     _mes_l = _fnum(_por_mod.get("larga_estancia", {}).get("mediana_precio_eur"))

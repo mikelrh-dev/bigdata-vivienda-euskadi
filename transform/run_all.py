@@ -146,7 +146,7 @@ SCRIPTS: dict[str, dict[str, list[str]]] = {
         "group": "analisis_base",
         "in": ["proc:dim_municipios.csv", "proc:alquiler_municipal_completo.csv",
                "raw:distancias_capitales_252.csv", "raw:renta_municipal_completa.csv",
-               # el codigo lee la copia de PROCESADO (WP-04/C-03), no raw
+               # el codigo lee la copia de PROCESADO, no raw
                "proc:udalmap_empleo_corregido.csv", "raw:eustat_poblacion_edad.csv",
                "raw:lanbide_paro_juvenil.csv"],
         "out": ["proc:analisis_variables_base.csv"], "out_glob": []},

@@ -1,6 +1,6 @@
-"""Tests PyMongo profesional: MONGO_URI configurable y ObjectId (PYMONGO-PRO-01).
+"""Comprueba MONGO_URI configurable y la validacion de ObjectId.
 
-Respaldo Tema 8 §12: MongoClient reutilizable con URI configurable
+MongoClient se reutiliza con URI configurable
 (fallback a MONGO_HOST/MONGO_PORT) y validación ObjectId.
 """
 

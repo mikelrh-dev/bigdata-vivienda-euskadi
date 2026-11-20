@@ -1,4 +1,4 @@
-"""Normaliza la metadata de los 60 JSON de raw a un esquema unico (WP-07).
+"""Normaliza la metadata de los 60 JSON de raw a un esquema unico.
 
 NO reescribe data/raw (congelado). Para cada JSON genera un sidecar en
 data/procesado/_meta/<nombre>.meta.json con los 6 campos obligatorios
@@ -36,11 +36,11 @@ ALIASES_FECHA = ("fecha_extraccion", "fecha", "fecha_descarga")
 ALIASES_RECUENTO = ("n_registros", "n_filas", "n_anuncios", "n_series",
                     "n_municipios", "n_items", "n_sin_duplicar")
 ALIASES_URL = ("url", "url_fuente", "fuente_url")
-# WP-18: ficheros legacy congelados sin envoltura {"metadata","datos"}.
+# Ficheros legacy congelados sin la envoltura {"metadata","datos"}.
 # Se rescata su procedencia desde las claves escalares de nivel superior
 # (solo lectura de raw; la canonica vive en el sidecar de _meta).
 ALIASES_FUENTE = ("fuente", "origen", "descripcion")
-# WP-18: procedencia conocida de ficheros legacy congelados cuya unica
+# Procedencia conocida de ficheros legacy congelados cuya unica
 # carencia es la fuente (url/fecha/recuento se rescatan del propio fichero).
 # No reescribe raw; solo completa el sidecar canonico de _meta.
 FUENTES_LEGACY = {
@@ -65,7 +65,7 @@ def _normalizar(ruta: Path) -> tuple[dict, list[str]]:
     incidencias = []
     if not isinstance(datos, dict) or "metadata" not in datos:
         incidencias.append("sin-bloque-metadata")
-        if isinstance(datos, dict):  # WP-18: rescate legacy top-level
+        if isinstance(datos, dict):  # Rescate de un JSON legacy de nivel superior
             for k, v in datos.items():
                 if k != "datos" and not isinstance(v, (dict, list)):
                     meta.setdefault(k, v)

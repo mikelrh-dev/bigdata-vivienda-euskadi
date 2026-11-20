@@ -41,7 +41,7 @@ def _habitaciones_int(v):
 
 
 def deduplicar_fingerprint(recs):
-    """M6 DEDUP-01: dedup dura cross-portal por property_fingerprint.
+    """Deduplicacion estricta entre portales por property_fingerprint.
 
     El primer anuncio de cada huella (orden determinista por
     _source_order/portal/id_anuncio) conserva; el resto se descarta con
@@ -76,7 +76,7 @@ def load_payload(name):
 
 
 def _es_lote_valido(path, payload):
-    """Schema guard para lotes dirigidos append-only."""
+    """Validacion de esquema para lotes dirigidos de solo anexado."""
     if not isinstance(payload, dict):
         print("Schema guard: payload no es dict ->", path)
         return None
@@ -175,7 +175,7 @@ def transform_fotocasa(items):
     return recs
 
 def transform_pisos(items):
-    # PISOS-01/EXTRACCION-01: subtitulo/titulo manda; el campo de busqueda NUNCA
+    # El subtitulo y el titulo mandan; el campo de busqueda nunca
     # como ubicacion. Fuera de Euskadi / sin texto -> geo_invalida=True +
     # cuarentena reversible (excluido de dim_municipios y conteos L1/L2).
     recs = []
@@ -274,7 +274,7 @@ def main():
     for r in ra_recs:
         r["_source_order"] = 2
     recs += ra_recs
-    # Integrar lotes dirigidos (append-only) con schema guard
+    # Integra los lotes dirigidos con validacion de esquema.
     import glob as _glob
     lot_specs = [
         ("anuncios_pisos_dirigido_*.json", transform_pisos, "pisos"),
@@ -323,7 +323,7 @@ def main():
     recs = deduped
     print(f"Anuncios tras dedup portal+id: {len(recs)} (eliminados: {len(duplicados)})")
 
-    # Dedup cross-portal por property_fingerprint (M6 DEDUP-01, dura):
+    # Deduplicacion estricta entre portales por property_fingerprint:
     # el primero de cada huella conserva; resto -> duplicado_fingerprint.
     recs, duplicados_fp = deduplicar_fingerprint(recs)
     duplicados = duplicados + duplicados_fp

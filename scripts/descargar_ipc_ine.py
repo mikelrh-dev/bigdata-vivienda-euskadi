@@ -1,7 +1,7 @@
 """Descarga el IPC medio anual del INE para 2024 y 2026.
 
 Fuente primaria: INE (servicios.ine.es), tabla IPC medio anual.
-Fallback: valor documentado con flag 'fallback' (estilo WP-11) si la API no
+Alternativa: valor documentado con flag 'fallback' si la API no
 responde o no tiene los periodos necesarios.
 
 Guarda:

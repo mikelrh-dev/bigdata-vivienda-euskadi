@@ -58,7 +58,7 @@ def main():
     with zipfile.ZipFile(ZIP_PATH) as z:
         z.extractall(EXTRACT_DIR)
 
-    # SHP may be a directory or file depending on zip; keep as computed
+    # El SHP puede ser un directorio o un fichero segun el zip; se conserva tal cual.
     reader = shapefile.Reader(str(SHP))
     areas = []
     for rec, shp in zip(reader.records(), reader.shapes()):

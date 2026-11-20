@@ -1,4 +1,4 @@
-"""Fotocasa dirigido (append-only): scraping por municipio para cabeceras comarcales.
+"""Fotocasa dirigido (solo anexado): scraping por municipio para cabeceras comarcales.
 
 Guarda resultados en data/raw/anuncios_fotocasa_dirigido_YYYYMMDD.json.
 No sobrescribe archivos crudos existentes.

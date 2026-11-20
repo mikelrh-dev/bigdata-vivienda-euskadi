@@ -33,11 +33,11 @@ PROC = PROJECT_ROOT / "data" / "procesado"
 def _ratio_fiscal_desde_eustat() -> tuple[float, str]:
     """Calcula ratio fiscal (media de tramos 18-19/20-24/25-29 vs total CAE) desde eustat_renta_edad.csv.
 
-    Retorna (ratio, flag) con flag=calculado|fallback (WP-11: sin nulos silenciosos).
+    Devuelve (ratio, flag) con flag=calculado|fallback y sin nulos silenciosos.
     """
     df = pd.read_csv(RAW / "eustat_renta_edad.csv", dtype=str, encoding="utf-8-sig")
     d = df[(df["sexo__etiqueta"] == "Total") & (df["tipo de renta__etiqueta"] == "Renta total")]
-    d = d[d["periodo"].astype(str) == "2024"]  # WP-10: periodo leido como str
+    d = d[d["periodo"].astype(str) == "2024"]  # Periodo leido como texto
     tramos = {}
     for _, row in d.iterrows():
         etiqueta = str(row["edad__etiqueta"]).strip()
@@ -123,7 +123,7 @@ SALARIO_OVJ_18_29 = 1381
 
 def main() -> int:
     base = pd.read_csv(PROC / "analisis_variables_base.csv", dtype=str, encoding="utf-8-sig")
-    # WP-10: lectura tipada como str (claves); medidas a numerico explicito.
+    # Lectura tipada como texto para las claves; medidas a numerico explicito.
     _med = ["cuantia_media_eur_mes_media", "renta_personal_total_eur",
             "renta_hogar", "renta_eustat", "renta_atlas",
             "renta_joven_estimada_16_29", "renta_joven_estimada_18_34",
@@ -172,7 +172,7 @@ def main() -> int:
     # Solucion 1+2 (aditivo): OVJ + Housing Wage
     out["salario_ovj_neto_mes"] = SALARIO_OVJ_18_29
     out["housing_wage_mes"] = out["cuantia_media_eur_mes_media"] / 0.30
-    # WP-06: el salario OVJ es una constante autonomica: sirve de referencia,
+    # El salario OVJ es una constante autonomica: sirve de referencia,
     # no para ordenar municipios. El canonico es esfuerzo_joven_pct (fiscal).
     out["esfuerzo_ovj_referencia_pct"] = (out["cuantia_media_eur_mes_media"] / SALARIO_OVJ_18_29) * 100
     out["esfuerzo_ovj_pareja_referencia_pct"] = (out["cuantia_media_eur_mes_media"] / (2 * SALARIO_OVJ_18_29)) * 100
@@ -191,7 +191,7 @@ def main() -> int:
     out["salario_joven_ajustado_local_eur"] = (SALARIO_OVJ_18_29 * factor).round(2)
     out["esfuerzo_ajustado_pct"] = (out["cuantia_media_eur_mes_media"] / out["salario_joven_ajustado_local_eur"]) * 100
 
-    # WP-15: origen por fila (trazabilidad real, no constante).
+    # Origen por fila para mantener la trazabilidad.
     _eu = pd.to_numeric(out.get("renta_eustat"), errors="coerce")
     _at = pd.to_numeric(out.get("renta_atlas"), errors="coerce")
     out["renta_joven_origen"] = np.select(
@@ -200,11 +200,11 @@ def main() -> int:
 
     # Metadata
     out["ratio_fiscal"] = ratio_fiscal
-    out["flag_ratio_fiscal"] = out_flag_fiscal  # WP-11: calculado|fallback
+    out["flag_ratio_fiscal"] = out_flag_fiscal  # calculado|fallback
     out["ratio_fiscal_18_34"] = ratio_18_34
     out["ratio_fiscal_18_24"] = ratio_18_24
     out["ratio_fiscal_25_34"] = ratio_25_34
-    out["flag_ratio_fiscal_18_34"] = flag_18_34  # WP-11: calculado|fallback
+    out["flag_ratio_fiscal_18_34"] = flag_18_34  # calculado|fallback
     out["ratio_salarial_18_34"] = ratio_sal_18_34
     out["ratio_salarial_16_29"] = ratio_sal_18_29
     out["fuente_salario"] = "OVJ Irekia 2025-10-13 (salario neto 2024) ajustado por paro joven Lanbide"
